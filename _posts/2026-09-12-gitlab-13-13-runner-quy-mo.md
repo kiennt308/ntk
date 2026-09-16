@@ -80,8 +80,8 @@ graph TD
     RM --> PROM
     RM -->|Spawn| K8S
     RM -->|Scale| AWS
-    K8S <-->|Pull/Push Cache| S3
-    AWS <-->|Pull/Push Cache| S3
+    K8S <-->|"Pull/Push Cache"| S3
+    AWS <-->|"Pull/Push Cache"| S3
 ```
 
 ### 1.2. Phân Biệt `concurrent` Toàn Cục vs `limit` Của Từng Runner
@@ -217,9 +217,11 @@ graph TD
 <span class="badge badge--rose">🕒 04:15 AM</span> Toàn bộ các job biên dịch Java Spring Boot trên cụm Kubernetes Runner bị gián đoạn đột ngột giữa chừng với mã lỗi Exit Code 137, khiến pipeline phát hành bản vá bảo mật bị đình trệ.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Tiến trình Maven build bị hủy diệt ngay tại pha chạy unit tests với thông báo OOM:
 
 ```text
+
+Tiến trình Maven build bị hủy diệt ngay tại pha chạy unit tests với thông báo OOM:
+
 [INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ payments-service ---
 [INFO] Running com.corp.payments.service.TransactionServiceTest
 Killed

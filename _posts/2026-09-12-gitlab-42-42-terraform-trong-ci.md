@@ -45,7 +45,7 @@ Khi đội ngũ kỹ sư vận hành hạ tầng đám mây bằng cách gõ l�
 
 > **Chuẩn mực hạ tầng doanh nghiệp là "Automated Terraform Pipeline": Sử dụng GitLab-managed Terraform State (quản lý lưu trữ và khóa state tập trung qua HTTP API), tự động chạy `terraform plan` và render diff trên Merge Request Widget, dự toán chi phí bằng Infracost, và chỉ cho phép `terraform apply` khi commit đã được merge vào protected branch.**
 
-```
+```text
        CHU TRÌNH TỰ ĐỘNG HÓA TERRAFORM TRONG GITLAB CI/CD
 
   [ Merge Request ] ──► [ 1. terraform validate & checkov ]
@@ -231,7 +231,7 @@ terraform_apply:
 
 > **Bối Cảnh**: Hai kỹ sư A và B cùng mở 2 Merge Requests sửa đổi hạ tầng. Kỹ sư A merge MR trước và đổi tên subnet. Kỹ sư B sau đó merge MR của mình nhưng pipeline tự động dùng lại tệp `plan.cache` đã được tạo từ 3 ngày trước (khi chưa có thay đổi của A). Khi chạy `apply`, Terraform đã xóa nhầm Subnet mới của A và làm sập toàn bộ Database Cluster Production!
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -268,7 +268,7 @@ terraform_apply:
 - Viết pipeline GitLab CI tự động Validate, Plan và Apply.
 - Quan sát tệp Plan hiển thị trực quan trên Merge Request Widget và kiểm tra tệp State trên giao diện GitLab.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB TERRAFORM CI/CD TRÊN GITLAB
 
      [ Mã Nguồn Terraform ]
@@ -589,7 +589,7 @@ apply_infra:
 
 ### 7.2. Sơ Đồ Tư Duy Tự Động Hóa Terraform & OpenTofu (Mindmap)
 
-```
+```text
                     TỰ ĐỘNG HÓA HẠ TẦNG VỚI TERRAFORM & OPENTOFU
                                          │
         ┌────────────────────────────────┼────────────────────────────────┐

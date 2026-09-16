@@ -452,25 +452,6 @@ graph TD
 | Official Docs: Encryption at Rest | Kubernetes v1.35 | Cấu hình mã hoá etcd cho Secrets với EncryptionConfiguration |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Phân biệt `ConfigMap` (Plaintext) vs `Secret` (Base64 và 4 loại Secret chuẩn) | 12 phút |
-| §5 | Ba phương thức nạp dữ liệu vào Pod: `env`, `envFrom` và Volume Mount | 12 phút |
-| §6 | Cơ chế cập nhật nóng (Hot Reloading) vs Tái tạo Pod (Pod Restart) | 10 phút |
-| §7 | Secret Private Registry và thuộc tính immutable | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| §11 | Câu hỏi tự kiểm tra | 5 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -866,24 +847,11 @@ rm -f /tmp/cm-env.txt /tmp/sec-b64.txt /tmp/pod-app-env.txt /tmp/pod-file-conten
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-20/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khởi tạo ConfigMap `app-config` và Secret `app-secret` | 30 phút |
-| L4 | Bước 2 — Nạp dữ liệu vào Pod qua `envFrom` và Volume Mount | 30 phút |
-| L5 | Bước 3 — Kiểm chứng cơ chế cập nhật nóng (Hot Reloading) của Volume Mount | 30 phút |
-| L6 | Bước 4 — Khởi tạo TLS Secret và dọn dẹp | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -897,270 +865,368 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Chuỗi mã hoá Base64 trong tệp YAML <code>kind: Secret</code> có phải là một hình thức mã hoá an toàn tuyệt đối không? Lệnh nào dùng để giải mã?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>ConfigMap</code> (Plaintext - Dữ liệu công khai):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Lưu trữ các thông số cấu hình không nhạy cảm (như domain name, port, log level, tệp cấu hình <code>nginx.conf</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Dữ liệu:* Lưu dạng <b style="color: var(--accent-primary);">Plaintext rõ ràng</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Secret</code> (Base64 Obfuscation - Dữ liệu nhạy cảm):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Lưu trữ dữ liệu nhạy cảm (như mật khẩu Database, API token, TLS private key, Docker Registry credentials).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Dữ liệu:* Bắt buộc mã hoá chuỗi <b style="color: var(--accent-primary);">Base64</b> và phân chia thành 4 loại Secret chuẩn (<code>Opaque</code>, <code>service-account-token</code>, <code>dockerconfigjson</code>, <code>tls</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bản chất của Base64:</b> Chuỗi Base64 <b style="color: var(--accent-primary);">KHÔNG PHẢI là mã hoá bảo mật (Encryption)</b>; nó chỉ là một hình thức xáo trộn ký tự (Obfuscation) để truyền nhận dữ liệu nhị phân dưới dạng chuỗi ASCII.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách giải mã:</b> Bất kỳ ai đọc được file YAML Secret đều có thể giải mã ngược lại thành Plaintext trong đúng <b style="color: var(--accent-primary);">1 giây</b> bằng câu lệnh:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>echo -n "<chuỗi-base64>" | base64 -d</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải pháp bảo mật thực sự:</b> Người quản trị cluster phải bật tính năng <code>Encryption at Rest</code> (<code>EncryptionConfiguration</code> dùng KMS hoặc AES-CBC) để mã hoá dữ liệu Secret khi ghi vào cơ sở dữ liệu etcd.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Base64 là mã hoá an toàn 100% không thể giải mã.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Base64 không an toàn nhưng không viết được lệnh <code>base64 -d</code> và giải pháp <code>Encryption at Rest</code> trong etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác Base64 chỉ là Obfuscation (xáo trộn), giải mã trong 1s bằng <code>base64 -d</code> và đề xuất <code>Encryption at Rest</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cờ <code>-n</code> trong lệnh <code>echo</code> để tránh ký tự newline.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao khi dùng <code>echo "mật-khẩu" | base64</code> mà giải mã lại ra chuỗi bị thừa 1 ký tự xuống dòng? *(Đáp án: Vì lệnh <code>echo</code> mặc định tự động chèn thêm ký tự <code>\n</code> ở cuối, cần dùng <code>echo -n</code> để bỏ <code>\n</code>).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 đối tượng này như nhau.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời ConfigMap cho cấu hình còn Secret cho mật khẩu nhưng không nêu được dạng lưu trữ Plaintext vs mã hoá Base64 (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác ConfigMap (Plaintext cho cấu hình công khai) vs Secret (Base64 cho dữ liệu nhạy cảm + 4 loại Secret chuẩn).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra tính năng <code>Encryption at Rest</code> trong etcd cho Secret.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu lỡ lưu mật khẩu Database vào ConfigMap thì hệ thống có báo lỗi crash không? *(Đáp án: Không crash, nhưng vi phạm nghiêm trọng tiêu chuẩn bảo mật và dễ bị lộ trên Git).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Trình bày sự khác nhau giữa phương thức nạp <code>env[].valueFrom.configMapKeyRef</code> và <code>envFrom[].configMapRef</code> vào Pod spec.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>env[].valueFrom.configMapKeyRef</code> (Nạp đơn lẻ từng key):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nạp đúng <b style="color: var(--accent-primary);">1 khóa <code>key</code> cụ thể</b> từ ConfigMap thành <b style="color: var(--accent-primary);">1 biến môi trường</b> có tên tùy chỉnh trong Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp khi chỉ cần lấy 1-2 giá trị lẻ (như <code>DB_PORT</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>envFrom[].configMapRef</code> (Nạp hàng loạt 100% keys):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nạp tự động <b style="color: var(--accent-primary);">100% tất cả các cặp key-value</b> có trong ConfigMap thành các biến môi trường cùng một lúc. Tên biến môi trường chính là tên các <code>key</code> trong ConfigMap.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp khi nạp tệp cấu hình môi trường chứa hàng chục thông số.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 phương thức này như nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>env</code> nạp 1 cái còn <code>envFrom</code> nạp tất cả nhưng không nêu được quy tắc đặt tên biến môi trường của <code>envFrom</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>env</code> (nạp 1 key lẻ với tên biến tuỳ chỉnh) vs <code>envFrom</code> (nạp 100% keys thành các biến môi trường cùng lúc).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lưu ý tên key trong ConfigMap không được chứa dấu chấm <code>.</code> khi dùng <code>envFrom</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu tên key trong ConfigMap chứa dấu chấm (như <code>app.db.host</code>) mà nạp qua <code>envFrom</code> thì có đặt thành biến môi trường Linux được không? *(Đáp án: Không, tên biến môi trường Linux không hợp lệ sẽ bị bỏ qua hoặc gây lỗi).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khi mount một ConfigMap thành Volume vào container (<code>spec.volumes[].configMap</code>), các cặp key-value trong ConfigMap sẽ biến thành gì trong thư mục đĩa?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế chuyển đổi của Kubelet:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mỗi khóa <b style="color: var(--accent-primary);"><code>key</code></b> trong ConfigMap sẽ tự động trở thành <b style="color: var(--accent-primary);">tên của một tệp tin (Filename)</b> trong thư mục mount.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giá trị <b style="color: var(--accent-primary);"><code>value</code></b> tương ứng sẽ trở thành <b style="color: var(--accent-primary);">nội dung bên trong tệp tin đó (File Content)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ví dụ:</b> ConfigMap có <code>data: { nginx.conf: "server { listen 80; }" }</code> mount vào <code>/etc/nginx/conf.d</code> -> Trong container sẽ xuất hiện tệp tin <code>/etc/nginx/conf.d/nginx.conf</code> chứa nội dung <code>server { listen 80; }</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo mount ConfigMap thành 1 file duy nhất chứa dạng JSON.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời thành tệp tin nhưng không giải thích được quy tắc <code>key -> tên tệp</code> và <code>value -> nội dung tệp</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế key trở thành tên tệp tin và value trở thành nội dung bên trong tệp tin đó.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc mount các tệp cấu hình <code>app.properties</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Quyền hạn file (file permission mode) mặc định của tệp tin được mount từ ConfigMap là bao nhiêu? *(Đáp án: Mặc định là <code>0644</code> - <code>defaultMode: 420</code> trong octal).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khóa <code>stringData</code> trong tệp YAML <code>kind: Secret</code> có tác dụng gì và nó khác với khối <code>data</code> như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khối <code>data</code> (Yêu cầu Base64):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Yêu cầu <b style="color: var(--accent-primary);">100% tất cả các giá trị</b> khai báo bên trong bắt buộc phải là chuỗi đã được mã hoá Base64 sẵn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khối <code>stringData</code> (Plaintext tự động convert):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cho phép người viết YAML nhập trực tiếp <b style="color: var(--accent-primary);">giá trị dạng chuỗi Plaintext rõ ràng</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi bạn gõ <code>kubectl apply</code>, Kubernetes API Server sẽ <b style="color: var(--accent-primary);">tự động mã hoá chuỗi Plaintext đó thành Base64</b> và chuyển vào khối <code>data</code> lưu giữ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích:</b> Giúp kỹ sư DevOps dễ dàng tạo file YAML Secret thủ công mà không cần ngồi tự chạy lệnh <code>base64</code> cho từng dòng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết khối <code>stringData</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>stringData</code> nhập chữ thường nhưng không giải thích được cơ chế API Server tự động convert chuỗi thành Base64 chuyển sang khối <code>data</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>data</code> (bắt buộc Base64 sẵn) vs <code>stringData</code> (nhập Plaintext, API Server tự động convert thành Base64).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra <code>stringData</code> là write-only (khi <code>get -o yaml</code> sẽ thấy ở khối <code>data</code>).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi bạn gõ <code>kubectl get secret app-secret -o yaml</code> thì có thấy khối <code>stringData</code> nữa không? *(Đáp án: Không thấy, <code>stringData</code> đã bị xoá và biến đổi thành khối <code>data</code> chứa Base64).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Trình bày sự khác nhau về cơ chế cập nhật dữ liệu giữa phương thức Volume Mount (Hot Reloading 0 downtime) và phương thức gán biến môi trường (<code>env</code>/<code>envFrom</code>) khi ConfigMap bị thay đổi.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Phương thức Volume Mount (Cập nhật nóng - Hot Reloading):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Kubelet Volume Manager chạy vòng lặp đồng bộ và áp dụng kỹ thuật <b style="color: var(--accent-primary);">Atomic Symlink Swap</b> để đổi hướng symlink tệp tin sang nội dung mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Kết quả:* Tệp tin bên trong container <b style="color: var(--accent-primary);">TỰ ĐỘNG CẬP NHẬT NỘI DUNG MỚI sau 10 đến 60 giây</b> mà KHÔNG CẦN khởi động lại (restart) Pod (<b style="color: var(--accent-primary);">0 downtime</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Phương thức Biến môi trường (<code>env</code> / <code>envFrom</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Biến môi trường trong Linux chỉ được ghi nhận đúng 1 lần duy nhất tại thời điểm tiến trình container khởi tạo (PID 1 Spawn).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Kết quả:* Biến môi trường <b style="color: var(--accent-primary);">KHÔNG BAO GIỜ tự động đổi</b>. Muốn nhận giá trị mới <b style="color: var(--accent-primary);">BẮT BUỘC phải tái tạo Pod mới</b> (<code>kubectl rollout restart</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cả 2 phương thức đều tự đổi hoặc cả 2 đều phải restart Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Volume Mount tự đổi còn env phải restart nhưng không giải thích được cơ chế Atomic Symlink Swap và bản chất biến môi trường PID 1 Spawn (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Volume Mount (Hot Reloading 0 downtime qua Symlink Swap) vs Biến môi trường (không tự đổi do PID 1 Spawn, bắt buộc rollout restart).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng bài lab thực tế.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu ứng dụng đọc file mount từ ConfigMap mà không có cơ chế file watcher tự đọc lại file trên disk thì có nhận được nội dung mới ngay không? *(Đáp án: File trên disk đã đổi nhưng app phải tự trigger đọc lại file mới nhận dữ liệu mới).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cờ <code>subPath</code> trong <code>volumeMounts</code> được sử dụng trong kịch bản nào và nó có ảnh hưởng gì đến tính năng Hot Reloading tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kịch bản sử dụng <code>subPath</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi bạn chỉ muốn <b style="color: var(--accent-primary);">mount duy nhất 1 tệp tin đơn lẻ</b> từ ConfigMap vào một thư mục đã có sẵn tệp tin trong container (ví dụ mount <code>nginx.conf</code> vào <code>/etc/nginx/</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tránh việc Volume mount thông thường <b style="color: var(--accent-primary);">ghi đè xoá sạch toàn bộ các file cũ</b> có sẵn trong thư mục đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ảnh hưởng đến Hot Reloading:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <code>subPath</code> <b style="color: var(--accent-primary);">VÔ HIỆU HÓA HOÀN TOÀN (Disabled) tính năng Hot Reloading tự động</b>. Tệp tin mount bằng <code>subPath</code> sẽ KHÔNG BAO GIỜ tự đổi nội dung khi ConfigMap bị sửa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>subPath</code> vẫn Hot Reloading bình thường.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được mount 1 file đơn lẻ không bị xoá thư mục nhưng không biết việc <code>subPath</code> làm mất tính năng Hot Reloading tự động.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác kịch bản mount 1 file đơn lẻ tránh đè thư mục và hậu quả vô hiệu hóa 100% tính năng Hot Reloading tự động.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, đề xuất cách xử lý restart Pod khi dùng <code>subPath</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Muốn tệp mount dùng <code>subPath</code> nhận nội dung ConfigMap mới thì phải làm gì? *(Đáp án: Bắt buộc phải khởi động lại Pod bằng <code>kubectl delete pod</code> hoặc <code>kubectl rollout restart</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Loại Secret <code>kubernetes.io/dockerconfigjson</code> (ImagePullSecret) được sử dụng để giải quyết bài toán gì và cách khai báo nó trong Pod spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bài toán giải quyết:</b> Giải quyết bài toán kéo (pull) container image riêng tư từ <b style="color: var(--accent-primary);">Private Container Registry</b> (như Docker Hub private repo, GitLab Container Registry, AWS ECR, GCP GAR) yêu cầu phải có tài khoản/mật khẩu đăng nhập.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách khai báo trong Pod spec:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai báo tên của Secret đó vào mảng <b style="color: var(--accent-primary);"><code>imagePullSecrets</code></b> trong khối <code>spec</code> của Pod:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">imagePullSecrets:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: private-registry-secret</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: registry.example.com/team/app:v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết ImagePullSecret.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dùng kéo image private nhưng không nhớ thuộc tính <code>imagePullSecrets</code> trong Pod spec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác bài toán kéo image từ Private Registry và thuộc tính <code>imagePullSecrets: [{name: ...}]</code> trong Pod spec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết lệnh <code>kubectl create secret docker-registry</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh CLI nào giúp tạo nhanh một ImagePullSecret từ username và password trong 2 giây? *(Đáp án: Lệnh <code>kubectl create secret docker-registry <name> --docker-server=... --docker-username=... --docker-password=...</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Loại Secret <code>kubernetes.io/tls</code> bắt buộc phải chứa những cặp key-value nào trong khối <code>data</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu trúc bắt buộc của TLS Secret:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Đối tượng Secret chuẩn <code>type: kubernetes.io/tls</code> bắt buộc phải chứa <b style="color: var(--accent-primary);">đúng 2 khóa <code>key</code> tiêu chuẩn</b> trong khối <code>data</code> (đều đã mã hoá Base64):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>tls.crt</code></b>: Nội dung file chứng chỉ bảo mật SSL/TLS (Certificate chain).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>tls.key</code></b>: Nội dung file khóa riêng tư SSL/TLS (Private Key).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ứng dụng:</b> Thường được liên kết trực tiếp với đối tượng <code>Ingress</code> hoặc <code>Nginx Controller</code> để bật mã hoá kết nối HTTPS cho trang web.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ 2 key của TLS Secret.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời chứa cert và key nhưng không gõ đúng tên 2 key bắt buộc <code>tls.crt</code> và <code>tls.key</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 key bắt buộc <code>tls.crt</code> và <code>tls.key</code> và ứng dụng cho Ingress HTTPS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết lệnh <code>kubectl create secret tls</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh CLI nào dùng tạo nhanh TLS Secret từ 2 file <code>server.crt</code> và <code>server.key</code> local? *(Đáp án: Lệnh <code>kubectl create secret tls tls-secret --cert=server.crt --key=server.key</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Thuộc tính <code>immutable: true</code> trong <code>ConfigMap</code> hoặc <code>Secret</code> spec mang lại lợi ích gì cho hiệu năng của cụm Kubernetes lớn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích hiệu năng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai báo <code>immutable: true</code> đánh dấu đối tượng ConfigMap/Secret này là <b style="color: var(--accent-primary);">bất biến, cấm vĩnh viễn không bao giờ được sửa đổi nội dung</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tối ưu tài nguyên Kubelet:</b> Kubelet trên các Node sẽ <b style="color: var(--accent-primary);">NGỪNG HOÀN TOÀN vòng lặp kiểm tra đồng bộ (Polling)</b> dữ liệu của ConfigMap này.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa cụm lớn:</b> Giảm tải cực kỳ lớn cho API Server và etcd khi cụm running hàng nghìn Pods cùng mount chung 1 ConfigMap tĩnh.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo immutable làm Pod bị crash.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời cấm sửa nhưng không giải thích được lợi ích Kubelet ngừng vòng lặp Polling giảm tải API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác tác dụng cấm sửa vĩnh viễn và việc Kubelet ngừng Polling giúp giảm tải lớn cho API Server/etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách muốn sửa phải xoá tạo mới ConfigMap.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu gõ <code>kubectl edit</code> một ConfigMap có <code>immutable: true</code> thì API Server sẽ báo gì? *(Đáp án: API Server từ chối lệnh save với thông báo <code>field is immutable</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu lệnh CLI nào giúp tạo nhanh một ConfigMap tên <code>app-config</code> từ tệp tin <code>config.properties</code> sẵn có trong 2 giây?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh CLI chuẩn (Imperative Command):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl create configmap app-config --from-file=config.properties -n dev</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">*(Hoặc chỉ định tên key tùy chỉnh: <code>kubectl create configmap app-config --from-file=custom_key=config.properties -n dev</code>)*</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Tự động đọc nội dung tệp <code>config.properties</code> và nạp toàn bộ thành value của key <code>config.properties</code> trong ConfigMap <code>app-config</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cờ <code>--from-file</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>kubectl create configmap</code> nhưng thiếu cờ <code>--from-file</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh <code>kubectl create configmap app-config --from-file=config.properties -n dev</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt với cờ <code>--from-literal</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Sự khác nhau giữa cờ <code>--from-file</code> và <code>--from-literal</code> khi tạo ConfigMap là gì? *(Đáp án: <code>--from-file</code> đọc nội dung từ 1 tệp tin trên đĩa; <code>--from-literal</code> gán trực tiếp chuỗi key=value từ dòng lệnh).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do biến môi trường không đổi vì chưa rollout restart, 1 âm thầm do lộ mật khẩu vì commit YAML Secret chứa Base64 lên Git) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Sửa ConfigMap nhưng ứng dụng vẫn dùng cấu hình cũ do nạp qua biến môi trường):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Kỹ sư sửa <code>DB_HOST</code> trong ConfigMap, nhưng ứng dụng vẫn kết nối về IP cũ làm báo lỗi connection failed.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Exec vào Pod gõ <code>printenv DB_HOST</code> thấy vẫn hiển thị IP cũ do nạp qua <code>env</code>/<code>envFrom</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Chạy lệnh <code>kubectl rollout restart deployment <deploy-name></code> để tái tạo Pods nhận biến mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Lộ mật khẩu sản xuất do commit tệp YAML Secret chứa chuỗi Base64 lên GitHub):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Hacker dùng script scan GitHub repo public, tìm thấy file <code>secret.yaml</code>, chạy <code>base64 -d</code> trong 1 giây lấy sạch mật khẩu DB production.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra lịch sử git commit thấy có chứa tệp YAML <code>kind: Secret</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Xoá ngay commit, thu hồi đổi mật khẩu DB lập tức; áp dụng SealedSecrets / External Secrets Operator hoặc SOPS để mã hoá Secret trước khi đưa lên Git.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân biến môi trường cần rollout restart và Base64 dễ dàng bị decode trong 1s (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi Pod dính lỗi <code>CreateContainerConfigError</code>, câu lệnh nào giúp kỹ sư phát hiện do thiếu ConfigMap trong 2 giây? *(Đáp án: Lệnh <code>kubectl describe pod <pod-name></code>).*
+
 ---
 
-### Câu 2 — ★★★
-
-**Hỏi:** Chuỗi mã hoá Base64 trong tệp YAML `kind: Secret` có phải là một hình thức mã hoá an toàn tuyệt đối không? Lệnh nào dùng để giải mã?
-
-**Đáp án chuẩn:**
-- **Bản chất của Base64:** Chuỗi Base64 **KHÔNG PHẢI là mã hoá bảo mật (Encryption)**; nó chỉ là một hình thức xáo trộn ký tự (Obfuscation) để truyền nhận dữ liệu nhị phân dưới dạng chuỗi ASCII.
-- **Cách giải mã:** Bất kỳ ai đọc được file YAML Secret đều có thể giải mã ngược lại thành Plaintext trong đúng **1 giây** bằng câu lệnh:
-  `echo -n "<chuỗi-base64>" | base64 -d`
-- **Giải pháp bảo mật thực sự:** Người quản trị cluster phải bật tính năng `Encryption at Rest` (`EncryptionConfiguration` dùng KMS hoặc AES-CBC) để mã hoá dữ liệu Secret khi ghi vào cơ sở dữ liệu etcd.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Base64 là mã hoá an toàn 100% không thể giải mã.
-- **1đ:** Trả lời Base64 không an toàn nhưng không viết được lệnh `base64 -d` và giải pháp `Encryption at Rest` trong etcd.
-- **2đ:** Giải thích chuẩn xác Base64 chỉ là Obfuscation (xáo trộn), giải mã trong 1s bằng `base64 -d` và đề xuất `Encryption at Rest`.
-- **3đ:** Trả lời xuất sắc, chỉ ra cờ `-n` trong lệnh `echo` để tránh ký tự newline.
-
-**Câu hỏi đào sâu:** Tại sao khi dùng `echo "mật-khẩu" | base64` mà giải mã lại ra chuỗi bị thừa 1 ký tự xuống dòng? *(Đáp án: Vì lệnh `echo` mặc định tự động chèn thêm ký tự `\n` ở cuối, cần dùng `echo -n` để bỏ `\n`).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Trình bày sự khác nhau giữa phương thức nạp `env[].valueFrom.configMapKeyRef` và `envFrom[].configMapRef` vào Pod spec.
-
-**Đáp án chuẩn:**
-- **`env[].valueFrom.configMapKeyRef` (Nạp đơn lẻ từng key):**
-  - Nạp đúng **1 khóa `key` cụ thể** từ ConfigMap thành **1 biến môi trường** có tên tùy chỉnh trong Pod.
-  - Phù hợp khi chỉ cần lấy 1-2 giá trị lẻ (như `DB_PORT`).
-- **`envFrom[].configMapRef` (Nạp hàng loạt 100% keys):**
-  - Nạp tự động **100% tất cả các cặp key-value** có trong ConfigMap thành các biến môi trường cùng một lúc. Tên biến môi trường chính là tên các `key` trong ConfigMap.
-  - Phù hợp khi nạp tệp cấu hình môi trường chứa hàng chục thông số.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 phương thức này như nhau.
-- **1đ:** Trả lời `env` nạp 1 cái còn `envFrom` nạp tất cả nhưng không nêu được quy tắc đặt tên biến môi trường của `envFrom`.
-- **2đ:** Giải thích chuẩn xác `env` (nạp 1 key lẻ với tên biến tuỳ chỉnh) vs `envFrom` (nạp 100% keys thành các biến môi trường cùng lúc).
-- **3đ:** Trả lời xuất sắc, chỉ ra lưu ý tên key trong ConfigMap không được chứa dấu chấm `.` khi dùng `envFrom`.
-
-**Câu hỏi đào sâu:** Nếu tên key trong ConfigMap chứa dấu chấm (như `app.db.host`) mà nạp qua `envFrom` thì có đặt thành biến môi trường Linux được không? *(Đáp án: Không, tên biến môi trường Linux không hợp lệ sẽ bị bỏ qua hoặc gây lỗi).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Khi mount một ConfigMap thành Volume vào container (`spec.volumes[].configMap`), các cặp key-value trong ConfigMap sẽ biến thành gì trong thư mục đĩa?
-
-**Đáp án chuẩn:**
-- **Cơ chế chuyển đổi của Kubelet:**
-  - Mỗi khóa **`key`** trong ConfigMap sẽ tự động trở thành **tên của một tệp tin (Filename)** trong thư mục mount.
-  - Giá trị **`value`** tương ứng sẽ trở thành **nội dung bên trong tệp tin đó (File Content)**.
-- **Ví dụ:** ConfigMap có `data: { nginx.conf: "server { listen 80; }" }` mount vào `/etc/nginx/conf.d` -> Trong container sẽ xuất hiện tệp tin `/etc/nginx/conf.d/nginx.conf` chứa nội dung `server { listen 80; }`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo mount ConfigMap thành 1 file duy nhất chứa dạng JSON.
-- **1đ:** Trả lời thành tệp tin nhưng không giải thích được quy tắc `key -> tên tệp` và `value -> nội dung tệp`.
-- **2đ:** Giải thích chuẩn xác cơ chế key trở thành tên tệp tin và value trở thành nội dung bên trong tệp tin đó.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc mount các tệp cấu hình `app.properties`.
-
-**Câu hỏi đào sâu:** Quyền hạn file (file permission mode) mặc định của tệp tin được mount từ ConfigMap là bao nhiêu? *(Đáp án: Mặc định là `0644` - `defaultMode: 420` trong octal).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Khóa `stringData` trong tệp YAML `kind: Secret` có tác dụng gì và nó khác với khối `data` như thế nào?
-
-**Đáp án chuẩn:**
-- **Khối `data` (Yêu cầu Base64):**
-  - Yêu cầu **100% tất cả các giá trị** khai báo bên trong bắt buộc phải là chuỗi đã được mã hoá Base64 sẵn.
-- **Khối `stringData` (Plaintext tự động convert):**
-  - Cho phép người viết YAML nhập trực tiếp **giá trị dạng chuỗi Plaintext rõ ràng**.
-  - Khi bạn gõ `kubectl apply`, Kubernetes API Server sẽ **tự động mã hoá chuỗi Plaintext đó thành Base64** và chuyển vào khối `data` lưu giữ.
-- **Lợi ích:** Giúp kỹ sư DevOps dễ dàng tạo file YAML Secret thủ công mà không cần ngồi tự chạy lệnh `base64` cho từng dòng.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết khối `stringData`.
-- **1đ:** Trả lời `stringData` nhập chữ thường nhưng không giải thích được cơ chế API Server tự động convert chuỗi thành Base64 chuyển sang khối `data`.
-- **2đ:** Giải thích chuẩn xác `data` (bắt buộc Base64 sẵn) vs `stringData` (nhập Plaintext, API Server tự động convert thành Base64).
-- **3đ:** Trả lời xuất sắc, chỉ ra `stringData` là write-only (khi `get -o yaml` sẽ thấy ở khối `data`).
-
-**Câu hỏi đào sâu:** Khi bạn gõ `kubectl get secret app-secret -o yaml` thì có thấy khối `stringData` nữa không? *(Đáp án: Không thấy, `stringData` đã bị xoá và biến đổi thành khối `data` chứa Base64).*
-
----
-
-### Câu 6 — 🔥
-
-**Hỏi:** Trình bày sự khác nhau về cơ chế cập nhật dữ liệu giữa phương thức Volume Mount (Hot Reloading 0 downtime) và phương thức gán biến môi trường (`env`/`envFrom`) khi ConfigMap bị thay đổi.
-
-**Đáp án chuẩn:**
-- **1. Phương thức Volume Mount (Cập nhật nóng - Hot Reloading):**
-  - *Cơ chế:* Kubelet Volume Manager chạy vòng lặp đồng bộ và áp dụng kỹ thuật **Atomic Symlink Swap** để đổi hướng symlink tệp tin sang nội dung mới.
-  - *Kết quả:* Tệp tin bên trong container **TỰ ĐỘNG CẬP NHẬT NỘI DUNG MỚI sau 10 đến 60 giây** mà KHÔNG CẦN khởi động lại (restart) Pod (**0 downtime**).
-- **2. Phương thức Biến môi trường (`env` / `envFrom`):**
-  - *Cơ chế:* Biến môi trường trong Linux chỉ được ghi nhận đúng 1 lần duy nhất tại thời điểm tiến trình container khởi tạo (PID 1 Spawn).
-  - *Kết quả:* Biến môi trường **KHÔNG BAO GIỜ tự động đổi**. Muốn nhận giá trị mới **BẮT BUỘC phải tái tạo Pod mới** (`kubectl rollout restart`).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo cả 2 phương thức đều tự đổi hoặc cả 2 đều phải restart Pod.
-- **1đ:** Trả lời Volume Mount tự đổi còn env phải restart nhưng không giải thích được cơ chế Atomic Symlink Swap và bản chất biến môi trường PID 1 Spawn (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác Volume Mount (Hot Reloading 0 downtime qua Symlink Swap) vs Biến môi trường (không tự đổi do PID 1 Spawn, bắt buộc rollout restart).
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng bài lab thực tế.
-
-**Câu hỏi đào sâu:** Nếu ứng dụng đọc file mount từ ConfigMap mà không có cơ chế file watcher tự đọc lại file trên disk thì có nhận được nội dung mới ngay không? *(Đáp án: File trên disk đã đổi nhưng app phải tự trigger đọc lại file mới nhận dữ liệu mới).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Cờ `subPath` trong `volumeMounts` được sử dụng trong kịch bản nào và nó có ảnh hưởng gì đến tính năng Hot Reloading tự động?
-
-**Đáp án chuẩn:**
-- **Kịch bản sử dụng `subPath`:**
-  - Khi bạn chỉ muốn **mount duy nhất 1 tệp tin đơn lẻ** từ ConfigMap vào một thư mục đã có sẵn tệp tin trong container (ví dụ mount `nginx.conf` vào `/etc/nginx/`).
-  - Tránh việc Volume mount thông thường **ghi đè xoá sạch toàn bộ các file cũ** có sẵn trong thư mục đó.
-- **Ảnh hưởng đến Hot Reloading:**
-  - Cờ `subPath` **VÔ HIỆU HÓA HOÀN TOÀN (Disabled) tính năng Hot Reloading tự động**. Tệp tin mount bằng `subPath` sẽ KHÔNG BAO GIỜ tự đổi nội dung khi ConfigMap bị sửa.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `subPath` vẫn Hot Reloading bình thường.
-- **1đ:** Nêu được mount 1 file đơn lẻ không bị xoá thư mục nhưng không biết việc `subPath` làm mất tính năng Hot Reloading tự động.
-- **2đ:** Giải thích chuẩn xác kịch bản mount 1 file đơn lẻ tránh đè thư mục và hậu quả vô hiệu hóa 100% tính năng Hot Reloading tự động.
-- **3đ:** Trả lời xuất sắc, đề xuất cách xử lý restart Pod khi dùng `subPath`.
-
-**Câu hỏi đào sâu:** Muốn tệp mount dùng `subPath` nhận nội dung ConfigMap mới thì phải làm gì? *(Đáp án: Bắt buộc phải khởi động lại Pod bằng `kubectl delete pod` hoặc `kubectl rollout restart`).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Loại Secret `kubernetes.io/dockerconfigjson` (ImagePullSecret) được sử dụng để giải quyết bài toán gì và cách khai báo nó trong Pod spec?
-
-**Đáp án chuẩn:**
-- **Bài toán giải quyết:** Giải quyết bài toán kéo (pull) container image riêng tư từ **Private Container Registry** (như Docker Hub private repo, GitLab Container Registry, AWS ECR, GCP GAR) yêu cầu phải có tài khoản/mật khẩu đăng nhập.
-- **Cách khai báo trong Pod spec:**
-  - Khai báo tên của Secret đó vào mảng **`imagePullSecrets`** trong khối `spec` của Pod:
-```yaml
-spec:
-  imagePullSecrets:
-  - name: private-registry-secret
-  containers:
-  - name: app
-    image: registry.example.com/team/app:v1
-```
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết ImagePullSecret.
-- **1đ:** Trả lời dùng kéo image private nhưng không nhớ thuộc tính `imagePullSecrets` trong Pod spec.
-- **2đ:** Giải thích chuẩn xác bài toán kéo image từ Private Registry và thuộc tính `imagePullSecrets: [{name: ...}]` trong Pod spec.
-- **3đ:** Trả lời xuất sắc, viết lệnh `kubectl create secret docker-registry`.
-
-**Câu hỏi đào sâu:** Lệnh CLI nào giúp tạo nhanh một ImagePullSecret từ username và password trong 2 giây? *(Đáp án: Lệnh `kubectl create secret docker-registry <name> --docker-server=... --docker-username=... --docker-password=...`).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Loại Secret `kubernetes.io/tls` bắt buộc phải chứa những cặp key-value nào trong khối `data`?
-
-**Đáp án chuẩn:**
-- **Cấu trúc bắt buộc của TLS Secret:**
-  Đối tượng Secret chuẩn `type: kubernetes.io/tls` bắt buộc phải chứa **đúng 2 khóa `key` tiêu chuẩn** trong khối `data` (đều đã mã hoá Base64):
-  1. **`tls.crt`**: Nội dung file chứng chỉ bảo mật SSL/TLS (Certificate chain).
-  2. **`tls.key`**: Nội dung file khóa riêng tư SSL/TLS (Private Key).
-- **Ứng dụng:** Thường được liên kết trực tiếp với đối tượng `Ingress` hoặc `Nginx Controller` để bật mã hoá kết nối HTTPS cho trang web.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ 2 key của TLS Secret.
-- **1đ:** Trả lời chứa cert và key nhưng không gõ đúng tên 2 key bắt buộc `tls.crt` và `tls.key`.
-- **2đ:** Giải thích chuẩn xác 2 key bắt buộc `tls.crt` và `tls.key` và ứng dụng cho Ingress HTTPS.
-- **3đ:** Trả lời xuất sắc, viết lệnh `kubectl create secret tls`.
-
-**Câu hỏi đào sâu:** Lệnh CLI nào dùng tạo nhanh TLS Secret từ 2 file `server.crt` và `server.key` local? *(Đáp án: Lệnh `kubectl create secret tls tls-secret --cert=server.crt --key=server.key`).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Thuộc tính `immutable: true` trong `ConfigMap` hoặc `Secret` spec mang lại lợi ích gì cho hiệu năng của cụm Kubernetes lớn?
-
-**Đáp án chuẩn:**
-- **Lợi ích hiệu năng:**
-  - Khai báo `immutable: true` đánh dấu đối tượng ConfigMap/Secret này là **bất biến, cấm vĩnh viễn không bao giờ được sửa đổi nội dung**.
-  - **Tối ưu tài nguyên Kubelet:** Kubelet trên các Node sẽ **NGỪNG HOÀN TOÀN vòng lặp kiểm tra đồng bộ (Polling)** dữ liệu của ConfigMap này.
-- **Ý nghĩa cụm lớn:** Giảm tải cực kỳ lớn cho API Server và etcd khi cụm running hàng nghìn Pods cùng mount chung 1 ConfigMap tĩnh.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo immutable làm Pod bị crash.
-- **1đ:** Trả lời cấm sửa nhưng không giải thích được lợi ích Kubelet ngừng vòng lặp Polling giảm tải API Server.
-- **2đ:** Giải thích chuẩn xác tác dụng cấm sửa vĩnh viễn và việc Kubelet ngừng Polling giúp giảm tải lớn cho API Server/etcd.
-- **3đ:** Trả lời xuất sắc, chỉ ra cách muốn sửa phải xoá tạo mới ConfigMap.
-
-**Câu hỏi đào sâu:** Nếu gõ `kubectl edit` một ConfigMap có `immutable: true` thì API Server sẽ báo gì? *(Đáp án: API Server từ chối lệnh save với thông báo `field is immutable`).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Câu lệnh CLI nào giúp tạo nhanh một ConfigMap tên `app-config` từ tệp tin `config.properties` sẵn có trong 2 giây?
-
-**Đáp án chuẩn:**
-- **Câu lệnh CLI chuẩn (Imperative Command):**
-  `kubectl create configmap app-config --from-file=config.properties -n dev`
-  *(Hoặc chỉ định tên key tùy chỉnh: `kubectl create configmap app-config --from-file=custom_key=config.properties -n dev`)*
-- **Tác dụng:** Tự động đọc nội dung tệp `config.properties` và nạp toàn bộ thành value của key `config.properties` trong ConfigMap `app-config`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ cờ `--from-file`.
-- **1đ:** Trả lời `kubectl create configmap` nhưng thiếu cờ `--from-file`.
-- **2đ:** Viết chuẩn xác câu lệnh `kubectl create configmap app-config --from-file=config.properties -n dev`.
-- **3đ:** Trả lời xuất sắc, phân biệt với cờ `--from-literal`.
-
-**Câu hỏi đào sâu:** Sự khác nhau giữa cờ `--from-file` và `--from-literal` khi tạo ConfigMap là gì? *(Đáp án: `--from-file` đọc nội dung từ 1 tệp tin trên đĩa; `--from-literal` gán trực tiếp chuỗi key=value từ dòng lệnh).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do biến môi trường không đổi vì chưa rollout restart, 1 âm thầm do lộ mật khẩu vì commit YAML Secret chứa Base64 lên Git) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Sửa ConfigMap nhưng ứng dụng vẫn dùng cấu hình cũ do nạp qua biến môi trường):**
-   - *Triệu chứng:* Kỹ sư sửa `DB_HOST` trong ConfigMap, nhưng ứng dụng vẫn kết nối về IP cũ làm báo lỗi connection failed.
-   - *Phát hiện:* Exec vào Pod gõ `printenv DB_HOST` thấy vẫn hiển thị IP cũ do nạp qua `env`/`envFrom`.
-   - *Khắc phục:* Chạy lệnh `kubectl rollout restart deployment <deploy-name>` để tái tạo Pods nhận biến mới.
-2. **Chế độ hỏng 2 (Âm thầm - Lộ mật khẩu sản xuất do commit tệp YAML Secret chứa chuỗi Base64 lên GitHub):**
-   - *Triệu chứng:* Hacker dùng script scan GitHub repo public, tìm thấy file `secret.yaml`, chạy `base64 -d` trong 1 giây lấy sạch mật khẩu DB production.
-   - *Phát hiện:* Kiểm tra lịch sử git commit thấy có chứa tệp YAML `kind: Secret`.
-   - *Khắc phục:* Xoá ngay commit, thu hồi đổi mật khẩu DB lập tức; áp dụng SealedSecrets / External Secrets Operator hoặc SOPS để mã hoá Secret trước khi đưa lên Git.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân biến môi trường cần rollout restart và Base64 dễ dàng bị decode trong 1s (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi Pod dính lỗi `CreateContainerConfigError`, câu lệnh nào giúp kỹ sư phát hiện do thiếu ConfigMap trong 2 giây? *(Đáp án: Lệnh `kubectl describe pod <pod-name>`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"ConfigMap lưu dữ liệu công khai dạng Plaintext; Secret lưu dữ liệu nhạy cảm mã hoá <b style="color: var(--accent-primary);">Base64</b> với 4 loại chuẩn."*
+2. *"Chuỗi Base64 trong Secret chỉ là Obfuscation xáo trộn ký tự, có thể giải mã trong <b style="color: var(--accent-primary);">1 giây</b> bằng <code>base64 -d</code>."*
+3. *"Dữ liệu nạp qua Volume Mount tự động <b style="color: var(--accent-primary);">Hot Reloading (0 downtime)</b> khi ConfigMap thay đổi mà không cần restart Pod."*
+4. *"Dữ liệu nạp qua biến môi trường <code>env</code>/<code>envFrom</code> bắt buộc phải tái tạo Pod mới (<code>kubectl rollout restart</code>) mới nhận giá trị mới."*
+5. *"Sử dụng <code>subPath</code> giúp mount 1 file đơn lẻ không bị đè thư mục, nhưng sẽ vô hiệu hóa 100% tính năng Hot Reloading tự động."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1171,40 +1237,6 @@ spec:
 3. *"Dữ liệu nạp qua Volume Mount tự động **Hot Reloading (0 downtime)** khi ConfigMap thay đổi mà không cần restart Pod."*
 4. *"Dữ liệu nạp qua biến môi trường `env`/`envFrom` bắt buộc phải tái tạo Pod mới (`kubectl rollout restart`) mới nhận giá trị mới."*
 5. *"Sử dụng `subPath` giúp mount 1 file đơn lẻ không bị đè thư mục, nhưng sẽ vô hiệu hóa 100% tính năng Hot Reloading tự động."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | ConfigMap (Plaintext) vs Secret (Base64 + 4 loại chuẩn) (trần 1đ nếu thiếu) |
-| Câu 2 | ★★★ | 3 | | Chuỗi Base64 là Obfuscation, giải mã trong 1s bằng `base64 -d` |
-| Câu 3 | ★★★ | 3 | | Phân biệt `env` (nạp 1 key) vs `envFrom` (nạp 100% keys hàng loạt) |
-| Câu 4 | ★★★ | 3 | | Cơ chế Volume Mount `key -> tên tệp` và `value -> nội dung tệp` |
-| Câu 5 | ★★★ | 3 | | Khối `stringData` (Plaintext tự động convert sang Base64) |
-| Câu 6 | 🔥 | 3 | | Volume Mount (Hot Reloading 0 downtime) vs Biến môi trường (cần rollout restart) (trần 1đ nếu thiếu) |
-| Câu 7 | ★★★ | 3 | | Cờ `subPath` mount 1 file đơn lẻ và hậu quả vô hiệu hóa Hot Reloading |
-| Câu 8 | ★★★ | 3 | | ImagePullSecret `dockerconfigjson` kéo image Private Registry |
-| Câu 9 | ★★★ | 3 | | TLS Secret `kubernetes.io/tls` chứa 2 key `tls.crt` và `tls.key` |
-| Câu 10 | ★★★ | 3 | | Thuộc tính `immutable: true` giảm tải Kubelet Polling API Server |
-| Câu 11 | ★★★ | 3 | | Lệnh CLI `kubectl create configmap --from-file` tạo CM từ tệp tin |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (ConfigMap env chưa rollout restart & lộ Base64 Secret trên Git) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động quét tất cả các Pods trong cụm và trích xuất danh sách các Pods đang bị kẹt ở trạng thái `CreateContainerConfigError` do thiếu ConfigMap/Secret.
-2. **BTVN 2:** Thực hành tạo Secret loại `kubernetes.io/dockerconfigjson` đăng nhập GitLab Registry và gán `imagePullSecrets` vào Deployment.
-3. **BTVN 3:** Tạo ConfigMap chứa tệp `nginx.conf`, mount vào Pod Nginx qua Volume mount và thực hành sửa ConfigMap để kiểm chứng Hot Reloading.
-4. **BTVN 4 — Chuẩn bị cho Buổi 21 (`buoi-21-mo-hinh-mang-va-cni`):**
-   - *Câu 1:* Mô hình mạng Kubernetes (Kubernetes Networking Model) đặt ra 3 quy tắc kết nối thẳng (Flat Network) nào giữa Pod-to-Pod và Node-to-Pod?
-   - *Câu 2:* CNI Plugin (Container Network Interface) đóng vai trò gì trong cụm Kubernetes và kể tên 2 CNI Plugin phổ biến?
-   - *Câu 3:* Luồng đi của một gói tin IP từ Pod A (trên Worker 01) gửi tới Pod B (trên Worker 02) diễn ra qua các thiết bị mạng ảo (veth pair, bridge/overlay) như thế nào?
-
-> **Đoạn kết nối Buổi 21:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 21 — buổi học đầu tiên của Chương 2 chuyên sâu về Mô hình mạng Kubernetes, CNI Plugins (Calico, Flannel, Cilium) và đường đi gói tin mạng trong CKA và CKAD.
 
 ---
 
@@ -1492,15 +1524,15 @@ kubectl create secret tls <secret-name> -n <namespace> --cert=<path/to/cert> --k
 kubectl get secret <secret-name> -n <namespace> -o jsonpath='{.data.<key>}' | base64 -d
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 21] Mô Hình Mạng Kubernetes & CNI: Đường Đi Gói Tin Pod-to-Pod, VXLAN Overlay vs BGP Routing](cka-21-21-mo-hinh-mang-va-cni.html).
+
 {% endraw %}

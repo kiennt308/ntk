@@ -223,9 +223,11 @@ graph TD
 <span class="badge badge--rose">🕒 06:30 AM</span> Một kỹ sư DevOps đóng gói microservice Go bằng Scratch Image để tối ưu dung lượng (chỉ 12MB). Tuy nhiên, khi Pod deploy lên cụm Kubernetes Production, container liên tục rơi vào trạng thái `CrashLoopBackOff` với thông báo lỗi bí ẩn `exec /app/server: no such file or directory` dù file binary chắc chắn đã được copy vào `/app/server`!
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Pod không thể khởi chạy, Kubernetes liên tục restart container:
 
 ```text
+
+Pod không thể khởi chạy, Kubernetes liên tục restart container:
+
 $ kubectl logs pod/user-auth-service-589f7b-9xk2p
 standard_init_linux.go:228: exec user process caused: no such file or directory
 $ docker run --rm registry.corp/user-auth:v1.2.0

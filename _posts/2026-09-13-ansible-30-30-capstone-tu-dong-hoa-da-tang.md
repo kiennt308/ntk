@@ -754,38 +754,12 @@ rm -f .vault_pass
 </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Kiến Trúc 3 Tầng Phân Tách:** Phân chia rõ ràng giữa Load Balancer, Web App Cluster và Database Cluster.
-2. **Bảo Mật SecOps First:** Luôn mở SSH 22 đầu tiên, mã hóa Vault AES-256 và cô lập DB bằng Firewalld Rich Rules.
-3. **Đóng Gói Dịch Vụ Chuẩn:** Chạy ứng dụng dưới user non-root `sysops` với cơ chế tự phục hồi Systemd.
-4. **Triển Khai Zero Downtime:** Áp dụng `serial: 1` và tự động hóa nghiệm thu End-to-End luồng HTTP.
-5. **Đạt Idempotency Tuyệt Đối:** Hoàn thành xuất sắc đồ án Capstone với `changed=0` trên 100% máy chủ ở Lần 2.
-
-```mermaid
-mindmap
-  root((Capstone Project Enterprise))
-    Kien Truc 3 Tang
-      Tang 1 Load Balancer role_lb
-      Tang 2 Web Cluster role_web
-      Tang 3 Database Cluster role_db
-      Security Base role_common_security
-    Bao Mat SecOps
-      Lockout Protection SSH 22 First
-      Ansible Vault AES-256 vars/vault.yml
-      Firewalld Rich Rules loc IP Web
-      Non-root user sysops nologin
-    Van Hanh & Nghiem Thu
-      Jinja2 Dynamic Upstream Nginx
-      Rolling Update serial 1 Zero Downtime
-      End-to-End URI HTTP 200 Verification
-      100% Idempotency changed=0 tren moi Nodes
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **TÀI LIỆU TỐT NGHIỆP & PHỎNG VẤN:** [Bài 31: Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Ansible Automation & DevOps Chuyên Sâu (30 Buổi)](ansible-31-31-tong-hop-cau-hoi-phong-van-ansible-automation-chuyen-sau-30-buoi.html) — Bộ cẩm nang câu hỏi phỏng vấn tổng hợp toàn khóa giúp bạn tự tin vượt qua mọi vòng phỏng vấn kỹ thuật Senior DevOps / SRE!
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 31] Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Ansible Automation & DevOps Chuyên Sâu (30 Buổi)](ansible-31-31-tong-hop-cau-hoi-phong-van-ansible-automation-chuyen-sau-30-buoi.html).
 
 {% endraw %}

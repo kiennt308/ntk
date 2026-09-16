@@ -46,7 +46,7 @@ Trong các doanh nghiệp lớn, việc phân phối phần mềm lên môi trư
 
 > **Mô hình quản trị CD chuẩn Production kết hợp từ khóa `environment:`, `tier:`, `when: manual` cùng tính năng `auto_stop_in` và `Protected Environments`, biến GitLab thành một bảng điều khiển Deployment Dashboard trung tâm có khả năng truy vết và rollback tức thì.**
 
-```
+```text
        CHU TRÌNH PHÂN PHỐI ĐA TẦNG (Deployment Tiers & Approval Gates)
 
   [ Merge Request Event ] ──► [ Deploy Review App: review/mr-101 ] ──► (Tự hủy sau 2 ngày)
@@ -200,7 +200,7 @@ deploy_to_production:
 
 > **Bối Cảnh**: Một kỹ sư sửa lỗi trên nhánh `feature/experimental-ui` nhưng vô tình đặt tên biến môi trường deploy là `production`. Do dự án chưa cấu hình **Protected Environments**, job deploy của nhánh thử nghiệm đã ghi đè trực tiếp lên cụm máy chủ Production, khiến hàng triệu khách hàng gặp lỗi giao diện trong 45 phút.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -237,7 +237,7 @@ deploy_to_production:
 - Cấu hình vòng đời `auto_stop_in` và job dọn dẹp `action: stop`.
 - Thực hiện kiểm tra tính năng Rollback môi trường trên giao diện GitLab.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB QUẢN TRỊ MÔI TRƯỜNG TRÊN GITLAB CI
 
   [ Mở Merge Request ] ──► Deploy Review App: review/mr-1
@@ -556,7 +556,7 @@ deploy_production:
 
 ### 7.2. Sơ Đồ Tư Duy Quản Lý Môi Trường & Phê Duyệt (Mindmap)
 
-```
+```text
                      QUẢN TRỊ MÔI TRƯỜNG & PHÊ DUYỆT PHÁT HÀNH
                                         │
         ┌───────────────────────────────┼───────────────────────────────┐

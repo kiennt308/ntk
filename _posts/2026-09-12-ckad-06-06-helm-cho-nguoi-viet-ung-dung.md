@@ -455,24 +455,6 @@ Tệp <code>Chart.yaml</code>.
 | Helm Official Documentation | `https://helm.sh/docs/` | Tài liệu chuẩn chính thức Helm |
 | Helm Chart Template Guide | `https://helm.sh/docs/chart_template_guide/` | Hướng dẫn viết Go Template Helm |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Ba khái niệm cốt lõi Helm | 12 phút | 12 phút |
-| §5. Cấu trúc Chart và Go Template | 12 phút | 12 phút |
-| §6. Quản lý vòng đời Helm Release | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật và Khi nào KHÔNG dùng | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -741,26 +723,11 @@ rm -rf /tmp/my-web-chart /tmp/rendered.yaml
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace | 10 phút | 10 phút |
-| L4. Bước 2: Khởi tạo và cấu hình Chart | 25 phút | 25 phút |
-| L5. Bước 3: Cài đặt Helm Release | 25 phút | 25 phút |
-| L6. Bước 4: Upgrade và Rollback | 25 phút | 25 phút |
-| L7. Bước 5: Gỡ bỏ Release và Dọn dẹp | 15 phút | 15 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -768,179 +735,304 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cấu trúc thư mục của một Helm Chart chuẩn gồm những tệp và thư mục bắt buộc nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Helm Chart tương ứng với tệp đóng gói nén gói phần mềm (như <code>.deb</code> hay <code>package.json</code>). Values (<code>values.yaml</code>) tương ứng với tệp chứa biến cấu hình tùy chỉnh cho từng môi trường. Helm Release tương ứng với một bản cài đặt phần mềm cụ thể đang chạy trên một Kubernetes Namespace.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thư mục chuẩn gồm: <code>Chart.yaml</code> (metadata chứa tên, phiên bản chart), <code>values.yaml</code> (giá trị biến mặc định), và thư mục <code>templates/</code> (chứa các tệp bản kê khai Kubernetes YAML mẫu nhúng cú pháp Go Template).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đúng cấu trúc thư mục.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được <code>values.yaml</code> nhưng thiếu <code>Chart.yaml</code> hoặc thư mục <code>templates/</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cả 3 thành phần bắt buộc và vai trò của từng thành phần.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tệp <code>charts/</code> dưới thư mục root của Helm Chart dùng để làm gì? — Dùng để chứa các Sub-charts phụ thuộc).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 3 khái niệm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tên nhưng nhầm lẫn giữa Chart và Release.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cả 3 khái niệm theo mô hình tương đương trình quản lý gói phần mềm.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Một Helm Chart có thể cài đặt tạo ra nhiều Helm Release trên cùng một cụm được không? — Được, bằng cách đặt tên Release khác nhau hoặc cài vào các Namespace khác nhau).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp thế biến Go Template <code>{{ .Values.key }}</code> hoạt động như thế nào khi Helm render tệp bản kê khai?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi chạy lệnh render (<code>helm template</code> hoặc <code>helm install</code>), Helm Engine đọc các vị trí chứa cặp ngoặc nhọn <code>{{ .Values.<key> }}</code> trong tệp mẫu thuộc <code>templates/</code>, sau đó tra cứu và thay thế bằng chuỗi giá trị tương ứng trong <code>values.yaml</code> (hoặc biến ghi đè từ cờ <code>-f</code>/<code>--set</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được cơ chế thế biến.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thay thế biến nhưng không giải thích được luồng tra cứu từ <code>values.yaml</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc cơ chế thế biến Go Template và luồng ưu tiên tra cứu giá trị.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu một biến được khai báo trong <code>values.yaml</code> là <code>image.tag: alpine</code> thì cú pháp thế biến trong file template sẽ gõ thế nào? — Gõ <code>{{ .Values.image.tag }}</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Sự khác biệt giữa việc sử dụng cờ <code>-f <custom-values.yaml></code> và cờ <code>--set key=value</code> khi chạy lệnh <code>helm install</code> hoặc <code>helm upgrade</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>-f</code> dùng để nạp nguyên một tệp chứa danh sách nhiều biến cấu hình tùy chỉnh (thường dùng cho môi trường Dev/Staging/Prod). Cờ <code>--set</code> dùng để ghi đè trực tiếp từng biến lẻ từ terminal CLI (thường dùng trong các bước đường ống CI/CD khi cần sửa nhanh tag ảnh build).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa <code>-f</code> và <code>--set</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tên cờ nhưng không làm rõ bối cảnh ứng dụng thực tế.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự khác biệt và trường hợp sử dụng tối ưu của cả 2 cờ CLI.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu một biến vừa được định nghĩa trong <code>-f custom.yaml</code> vừa được truyền qua <code>--set</code>, biến nào sẽ được ưu tiên chọn? — Biến truyền qua <code>--set</code> có độ ưu tiên cao nhất sẽ ghi đè biến trong <code>-f</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Lệnh <code>helm template <release-name> <chart-path></code> có tác dụng gì và tại sao lại cực kỳ hữu ích cho kỹ sư DevOps trước khi deploy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>helm template</code> thực hiện render toàn bộ các tệp mẫu trong <code>templates/</code> kết hợp với <code>values.yaml</code> ra tệp Kubernetes YAML thuần trên màn hình mà KHÔNG gửi kết nối tác động lên cụm. Giúp kỹ sư DevOps dễ dàng kiểm tra soát lỗi cú pháp YAML và logic thay thế biến trước khi apply thật lên Production.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ helm template.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được in ra YAML nhưng không làm rõ ưu điểm không tác động lên cụm K8s.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác công dụng kiểm thử an toàn của lệnh <code>helm template</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để đẩy toàn bộ đầu ra của <code>helm template</code> vào lệnh <code>kubectl apply</code>? — Chạy lệnh <code>helm template my-release ./my-chart | kubectl apply -f -</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Quy trình thực hiện Rollback một Helm Release bị lỗi về phiên bản cũ bằng lệnh <code>helm rollback</code> diễn ra thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chạy <code>helm history <release-name></code> để xem danh sách lịch sử các Revision. Xác định số Revision ổn định (ví dụ Revision 1), sau đó chạy lệnh <code>helm rollback <release-name> 1</code>. Helm sẽ tự động tính toán diff và cập nhật lại toàn bộ tài nguyên trên cụm về trạng thái chính xác của Revision 1.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh helm rollback.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được helm rollback nhưng quên bước xem lịch sử bằng <code>helm history</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác quy trình 2 bước kiểm tra lịch sử và thực thi rollback về Revision mong muốn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sau khi chạy <code>helm rollback <release> 1</code>, số Revision mới trong <code>helm history</code> sẽ hiển thị là bao nhiêu? — Hiển thị là Revision mới tiếp theo, ví dụ Revision 3 với ghi chú <code>Rollback to 1</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Điều gì xảy ra đối với các tài nguyên Kubernetes trên cụm khi ta chạy lệnh <code>helm uninstall <release-name></code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Helm sẽ tra cứu toàn bộ danh sách bản kê khai tài nguyên (Deployment, Service, ConfigMap, Ingress...) đã được tạo ra trong lần cài đặt/nâng cấp của Release đó và ra lệnh cho Kubernetes API Server xóa sạch 100% các tài nguyên thuộc sở hữu của Release khỏi Namespace.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng helm uninstall chỉ xóa file trên máy local.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xóa ứng dụng nhưng chưa giải thích việc xóa toàn bộ các tài nguyên Kubernetes thuộc sở hữu của Release.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cơ chế dọn dẹp sạch sẽ tài nguyên trên cụm của <code>helm uninstall</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu một tài nguyên do người dùng tự tạo thủ công ngoài Helm Chart thì <code>helm uninstall</code> có xóa tài nguyên đó không? — Không xóa, Helm chỉ xóa các tài nguyên có gắn nhãn quản lý bởi Release).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trong những trường hợp thực tế nào ta KHÔNG nên sử dụng Helm Package Manager?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Không nên dùng Helm khi: (1) Ứng dụng chỉ có các bản kê khai Kubernetes tĩnh đơn giản không bao giờ thay đổi biến; (2) Hệ thống đã chuẩn hóa GitOps bằng Kustomize thuần (chỉ thích overlay biến tĩnh); (3) Việc tạo Helm Chart làm tăng thêm độ phức tạp quản lý mà không đem lại giá trị tái sử dụng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng dự án nào cũng bắt buộc dùng Helm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được trường hợp tệp YAML đơn giản nhưng chưa nêu được bối cảnh Kustomize/GitOps.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo các trường hợp không nên lạm dụng Helm để tránh làm phức tạp hóa kiến trúc.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Kustomize khác Helm ở điểm cốt lõi nào? — Helm dựa vào Templating thế biến động; Kustomize dựa vào Overlay phủ đè các bản kê khai tĩnh mà không dùng Go Template).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cú pháp CLI gõ nhanh để cài đặt một Helm Chart có sẵn từ thư mục cục bộ <code>./my-chart</code> tên release <code>web-app</code> vào Namespace <code>prod</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>helm install web-app ./my-chart -n prod</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ câu lệnh helm install.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Gõ đúng lệnh nhưng quên cờ <code>-n prod</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác câu lệnh <code>helm install</code> kèm đúng cờ Namespace.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn ghi đè biến <code>image.tag</code> thành <code>v2</code> trực tiếp trong lệnh trên thì gõ thế nào? — Thêm cờ <code>--set image.tag=v2</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để tự động hóa việc rollback nếu quá trình <code>helm upgrade</code> bị lỗi sập container trong pipeline CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thêm cờ <code>--atomic</code> và <code>--timeout 3m</code> vào lệnh <code>helm upgrade</code> (ví dụ <code>helm upgrade web-app ./my-chart --atomic --timeout 3m</code>). Nếu quá trình upgrade bị thất bại hoặc quá 3 phút chưa ready, Helm sẽ tự động rollback về Revision cũ mà không cần can thiệp thủ công.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ --atomic.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tự động rollback nhưng không nhớ cờ <code>--atomic</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác tác dụng của cờ <code>--atomic</code> và <code>--timeout</code> trong tự động hóa CI/CD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--cleanup-on-fail</code> có tác dụng gì khi đi kèm <code>helm install</code>? — Nếu lần install đầu tiên bị lỗi, Helm sẽ tự động dọn dẹp các tài nguyên vừa tạo dở dang).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp lệnh CLI nào dùng để xem trạng thái chi tiết và toàn bộ nhật ký sự cố của một Helm Release <code>my-release</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>helm status my-release -n <namespace></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ lệnh helm status.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nhầm với lệnh <code>kubectl describe</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>helm status</code> và các thông tin nó trả về (status, notes, resources).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thông điệp hướng dẫn sử dụng (NOTES.txt) của Chart được xem lại qua lệnh nào? — Xem lại qua lệnh <code>helm status <release-name></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 5 lệnh CLI Helm cơ bản nhất mà mọi lập trình viên ứng dụng CKAD phải nắm vững là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bộ 5 lệnh gồm: <code>helm create</code> (tạo chart), <code>helm template</code> (render thử), <code>helm install</code> (cài đặt), <code>helm upgrade</code> (nâng cấp), và <code>helm rollback</code> (quay lui).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 5 lệnh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2-3 lệnh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, chuẩn xác tên và công dụng của trọn bộ 5 lệnh CLI Helm cốt lõi.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 37 là gì? — Học về Probe ba loại: <code>startupProbe</code>, <code>readinessProbe</code>, và <code>livenessProbe</code> để quản lý sức khỏe ứng dụng).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Cấu trúc thư mục của một Helm Chart chuẩn gồm những tệp và thư mục bắt buộc nào?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Thư mục chuẩn gồm: `Chart.yaml` (metadata chứa tên, phiên bản chart), `values.yaml` (giá trị biến mặc định), và thư mục `templates/` (chứa các tệp bản kê khai Kubernetes YAML mẫu nhúng cú pháp Go Template).
+1. <b style="color: var(--accent-primary);">"Helm Package Manager là công cụ chuẩn De-facto giúp đóng gói, tự động hóa và quản lý trọn vẹn vòng đời ứng dụng trên Kubernetes."</b>
+2. <b style="color: var(--accent-primary);">"Làm chủ 3 khái niệm cốt lõi Chart (gói mẫu), Values (biến cấu hình) và Release (bản cài đặt) là chìa khóa để triển khai ứng dụng đa môi trường hiệu quả."</b>
+3. <b style="color: var(--accent-primary);">"Luôn sử dụng cờ <code>helm template</code> để kiểm tra render tệp YAML trước khi deploy và sử dụng cờ <code>--atomic</code> để đảm bảo an toàn tự động rollback khi upgrade."</b>
+4. <b style="color: var(--accent-primary);">"Hiểu rõ khi nào NÊN và KHÔNG NÊN dùng Helm giúp kỹ sư đưa ra quyết định kiến trúc đúng đắn, tránh làm phức tạp hóa hệ thống không cần thiết."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không nêu đúng cấu trúc thư mục.
-- 1đ: Nêu được `values.yaml` nhưng thiếu `Chart.yaml` hoặc thư mục `templates/`.
-- 3đ: Trình bày chính xác cả 3 thành phần bắt buộc và vai trò của từng thành phần.
-
-**Câu hỏi đào sâu:** (Tệp `charts/` dưới thư mục root của Helm Chart dùng để làm gì? — Dùng để chứa các Sub-charts phụ thuộc).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Cú pháp thế biến Go Template `{{ .Values.key }}` hoạt động như thế nào khi Helm render tệp bản kê khai?
-
-**Đáp án chuẩn:** Khi chạy lệnh render (`helm template` hoặc `helm install`), Helm Engine đọc các vị trí chứa cặp ngoặc nhọn `{{ .Values.<key> }}` trong tệp mẫu thuộc `templates/`, sau đó tra cứu và thay thế bằng chuỗi giá trị tương ứng trong `values.yaml` (hoặc biến ghi đè từ cờ `-f`/`--set`).
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được cơ chế thế biến.
-- 1đ: Nêu được thay thế biến nhưng không giải thích được luồng tra cứu từ `values.yaml`.
-- 3đ: Trình bày mạch lạc cơ chế thế biến Go Template và luồng ưu tiên tra cứu giá trị.
-
-**Câu hỏi đào sâu:** (Nếu một biến được khai báo trong `values.yaml` là `image.tag: alpine` thì cú pháp thế biến trong file template sẽ gõ thế nào? — Gõ `{{ .Values.image.tag }}`).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Sự khác biệt giữa việc sử dụng cờ `-f <custom-values.yaml>` và cờ `--set key=value` khi chạy lệnh `helm install` hoặc `helm upgrade` là gì?
-
-**Đáp án chuẩn:** Cờ `-f` dùng để nạp nguyên một tệp chứa danh sách nhiều biến cấu hình tùy chỉnh (thường dùng cho môi trường Dev/Staging/Prod). Cờ `--set` dùng để ghi đè trực tiếp từng biến lẻ từ terminal CLI (thường dùng trong các bước đường ống CI/CD khi cần sửa nhanh tag ảnh build).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa `-f` và `--set`.
-- 1đ: Nêu được tên cờ nhưng không làm rõ bối cảnh ứng dụng thực tế.
-- 3đ: Phân tích thấu đáo sự khác biệt và trường hợp sử dụng tối ưu của cả 2 cờ CLI.
-
-**Câu hỏi đào sâu:** (Nếu một biến vừa được định nghĩa trong `-f custom.yaml` vừa được truyền qua `--set`, biến nào sẽ được ưu tiên chọn? — Biến truyền qua `--set` có độ ưu tiên cao nhất sẽ ghi đè biến trong `-f`).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Lệnh `helm template <release-name> <chart-path>` có tác dụng gì và tại sao lại cực kỳ hữu ích cho kỹ sư DevOps trước khi deploy?
-
-**Đáp án chuẩn:** Lệnh `helm template` thực hiện render toàn bộ các tệp mẫu trong `templates/` kết hợp với `values.yaml` ra tệp Kubernetes YAML thuần trên màn hình mà KHÔNG gửi kết nối tác động lên cụm. Giúp kỹ sư DevOps dễ dàng kiểm tra soát lỗi cú pháp YAML và logic thay thế biến trước khi apply thật lên Production.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ helm template.
-- 1đ: Nêu được in ra YAML nhưng không làm rõ ưu điểm không tác động lên cụm K8s.
-- 3đ: Phân tích chuẩn xác công dụng kiểm thử an toàn của lệnh `helm template`.
-
-**Câu hỏi đào sâu:** (Làm thế nào để đẩy toàn bộ đầu ra của `helm template` vào lệnh `kubectl apply`? — Chạy lệnh `helm template my-release ./my-chart | kubectl apply -f -`).
-
----
-
-### Câu 6 — 🔥
-**Hỏi:** Quy trình thực hiện Rollback một Helm Release bị lỗi về phiên bản cũ bằng lệnh `helm rollback` diễn ra thế nào?
-
-**Đáp án chuẩn:** Chạy `helm history <release-name>` để xem danh sách lịch sử các Revision. Xác định số Revision ổn định (ví dụ Revision 1), sau đó chạy lệnh `helm rollback <release-name> 1`. Helm sẽ tự động tính toán diff và cập nhật lại toàn bộ tài nguyên trên cụm về trạng thái chính xác của Revision 1.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh helm rollback.
-- 1đ: Nêu được helm rollback nhưng quên bước xem lịch sử bằng `helm history`.
-- 3đ: Trình bày chính xác quy trình 2 bước kiểm tra lịch sử và thực thi rollback về Revision mong muốn.
-
-**Câu hỏi đào sâu:** (Sau khi chạy `helm rollback <release> 1`, số Revision mới trong `helm history` sẽ hiển thị là bao nhiêu? — Hiển thị là Revision mới tiếp theo, ví dụ Revision 3 với ghi chú `Rollback to 1`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Điều gì xảy ra đối với các tài nguyên Kubernetes trên cụm khi ta chạy lệnh `helm uninstall <release-name>`?
-
-**Đáp án chuẩn:** Helm sẽ tra cứu toàn bộ danh sách bản kê khai tài nguyên (Deployment, Service, ConfigMap, Ingress...) đã được tạo ra trong lần cài đặt/nâng cấp của Release đó và ra lệnh cho Kubernetes API Server xóa sạch 100% các tài nguyên thuộc sở hữu của Release khỏi Namespace.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng helm uninstall chỉ xóa file trên máy local.
-- 1đ: Nêu được xóa ứng dụng nhưng chưa giải thích việc xóa toàn bộ các tài nguyên Kubernetes thuộc sở hữu của Release.
-- 3đ: Trình bày chính xác cơ chế dọn dẹp sạch sẽ tài nguyên trên cụm của `helm uninstall`.
-
-**Câu hỏi đào sâu:** (Nếu một tài nguyên do người dùng tự tạo thủ công ngoài Helm Chart thì `helm uninstall` có xóa tài nguyên đó không? — Không xóa, Helm chỉ xóa các tài nguyên có gắn nhãn quản lý bởi Release).
-
----
-
-### Câu 8 — ★★★
-**Hỏi:** Trong những trường hợp thực tế nào ta KHÔNG nên sử dụng Helm Package Manager?
-
-**Đáp án chuẩn:** Không nên dùng Helm khi: (1) Ứng dụng chỉ có các bản kê khai Kubernetes tĩnh đơn giản không bao giờ thay đổi biến; (2) Hệ thống đã chuẩn hóa GitOps bằng Kustomize thuần (chỉ thích overlay biến tĩnh); (3) Việc tạo Helm Chart làm tăng thêm độ phức tạp quản lý mà không đem lại giá trị tái sử dụng.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng dự án nào cũng bắt buộc dùng Helm.
-- 1đ: Nêu được trường hợp tệp YAML đơn giản nhưng chưa nêu được bối cảnh Kustomize/GitOps.
-- 3đ: Phân tích thấu đáo các trường hợp không nên lạm dụng Helm để tránh làm phức tạp hóa kiến trúc.
-
-**Câu hỏi đào sâu:** (Kustomize khác Helm ở điểm cốt lõi nào? — Helm dựa vào Templating thế biến động; Kustomize dựa vào Overlay phủ đè các bản kê khai tĩnh mà không dùng Go Template).
-
----
-
-### Câu 9 — 🔥
-**Hỏi:** Cú pháp CLI gõ nhanh để cài đặt một Helm Chart có sẵn từ thư mục cục bộ `./my-chart` tên release `web-app` vào Namespace `prod` là gì?
-
-**Đáp án chuẩn:** `helm install web-app ./my-chart -n prod`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ câu lệnh helm install.
-- 1đ: Gõ đúng lệnh nhưng quên cờ `-n prod`.
-- 3đ: Trình bày chuẩn xác câu lệnh `helm install` kèm đúng cờ Namespace.
-
-**Câu hỏi đào sâu:** (Nếu muốn ghi đè biến `image.tag` thành `v2` trực tiếp trong lệnh trên thì gõ thế nào? — Thêm cờ `--set image.tag=v2`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Làm thế nào để tự động hóa việc rollback nếu quá trình `helm upgrade` bị lỗi sập container trong pipeline CI/CD?
-
-**Đáp án chuẩn:** Thêm cờ `--atomic` và `--timeout 3m` vào lệnh `helm upgrade` (ví dụ `helm upgrade web-app ./my-chart --atomic --timeout 3m`). Nếu quá trình upgrade bị thất bại hoặc quá 3 phút chưa ready, Helm sẽ tự động rollback về Revision cũ mà không cần can thiệp thủ công.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ --atomic.
-- 1đ: Nêu được tự động rollback nhưng không nhớ cờ `--atomic`.
-- 3đ: Trình bày chính xác tác dụng của cờ `--atomic` và `--timeout` trong tự động hóa CI/CD.
-
-**Câu hỏi đào sâu:** (Cờ `--cleanup-on-fail` có tác dụng gì khi đi kèm `helm install`? — Nếu lần install đầu tiên bị lỗi, Helm sẽ tự động dọn dẹp các tài nguyên vừa tạo dở dang).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp lệnh CLI nào dùng để xem trạng thái chi tiết và toàn bộ nhật ký sự cố của một Helm Release `my-release`?
-
-**Đáp án chuẩn:** `helm status my-release -n <namespace>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ lệnh helm status.
-- 1đ: Nhầm với lệnh `kubectl describe`.
-- 3đ: Trình bày chính xác lệnh `helm status` và các thông tin nó trả về (status, notes, resources).
-
-**Câu hỏi đào sâu:** (Thông điệp hướng dẫn sử dụng (NOTES.txt) của Chart được xem lại qua lệnh nào? — Xem lại qua lệnh `helm status <release-name>`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 5 lệnh CLI Helm cơ bản nhất mà mọi lập trình viên ứng dụng CKAD phải nắm vững là gì?
-
-**Đáp án chuẩn:** Bộ 5 lệnh gồm: `helm create` (tạo chart), `helm template` (render thử), `helm install` (cài đặt), `helm upgrade` (nâng cấp), và `helm rollback` (quay lui).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 5 lệnh.
-- 1đ: Nêu được 2-3 lệnh.
-- 3đ: Trình bày tự tin, chuẩn xác tên và công dụng của trọn bộ 5 lệnh CLI Helm cốt lõi.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 37 là gì? — Học về Probe ba loại: `startupProbe`, `readinessProbe`, và `livenessProbe` để quản lý sức khỏe ứng dụng).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -950,28 +1042,6 @@ Helm Chart tương ứng với tệp đóng gói nén gói phần mềm (như <c
 2. **"Làm chủ 3 khái niệm cốt lõi Chart (gói mẫu), Values (biến cấu hình) và Release (bản cài đặt) là chìa khóa để triển khai ứng dụng đa môi trường hiệu quả."**
 3. **"Luôn sử dụng cờ `helm template` để kiểm tra render tệp YAML trước khi deploy và sử dụng cờ `--atomic` để đảm bảo an toàn tự động rollback khi upgrade."**
 4. **"Hiểu rõ khi nào NÊN và KHÔNG NÊN dùng Helm giúp kỹ sư đưa ra quyết định kiến trúc đúng đắn, tránh làm phức tạp hóa hệ thống không cần thiết."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc khái niệm và các lệnh Helm Package Manager CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kỹ năng đóng gói, upgrade và rollback Helm Release |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Khởi tạo một Helm Chart tùy chỉnh cho web app NodeJS gồm Deployment, Service và ConfigMap.
-- **BTVN 2:** Tạo 2 tệp giá trị `values-dev.yaml` và `values-prod.yaml` và thực hành cài đặt 2 Release độc lập trên 2 Namespace.
-- **BTVN 3:** Viết script CI/CD sử dụng `helm upgrade --atomic --timeout 2m` để tự động hóa nâng cấp và rollback khi lỗi.
-- **BTVN 4 (Chuẩn bị cho Buổi 37 — Probe ba loại: startupProbe, readinessProbe, livenessProbe):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Mục đích khác nhau của 3 loại Probe (`startupProbe`, `readinessProbe`, `livenessProbe`) trong Kubernetes là gì?
-  2. Cơ chế kiểm tra của Probe (`httpGet`, `exec`, `tcpSocket`) hoạt động ra sao?
-  3. Chuyện gì xảy ra nếu `livenessProbe` thất bại liên tục so với khi `readinessProbe` thất bại?
 
 ---
 
@@ -1162,14 +1232,15 @@ helm rollback <release-name> <revision> -n <ns>
 helm template <release-name> <chart-path> --set key=value > output.yaml
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 07] Cơ Chế Probes Toàn Diện: StartupProbe, ReadinessProbe, LivenessProbe & 3 Kịch Bản Sập Ứng Dụng](ckad-07-07-probe-ba-loai.html).
+
 {% endraw %}

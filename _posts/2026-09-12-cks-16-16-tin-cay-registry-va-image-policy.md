@@ -417,7 +417,7 @@ Vì các Pods hệ thống (CoreDNS/Kube-proxy) trong <code>kube-system</code> k
        spec:
          containers:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• image: "harbor.internal/*"</div>
-     ```
+```
 </div>
 </details>
 
@@ -496,7 +496,7 @@ Sử dụng mẫu pattern <code>image: "*@sha256:*"</code> trong tệp <code>Clu
                 spec:
                   containers:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• image: "*@sha256:*"</div>
-      ```
+```
 </div>
 </details>
 
@@ -509,24 +509,6 @@ Sử dụng mẫu pattern <code>image: "*@sha256:*"</code> trong tệp <code>Clu
 | Kyverno Allowed Registries Policy | `https://kyverno.io/policies/other/restrict_image_registries/` | Mẫu chính sách Allowed Registries Kyverno |
 | K8s ValidatingAdmissionPolicy CEL | `https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/` | Tài liệu chuẩn ValidatingAdmissionPolicy CEL |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Public Registries Risk & Whitelisting | 12 phút | 12 phút |
-| §5. Allowed Registries Policy via Kyverno | 12 phút | 12 phút |
-| §6. Enforce Digest Pinning & Disallow :latest | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -830,26 +812,11 @@ test ! -f /tmp/policy-allowed-registries.yaml && echo "CHECKPOINT 13 — ĐẠT"
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & ClusterPolicy | 15 phút | 15 phút |
-| L4. Bước 2: Apply & Block Public Images | 25 phút | 25 phút |
-| L5. Bước 3: Deploy Pod with Trusted Registry | 25 phút | 25 phút |
-| L6. Bước 4: Disallow :latest & Digest Pinning | 25 phút | 25 phút |
-| L7. Bước 5: Audit PolicyReports | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -857,233 +824,354 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cơ chế hoạt động của chính sách <code>AllowedRegistries</code> trong Kyverno hoặc OPA Gatekeeper là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Public Registries công khai chứa rủi ro cao về mã độc (Trojans, CryptoMiners) hoặc lỗ hổng CVEs chưa được vá. Kẻ tấn công có thể chèn các hình ảnh độc hại lừa đảo người dùng tải về chạy trên cụm.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi có request khởi tạo Pod, Admission Controller sẽ quét thuộc tính <code>image</code> của mọi container. Nếu domain kho ảnh không thuộc danh sách trắng (whitelisted domains) đã định nghĩa trong chính sách, request sẽ bị từ chối với lỗi <code>403 Forbidden</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cơ chế của AllowedRegistries policy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chặn ảnh nhưng chưa giải thích việc quét domain image ở tầng Admission Controller.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế quét và đối soát domain kho ảnh của chính sách <code>AllowedRegistries</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tên đối tượng CRD chuẩn trong Kyverno được dùng để định nghĩa quy tắc kiểm soát kho ảnh toàn cụm là gì? — Đối tượng <b style="color: var(--accent-primary);"><code>ClusterPolicy</code></b> (<code>kyverno.io/v1</code>)).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết rủi ro của Public Registries.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được có lỗ hổng nhưng chưa giải thích việc chèn mã độc và thiếu rà soát an ninh.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro của Public Registries và lý do cần áp đặt chính sách Allowed Registries.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Giải pháp để triệt tiêu rủi ro Public Registries là gì? — Áp dụng chính sách Allowed Registries chỉ cho phép kéo ảnh từ Private Trusted Registries được cấp phép).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt về hành vi kiểm soát giữa 2 cờ <code>validationFailureAction: Audit</code> và <code>validationFailureAction: Enforce</code> trong Kyverno là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Audit</code>: <b style="color: var(--accent-primary);">Chỉ ghi log báo cáo vi phạm</b> (<code>policyreports</code>) mà vẫn cho phép khởi tạo Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Enforce</code>: <b style="color: var(--accent-primary);">Chặn ngắt kết nối trực tiếp</b> (gửi lỗi <code>403 Forbidden</code>) không cho phép Pod vi phạm khởi tạo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa Audit và Enforce.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái ghi log 1 cái chặn nhưng chưa làm rõ tác động đến lệnh tạo Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt giữa chế độ Audit và Enforce trong Kyverno.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao nên đặt cờ <code>Audit</code> trước khi chuyển sang <code>Enforce</code> trên môi trường Production? — Để thử nghiệm và ghi lại danh sách các Pods vi phạm hiện tại mà không làm ngắt kết nối hệ thống đang chạy).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao khi tạo chính sách Allowed Registries toàn cụm, chuyên gia bảo mật BẮT BUỘC phải khai báo khối <code>exclude</code> cho Namespace <code>kube-system</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì các Pods hệ thống trong <code>kube-system</code> (như CoreDNS hay Kube-proxy) kéo ảnh từ các kho của Kubernetes (<code>registry.k8s.io</code> hay <code>gcr.io</code>). Nếu không loại trừ <code>kube-system</code>, chính sách sẽ chặn luôn Pod hệ thống làm sập toàn cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lý do phải exclude kube-system.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được do Pod hệ thống nhưng chưa rõ việc kéo ảnh từ registry.k8s.io gây sập cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác rủi ro sập cụm hệ thống nếu không loại trừ Namespace <code>kube-system</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp YAML loại trừ Namespace <code>kube-system</code> trong Kyverno là gì? — Khối <code>spec.rules[x].exclude.resources.namespaces: [kube-system]</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tại sao cấm tuyệt đối cờ tag mutable <code>:latest</code> và bắt buộc ghim Image Digest (<code>@sha256:...</code>) trong Pod spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì cờ tag <code>:latest</code> có thể bị kẻ tấn công push đè nội dung mới chứa mã độc trên Registry (<b style="color: var(--accent-primary);">Image Swapping Attack</b>). Ghim cờ mã băm <code>@sha256:...</code> đảm bảo 100% nội dung thô của container image là bất biến và không thể bị làm giả.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lý do cấm tag :latest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tag latest đổi được nhưng chưa giải thích tấn công Image Swapping và tính bất biến của digest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do cấm cờ tag mutable <code>:latest</code> và vai trò bảo vệ của Image Digest Pinning.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mẫu pattern Kyverno chuẩn để bắt buộc Pod spec phải chứa mã băm digest là gì? — Mẫu pattern <code>image: "*@sha256:*"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Ưu điểm lớn nhất của đối tượng <code>ValidatingAdmissionPolicy</code> (CEL) trong Kubernetes v1.30+ so với cài đặt Kyverno hay OPA Gatekeeper là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>ValidatingAdmissionPolicy</code> chạy trực tiếp bên trong <code>kube-apiserver</code> bằng ngôn ngữ CEL, mang lại <b style="color: var(--accent-primary);">hiệu năng cực cao, độ trễ latency bằng 0</b> và <b style="color: var(--accent-primary);">không phụ thuộc vào bất kỳ Pods hay Controller bên thứ ba nào</b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết ValidatingAdmissionPolicy CEL.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không cần cài thêm công cụ nhưng chưa giải thích hiệu năng cao do chạy trong apiserver.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo ưu điểm về hiệu năng và kiến trúc của <code>ValidatingAdmissionPolicy</code> CEL.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp biểu thức CEL để kiểm tra thuộc tính image bắt đầu bằng <code>harbor.internal/</code> là gì? — Biểu thức <code>object.spec.containers.all(c, c.image.startsWith('harbor.internal/'))</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cách chẩn đoán và khắc phục nhanh nhất khi lệnh triển khai Pod bị từ chối với thông điệp <code>admission webhook "validate.kyverno.svc" denied the request</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Đọc chi tiết thông điệp lỗi để xem Pod vi phạm quy tắc nào; đối soát tên domain <code>image</code> trong Pod spec với mẫu pattern được phép trong <code>ClusterPolicy</code>; sửa tệp YAML Pod spec trỏ về Private Registry tin cậy và ghim Image Digest.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không chẩn đoán được lỗi admission webhook denied.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được do Kyverno chặn nhưng chưa rõ quy trình đối soát domain image với pattern.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác quy trình gỡ lỗi Pod bị từ chối bởi Kyverno Admission Webhook.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để kiểm tra chi tiết quy tắc của ClusterPolicy Kyverno? — Lệnh <code>kubectl get clusterpolicy <policy-name> -o yaml</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn của một chính sách Kyverno <code>ClusterPolicy</code> chỉ cho phép ảnh từ <code>harbor.internal/*</code> CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: kyverno.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: ClusterPolicy</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: check-allowed-registries</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">validationFailureAction: Enforce</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">rules:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: validate-registries</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">match:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kinds:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">exclude:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespaces:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• kube-system</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">validate:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">message: "Chỉ cho phép tải ảnh từ kho tin cậy harbor.internal!"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">pattern:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• image: "harbor.internal/*"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng pattern nhưng thiếu khối <code>exclude</code> kube-system hoặc cờ Enforce.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp <code>ClusterPolicy</code> Kyverno Allowed Registries CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn thêm kho ảnh <code>gcr.io/my-org/*</code> vào danh sách cho phép thì sửa mẫu pattern thế nào? — Sử dụng mảng danh sách pattern <code>image: "harbor.internal/* | gcr.io/my-org/*"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao việc kết hợp giữa Allowed Registries Policy và Cosign Image Signing lại tạo ra mô hình bảo mật chuỗi cung ứng hoàn hảo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Allowed Registries kiểm soát <b style="color: var(--accent-primary);">nguồn gốc địa chỉ kho lưu trữ (nơi xuất xứ)</b>, còn Cosign Image Signing xác minh <b style="color: var(--accent-primary);">tính toàn vẹn và con dấu chữ ký (chất lượng sản phẩm)</b>. Kết hợp cả hai triệt tiêu 100% rủi ro kéo ảnh giả mạo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu sự kết hợp giữa Allowed Registries và Cosign.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tăng bảo mật nhưng chưa phân biệt nơi xuất xứ vs tính toàn vẹn chữ ký.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự kết hợp giữa Allowed Registries (Nguồn gốc) và Cosign (Chữ ký toàn vẹn).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ nào kiểm tra chữ ký Cosign tự động tại tầng Admission Controller? — Công cụ Kyverno <code>verifyImages</code> rule hoặc Sigstore Policy Controller).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh CLI nào được dùng để tra cứu báo cáo vi phạm chính sách Kyverno (<code>PolicyReport</code>) trong cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>kubectl get policyreports -A</code> (hoặc <code>kubectl get clusterpolicyreports</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh get policyreports.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kubectl get nhưng thiếu resource <code>policyreports</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác câu lệnh <code>kubectl get policyreports -A</code> tra cứu báo cáo vi phạm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thông tin nào được hiển thị trong báo cáo PolicyReport? — Danh sách các tài nguyên Pods/Deployments vi phạm, tên chính sách và mức độ nghiêm trọng Pass/Fail).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của tệp <code>ClusterPolicy</code> cấm tag <code>:latest</code> và bắt buộc ghim Image Digest CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: kyverno.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: ClusterPolicy</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: disallow-latest-tag</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">validationFailureAction: Enforce</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">rules:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: require-image-digest</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">match:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kinds:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">exclude:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespaces:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• kube-system</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">validate:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">message: "Cấm dùng tag :latest! Bắt buộc phải ghim Image Digest @sha256:..."</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">pattern:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• image: "*@sha256:*"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc sai pattern digest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng Enforce nhưng thiếu pattern <code>*@sha256:*</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp <code>ClusterPolicy</code> Kyverno cấm tag <code>:latest</code> CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Pattern <code>*@sha256:*</code> có tác dụng gì? — Bắt buộc chuỗi <code>image</code> phải chứa từ khóa <code>@sha256:</code> đại diện cho mã băm bất biến).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Allowed Registries & Image Policy Enforcement CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CẤM TUYỆT ĐỐI kéo ảnh từ Public Registries trôi nổi; chỉ dùng Private Trusted Registries.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CẤM cờ tag mutable <code>:latest</code>; bắt buộc ghim Image Digest bất biến (<code>@sha256:...</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Luôn loại trừ Namespace <code>kube-system</code> trong chính sách để tránh làm sập Pods hệ thống.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Áp dụng cờ <code>validationFailureAction: Enforce</code> để cưỡng chế ngắt kết nối 100% lệnh tạo Pod vi phạm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Allowed Registries CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 62 là gì? — Học về <code>Phân tích Tĩnh Bản kê khai và Dockerfile CKS: Kube-linter, Checkov & Trivy Config Scan</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Cơ chế hoạt động của chính sách `AllowedRegistries` trong Kyverno hoặc OPA Gatekeeper là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Khi có request khởi tạo Pod, Admission Controller sẽ quét thuộc tính `image` của mọi container. Nếu domain kho ảnh không thuộc danh sách trắng (whitelisted domains) đã định nghĩa trong chính sách, request sẽ bị từ chối với lỗi `403 Forbidden`.
+1. <b style="color: var(--accent-primary);">"Kiểm soát 100% nguồn gốc Container Images bằng chính sách Allowed Registries Whitelisting."</b>
+2. <b style="color: var(--accent-primary);">"Triển khai chính sách Kyverno <code>ClusterPolicy</code> ở chế độ <code>Enforce</code> để chặn đứng ảnh ngoài danh sách trắng."</b>
+3. <b style="color: var(--accent-primary);">"Vô hiệu hóa cờ tag mutable <code>:latest</code> và cưỡng chế ghim mã băm bất biến Image Digest (<code>@sha256:...</code>)."</b>
+4. <b style="color: var(--accent-primary);">"Luôn khai báo ngoại lệ loại trừ Namespace <code>kube-system</code> để bảo vệ tính sẵn sàng của các Pods hệ thống."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết cơ chế của AllowedRegistries policy.
-- 1đ: Nêu được chặn ảnh nhưng chưa giải thích việc quét domain image ở tầng Admission Controller.
-- 3đ: Phân tích chuẩn xác cơ chế quét và đối soát domain kho ảnh của chính sách `AllowedRegistries`.
-
-**Câu hỏi đào sâu:** (Tên đối tượng CRD chuẩn trong Kyverno được dùng để định nghĩa quy tắc kiểm soát kho ảnh toàn cụm là gì? — Đối tượng **`ClusterPolicy`** (`kyverno.io/v1`)).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Sự khác biệt về hành vi kiểm soát giữa 2 cờ `validationFailureAction: Audit` và `validationFailureAction: Enforce` trong Kyverno là gì?
-
-**Đáp án chuẩn:**
-- `Audit`: **Chỉ ghi log báo cáo vi phạm** (`policyreports`) mà vẫn cho phép khởi tạo Pod.
-- `Enforce`: **Chặn ngắt kết nối trực tiếp** (gửi lỗi `403 Forbidden`) không cho phép Pod vi phạm khởi tạo.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa Audit và Enforce.
-- 1đ: Nêu được 1 cái ghi log 1 cái chặn nhưng chưa làm rõ tác động đến lệnh tạo Pod.
-- 3đ: Phân tích chuẩn xác sự khác biệt giữa chế độ Audit và Enforce trong Kyverno.
-
-**Câu hỏi đào sâu:** (Tại sao nên đặt cờ `Audit` trước khi chuyển sang `Enforce` trên môi trường Production? — Để thử nghiệm và ghi lại danh sách các Pods vi phạm hiện tại mà không làm ngắt kết nối hệ thống đang chạy).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Tại sao khi tạo chính sách Allowed Registries toàn cụm, chuyên gia bảo mật BẮT BUỘC phải khai báo khối `exclude` cho Namespace `kube-system`?
-
-**Đáp án chuẩn:** Vì các Pods hệ thống trong `kube-system` (như CoreDNS hay Kube-proxy) kéo ảnh từ các kho của Kubernetes (`registry.k8s.io` hay `gcr.io`). Nếu không loại trừ `kube-system`, chính sách sẽ chặn luôn Pod hệ thống làm sập toàn cụm.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lý do phải exclude kube-system.
-- 1đ: Nêu được do Pod hệ thống nhưng chưa rõ việc kéo ảnh từ registry.k8s.io gây sập cụm.
-- 3đ: Phân tích chuẩn xác rủi ro sập cụm hệ thống nếu không loại trừ Namespace `kube-system`.
-
-**Câu hỏi đào sâu:** (Cú pháp YAML loại trừ Namespace `kube-system` trong Kyverno là gì? — Khối `spec.rules[x].exclude.resources.namespaces: [kube-system]`).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Tại sao cấm tuyệt đối cờ tag mutable `:latest` và bắt buộc ghim Image Digest (`@sha256:...`) trong Pod spec?
-
-**Đáp án chuẩn:** Vì cờ tag `:latest` có thể bị kẻ tấn công push đè nội dung mới chứa mã độc trên Registry (**Image Swapping Attack**). Ghim cờ mã băm `@sha256:...` đảm bảo 100% nội dung thô của container image là bất biến và không thể bị làm giả.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lý do cấm tag :latest.
-- 1đ: Nêu được tag latest đổi được nhưng chưa giải thích tấn công Image Swapping và tính bất biến của digest.
-- 3đ: Phân tích chuẩn xác lý do cấm cờ tag mutable `:latest` và vai trò bảo vệ của Image Digest Pinning.
-
-**Câu hỏi đào sâu:** (Mẫu pattern Kyverno chuẩn để bắt buộc Pod spec phải chứa mã băm digest là gì? — Mẫu pattern `image: "*@sha256:*"`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Ưu điểm lớn nhất của đối tượng `ValidatingAdmissionPolicy` (CEL) trong Kubernetes v1.30+ so với cài đặt Kyverno hay OPA Gatekeeper là gì?
-
-**Đáp án chuẩn:** `ValidatingAdmissionPolicy` chạy trực tiếp bên trong `kube-apiserver` bằng ngôn ngữ CEL, mang lại **hiệu năng cực cao, độ trễ latency bằng 0** và **không phụ thuộc vào bất kỳ Pods hay Controller bên thứ ba nào**.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết ValidatingAdmissionPolicy CEL.
-- 1đ: Nêu được không cần cài thêm công cụ nhưng chưa giải thích hiệu năng cao do chạy trong apiserver.
-- 3đ: Phân tích thấu đáo ưu điểm về hiệu năng và kiến trúc của `ValidatingAdmissionPolicy` CEL.
-
-**Câu hỏi đào sâu:** (Cú pháp biểu thức CEL để kiểm tra thuộc tính image bắt đầu bằng `harbor.internal/` là gì? — Biểu thức `object.spec.containers.all(c, c.image.startsWith('harbor.internal/'))`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cách chẩn đoán và khắc phục nhanh nhất khi lệnh triển khai Pod bị từ chối với thông điệp `admission webhook "validate.kyverno.svc" denied the request`?
-
-**Đáp án chuẩn:** Đọc chi tiết thông điệp lỗi để xem Pod vi phạm quy tắc nào; đối soát tên domain `image` trong Pod spec với mẫu pattern được phép trong `ClusterPolicy`; sửa tệp YAML Pod spec trỏ về Private Registry tin cậy và ghim Image Digest.
-
-**Tiêu chí chấm:**
-- 0đ: Không chẩn đoán được lỗi admission webhook denied.
-- 1đ: Nêu được do Kyverno chặn nhưng chưa rõ quy trình đối soát domain image với pattern.
-- 3đ: Trình bày chuẩn xác quy trình gỡ lỗi Pod bị từ chối bởi Kyverno Admission Webhook.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để kiểm tra chi tiết quy tắc của ClusterPolicy Kyverno? — Lệnh `kubectl get clusterpolicy <policy-name> -o yaml`).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một chính sách Kyverno `ClusterPolicy` chỉ cho phép ảnh từ `harbor.internal/*` CKS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: check-allowed-registries
-spec:
-  validationFailureAction: Enforce
-  rules:
-    - name: validate-registries
-      match:
-        resources:
-          kinds:
-            - Pod
-      exclude:
-        resources:
-          namespaces:
-            - kube-system
-      validate:
-        message: "Chỉ cho phép tải ảnh từ kho tin cậy harbor.internal!"
-        pattern:
-          spec:
-            containers:
-              - image: "harbor.internal/*"
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.
-- 1đ: Nêu đúng pattern nhưng thiếu khối `exclude` kube-system hoặc cờ Enforce.
-- 3đ: Viết chuẩn xác 100% tệp `ClusterPolicy` Kyverno Allowed Registries CKS.
-
-**Câu hỏi đào sâu:** (Nếu muốn thêm kho ảnh `gcr.io/my-org/*` vào danh sách cho phép thì sửa mẫu pattern thế nào? — Sử dụng mảng danh sách pattern `image: "harbor.internal/* | gcr.io/my-org/*"`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao việc kết hợp giữa Allowed Registries Policy và Cosign Image Signing lại tạo ra mô hình bảo mật chuỗi cung ứng hoàn hảo?
-
-**Đáp án chuẩn:** Allowed Registries kiểm soát **nguồn gốc địa chỉ kho lưu trữ (nơi xuất xứ)**, còn Cosign Image Signing xác minh **tính toàn vẹn và con dấu chữ ký (chất lượng sản phẩm)**. Kết hợp cả hai triệt tiêu 100% rủi ro kéo ảnh giả mạo.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu sự kết hợp giữa Allowed Registries và Cosign.
-- 1đ: Nêu được tăng bảo mật nhưng chưa phân biệt nơi xuất xứ vs tính toàn vẹn chữ ký.
-- 3đ: Phân tích chuẩn xác sự kết hợp giữa Allowed Registries (Nguồn gốc) và Cosign (Chữ ký toàn vẹn).
-
-**Câu hỏi đào sâu:** (Công cụ nào kiểm tra chữ ký Cosign tự động tại tầng Admission Controller? — Công cụ Kyverno `verifyImages` rule hoặc Sigstore Policy Controller).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Lệnh CLI nào được dùng để tra cứu báo cáo vi phạm chính sách Kyverno (`PolicyReport`) trong cụm?
-
-**Đáp án chuẩn:** Lệnh `kubectl get policyreports -A` (hoặc `kubectl get clusterpolicyreports`).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh get policyreports.
-- 1đ: Nêu được kubectl get nhưng thiếu resource `policyreports`.
-- 3đ: Trình bày chính xác câu lệnh `kubectl get policyreports -A` tra cứu báo cáo vi phạm.
-
-**Câu hỏi đào sâu:** (Thông tin nào được hiển thị trong báo cáo PolicyReport? — Danh sách các tài nguyên Pods/Deployments vi phạm, tên chính sách và mức độ nghiêm trọng Pass/Fail).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của tệp `ClusterPolicy` cấm tag `:latest` và bắt buộc ghim Image Digest CKS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: disallow-latest-tag
-spec:
-  validationFailureAction: Enforce
-  rules:
-    - name: require-image-digest
-      match:
-        resources:
-          kinds:
-            - Pod
-      exclude:
-        resources:
-          namespaces:
-            - kube-system
-      validate:
-        message: "Cấm dùng tag :latest! Bắt buộc phải ghim Image Digest @sha256:..."
-        pattern:
-          spec:
-            containers:
-              - image: "*@sha256:*"
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc sai pattern digest.
-- 1đ: Nêu đúng Enforce nhưng thiếu pattern `*@sha256:*`.
-- 3đ: Viết chuẩn xác 100% tệp `ClusterPolicy` Kyverno cấm tag `:latest` CKS.
-
-**Câu hỏi đào sâu:** (Pattern `*@sha256:*` có tác dụng gì? — Bắt buộc chuỗi `image` phải chứa từ khóa `@sha256:` đại diện cho mã băm bất biến).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Allowed Registries & Image Policy Enforcement CKS là gì?
-
-**Đáp án chuẩn:**
-1. CẤM TUYỆT ĐỐI kéo ảnh từ Public Registries trôi nổi; chỉ dùng Private Trusted Registries.
-2. CẤM cờ tag mutable `:latest`; bắt buộc ghim Image Digest bất biến (`@sha256:...`).
-3. Luôn loại trừ Namespace `kube-system` trong chính sách để tránh làm sập Pods hệ thống.
-4. Áp dụng cờ `validationFailureAction: Enforce` để cưỡng chế ngắt kết nối 100% lệnh tạo Pod vi phạm.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Allowed Registries CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 62 là gì? — Học về `Phân tích Tĩnh Bản kê khai và Dockerfile CKS: Kube-linter, Checkov & Trivy Config Scan`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1093,28 +1181,6 @@ spec:
 2. **"Triển khai chính sách Kyverno `ClusterPolicy` ở chế độ `Enforce` để chặn đứng ảnh ngoài danh sách trắng."**
 3. **"Vô hiệu hóa cờ tag mutable `:latest` và cưỡng chế ghim mã băm bất biến Image Digest (`@sha256:...`)."**
 4. **"Luôn khai báo ngoại lệ loại trừ Namespace `kube-system` để bảo vệ tính sẵn sàng của các Pods hệ thống."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Allowed Registries Enforcement |
-| **29 – 36 điểm** | Xuất sắc | Thành thục biên soạn Kyverno ClusterPolicy, ValidatingAdmissionPolicy CEL và Digest Pinning |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Biên soạn `ClusterPolicy` Kyverno hỗ trợ danh sách trắng 3 kho ảnh: `harbor.internal/*`, `gcr.io/my-org/*`, và `ecr.aws/my-org/*`.
-- **BTVN 2:** Thực hành chuyển đổi chính sách từ Kyverno sang `ValidatingAdmissionPolicy` CEL trong K8s v1.30+.
-- **BTVN 3:** Viết chính sách Kyverno tự động mutate bổ sung Image Digest `@sha256:...` cho Pods thiếu digest.
-- **BTVN 4 (Chuẩn bị cho Buổi 62 — Phân tích Tĩnh Bản kê khai và Dockerfile CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Phân tích tĩnh bản kê khai (Static Analysis) bằng Kube-linter / Checkov / Trivy config scan đóng vai trò gì trong pipeline CI/CD?
-  2. Các quy tắc kiểm tra bảo mật phổ biến nhất khi soi tệp Dockerfile (như cấm `USER root`, cấm `ADD`, cấm hardcoded secrets) là gì?
-  3. Làm thế nào để tự động ngắt pipeline CI/CD khi phát hiện tệp YAML chứa các lỗi bảo mật nghiêm trọng (HIGH/CRITICAL)?
 
 ---
 
@@ -1397,14 +1463,15 @@ spec:
     - expression: "object.spec.containers.all(c, c.image.startsWith('harbor.internal/'))"
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 17] Phân Tích Tĩnh Bản Kê Khai: Quét Lỗ Hổng Bằng Kubesec, Checkov & Trivy Config](cks-17-17-phan-tich-tinh-manifest.html).
+
 {% endraw %}

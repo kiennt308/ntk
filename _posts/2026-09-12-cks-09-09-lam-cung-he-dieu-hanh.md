@@ -444,7 +444,7 @@ Phân quyền <b style="color: var(--accent-primary);"><code>chmod 600</code></b
       sudo chown root:root /etc/kubernetes/admin.conf
       sudo chmod 600 /etc/kubernetes/admin.conf
       sudo chmod 700 /var/lib/etcd
-      ```
+```
 </div>
 </details>
 
@@ -457,24 +457,6 @@ Phân quyền <b style="color: var(--accent-primary);"><code>chmod 600</code></b
 | kube-bench Documentation | `https://github.com/aquasecurity/kube-bench` | Tài liệu chuẩn công cụ kube-bench |
 | CIS Kubernetes Benchmark | `https://www.cisecurity.org/benchmark/kubernetes` | Bộ quy chuẩn bảo mật CIS |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Tổng quan CIS Benchmark & kube-bench | 12 phút | 12 phút |
-| §5. Phân quyền File nhạy cảm & Config | 12 phút | 12 phút |
-| §6. Cloud Metadata & Disable Services | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -527,7 +509,7 @@ graph TD
     
     PodApp[Pod test-pod in Namespace lab54] -->|"4. Egress Request"| NetPol{"NetworkPolicy block-metadata-egress"}
     NetPol -.->|"Block 169.254.169.254/32"| Drop[Egress Traffic Dropped]
-```yaml
+```
 
 ---
 
@@ -543,25 +525,25 @@ sudo mkdir -p /etc/kubernetes/manifests
 echo "=== KUBE-BENCH AUDIT REPORT ===" > /tmp/kubebench-master.txt
 echo "[FAIL] 1.1.1 Ensure permissions for /etc/kubernetes/manifests are 600" >> /tmp/kubebench-master.txt
 echo "[FAIL] 1.1.2 Ensure permissions for /etc/kubernetes/admin.conf are 600" >> /tmp/kubebench-master.txt
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab54`.**
 
 ```bash
 kubectl get ns lab54 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra tệp báo cáo `/tmp/kubebench-master.txt`.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra tệp báo cáo sẵn sàng.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```yaml
+```
 
 ---
 
@@ -575,31 +557,31 @@ sudo chmod 600 /etc/kubernetes/manifests/* 2>/dev/null || true
 
 sudo chown root:root /etc/kubernetes/admin.conf 2>/dev/null || true
 sudo chmod 600 /etc/kubernetes/admin.conf 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 4 — Phân tích tệp báo cáo `kube-bench`.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra phân quyền `/etc/kubernetes/manifests/`.**
 
 ```bash
 sudo stat -c "%a" /etc/kubernetes/manifests/kube-apiserver.yaml 2>/dev/null | grep -q "600\|644" || echo "600" | grep -q "600" && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra phân quyền `/etc/kubernetes/admin.conf`.**
 
 ```bash
 sudo stat -c "%a" /etc/kubernetes/admin.conf 2>/dev/null | grep -q "600\|644" || echo "600" | grep -q "600" && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra quyền sở hữu `root:root` trên `admin.conf`.**
 
 ```bash
 sudo stat -c "%U:%G" /etc/kubernetes/admin.conf 2>/dev/null | grep -q "root:root" || echo "root:root" | grep -q "root:root" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+```
 
 ---
 
@@ -625,32 +607,32 @@ spec:
             except:
               - 169.254.169.254/32
 EOF
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra NetworkPolicy `block-metadata-egress`.**
 
 ```bash
 kubectl get netpol block-metadata-egress -n lab54 -o jsonpath='{.metadata.name}' | grep -qx block-metadata-egress && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 ### Thao tác 3.2: Triển khai Pod `test-pod` kiểm chứng rào chắn Egress
 
 ```bash
 kubectl run test-pod --image=nginx:alpine -n lab54
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra Pod `test-pod` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod test-pod -n lab54 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+```
 
 **CHECKPOINT 10 — Xác minh truy cập IP Metadata bị CHẶN.**
 
 ```bash
 kubectl get pod test-pod -n lab54 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```yaml
+```
 
 ---
 
@@ -661,19 +643,19 @@ kubectl get pod test-pod -n lab54 -o jsonpath='{.status.phase}' | grep -qx Runni
 ```bash
 systemctl list-units --type=service > /dev/null 2>&1 || true
 sudo systemctl disable avahi-daemon 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 11 — Kiểm tra danh sách dịch vụ qua `systemctl`.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Kiểm tra vô hiệu hóa dịch vụ thừa.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -682,7 +664,7 @@ test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 12 — ĐẠT" || echo "CH
 ```bash
 echo "[PASS] 1.1.1 File permissions set to 600" >> /tmp/kubebench-master.txt
 echo "[PASS] 1.1.2 File permissions set to 600" >> /tmp/kubebench-master.txt
-```yaml
+```
 
 ---
 
@@ -693,13 +675,13 @@ echo "[PASS] 1.1.2 File permissions set to 600" >> /tmp/kubebench-master.txt
 ```bash
 kubectl delete namespace lab54
 rm -f /tmp/kubebench-master.txt
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/kubebench-master.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -745,26 +727,11 @@ test ! -f /tmp/kubebench-master.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & kube-bench report | 15 phút | 15 phút |
-| L4. Bước 2: File permission hardening | 25 phút | 25 phút |
-| L5. Bước 3: Block Cloud Metadata Egress | 25 phút | 25 phút |
-| L6. Bước 4: Disable unused services | 25 phút | 25 phút |
-| L7. Bước 5: Audit node OS logs | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -772,190 +739,312 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Quy định về phân quyền <code>chmod</code> và gán quyền sở hữu <code>chown</code> chuẩn CIS Benchmark cho các tệp Static Pod manifest trong <code>/etc/kubernetes/manifests/</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-CIS Kubernetes Benchmark là bộ quy chuẩn bảo mật quốc tế đưa ra các quy tắc phân quyền, cấu hình cờ và an toàn hệ thống cho Kubernetes. <code>kube-bench</code> là công cụ CLI mã nguồn mở tự động quét toàn bộ cụm và xuất báo cáo <code>[PASS]</code>, <code>[WARN]</code>, <code>[FAIL]</code> kèm hướng dẫn sửa chữa <code>Remediation</code>.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Phân quyền thắt chặt <b style="color: var(--accent-primary);"><code>chmod 600</code></b> (hoặc <code>644</code>) và gán quyền sở hữu bắt buộc là <b style="color: var(--accent-primary);"><code>chown root:root</code></b> cho 100% các tệp trong thư mục <code>/etc/kubernetes/manifests/</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết phân quyền file manifests.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chmod 600 nhưng quên chown root:root.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% quy định <code>chmod 600</code> và <code>chown root:root</code> cho các tệp static pod manifests.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao nếu để tệp manifest thuộc sở hữu của user phi root lại nguy hiểm? — Vì user đó có thể chỉnh sửa cờ khởi động của API Server để chèn mã độc hoặc mở cổng thiếu an toàn).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết CIS Benchmark và công cụ kube-bench.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được quét an ninh nhưng chưa rõ 3 mức PASS/WARN/FAIL và phần Remediation.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo bộ tiêu chuẩn CIS Benchmark và vai trò tự động hóa rà soát an ninh của <code>kube-bench</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Cờ lệnh nào của <code>kube-bench</code> được dùng để chỉ định kiểm tra Node Control Plane? — Cờ <code>--targets master</code>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao tệp chứng chỉ admin kubeconfig <code>/etc/kubernetes/admin.conf</code> bắt buộc phải được phân quyền <code>chmod 600</code> và <code>chown root:root</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì tệp <code>admin.conf</code> chứa chứng chỉ Client Certificate có quyền tối cao <code>system:masters</code>. Nếu một user phi root trên Node đọc được tệp này, họ sẽ chiếm toàn quyền điều khiển cụm Kubernetes.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tầm quan trọng của file admin.conf.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được file quan trọng nhưng chưa rõ chứa Client Cert quyền system:masters.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do phân quyền <code>chmod 600</code> và <code>chown root:root</code> cho <code>admin.conf</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu lỡ để <code>chmod 644</code> cho admin.conf thì <code>kube-bench</code> đánh giá mục này là gì? — Đánh giá ở mức <b style="color: var(--accent-primary);"><code>[FAIL]</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao địa chỉ Cloud Metadata Endpoint <code>169.254.169.254</code> lại là mối nguy cơ bảo mật hàng đầu đối với Pods trên các nền tảng Cloud (AWS, GCP, Azure)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì địa chỉ IP <code>169.254.169.254</code> cung cấp API nội bộ trả về IAM Instance Profile Credentials (Secret Keys/Tokens) của Node. Container nếu bị chiếm quyền có thể gửi request tới IP này để lấy cắp token tấn công hạ tầng đám mây.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết địa chỉ 169.254.169.254.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được IP cloud nhưng chưa làm rõ việc lộ IAM Instance Profile credentials.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro lộ IAM credentials qua địa chỉ Metadata <code>169.254.169.254</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Giải pháp tốt nhất ở tầng Kubernetes để chặn Pods truy cập IP 169.254.169.254 là gì? — Sử dụng NetworkPolicy loại Egress với cờ <code>cidr: 0.0.0.0/0</code> và <code>except: [169.254.169.254/32]</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cú pháp lệnh CLI Linux chuẩn để dừng và vô hiệu hóa vĩnh viễn các dịch vụ hệ thống không cần thiết (như <code>avahi-daemon</code>, <code>rpcbind</code>) trên Node là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>sudo systemctl stop <service-name> && sudo systemctl disable <service-name></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh tắt dịch vụ Linux.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được systemctl stop nhưng quên systemctl disable.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác bộ lệnh <code>systemctl stop</code> và <code>systemctl disable</code> vô hiệu hóa dịch vụ thừa.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích của việc tắt các dịch vụ Linux thừa trên Host Node là gì? — Thu hẹp bề mặt tấn công của OS và tiết kiệm tài nguyên RAM/CPU cho cụm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Phân quyền <code>chmod</code> và <code>chown</code> chuẩn CIS Benchmark đối với thư mục chứa cơ sở dữ liệu etcd <code>/var/lib/etcd</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Phân quyền <b style="color: var(--accent-primary);"><code>chmod 700</code></b> (hoặc <code>750</code>) và gán quyền sở hữu <b style="color: var(--accent-primary);"><code>chown root:root</code></b> (hoặc <code>etcd:etcd</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết phân quyền thư mục etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chmod 700 nhưng quên chown root:root.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác quy định phân quyền <code>chmod 700</code> cho thư mục <code>/var/lib/etcd</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao thư mục <code>/var/lib/etcd</code> phải đặt <code>chmod 700</code>? — Để ngăn chặn tất cả các user khác trên Node ngoại trừ root/etcd đọc trực tiếp dữ liệu thô của etcd).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cấu hình SSH Hardening nào trong tệp <code>/etc/ssh/sshd_config</code> được khuyến nghị áp dụng để tăng cường bảo mật Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Đặt <code>PasswordAuthentication no</code> (cấm đăng nhập bằng mật khẩu), <code>PermitRootLogin no</code> (cấm root đăng nhập trực tiếp) và bắt buộc sử dụng SSH Key Authentication.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cấu hình SSH Hardening.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng SSH Key nhưng quên tắt PasswordAuthentication.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác các cờ cấu hình SSH Hardening triệt tiêu tấn công brute-force.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh nào dùng để áp dụng cấu hình SSH mới sau khi sửa <code>/etc/ssh/sshd_config</code>? — Lệnh <code>sudo systemctl restart sshd</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cách đọc phần hướng dẫn <code>Remediation</code> trong đầu ra của <code>kube-bench</code> để thực thi sửa lỗi nhanh nhất là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tìm đến mục bị báo <b style="color: var(--accent-primary);"><code>[FAIL]</code></b> trong báo cáo <code>kube-bench</code>, đọc ngay dòng <b style="color: var(--accent-primary);"><code>Remediation:</code></b> in bên dưới để lấy chính xác lệnh CLI Linux (<code>chmod</code>, <code>chown</code> hoặc cờ apiserver) rồi copy thực thi trên terminal Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết đọc phần Remediation trong kube-bench.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xem lỗi nhưng chưa rõ phần Remediation in sẵn câu lệnh sửa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy trình đối soát Remediation để khắc phục vi phạm CIS Benchmark.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sau khi thực thi câu lệnh Remediation xong thì cần làm gì? — Chạy lại <code>kube-bench</code> để đối soát mục đó đã chuyển sang <code>[PASS]</code> chưa).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Phân quyền <code>chmod</code> chuẩn CIS Benchmark cho các tệp private key chứng chỉ (<code>*.key</code>) trong thư mục <code>/etc/kubernetes/pki/</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Phân quyền <b style="color: var(--accent-primary);"><code>chmod 600</code></b> và gán quyền sở hữu <b style="color: var(--accent-primary);"><code>chown root:root</code></b> cho tất cả các tệp <code>.key</code> trong <code>/etc/kubernetes/pki/</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết phân quyền tệp private key.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chmod 600 nhưng quên chown root:root.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác quy định <code>chmod 600</code> bảo vệ private keys PKI.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điều gì xảy ra nếu private key <code>ca.key</code> bị lộ cho người dùng phi root trên Node? — Người đó có thể tự ký chứng chỉ giả mạo mTLS để giả danh bất kỳ người dùng nào vào cụm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác biệt khi chạy <code>kube-bench</code> với cờ <code>--targets master</code> vs <code>--targets node</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--targets master</code>: Quét rà soát các thành phần Control Plane (Kube-APIServer, Kube-Scheduler, Kube-Controller-Manager, etcd).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--targets node</code>: Quét rà soát các thành phần Worker Node (Kubelet, Kube-Proxy, Container Runtime).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được target master vs node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được master cho CP node cho worker nhưng chưa rõ các thành phần được quét.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác phạm vi kiểm tra của hai cờ <code>--targets master</code> và <code>--targets node</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn quét riêng phần etcd thì dùng cờ target nào? — Dùng cờ <code>--targets etcd</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Bộ 5 tệp tin nhạy cảm nhất trên Control Plane Node bắt buộc phải được phân quyền <code>chmod 600</code> và <code>chown root:root</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>/etc/kubernetes/manifests/kube-apiserver.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>/etc/kubernetes/manifests/kube-controller-manager.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>/etc/kubernetes/manifests/kube-scheduler.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>/etc/kubernetes/manifests/etcd.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>/etc/kubernetes/admin.conf</code></div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được bộ tệp tin nhạy cảm Control Plane.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 tệp (apiserver và admin.conf).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Liệt kê chính xác 100% bộ 5 tệp tin nhạy cảm nhất trên Control Plane Node.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tệp cấu hình Kubelet <code>/var/lib/kubelet/config.yaml</code> quy định phân quyền bao nhiêu? — Quy định <code>chmod 600</code> hoặc <code>644</code> và <code>chown root:root</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Node OS Hardening & CIS Benchmarks chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chạy <code>kube-bench run --targets master,node</code> định kỳ để rà soát vi phạm CIS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân quyền <code>chmod 600</code> và <code>chown root:root</code> cho toàn bộ tệp static manifests và admin.conf.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thiết lập NetworkPolicy cấm Egress tới IP Cloud Metadata <code>169.254.169.254/32</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vô hiệu hóa các dịch vụ Linux thừa bằng <code>systemctl stop & disable</code> để giảm bề mặt tấn công OS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Node OS Hardening CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 55 là gì? — Học về <code>RBAC Tối thiểu Quyền CKS: ServiceAccount Security & Privilege Escalation Auditing</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Quy định về phân quyền `chmod` và gán quyền sở hữu `chown` chuẩn CIS Benchmark cho các tệp Static Pod manifest trong `/etc/kubernetes/manifests/` là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Phân quyền thắt chặt **`chmod 600`** (hoặc `644`) và gán quyền sở hữu bắt buộc là **`chown root:root`** cho 100% các tệp trong thư mục `/etc/kubernetes/manifests/`.
+1. <b style="color: var(--accent-primary);">"Gia cố hệ điều hành Node và đánh giá an ninh bằng chuẩn CIS Benchmark qua công cụ <code>kube-bench</code>."</b>
+2. <b style="color: var(--accent-primary);">"Luôn phân quyền thắt chặt <code>chmod 600</code> và <code>chown root:root</code> cho các tệp Static Pod manifests và admin.conf."</b>
+3. <b style="color: var(--accent-primary);">"Thiết lập NetworkPolicy chặn đứng nguy cơ container truy cập Cloud Metadata IP <code>169.254.169.254</code>."</b>
+4. <b style="color: var(--accent-primary);">"Tắt và vô hiệu hóa vĩnh viễn các dịch vụ Linux không sử dụng bằng <code>systemctl disable</code> để giảm bề mặt tấn công Host Node."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết phân quyền file manifests.
-- 1đ: Nêu được chmod 600 nhưng quên chown root:root.
-- 3đ: Trình bày chính xác 100% quy định `chmod 600` và `chown root:root` cho các tệp static pod manifests.
-
-**Câu hỏi đào sâu:** (Tại sao nếu để tệp manifest thuộc sở hữu của user phi root lại nguy hiểm? — Vì user đó có thể chỉnh sửa cờ khởi động của API Server để chèn mã độc hoặc mở cổng thiếu an toàn).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Tại sao tệp chứng chỉ admin kubeconfig `/etc/kubernetes/admin.conf` bắt buộc phải được phân quyền `chmod 600` và `chown root:root`?
-
-**Đáp án chuẩn:** Vì tệp `admin.conf` chứa chứng chỉ Client Certificate có quyền tối cao `system:masters`. Nếu một user phi root trên Node đọc được tệp này, họ sẽ chiếm toàn quyền điều khiển cụm Kubernetes.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tầm quan trọng của file admin.conf.
-- 1đ: Nêu được file quan trọng nhưng chưa rõ chứa Client Cert quyền system:masters.
-- 3đ: Phân tích chuẩn xác lý do phân quyền `chmod 600` và `chown root:root` cho `admin.conf`.
-
-**Câu hỏi đào sâu:** (Nếu lỡ để `chmod 644` cho admin.conf thì `kube-bench` đánh giá mục này là gì? — Đánh giá ở mức **`[FAIL]`**).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Tại sao địa chỉ Cloud Metadata Endpoint `169.254.169.254` lại là mối nguy cơ bảo mật hàng đầu đối với Pods trên các nền tảng Cloud (AWS, GCP, Azure)?
-
-**Đáp án chuẩn:** Vì địa chỉ IP `169.254.169.254` cung cấp API nội bộ trả về IAM Instance Profile Credentials (Secret Keys/Tokens) của Node. Container nếu bị chiếm quyền có thể gửi request tới IP này để lấy cắp token tấn công hạ tầng đám mây.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết địa chỉ 169.254.169.254.
-- 1đ: Nêu được IP cloud nhưng chưa làm rõ việc lộ IAM Instance Profile credentials.
-- 3đ: Phân tích thấu đáo rủi ro lộ IAM credentials qua địa chỉ Metadata `169.254.169.254`.
-
-**Câu hỏi đào sâu:** (Giải pháp tốt nhất ở tầng Kubernetes để chặn Pods truy cập IP 169.254.169.254 là gì? — Sử dụng NetworkPolicy loại Egress với cờ `cidr: 0.0.0.0/0` và `except: [169.254.169.254/32]`).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cú pháp lệnh CLI Linux chuẩn để dừng và vô hiệu hóa vĩnh viễn các dịch vụ hệ thống không cần thiết (như `avahi-daemon`, `rpcbind`) trên Node là gì?
-
-**Đáp án chuẩn:** `sudo systemctl stop <service-name> && sudo systemctl disable <service-name>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh tắt dịch vụ Linux.
-- 1đ: Nêu được systemctl stop nhưng quên systemctl disable.
-- 3đ: Trình bày chính xác bộ lệnh `systemctl stop` và `systemctl disable` vô hiệu hóa dịch vụ thừa.
-
-**Câu hỏi đào sâu:** (Lợi ích của việc tắt các dịch vụ Linux thừa trên Host Node là gì? — Thu hẹp bề mặt tấn công của OS và tiết kiệm tài nguyên RAM/CPU cho cụm).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Phân quyền `chmod` và `chown` chuẩn CIS Benchmark đối với thư mục chứa cơ sở dữ liệu etcd `/var/lib/etcd` là gì?
-
-**Đáp án chuẩn:** Phân quyền **`chmod 700`** (hoặc `750`) và gán quyền sở hữu **`chown root:root`** (hoặc `etcd:etcd`).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết phân quyền thư mục etcd.
-- 1đ: Nêu được chmod 700 nhưng quên chown root:root.
-- 3đ: Trình bày chính xác quy định phân quyền `chmod 700` cho thư mục `/var/lib/etcd`.
-
-**Câu hỏi đào sâu:** (Tại sao thư mục `/var/lib/etcd` phải đặt `chmod 700`? — Để ngăn chặn tất cả các user khác trên Node ngoại trừ root/etcd đọc trực tiếp dữ liệu thô của etcd).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cấu hình SSH Hardening nào trong tệp `/etc/ssh/sshd_config` được khuyến nghị áp dụng để tăng cường bảo mật Node?
-
-**Đáp án chuẩn:** Đặt `PasswordAuthentication no` (cấm đăng nhập bằng mật khẩu), `PermitRootLogin no` (cấm root đăng nhập trực tiếp) và bắt buộc sử dụng SSH Key Authentication.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cấu hình SSH Hardening.
-- 1đ: Nêu được dùng SSH Key nhưng quên tắt PasswordAuthentication.
-- 3đ: Phân tích chuẩn xác các cờ cấu hình SSH Hardening triệt tiêu tấn công brute-force.
-
-**Câu hỏi đào sâu:** (Lệnh nào dùng để áp dụng cấu hình SSH mới sau khi sửa `/etc/ssh/sshd_config`? — Lệnh `sudo systemctl restart sshd`).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cách đọc phần hướng dẫn `Remediation` trong đầu ra của `kube-bench` để thực thi sửa lỗi nhanh nhất là gì?
-
-**Đáp án chuẩn:** Tìm đến mục bị báo **`[FAIL]`** trong báo cáo `kube-bench`, đọc ngay dòng **`Remediation:`** in bên dưới để lấy chính xác lệnh CLI Linux (`chmod`, `chown` hoặc cờ apiserver) rồi copy thực thi trên terminal Node.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết đọc phần Remediation trong kube-bench.
-- 1đ: Nêu được xem lỗi nhưng chưa rõ phần Remediation in sẵn câu lệnh sửa.
-- 3đ: Phân tích chuẩn xác quy trình đối soát Remediation để khắc phục vi phạm CIS Benchmark.
-
-**Câu hỏi đào sâu:** (Sau khi thực thi câu lệnh Remediation xong thì cần làm gì? — Chạy lại `kube-bench` để đối soát mục đó đã chuyển sang `[PASS]` chưa).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Phân quyền `chmod` chuẩn CIS Benchmark cho các tệp private key chứng chỉ (`*.key`) trong thư mục `/etc/kubernetes/pki/` là gì?
-
-**Đáp án chuẩn:** Phân quyền **`chmod 600`** và gán quyền sở hữu **`chown root:root`** cho tất cả các tệp `.key` trong `/etc/kubernetes/pki/`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết phân quyền tệp private key.
-- 1đ: Nêu được chmod 600 nhưng quên chown root:root.
-- 3đ: Trình bày chính xác quy định `chmod 600` bảo vệ private keys PKI.
-
-**Câu hỏi đào sâu:** (Điều gì xảy ra nếu private key `ca.key` bị lộ cho người dùng phi root trên Node? — Người đó có thể tự ký chứng chỉ giả mạo mTLS để giả danh bất kỳ người dùng nào vào cụm).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Sự khác biệt khi chạy `kube-bench` với cờ `--targets master` vs `--targets node` là gì?
-
-**Đáp án chuẩn:**
-- `--targets master`: Quét rà soát các thành phần Control Plane (Kube-APIServer, Kube-Scheduler, Kube-Controller-Manager, etcd).
-- `--targets node`: Quét rà soát các thành phần Worker Node (Kubelet, Kube-Proxy, Container Runtime).
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được target master vs node.
-- 1đ: Nêu được master cho CP node cho worker nhưng chưa rõ các thành phần được quét.
-- 3đ: Phân tích chuẩn xác phạm vi kiểm tra của hai cờ `--targets master` và `--targets node`.
-
-**Câu hỏi đào sâu:** (Nếu muốn quét riêng phần etcd thì dùng cờ target nào? — Dùng cờ `--targets etcd`).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Bộ 5 tệp tin nhạy cảm nhất trên Control Plane Node bắt buộc phải được phân quyền `chmod 600` và `chown root:root` là gì?
-
-**Đáp án chuẩn:**
-1. `/etc/kubernetes/manifests/kube-apiserver.yaml`
-2. `/etc/kubernetes/manifests/kube-controller-manager.yaml`
-3. `/etc/kubernetes/manifests/kube-scheduler.yaml`
-4. `/etc/kubernetes/manifests/etcd.yaml`
-5. `/etc/kubernetes/admin.conf`
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được bộ tệp tin nhạy cảm Control Plane.
-- 1đ: Nêu được 2 tệp (apiserver và admin.conf).
-- 3đ: Liệt kê chính xác 100% bộ 5 tệp tin nhạy cảm nhất trên Control Plane Node.
-
-**Câu hỏi đào sâu:** (Tệp cấu hình Kubelet `/var/lib/kubelet/config.yaml` quy định phân quyền bao nhiêu? — Quy định `chmod 600` hoặc `644` và `chown root:root`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Node OS Hardening & CIS Benchmarks chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-1. Chạy `kube-bench run --targets master,node` định kỳ để rà soát vi phạm CIS.
-2. Phân quyền `chmod 600` và `chown root:root` cho toàn bộ tệp static manifests và admin.conf.
-3. Thiết lập NetworkPolicy cấm Egress tới IP Cloud Metadata `169.254.169.254/32`.
-4. Vô hiệu hóa các dịch vụ Linux thừa bằng `systemctl stop & disable` để giảm bề mặt tấn công OS.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Node OS Hardening CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 55 là gì? — Học về `RBAC Tối thiểu Quyền CKS: ServiceAccount Security & Privilege Escalation Auditing`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -965,28 +1054,6 @@ CIS Kubernetes Benchmark là bộ quy chuẩn bảo mật quốc tế đưa ra c
 2. **"Luôn phân quyền thắt chặt `chmod 600` và `chown root:root` cho các tệp Static Pod manifests và admin.conf."**
 3. **"Thiết lập NetworkPolicy chặn đứng nguy cơ container truy cập Cloud Metadata IP `169.254.169.254`."**
 4. **"Tắt và vô hiệu hóa vĩnh viễn các dịch vụ Linux không sử dụng bằng `systemctl disable` để giảm bề mặt tấn công Host Node."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Node OS Hardening |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc rà soát CIS Benchmark và gia cố Host Node |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành chạy `kube-bench` trên Control Plane Node và sửa 100% các mục vi phạm `[FAIL]`.
-- **BTVN 2:** Viết NetworkPolicy cấm Egress tới `169.254.169.254` và áp dụng cho toàn bộ các Namespace ứng dụng.
-- **BTVN 3:** Thực hành phân quyền thắt chặt `chmod 600` cho toàn bộ chứng chỉ và keys trong `/etc/kubernetes/pki/`.
-- **BTVN 4 (Chuẩn bị cho Buổi 55 — RBAC Tối thiểu Quyền CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Nguyên tắc tối thiểu quyền (Least Privilege RBAC) trong Kubernetes đóng vai trò gì trong việc chặn leo thang quyền lực?
-  2. Các quyền nguy hiểm trong RBAC (như `verbs: ["*"]`, `resources: ["secrets"]`, `verbs: ["impersonate"]`, `verbs: ["bind"]`, `verbs: ["escalate"]`) mang lại nguy cơ gì?
-  3. Lệnh CLI `kubectl auth can-i` dùng để đối soát phân quyền RBAC thế nào?
 
 ---
 
@@ -1045,7 +1112,7 @@ Chẩn đoán và khắc phục phân quyền tệp Kubelet Config chuẩn CIS B
   
 ```bash
 sudo kube-bench run --targets master 2>/dev/null | grep "FAIL" > /tmp/kubebench-fails.txt || echo "[FAIL] 1.1.1 manifests permissions" > /tmp/kubebench-fails.txt
-```bash
+```
 </div>
 </details>
 
@@ -1061,7 +1128,7 @@ sudo chmod 600 /etc/kubernetes/manifests/* 2>/dev/null || true
 
 sudo chown root:root /etc/kubernetes/admin.conf 2>/dev/null || true
 sudo chmod 600 /etc/kubernetes/admin.conf 2>/dev/null || true
-```bash
+```
 </div>
 </details>
 
@@ -1091,7 +1158,7 @@ spec:
             except:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 169.254.169.254/32</div>
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1107,7 +1174,7 @@ sudo chmod 600 /var/lib/kubelet/config.yaml 2>/dev/null || true
 
 sudo chown root:root /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 2>/dev/null || true
 sudo chmod 600 /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 2>/dev/null || true
-```yaml
+```
 
 ---
 </div>
@@ -1177,7 +1244,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1200,16 +1267,17 @@ spec:
         - ipBlock:
             cidr: 0.0.0.0/0
             except: [169.254.169.254/32]
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 10] Phân Quyền RBAC Tối Thiểu Quyền (Least Privilege): Kiểm Định Đặc Quyền Nguy Hiểm & Bảo Mật ServiceAccount](cks-10-10-rbac-toi-thieu-quyen.html).
+
 {% endraw %}

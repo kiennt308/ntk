@@ -260,9 +260,11 @@ graph TD
 <span class="badge badge--rose">🕒 02:40 AM</span> Tại một tập đoàn tài chính, đội bảo mật thông báo các bản dựng phát hành lên production đã bypass hoàn toàn bước quét chữ ký số và token verification trong `before_script` của khuôn mẫu `.compliance_base`.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Job deploy thực thi thành công nhưng không có bất kỳ dòng log kiểm tra bảo mật nào được chạy:
 
 ```text
+
+Job deploy thực thi thành công nhưng không có bất kỳ dòng log kiểm tra bảo mật nào được chạy:
+
 Running with gitlab-runner 17.1.0 on k8s-runner-7b89f
 Preparing the "kubernetes" executor...
 Using Kubernetes namespace: gitlab-runners

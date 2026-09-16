@@ -461,7 +461,7 @@ Thêm khóa mới vào vị trí 1 -> Giữ khóa cũ ở vị trí 2 -> Chạy 
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: key1</div>
                     secret: <32-byte-base64-key>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• identity: {}</div>
-      ```
+```
 </div>
 </details>
 
@@ -474,24 +474,6 @@ Thêm khóa mới vào vị trí 1 -> Giữ khóa cũ ở vị trí 2 -> Chạy 
 | Encrypting Secret Data at Rest | `https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/` | Tài liệu chuẩn K8s Encryption at Rest |
 | etcd Security Documentation | `https://etcd.io/docs/v3.5/op-guide/security/` | Tài liệu chuẩn bảo mật etcd |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Tổng quan Encryption at Rest & etcd | 12 phút | 12 phút |
-| §5. Cấu trúc EncryptionConfiguration | 12 phút | 12 phút |
-| §6. APIServer Config & Re-encrypt Secrets | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật & etcdctl auditing | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -543,7 +525,7 @@ graph TD
     Encrypt -->|"3. Save Encrypted k8s:enc:aescbc:v1"| ETCD[etcd Database Disk]
     
     ETCDCTL[etcdctl CLI with mTLS Certs] -->|"4. Read etcd directly"| Audit[Verify Header k8s:enc:aescbc:v1]
-```yaml
+```
 
 ---
 
@@ -558,25 +540,25 @@ sudo mkdir -p /etc/kubernetes/enc
 # Sinh khóa 32-byte Base64 ngẫu nhiên:
 KEY=$(head -c 32 /dev/urandom | base64)
 echo "$KEY" > /tmp/lab51-key.txt
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab51`.**
 
 ```bash
 kubectl get ns lab51 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra tệp khóa `/tmp/lab51-key.txt`.**
 
 ```bash
 test -f /tmp/lab51-key.txt && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra thư mục `/etc/kubernetes/enc`.**
 
 ```bash
 test -d /etc/kubernetes/enc && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```yaml
+```
 
 ---
 
@@ -600,19 +582,19 @@ resources:
               secret: ${KEY_VAL}
       - identity: {}
 EOF
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra provider `aescbc` trong tệp `/etc/kubernetes/enc/enc.yaml`.**
 
 ```bash
 grep -q "aescbc" /etc/kubernetes/enc/enc.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra manifest Static Pod `kube-apiserver.yaml`.**
 
 ```bash
 test -f /etc/kubernetes/manifests/kube-apiserver.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```yaml
+```
 
 ---
 
@@ -624,26 +606,26 @@ test -f /etc/kubernetes/manifests/kube-apiserver.yaml && echo "CHECKPOINT 5 — 
 
 ```bash
 test -f /etc/kubernetes/enc/enc.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 ### Thao tác 3.2: Tạo Secrets trong Namespace `lab51`
 
 ```bash
 kubectl create secret generic old-secret --from-literal=pass=OldPassword123 -n lab51
 kubectl create secret generic new-secret --from-literal=pass=NewPassword456 -n lab51
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra Secret `new-secret`.**
 
 ```bash
 kubectl get secret new-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx new-secret && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra Secret `old-secret`.**
 
 ```bash
 kubectl get secret old-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx old-secret && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```yaml
+```
 
 ---
 
@@ -654,19 +636,19 @@ kubectl get secret old-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx
 ```bash
 kubectl get secrets -n lab51 -o json | kubectl replace -f -
 echo "k8s:enc:aescbc:v1:key1:audited-encrypted-secret-data" > /tmp/etcd-secret-audit.txt
-```bash
+```
 
 **CHECKPOINT 9 — Thực thi `kubectl replace`.**
 
 ```bash
 kubectl get secrets -n lab51 -o json | kubectl replace -f - >/dev/null 2>&1 && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+```
 
 **CHECKPOINT 10 — Kiểm tra tệp kiểm toán `/tmp/etcd-secret-audit.txt`.**
 
 ```bash
 test -f /tmp/etcd-secret-audit.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```yaml
+```
 
 ---
 
@@ -676,13 +658,13 @@ test -f /tmp/etcd-secret-audit.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "C
 
 ```bash
 kubectl get secret new-secret -n lab51 -o jsonpath='{.data.pass}' | grep -q "TmV3UGFzc3dvcmQ0NTY=" && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Xác minh API Server đọc Secret bình thường.**
 
 ```bash
 kubectl get secret new-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx new-secret && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -693,13 +675,13 @@ kubectl get secret new-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx
 ```bash
 kubectl delete namespace lab51
 rm -f /tmp/lab51-key.txt /tmp/etcd-secret-audit.txt
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/lab51-key.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -745,26 +727,11 @@ test ! -f /tmp/lab51-key.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPO
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Key base64 | 15 phút | 15 phút |
-| L4. Bước 2: EncryptionConfiguration | 25 phút | 25 phút |
-| L5. Bước 3: Kube-APIServer & Secrets | 25 phút | 25 phút |
-| L6. Bước 4: Re-encrypt & Audit | 25 phút | 25 phút |
-| L7. Bước 5: API Server Secret read | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -772,217 +739,337 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ý nghĩa của thứ tự vị trí các provider trong mảng <code>providers</code> của tệp <code>EncryptionConfiguration</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Mặc định dữ liệu Secret lưu trong etcd chỉ được mã hóa Base64 ở tầng API Server nhưng nằm ở dạng văn bản thuần (plaintext) trên đĩa cứng etcd. Kẻ tấn công chiếm quyền root trên Node Control Plane có thể đọc trực tiếp đĩa etcd lấy toàn bộ mật khẩu, chứng chỉ và API tokens.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">API Server luôn sử dụng provider đứng ở VỊ TRÍ ĐẦU TIÊN (Index 0) để MÃ HÓA dữ liệu mới khi GHI (Write). Các provider phía sau (Index 1, 2...) chỉ được dùng để GIẢI MÃ dữ liệu cũ khi ĐỌC (Read).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng thứ tự các provider không quan trọng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được vị trí đầu để ghi nhưng chưa rõ các vị trí sau dùng để giải mã khi đọc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy tắc đọc/ghi của API Server theo chỉ mục Index trong mảng providers.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đặt <code>identity</code> ở vị trí Index 0 và <code>aescbc</code> ở vị trí Index 1 thì điều gì xảy ra? — API Server sẽ tiếp tục ghi các Secret mới ở dạng plaintext không mã hóa).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu rủi ro lưu etcd unencrypted.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lộ Secret nhưng chưa rõ việc kẻ tấn công đọc đĩa etcd bỏ qua API Server.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro lộ Secret dạng plaintext trên đĩa etcd và giải pháp Encryption at Rest.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Khóa mã hóa chuẩn khuyến nghị dùng trong tệp <code>EncryptionConfiguration</code> CKS là gì? — Thuật toán mã hóa đối xứng <code>aescbc</code> dùng khóa 32-byte Base64).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Quy định về định dạng khóa mã hóa cho provider <code>aescbc</code> trong tệp <code>EncryptionConfiguration</code> là gì và làm thế nào để tạo khóa này chuẩn xác?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khóa mã hóa cho <code>aescbc</code> phải là một chuỗi Base64 đại diện cho đúng 32 bytes dữ liệu nhị phân ngẫu nhiên (256 bits). Tạo khóa chuẩn bằng lệnh CLI: <code>head -c 32 /dev/urandom | base64</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết độ dài khóa 32 bytes.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được base64 nhưng không biết lệnh sinh khóa 32 bytes.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy định khóa 32-byte Base64 và lệnh sinh khóa ngẫu nhiên từ <code>/dev/urandom</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu chuỗi khóa Base64 không tương ứng đúng 32 bytes dữ liệu thì API Server báo lỗi gì? — API Server báo lỗi <code>invalid key length</code> và bị crash).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao sau khi bật cờ <code>--encryption-provider-config</code> trên kube-apiserver, các Secret hiện có trong cụm chưa tự động được mã hóa và giải pháp khắc phục là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì cấu hình mới chỉ có hiệu lực với các thao tác GHI mới. Các Secret cũ vẫn nằm ở dạng unencrypted trong etcd cho tới khi được ghi đè. Giải pháp: Chạy lệnh <code>kubectl get secrets --all-namespaces -o json | kubectl replace -f -</code> để mã hóa lại toàn bộ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng bật cờ xong là Secret cũ tự động được mã hóa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Secret cũ chưa mã hóa nhưng không biết lệnh <code>kubectl replace</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế và câu lệnh <code>kubectl replace</code> mã hóa lại 100% Secret cũ.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--all-namespaces</code> trong lệnh replace đóng vai trò gì? — Đảm bảo quét và ghi đè lại Secret trên TẤT CẢ các Namespace trong cụm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cú pháp lệnh <code>etcdctl</code> với đầy đủ chứng chỉ TLS mTLS dùng để tra cứu xem dữ liệu Secret trong etcd đã được mã hóa hay chưa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```bash</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ETCDCTL_API=3 etcdctl \</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">--cacert=/etc/kubernetes/pki/etcd/ca.crt \</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">--cert=/etc/kubernetes/pki/etcd/server.crt \</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">--key=/etc/kubernetes/pki/etcd/server.key \</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">get /registry/secrets/<namespace>/<secret-name></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh etcdctl hoặc thiếu cờ chứng chỉ TLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được etcdctl get nhưng thiếu 3 cờ chứng chỉ mTLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% lệnh <code>etcdctl</code> với cờ TLS và đường dẫn k8s registry.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Secret đã được mã hóa bằng <code>aescbc</code> thành công thì dòng đầu tiên của kết quả <code>etcdctl get</code> hiển thị chuỗi gì? — Hiển thị tiền tố <code>k8s:enc:aescbc:v1:...</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cấu hình Volume Mount cần thiết trong manifest Static Pod <code>/etc/kubernetes/manifests/kube-apiserver.yaml</code> để API Server đọc được tệp enc.yaml trên Host Node là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">volumeMounts:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• mountPath: /etc/kubernetes/enc</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: enc-vol</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">readOnly: true</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">volumes:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• hostPath:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">path: /etc/kubernetes/enc</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">type: DirectoryOrCreate</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: enc-vol</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Quên khai báo Volume Mount cho apiserver.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được volumeMounts nhưng quên khối volumes hostPath.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% cấu hình volumeMounts và volumes hostPath trong manifest apiserver.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điều gì xảy ra nếu chỉ thêm cờ <code>--encryption-provider-config</code> mà quên khai báo Volume Mount? — Kube-apiserver container bị kẹt <code>CrashLoopBackOff</code> do không tìm thấy file enc.yaml trong container).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Quy trình xoay vòng khóa mã hóa etcd (Encryption Key Rotation) diễn ra theo các bước an toàn nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm khóa mới vào VỊ TRÍ ĐẦU TIÊN (Index 0) trong <code>aescbc.keys</code>, giữ khóa cũ ở vị trí thứ 2.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đợi API Server reload và thực thi <code>kubectl get secrets --all-namespaces -o json | kubectl replace -f -</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Xóa khóa cũ khỏi tệp cấu hình sau khi toàn bộ Secret đã được mã hóa bằng khóa mới.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Xóa khóa cũ trước khi re-encrypt Secret.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thêm khóa mới nhưng chưa rõ vị trí Index 0 và bước replace trước khi xóa khóa cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo quy trình 3 bước xoay vòng khóa etcd không gây gián đoạn ứng dụng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao phải giữ khóa cũ ở vị trí 2 trong quá trình re-encrypt? — Để API Server dùng khóa cũ GIẢI MÃ các Secret cũ trong khi lệnh replace đang đọc dữ liệu).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn của một tệp <code>EncryptionConfiguration</code> hoàn chỉnh bảo vệ tài nguyên <code>secrets</code> dùng <code>aescbc</code> và <code>identity</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: apiserver.config.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: EncryptionConfiguration</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• secrets</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">providers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• aescbc:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">keys:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: key1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">secret: c2VjcmV0IGlzIGEgc2VjcmV0IGlzIGEgc2VjcmV0IGlzIGE=</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• identity: {}</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai apiVersion hoặc sai cấu trúc providers.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng aescbc nhưng gõ sai <code>resources: ["secret"]</code> số ít.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp <code>EncryptionConfiguration</code> CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Từ khóa <code>"secrets"</code> trong mảng <code>resources</code> phải viết ở dạng số ít hay số nhiều? — Phải viết ở dạng số nhiều <code>"secrets"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Sự khác biệt giữa <code>aescbc</code> provider và <code>secretbox</code> provider trong <code>EncryptionConfiguration</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>aescbc</code> sử dụng thuật toán AES-CBC 256-bit (khóa 32 bytes). <code>secretbox</code> sử dụng thuật toán Salsa20 và Poly1305 (khóa 32 bytes). Cả hai đều là thuật toán mã hóa đối xứng an toàn, trong đó <code>aescbc</code> là tiêu chuẩn được dùng phổ biến nhất trong kỳ thi CKS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết secretbox provider.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả 2 đều mã hóa nhưng chưa rõ thuật toán AES-CBC vs Salsa20.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt thuật toán giữa aescbc và secretbox.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Provider nào được dùng khi tích hợp với các hệ thống quản lý khóa bên ngoài như HashiCorp Vault hay AWS KMS? — Provider <code>kms</code> (Key Management Service)).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Khi API Server gặp sự cố <code>CrashLoopBackOff</code> sau khi sửa tệp <code>kube-apiserver.yaml</code>, cách gỡ lỗi nhanh nhất từ CLI Node Control Plane là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kiểm tra nhật ký log của container API Server trong <code>/var/log/pods/kube-system_kube-apiserver*/*.log</code> hoặc dùng lệnh <code>crictl logs</code> để xem lý do API Server từ chối khởi động.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách xem log static pod khi apiserver chết.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kubectl logs (nhưng apiserver chết thì kubectl không chạy được).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác việc tra cứu file log trong <code>/var/log/pods/</code> hoặc dùng <code>crictl logs</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao không dùng được lệnh <code>kubectl logs</code> khi kube-apiserver bị crash? — Vì API Server đã bị rớt thì không còn điểm nhận request cho lệnh kubectl).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để kiểm tra một Secret vừa tạo trong cụm xem ứng dụng Pod có đọc được bình thường hay không sau khi mã hóa etcd?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chạy lệnh <code>kubectl get secret <secret-name> -n <ns> -o yaml</code>. API Server sẽ tự động dùng khóa <code>aescbc</code> giải mã dữ liệu etcd và trả về dữ liệu Base64 chuẩn cho <code>kubectl</code>, cho phép Pod đọc bình thường.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng mã hóa etcd làm Pod không đọc được Secret.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xem qua kubectl nhưng chưa rõ API Server tự giải mã dữ liệu cho Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế API Server tự động mã hóa/giải mã trong suốt (transparent) với ứng dụng Pod.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ứng dụng trong Pod có cần sửa code để đọc Secret đã mã hóa trong etcd không? — Không cần, quá trình mã hóa/giải mã diễn ra hoàn toàn trong suốt ở tầng API Server).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để thiết lập etcd Encryption at Rest chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đặt <code>aescbc</code> ở vị trí đầu tiên (Index 0) trong mảng <code>providers</code> với khóa 32-byte Base64.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mount volume tệp <code>enc.yaml</code> và cờ <code>--encryption-provider-config</code> vào <code>kube-apiserver.yaml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bắt buộc thực thi <code>kubectl get secrets --all-namespaces -o json | kubectl replace -f -</code> để mã hóa lại Secret cũ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng <code>etcdctl</code> với đầy đủ chứng chỉ TLS mTLS để kiểm toán tiền tố <code>k8s:enc:aescbc:v1</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng etcd Security CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 52 là gì? — Học về <code>Pod Security Admission CKS: Privileged, Baseline, Restricted & PSA Enforcement</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Ý nghĩa của thứ tự vị trí các provider trong mảng `providers` của tệp `EncryptionConfiguration` là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** API Server luôn sử dụng provider đứng ở VỊ TRÍ ĐẦU TIÊN (Index 0) để MÃ HÓA dữ liệu mới khi GHI (Write). Các provider phía sau (Index 1, 2...) chỉ được dùng để GIẢI MÃ dữ liệu cũ khi ĐỌC (Read).
+1. <b style="color: var(--accent-primary);">"Thực thi Encryption at Rest cho etcd để ngăn chặn nguy cơ lộ Secret khi kẻ tấn công đọc đĩa Control Plane."</b>
+2. <b style="color: var(--accent-primary);">"Luôn đặt provider <code>aescbc</code> ở vị trí đầu tiên trong mảng <code>providers</code> với khóa ngẫu nhiên 32-byte Base64."</b>
+3. <b style="color: var(--accent-primary);">"Khai báo cờ <code>--encryption-provider-config</code> và HostPath Volume Mount tương ứng trong manifest kube-apiserver."</b>
+4. <b style="color: var(--accent-primary);">"Bắt buộc thực thi <code>kubectl replace</code> để áp đặt mã hóa cho 100% Secret đang tồn tại và kiểm toán qua <code>etcdctl</code>."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng thứ tự các provider không quan trọng.
-- 1đ: Nêu được vị trí đầu để ghi nhưng chưa rõ các vị trí sau dùng để giải mã khi đọc.
-- 3đ: Phân tích chuẩn xác quy tắc đọc/ghi của API Server theo chỉ mục Index trong mảng providers.
-
-**Câu hỏi đào sâu:** (Nếu đặt `identity` ở vị trí Index 0 và `aescbc` ở vị trí Index 1 thì điều gì xảy ra? — API Server sẽ tiếp tục ghi các Secret mới ở dạng plaintext không mã hóa).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Quy định về định dạng khóa mã hóa cho provider `aescbc` trong tệp `EncryptionConfiguration` là gì và làm thế nào để tạo khóa này chuẩn xác?
-
-**Đáp án chuẩn:** Khóa mã hóa cho `aescbc` phải là một chuỗi Base64 đại diện cho đúng 32 bytes dữ liệu nhị phân ngẫu nhiên (256 bits). Tạo khóa chuẩn bằng lệnh CLI: `head -c 32 /dev/urandom | base64`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết độ dài khóa 32 bytes.
-- 1đ: Nêu được base64 nhưng không biết lệnh sinh khóa 32 bytes.
-- 3đ: Phân tích chuẩn xác quy định khóa 32-byte Base64 và lệnh sinh khóa ngẫu nhiên từ `/dev/urandom`.
-
-**Câu hỏi đào sâu:** (Nếu chuỗi khóa Base64 không tương ứng đúng 32 bytes dữ liệu thì API Server báo lỗi gì? — API Server báo lỗi `invalid key length` và bị crash).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Tại sao sau khi bật cờ `--encryption-provider-config` trên kube-apiserver, các Secret hiện có trong cụm chưa tự động được mã hóa và giải pháp khắc phục là gì?
-
-**Đáp án chuẩn:** Vì cấu hình mới chỉ có hiệu lực với các thao tác GHI mới. Các Secret cũ vẫn nằm ở dạng unencrypted trong etcd cho tới khi được ghi đè. Giải pháp: Chạy lệnh `kubectl get secrets --all-namespaces -o json | kubectl replace -f -` để mã hóa lại toàn bộ.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng bật cờ xong là Secret cũ tự động được mã hóa.
-- 1đ: Nêu được Secret cũ chưa mã hóa nhưng không biết lệnh `kubectl replace`.
-- 3đ: Phân tích thấu đáo cơ chế và câu lệnh `kubectl replace` mã hóa lại 100% Secret cũ.
-
-**Câu hỏi đào sâu:** (Cờ `--all-namespaces` trong lệnh replace đóng vai trò gì? — Đảm bảo quét và ghi đè lại Secret trên TẤT CẢ các Namespace trong cụm).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cú pháp lệnh `etcdctl` với đầy đủ chứng chỉ TLS mTLS dùng để tra cứu xem dữ liệu Secret trong etcd đã được mã hóa hay chưa là gì?
-
-**Đáp án chuẩn:**
-```bash
-ETCDCTL_API=3 etcdctl \
-  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
-  --cert=/etc/kubernetes/pki/etcd/server.crt \
-  --key=/etc/kubernetes/pki/etcd/server.key \
-  get /registry/secrets/<namespace>/<secret-name>
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh etcdctl hoặc thiếu cờ chứng chỉ TLS.
-- 1đ: Nêu được etcdctl get nhưng thiếu 3 cờ chứng chỉ mTLS.
-- 3đ: Trình bày chính xác 100% lệnh `etcdctl` với cờ TLS và đường dẫn k8s registry.
-
-**Câu hỏi đào sâu:** (Nếu Secret đã được mã hóa bằng `aescbc` thành công thì dòng đầu tiên của kết quả `etcdctl get` hiển thị chuỗi gì? — Hiển thị tiền tố `k8s:enc:aescbc:v1:...`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Cấu hình Volume Mount cần thiết trong manifest Static Pod `/etc/kubernetes/manifests/kube-apiserver.yaml` để API Server đọc được tệp enc.yaml trên Host Node là gì?
-
-**Đáp án chuẩn:**
-```yaml
-volumeMounts:
-  - mountPath: /etc/kubernetes/enc
-    name: enc-vol
-    readOnly: true
-volumes:
-  - hostPath:
-      path: /etc/kubernetes/enc
-      type: DirectoryOrCreate
-    name: enc-vol
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Quên khai báo Volume Mount cho apiserver.
-- 1đ: Nêu được volumeMounts nhưng quên khối volumes hostPath.
-- 3đ: Viết chuẩn xác 100% cấu hình volumeMounts và volumes hostPath trong manifest apiserver.
-
-**Câu hỏi đào sâu:** (Điều gì xảy ra nếu chỉ thêm cờ `--encryption-provider-config` mà quên khai báo Volume Mount? — Kube-apiserver container bị kẹt `CrashLoopBackOff` do không tìm thấy file enc.yaml trong container).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Quy trình xoay vòng khóa mã hóa etcd (Encryption Key Rotation) diễn ra theo các bước an toàn nào?
-
-**Đáp án chuẩn:**
-1. Thêm khóa mới vào VỊ TRÍ ĐẦU TIÊN (Index 0) trong `aescbc.keys`, giữ khóa cũ ở vị trí thứ 2.
-2. Đợi API Server reload và thực thi `kubectl get secrets --all-namespaces -o json | kubectl replace -f -`.
-3. Xóa khóa cũ khỏi tệp cấu hình sau khi toàn bộ Secret đã được mã hóa bằng khóa mới.
-
-**Tiêu chí chấm:**
-- 0đ: Xóa khóa cũ trước khi re-encrypt Secret.
-- 1đ: Nêu được thêm khóa mới nhưng chưa rõ vị trí Index 0 và bước replace trước khi xóa khóa cũ.
-- 3đ: Phân tích thấu đáo quy trình 3 bước xoay vòng khóa etcd không gây gián đoạn ứng dụng.
-
-**Câu hỏi đào sâu:** (Tại sao phải giữ khóa cũ ở vị trí 2 trong quá trình re-encrypt? — Để API Server dùng khóa cũ GIẢI MÃ các Secret cũ trong khi lệnh replace đang đọc dữ liệu).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một tệp `EncryptionConfiguration` hoàn chỉnh bảo vệ tài nguyên `secrets` dùng `aescbc` và `identity` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: apiserver.config.k8s.io/v1
-kind: EncryptionConfiguration
-resources:
-  - resources:
-      - secrets
-    providers:
-      - aescbc:
-          keys:
-            - name: key1
-              secret: c2VjcmV0IGlzIGEgc2VjcmV0IGlzIGEgc2VjcmV0IGlzIGE=
-      - identity: {}
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai apiVersion hoặc sai cấu trúc providers.
-- 1đ: Nêu đúng aescbc nhưng gõ sai `resources: ["secret"]` số ít.
-- 3đ: Viết chuẩn xác 100% tệp `EncryptionConfiguration` CKS.
-
-**Câu hỏi đào sâu:** (Từ khóa `"secrets"` trong mảng `resources` phải viết ở dạng số ít hay số nhiều? — Phải viết ở dạng số nhiều `"secrets"`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Sự khác biệt giữa `aescbc` provider và `secretbox` provider trong `EncryptionConfiguration` là gì?
-
-**Đáp án chuẩn:** `aescbc` sử dụng thuật toán AES-CBC 256-bit (khóa 32 bytes). `secretbox` sử dụng thuật toán Salsa20 và Poly1305 (khóa 32 bytes). Cả hai đều là thuật toán mã hóa đối xứng an toàn, trong đó `aescbc` là tiêu chuẩn được dùng phổ biến nhất trong kỳ thi CKS.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết secretbox provider.
-- 1đ: Nêu được cả 2 đều mã hóa nhưng chưa rõ thuật toán AES-CBC vs Salsa20.
-- 3đ: Phân tích chuẩn xác sự khác biệt thuật toán giữa aescbc và secretbox.
-
-**Câu hỏi đào sâu:** (Provider nào được dùng khi tích hợp với các hệ thống quản lý khóa bên ngoài như HashiCorp Vault hay AWS KMS? — Provider `kms` (Key Management Service)).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Khi API Server gặp sự cố `CrashLoopBackOff` sau khi sửa tệp `kube-apiserver.yaml`, cách gỡ lỗi nhanh nhất từ CLI Node Control Plane là gì?
-
-**Đáp án chuẩn:** Kiểm tra nhật ký log của container API Server trong `/var/log/pods/kube-system_kube-apiserver*/*.log` hoặc dùng lệnh `crictl logs` để xem lý do API Server từ chối khởi động.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách xem log static pod khi apiserver chết.
-- 1đ: Nêu được kubectl logs (nhưng apiserver chết thì kubectl không chạy được).
-- 3đ: Trình bày chính xác việc tra cứu file log trong `/var/log/pods/` hoặc dùng `crictl logs`.
-
-**Câu hỏi đào sâu:** (Tại sao không dùng được lệnh `kubectl logs` khi kube-apiserver bị crash? — Vì API Server đã bị rớt thì không còn điểm nhận request cho lệnh kubectl).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Làm thế nào để kiểm tra một Secret vừa tạo trong cụm xem ứng dụng Pod có đọc được bình thường hay không sau khi mã hóa etcd?
-
-**Đáp án chuẩn:** Chạy lệnh `kubectl get secret <secret-name> -n <ns> -o yaml`. API Server sẽ tự động dùng khóa `aescbc` giải mã dữ liệu etcd và trả về dữ liệu Base64 chuẩn cho `kubectl`, cho phép Pod đọc bình thường.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng mã hóa etcd làm Pod không đọc được Secret.
-- 1đ: Nêu được xem qua kubectl nhưng chưa rõ API Server tự giải mã dữ liệu cho Pod.
-- 3đ: Phân tích chuẩn xác cơ chế API Server tự động mã hóa/giải mã trong suốt (transparent) với ứng dụng Pod.
-
-**Câu hỏi đào sâu:** (Ứng dụng trong Pod có cần sửa code để đọc Secret đã mã hóa trong etcd không? — Không cần, quá trình mã hóa/giải mã diễn ra hoàn toàn trong suốt ở tầng API Server).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để thiết lập etcd Encryption at Rest chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-1. Đặt `aescbc` ở vị trí đầu tiên (Index 0) trong mảng `providers` với khóa 32-byte Base64.
-2. Mount volume tệp `enc.yaml` và cờ `--encryption-provider-config` vào `kube-apiserver.yaml`.
-3. Bắt buộc thực thi `kubectl get secrets --all-namespaces -o json | kubectl replace -f -` để mã hóa lại Secret cũ.
-4. Dùng `etcdctl` với đầy đủ chứng chỉ TLS mTLS để kiểm toán tiền tố `k8s:enc:aescbc:v1`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng etcd Security CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 52 là gì? — Học về `Pod Security Admission CKS: Privileged, Baseline, Restricted & PSA Enforcement`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -992,28 +1079,6 @@ resources:
 2. **"Luôn đặt provider `aescbc` ở vị trí đầu tiên trong mảng `providers` với khóa ngẫu nhiên 32-byte Base64."**
 3. **"Khai báo cờ `--encryption-provider-config` và HostPath Volume Mount tương ứng trong manifest kube-apiserver."**
 4. **"Bắt buộc thực thi `kubectl replace` để áp đặt mã hóa cho 100% Secret đang tồn tại và kiểm toán qua `etcdctl`."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS etcd Security |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc mã hóa dữ liệu etcd Encryption at Rest |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Biên soạn tệp `EncryptionConfiguration` hoàn chỉnh với khóa 32-byte Base64 tự sinh.
-- **BTVN 2:** Thực hành cấu hình cờ `--encryption-provider-config` trên kube-apiserver và kiểm tra log khởi động.
-- **BTVN 3:** Thực hành mã hóa lại toàn bộ Secret và tra cứu trực tiếp bằng `etcdctl` mTLS CLI.
-- **BTVN 4 (Chuẩn bị cho Buổi 52 — Pod Security Admission CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Pod Security Admission (PSA) trong Kubernetes thay thế tính năng đã bị loại bỏ PodSecurityPolicy (PSP) thế nào?
-  2. Ba mức độ bảo mật Pod Security Standards (Privileged, Baseline, Restricted) quy định những gì?
-  3. Ba chế độ kiểm soát PSA trên Namespace (`pod-security.kubernetes.io/enforce`, `warn`, `audit`) khác nhau thế nào?
 
 ---
 
@@ -1087,7 +1152,7 @@ resources:
               secret: c2VjcmV0IGlzIGEgc2VjcmV0IGlzIGEgc2VjcmV0IGlzIGE=
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• identity: {}</div>
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1100,7 +1165,7 @@ EOF
 ```bash
 # Thêm cờ --encryption-provider-config và volumeMounts vào /etc/kubernetes/manifests/kube-apiserver.yaml
 # (Học viên chỉnh sửa trực tiếp qua vim hoặc yq/sed)
-```bash
+```
 </div>
 </details>
 
@@ -1112,7 +1177,7 @@ EOF
   
 ```bash
 kubectl get secrets --all-namespaces -o json | kubectl replace -f -
-```bash
+```
 </div>
 </details>
 
@@ -1131,7 +1196,7 @@ ETCDCTL_API=3 etcdctl \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key \
   get /registry/secrets/prod/db-pass > /tmp/etcd-check.txt 2>&1 || echo "k8s:enc:aescbc:v1:key1" > /tmp/etcd-check.txt
-```yaml
+```
 
 ---
 </div>
@@ -1200,7 +1265,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1225,16 +1290,17 @@ kubectl get secrets --all-namespaces -o json | kubectl replace -f -
 
 # etcdctl Audit
 ETCDCTL_API=3 etcdctl --cacert=... --cert=... --key=... get /registry/secrets/<ns>/<name>
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 07] Pod Security Admission (PSA): Làm Chủ 3 Cấp Độ Privileged, Baseline, Restricted & Chế Độ Enforce/Warn/Audit](cks-07-07-pod-security-admission.html).
+
 {% endraw %}

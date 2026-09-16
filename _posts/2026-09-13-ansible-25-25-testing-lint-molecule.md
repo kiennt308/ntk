@@ -766,40 +766,12 @@ warn_list:
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Kiểm tra đa tầng (Multi-layer Testing):** Kết hợp chặt chẽ Static Linting, Syntax Check, Dry-run và Integration Test.
-2. **Tuân thủ chuẩn FQCN:** Sử dụng `ansible-lint` để tự động hóa việc phát hiện và chuẩn hóa 100% tên module.
-3. **Mô phỏng an toàn với `--check --diff`:** Xem trước các thay đổi trước khi apply vào hệ thống thực tế.
-4. **Bảo vệ Dry-run với `check_mode: false`:** Cho phép các task đọc trạng thái chạy thật để nạp biến đầy đủ.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Kiểm thử nghiệm thu bằng `verify.yml` và khẳng định tính Idempotency tuyệt đối.
-
-```mermaid
-mindmap
-  root((Ansible Testing Framework))
-    Static Analysis
-      yamllint format
-      ansible-lint production profile
-      FQCN validation
-    Syntax & Dry-run
-      --syntax-check
-      --check dry-run mode
-      --diff unified lines
-      check_mode: false overrides
-    Integration Testing
-      Molecule container runner
-      assert & stat verifications
-      verify.yml test suite
-    Continuous Quality
-      Pre-commit hooks
-      CI/CD Quality Gates
-      Idempotency changed=0 ở Lần 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 26: Tích Hợp Ansible Vào CI/CD Pipeline (GitLab CI & GitHub Actions): Tự Động Hóa Delivery Hạ Tầng Chuẩn GitOps](ansible-26-26-ansible-trong-cicd.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 26] Tích Hợp Ansible Trong CI/CD: GitLab CI, GitHub Actions, Jenkins Automation & Quản Lý SSH Private Keys Không Để Lộ](ansible-26-26-ansible-trong-cicd.html).
 
 {% endraw %}

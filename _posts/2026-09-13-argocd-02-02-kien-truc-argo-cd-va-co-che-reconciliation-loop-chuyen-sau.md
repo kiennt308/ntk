@@ -618,13 +618,12 @@ kubectl exec -n argocd deploy/argocd-application-controller -- nc -zv argocd-rep
 </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 11. Tổng Kết
-
-Kiến trúc phân tán của Argo CD là một kiệt tác kỹ thuật trong thế giới Cloud Native: sự phân tách rạch ròi giữa cửa ngõ giao tiếp (`argocd-server`), động cơ biên dịch độc lập (`repo-server`), bộ nhớ đệm tốc độ cao (`redis`) và bộ não điều hòa trạng thái (`application-controller`).
+Kiến thức và kỹ năng trong bài viết này là nền tảng vững chắc giúp bạn làm chủ quy trình phân phối phần mềm liên tục theo triết lý GitOps, phát hiện và triệt tiêu trôi cấu hình, đảm bảo tính toàn vẹn và an toàn cho hạ tầng Kubernetes.
 
 > [!TIP]
-> **Bước tiếp theo:**
-> Chuyển sang **[[Bài 03] Cài Đặt Argo CD Trên Kubernetes: CLI & Xác Thực An Toàn](argocd-03-03-cai-dat-argo-cd-tren-kubernetes-cli-va-xac-thuc-an-toan.html)** để bắt tay vào triển khai cụm Argo CD High Availability (HA) chuẩn Production!
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng GitOps với bài học tiếp theo: [[Bài 03] Cài Đặt Argo CD Trên Kubernetes: Mô Hình HA, CLI & Xác Thực An Toàn](argocd-03-03-cai-dat-argo-cd-tren-kubernetes-cli-va-xac-thuc-an-toan.html).
+
 {% endraw %}

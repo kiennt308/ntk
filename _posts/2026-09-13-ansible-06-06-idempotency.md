@@ -166,8 +166,6 @@ Tại một tập đoàn Fintech, nhóm vận hành sử dụng một Playbook c
 Để qua mặt hệ thống kiểm duyệt CI/CD yêu cầu `changed=0`, kỹ sư phụ trách đã thêm chỉ thị `changed_when: false` vào task này.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-- Bảng `PLAY RECAP` của CI/CD luôn hiển thị màu xanh hoàn hảo: `ok=12 changed=0 failed=0`.
-- Tuy nhiên trên thực tế, sau 1 tuần hoạt động, file `/etc/hosts` của máy chủ thanh toán bị phình to lên hơn **336 dòng trùng lặp**, khiến trình phân giải DNS nội bộ của Linux bị crash do tràn bộ đệm đọc file, làm sập toàn bộ cổng thanh toán API Gateway trong 2 giờ.
 
 ```diff
 --- /etc/hosts (Corrupted by Non-Idempotent Shell)
@@ -182,6 +180,10 @@ Tại một tập đoàn Fintech, nhóm vận hành sử dụng một Playbook c
 +# Sửa: Dùng lineinfile với regexp='^.*api\.gateway\.internal'
 +10.0.0.15   api.gateway.internal
 ```
+
+- Bảng `PLAY RECAP` của CI/CD luôn hiển thị màu xanh hoàn hảo: `ok=12 changed=0 failed=0`.
+- Tuy nhiên trên thực tế, sau 1 tuần hoạt động, file `/etc/hosts` của máy chủ thanh toán bị phình to lên hơn **336 dòng trùng lặp**, khiến trình phân giải DNS nội bộ của Linux bị crash do tràn bộ đệm đọc file, làm sập toàn bộ cổng thanh toán API Gateway trong 2 giờ.
+
 
 ```mermaid
 flowchart TD
@@ -685,39 +687,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Idempotency là tiêu chuẩn cốt tử:** Playbook chạy một lần hay nhiều lần thì trạng thái hệ thống vẫn phải bất biến và an toàn.
-2. **Triệt tiêu lệnh thô:** Thay thế toàn bộ module `command`/`shell` bằng các module chuyên dụng (`package`, `service`, `file`, `lineinfile`).
-3. **Chế ngự lệnh nhị phân ngoài:** Luôn khai báo `creates:`, `removes:` hoặc `changed_when:` cho các binary bắt buộc phải gọi ngoài.
-4. **Phép thử Lượt chạy Lần 2:** Lượt chạy thứ hai của Playbook bắt buộc phải đạt `changed=0` trên bảng `PLAY RECAP`.
-5. **Cấm tuyệt đối ép trạng thái mạo danh:** Không dùng `changed_when: false` để che giấu các thay đổi dữ liệu thật, luôn đối soát hiện vật qua `docker exec`.
-
-```mermaid
-mindmap
-  root((Idempotency Mastery))
-    Core Philosophy
-      Declarative State Model
-      No Side-effects
-      f(f(x)) = f(x)
-    Task States
-      OK: Hệ thống đã chuẩn
-      CHANGED: Có can thiệp đĩa
-      FAILED: Ngắt bảo vệ an toàn
-    Engineering Techniques
-      creates & removes: Inode check
-      changed_when: Precise logic
-      Read-only changed_when: false
-      lineinfile regexp replacement
-    Enterprise Verification
-      Second-run test changed=0
-      docker exec real truth
-      CI/CD automated gating
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 07: Làm Chủ Biến & Thứ Tự Ưu Tiên (Variable Precedence 22 Tầng) Trong Ansible](ansible-07-07-variables-precedence.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 07] Làm Chủ Biến & Thứ Tự Ưu Tiên: Variable Precedence 22 Tầng, Scope, Jinja2 Syntax & Debug](ansible-07-07-variables-precedence.html).
+
 {% endraw %}

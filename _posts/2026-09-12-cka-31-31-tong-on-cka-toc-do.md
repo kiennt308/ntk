@@ -438,7 +438,7 @@ Vì giúp <b style="color: var(--accent-primary);">in ra bảng dữ liệu chu�
         --cacert=/etc/kubernetes/pki/etcd/ca.crt \
         --cert=/etc/kubernetes/pki/etcd/server.crt \
         --key=/etc/kubernetes/pki/etcd/server.key
-      ```
+```
 </div>
 </details>
 
@@ -451,24 +451,6 @@ Vì giúp <b style="color: var(--accent-primary);">in ra bảng dữ liệu chu�
 | CKA Exam Curriculum | `https://github.com/cncf/curriculum` | Curriculum chính thức kỳ thi CKA |
 | Kubernetes JSONPath Support | `https://kubernetes.io/docs/reference/kubectl/jsonpath/` | Tài liệu hướng dẫn cú pháp jsonpath |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. CKA 5-Domain Matrix & Troubleshooting Strategy | 12 phút | 12 phút |
-| §5. Fast Data Extraction with jsonpath & custom-columns | 12 phút | 12 phút |
-| §6. Kubeadm Upgrade, Etcd Backup & Kubelet Fix | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -522,7 +504,7 @@ graph TD
     
     Q1 & Q2 & Q3 & Q4 -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tự Động]
     GradeScript -->|"Score >= 80%: PASS"| CKAReady[CKA Exam Ready!]
-```yaml
+```
 
 ---
 
@@ -534,19 +516,19 @@ graph TD
 kubectl create namespace lab66-cka
 
 mkdir -p /tmp/cka-speed
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab66-cka`.**
 
 ```bash
 kubectl get ns lab66-cka -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/cka-speed`.**
 
 ```bash
 test -d /tmp/cka-speed && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+```
 
 ---
 
@@ -567,25 +549,25 @@ EOF
 
 # Câu 3: Kubelet Status
 echo "active (running)" > /tmp/cka-speed/kubelet-status.txt
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra tệp Pod IPs Câu 1.**
 
 ```bash
 test -f /tmp/cka-speed/pod-ips.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra tệp etcd backup Câu 2.**
 
 ```bash
 test -f /tmp/cka-speed/etcd-backup.db && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra Kubelet status Câu 3.**
 
 ```bash
 test -f /tmp/cka-speed/kubelet-status.txt && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```yaml
+```
 
 ---
 
@@ -644,25 +626,25 @@ spec:
                 port:
                   number: 80
 EOF
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra tệp PV Câu 4.**
 
 ```bash
 grep -q "pv-lab66" /tmp/cka-speed/pv.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra tệp PVC Câu 5.**
 
 ```bash
 grep -q "pvc-lab66" /tmp/cka-speed/pvc.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra tệp Ingress Câu 6.**
 
 ```bash
 grep -q "app.internal" /tmp/cka-speed/ingress.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```yaml
+```
 
 ---
 
@@ -686,13 +668,13 @@ spec:
       image: busybox
       args: [/bin/sh, -c, 'while true; do date >> /var/log/app.log; sleep 1; done']
 EOF
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra tệp Sidecar Pod Câu 7.**
 
 ```bash
 grep -q "sidecar" /tmp/cka-speed/pod-sidecar.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```yaml
+```
 
 ---
 
@@ -716,25 +698,25 @@ TỔNG ĐIỂM: 100 / 100
 TỐC ĐỘ TRUNG BÌNH: 3.8 PHÚT / CÂU
 ĐÁNH GIÁ: PASS - BẠN ĐÃ ĐẠT TỐC ĐỘ PHẢN XẠ THI CKA TỐI ƯU!
 EOF
-```bash
+```
 
 **CHECKPOINT 10 — Kiểm tra Rollout Undo Câu 8.**
 
 ```bash
 test -f /tmp/cka-speed/results.log && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```bash
+```
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm.**
 
 ```bash
 test -f /tmp/cka-speed/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Xác minh tổng điểm đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/cka-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -745,13 +727,13 @@ grep -q "PASS" /tmp/cka-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" || 
 ```bash
 kubectl delete namespace lab66-cka 2>/dev/null || true
 rm -rf /tmp/cka-speed
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/cka-speed/pv.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -797,26 +779,11 @@ test ! -f /tmp/cka-speed/pv.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHE
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Speed Directory | 15 phút | 15 phút |
-| L4. Bước 2: Extraction & Etcd Backup Questions | 30 phút | 30 phút |
-| L5. Bước 3: Storage & Networking Questions | 30 phút | 30 phút |
-| L6. Bước 4: Workloads & Sidecar Questions | 25 phút | 25 phút |
-| L7. Bước 5: Auto-Grading & Speed Benchmark | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -824,208 +791,321 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ưu điểm vượt trội của việc trích xuất dữ liệu bằng <code>jsonpath</code> hoặc <code>-o custom-columns</code> so với <code>grep</code>/<code>awk</code> trong thi CKA là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Troubleshooting: <b style="color: var(--accent-primary);">30%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Cluster Architecture, Installation & Configuration: <b style="color: var(--accent-primary);">25%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Services & Networking: <b style="color: var(--accent-primary);">20%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Workloads & Services: <b style="color: var(--accent-primary);">15%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> Storage: <b style="color: var(--accent-primary);">10%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp trích xuất chính xác trường dữ liệu cần tìm trong 1 câu lệnh duy nhất (trong 5–10 giây), tự động tạo tiêu đề bảng chuẩn xác mà không bị ảnh hưởng bởi định dạng khoảng trắng hay độ dài dòng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu ưu điểm của jsonpath / custom-columns.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được làm nhanh hơn nhưng chưa làm rõ việc trích xuất chính xác schema JSON và bảng chuẩn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ưu điểm của <code>jsonpath</code> và <code>-o custom-columns</code> trong thi CKA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>-o custom-columns</code> để in ra cột NAME và NODE của Pods là gì? — Cú pháp <code>-o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết trọng số 5 miền CKA.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 miền nhưng sai % trọng số.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 100% trọng số của cả 5 miền kiến thức CKA.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Ngưỡng điểm tối thiểu để đỗ chứng chỉ CKA là bao nhiêu? — Ngưỡng điểm đỗ CKA là <b style="color: var(--accent-primary);"><code>66 %</code></b> (66/100 điểm)).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Ba cờ chứng thực TLS bắt buộc phải truyền khi chạy lệnh sao lưu <code>etcdctl snapshot save</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--cacert=/etc/kubernetes/pki/etcd/ca.crt</code> (Tệp CA cert).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--cert=/etc/kubernetes/pki/etcd/server.crt</code> (Tệp Server cert).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--key=/etc/kubernetes/pki/etcd/server.key</code> (Tệp Server private key).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được 3 cờ TLS cert.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 cờ nhưng thiếu đường dẫn pki etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 3 cờ TLS cert và đường dẫn chứng chỉ etcd CKA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Biến môi trường nào bắt buộc khai báo trước lệnh <code>etcdctl</code>? — Biến <b style="color: var(--accent-primary);"><code>ETCDCTL_API=3</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Quy trình 3 bước chuẩn để chẩn đoán nguyên nhân gây ra lỗi Node ở trạng thái <code>NotReady</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiểm tra trạng thái trên K8s</b>: <code>kubectl describe node <node-name></code> (xem phần Conditions/Events).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiểm tra dịch vụ Kubelet</b>: SSH vào Node và chạy <code>sudo systemctl status kubelet</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Đọc log Kubelet</b>: Chạy <code>sudo journalctl -u kubelet -n 50 --no-pager</code> để tìm nguyên nhân gốc rễ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy trình 3 bước gỡ lỗi Node NotReady.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được describe node nhưng chưa rõ systemctl và journalctl log.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy trình 3 bước chẩn đoán Node <code>NotReady</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu journalctl báo lỗi CNI plugin missing thì xử lý thế nào? — Kiểm tra và khởi chạy lại DaemonSet CNI plugin như Calico hay Flannel).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cách sử dụng lệnh <code>kubectl rollout</code> để kiểm tra lịch sử và hoàn tác một Deployment bị lỗi trong 10 giây?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiểm tra lịch sử</b>: <code>kubectl rollout history deployment/<name></code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hoàn tác bản cũ</b>: <code>kubectl rollout undo deployment/<name></code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiểm tra tiến độ</b>: <code>kubectl rollout status deployment/<name></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh kubectl rollout.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được rollout undo nhưng thiếu rollout status/history.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác bộ lệnh <code>kubectl rollout</code> kiểm tra và hoàn tác Deployment.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn hoàn tác về một revision cụ thể (như rev 2) thì gõ lệnh thế nào? — Lệnh <code>kubectl rollout undo deployment/<name> --to-revision=2</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác biệt về mặt bản chất giữa PersistentVolume (PV) và PersistentVolumeClaim (PVC) trong Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">PV</b>: Là khối ổ đĩa lưu trữ thực tế do Quản trị viên (Cluster Admin) khởi tạo và quản lý.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">PVC</b>: Là yêu cầu xin cấp phát bộ nhớ do Lập trình viên (Developer) khai báo để xin gắn bộ nhớ PV vào Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa PV và PVC.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được PV là ổ đĩa PVC là yêu cầu nhưng chưa phân biệt vai trò Admin vs Dev.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt bản chất và vai trò giữa PV và PVC.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hai thuộc tính bắt buộc phải trùng khớp để PVC bind được với PV là gì? — Dung lượng (<code>capacity/storage</code>) và chế độ truy cập (<code>accessModes</code>)).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp lệnh <code>kubectl create ingress</code> để sinh nhanh tệp YAML Ingress định tuyến <code>host.test.com</code> về <code>svc-test:8080</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```bash</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kubectl create ingress test-ing --rule="host.test.com/=svc-test:8080" --dry-run=client -o yaml > /tmp/ing.yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai lệnh create ingress.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được create ingress nhưng thiếu cờ --rule hoặc dry-run.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% câu lệnh <code>kubectl create ingress</code> sinh khung YAML Ingress.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--rule</code> có cú pháp chuỗi truyền vào tổng quát thế nào? — Cú pháp <code>--rule="host/path=service:port"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Mô hình Pod đa container (Multi-Container Pod) dạng Sidecar Pattern đóng vai trò gì trong quản trị vận hành cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp tiến trình phụ (Sidecar Container) chạy song song với tiến trình chính (Main Container) để <b style="color: var(--accent-primary);">thu thập nhật ký (logging agent)</b>, <b style="color: var(--accent-primary);">nén tệp (data sync)</b>, hoặc <b style="color: var(--accent-primary);">bảo mật lưu lượng (service mesh proxy)</b> mà không cần sửa đổi mã nguồn ứng dụng chính.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết mô hình Sidecar Pattern.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chạy 2 container nhưng chưa làm rõ vai trò phụ trợ thu thập log/proxy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò và ứng dụng của Sidecar Pattern trong Kubernetes.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để 2 container trong cùng 1 Pod chia sẻ tệp log với nhau? — Sử dụng một volume loại <b style="color: var(--accent-primary);"><code>emptyDir: {}</code></b> mount vào cả 2 container).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Quy trình 4 bước nâng cấp cụm Kubernetes bằng <code>kubeadm</code> từ phiên bản v1.29 lên v1.30 trên Control Plane?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Uncordon/Drain node</b>: <code>kubectl drain <node> --ignore-daemonsets</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nâng cấp kubeadm</b>: <code>apt-get update && apt-get install -y kubeadm=1.30.0-1.1</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chạy upgrade plan & apply</b>: <code>kubeadm upgrade plan</code> -> <code>sudo kubeadm upgrade apply v1.30.0</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nâng cấp kubelet/kubectl & uncordon</b>: Nâng cấp gói <code>kubelet</code> -> <code>systemctl restart kubelet</code> -> <code>kubectl uncordon <node></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 bước nâng cấp kubeadm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được upgrade apply nhưng thiếu drain/uncordon node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 100% quy trình 4 bước nâng cấp cụm <code>kubeadm</code> CKA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao phải chạy <code>kubeadm upgrade plan</code> trước khi apply? — Để kiểm tra tính tương thích phiên bản và các tệp cấu hình trước khi tiến hành nâng cấp).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh CLI <code>kubectl</code> nào được dùng để kiểm tra chi tiết các tài nguyên hệ thống bị tiêu tốn CPU/Memory nhiều nhất?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>kubectl top nodes</code> (xem tài nguyên tiêu tốn trên Node) và <code>kubectl top pods -A</code> (xem tài nguyên tiêu tốn trên tất cả các Pods).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh kubectl top.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kubectl top pods nhưng thiếu kubectl top nodes.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác bộ lệnh <code>kubectl top</code> giám sát tài nguyên CPU/RAM CKA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điều kiện tiên quyết trên cụm để lệnh <code>kubectl top</code> hoạt động được là gì? — Dịch vụ <b style="color: var(--accent-primary);">Metrics Server</b> bắt buộc phải được cài đặt và đang chạy trong cụm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp bash script chuẩn để trích xuất danh sách tất cả các Pods bị lỗi (<code>ImagePullBackOff</code> / <code>CrashLoopBackOff</code>) bằng <code>jsonpath</code> CKA là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```bash</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kubectl get pods -A -o jsonpath='{range .items[?(@.status.phase!="Running")]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}'</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cú pháp jsonpath.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng jsonpath get pods nhưng thiếu bộ lọc status.phase.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% câu lệnh <code>jsonpath</code> lọc Pods không ở trạng thái Running.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ký tự <code>?(@...)</code> trong jsonpath có tác dụng gì? — Đại diện cho <b style="color: var(--accent-primary);">bộ lọc điều kiện (Filter expression)</b> trong cú pháp JSONPath).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ CKA Speed Drill (20 câu trong 90 phút) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thành thục <code>jsonpath</code> và <code>-o custom-columns</code> để trích xuất dữ liệu trong 10 giây.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nhớ thuộc lòng bộ 3 cờ TLS cert khi sao lưu <code>etcdctl snapshot save</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gỡ lỗi Node NotReady theo chuẩn 3 bước (<code>describe node</code> -> <code>systemctl status</code> -> <code>journalctl</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai thác tối đa <code>kubectl create</code> với cờ <code>--dry-run=client -o yaml</code> để sinh khung YAML trong 15 giây.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng CKA Speed Mastery.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 67 là gì? — Học về <code>Tổng ôn CKAD Tốc độ: Giải quyết 20 câu bài tập CKAD trong 90 phút</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Ưu điểm vượt trội của việc trích xuất dữ liệu bằng `jsonpath` hoặc `-o custom-columns` so với `grep`/`awk` trong thi CKA là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Giúp trích xuất chính xác trường dữ liệu cần tìm trong 1 câu lệnh duy nhất (trong 5–10 giây), tự động tạo tiêu đề bảng chuẩn xác mà không bị ảnh hưởng bởi định dạng khoảng trắng hay độ dài dòng.
+1. <b style="color: var(--accent-primary);">"Làm chủ ma trận 5 miền CKA và tập trung gom trọn điểm số miền Troubleshooting (30%)."</b>
+2. <b style="color: var(--accent-primary);">"Tăng 500% tốc độ trích xuất dữ liệu bằng cú pháp <code>jsonpath</code> và <code>-o custom-columns</code>."</b>
+3. <b style="color: var(--accent-primary);">"Thành thục thao tác sao lưu <code>etcdctl snapshot save</code> với bộ 3 cờ chứng thực TLS cert."</b>
+4. <b style="color: var(--accent-primary);">"Duy trì tốc độ phản xạ 4,5 phút mỗi câu để hoàn thành trọn vẹn 20 câu CKA trong 90 phút."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không hiểu ưu điểm của jsonpath / custom-columns.
-- 1đ: Nêu được làm nhanh hơn nhưng chưa làm rõ việc trích xuất chính xác schema JSON và bảng chuẩn.
-- 3đ: Phân tích chuẩn xác ưu điểm của `jsonpath` và `-o custom-columns` trong thi CKA.
-
-**Câu hỏi đào sâu:** (Cú pháp `-o custom-columns` để in ra cột NAME và NODE của Pods là gì? — Cú pháp `-o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Ba cờ chứng thực TLS bắt buộc phải truyền khi chạy lệnh sao lưu `etcdctl snapshot save` là gì?
-
-**Đáp án chuẩn:**
-1. `--cacert=/etc/kubernetes/pki/etcd/ca.crt` (Tệp CA cert).
-2. `--cert=/etc/kubernetes/pki/etcd/server.crt` (Tệp Server cert).
-3. `--key=/etc/kubernetes/pki/etcd/server.key` (Tệp Server private key).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được 3 cờ TLS cert.
-- 1đ: Nêu được 2 cờ nhưng thiếu đường dẫn pki etcd.
-- 3đ: Trình bày chuẩn xác 3 cờ TLS cert và đường dẫn chứng chỉ etcd CKA.
-
-**Câu hỏi đào sâu:** (Biến môi trường nào bắt buộc khai báo trước lệnh `etcdctl`? — Biến **`ETCDCTL_API=3`**).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Quy trình 3 bước chuẩn để chẩn đoán nguyên nhân gây ra lỗi Node ở trạng thái `NotReady`?
-
-**Đáp án chuẩn:**
-1. **Kiểm tra trạng thái trên K8s**: `kubectl describe node <node-name>` (xem phần Conditions/Events).
-2. **Kiểm tra dịch vụ Kubelet**: SSH vào Node và chạy `sudo systemctl status kubelet`.
-3. **Đọc log Kubelet**: Chạy `sudo journalctl -u kubelet -n 50 --no-pager` để tìm nguyên nhân gốc rễ.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết quy trình 3 bước gỡ lỗi Node NotReady.
-- 1đ: Nêu được describe node nhưng chưa rõ systemctl và journalctl log.
-- 3đ: Phân tích chuẩn xác quy trình 3 bước chẩn đoán Node `NotReady`.
-
-**Câu hỏi đào sâu:** (Nếu journalctl báo lỗi CNI plugin missing thì xử lý thế nào? — Kiểm tra và khởi chạy lại DaemonSet CNI plugin như Calico hay Flannel).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cách sử dụng lệnh `kubectl rollout` để kiểm tra lịch sử và hoàn tác một Deployment bị lỗi trong 10 giây?
-
-**Đáp án chuẩn:**
-- **Kiểm tra lịch sử**: `kubectl rollout history deployment/<name>`.
-- **Hoàn tác bản cũ**: `kubectl rollout undo deployment/<name>`.
-- **Kiểm tra tiến độ**: `kubectl rollout status deployment/<name>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh kubectl rollout.
-- 1đ: Nêu được rollout undo nhưng thiếu rollout status/history.
-- 3đ: Trình bày chuẩn xác bộ lệnh `kubectl rollout` kiểm tra và hoàn tác Deployment.
-
-**Câu hỏi đào sâu:** (Nếu muốn hoàn tác về một revision cụ thể (như rev 2) thì gõ lệnh thế nào? — Lệnh `kubectl rollout undo deployment/<name> --to-revision=2`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Sự khác biệt về mặt bản chất giữa PersistentVolume (PV) và PersistentVolumeClaim (PVC) trong Kubernetes?
-
-**Đáp án chuẩn:**
-- **PV**: Là khối ổ đĩa lưu trữ thực tế do Quản trị viên (Cluster Admin) khởi tạo và quản lý.
-- **PVC**: Là yêu cầu xin cấp phát bộ nhớ do Lập trình viên (Developer) khai báo để xin gắn bộ nhớ PV vào Pod.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa PV và PVC.
-- 1đ: Nêu được PV là ổ đĩa PVC là yêu cầu nhưng chưa phân biệt vai trò Admin vs Dev.
-- 3đ: Phân tích chuẩn xác sự khác biệt bản chất và vai trò giữa PV và PVC.
-
-**Câu hỏi đào sâu:** (Hai thuộc tính bắt buộc phải trùng khớp để PVC bind được với PV là gì? — Dung lượng (`capacity/storage`) và chế độ truy cập (`accessModes`)).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cú pháp lệnh `kubectl create ingress` để sinh nhanh tệp YAML Ingress định tuyến `host.test.com` về `svc-test:8080`?
-
-**Đáp án chuẩn:**
-```bash
-kubectl create ingress test-ing --rule="host.test.com/=svc-test:8080" --dry-run=client -o yaml > /tmp/ing.yaml
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai lệnh create ingress.
-- 1đ: Nêu được create ingress nhưng thiếu cờ --rule hoặc dry-run.
-- 3đ: Viết chuẩn xác 100% câu lệnh `kubectl create ingress` sinh khung YAML Ingress.
-
-**Câu hỏi đào sâu:** (Cờ `--rule` có cú pháp chuỗi truyền vào tổng quát thế nào? — Cú pháp `--rule="host/path=service:port"`).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Mô hình Pod đa container (Multi-Container Pod) dạng Sidecar Pattern đóng vai trò gì trong quản trị vận hành cụm?
-
-**Đáp án chuẩn:** Giúp tiến trình phụ (Sidecar Container) chạy song song với tiến trình chính (Main Container) để **thu thập nhật ký (logging agent)**, **nén tệp (data sync)**, hoặc **bảo mật lưu lượng (service mesh proxy)** mà không cần sửa đổi mã nguồn ứng dụng chính.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết mô hình Sidecar Pattern.
-- 1đ: Nêu được chạy 2 container nhưng chưa làm rõ vai trò phụ trợ thu thập log/proxy.
-- 3đ: Phân tích thấu đáo vai trò và ứng dụng của Sidecar Pattern trong Kubernetes.
-
-**Câu hỏi đào sâu:** (Làm thế nào để 2 container trong cùng 1 Pod chia sẻ tệp log với nhau? — Sử dụng một volume loại **`emptyDir: {}`** mount vào cả 2 container).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Quy trình 4 bước nâng cấp cụm Kubernetes bằng `kubeadm` từ phiên bản v1.29 lên v1.30 trên Control Plane?
-
-**Đáp án chuẩn:**
-1. **Uncordon/Drain node**: `kubectl drain <node> --ignore-daemonsets`.
-2. **Nâng cấp kubeadm**: `apt-get update && apt-get install -y kubeadm=1.30.0-1.1`.
-3. **Chạy upgrade plan & apply**: `kubeadm upgrade plan` -> `sudo kubeadm upgrade apply v1.30.0`.
-4. **Nâng cấp kubelet/kubectl & uncordon**: Nâng cấp gói `kubelet` -> `systemctl restart kubelet` -> `kubectl uncordon <node>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 bước nâng cấp kubeadm.
-- 1đ: Nêu được upgrade apply nhưng thiếu drain/uncordon node.
-- 3đ: Phân tích chuẩn xác 100% quy trình 4 bước nâng cấp cụm `kubeadm` CKA.
-
-**Câu hỏi đào sâu:** (Tại sao phải chạy `kubeadm upgrade plan` trước khi apply? — Để kiểm tra tính tương thích phiên bản và các tệp cấu hình trước khi tiến hành nâng cấp).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Lệnh CLI `kubectl` nào được dùng để kiểm tra chi tiết các tài nguyên hệ thống bị tiêu tốn CPU/Memory nhiều nhất?
-
-**Đáp án chuẩn:** Lệnh `kubectl top nodes` (xem tài nguyên tiêu tốn trên Node) và `kubectl top pods -A` (xem tài nguyên tiêu tốn trên tất cả các Pods).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh kubectl top.
-- 1đ: Nêu được kubectl top pods nhưng thiếu kubectl top nodes.
-- 3đ: Trình bày chuẩn xác bộ lệnh `kubectl top` giám sát tài nguyên CPU/RAM CKA.
-
-**Câu hỏi đào sâu:** (Điều kiện tiên quyết trên cụm để lệnh `kubectl top` hoạt động được là gì? — Dịch vụ **Metrics Server** bắt buộc phải được cài đặt và đang chạy trong cụm).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp bash script chuẩn để trích xuất danh sách tất cả các Pods bị lỗi (`ImagePullBackOff` / `CrashLoopBackOff`) bằng `jsonpath` CKA là gì?
-
-**Đáp án chuẩn:**
-```bash
-kubectl get pods -A -o jsonpath='{range .items[?(@.status.phase!="Running")]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}'
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cú pháp jsonpath.
-- 1đ: Nêu đúng jsonpath get pods nhưng thiếu bộ lọc status.phase.
-- 3đ: Viết chuẩn xác 100% câu lệnh `jsonpath` lọc Pods không ở trạng thái Running.
-
-**Câu hỏi đào sâu:** (Ký tự `?(@...)` trong jsonpath có tác dụng gì? — Đại diện cho **bộ lọc điều kiện (Filter expression)** trong cú pháp JSONPath).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ CKA Speed Drill (20 câu trong 90 phút) là gì?
-
-**Đáp án chuẩn:**
-1. Thành thục `jsonpath` và `-o custom-columns` để trích xuất dữ liệu trong 10 giây.
-2. Nhớ thuộc lòng bộ 3 cờ TLS cert khi sao lưu `etcdctl snapshot save`.
-3. Gỡ lỗi Node NotReady theo chuẩn 3 bước (`describe node` -> `systemctl status` -> `journalctl`).
-4. Khai thác tối đa `kubectl create` với cờ `--dry-run=client -o yaml` để sinh khung YAML trong 15 giây.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng CKA Speed Mastery.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 67 là gì? — Học về `Tổng ôn CKAD Tốc độ: Giải quyết 20 câu bài tập CKAD trong 90 phút`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1035,28 +1115,6 @@ kubectl get pods -A -o jsonpath='{range .items[?(@.status.phase!="Running")]}{.m
 2. **"Tăng 500% tốc độ trích xuất dữ liệu bằng cú pháp `jsonpath` và `-o custom-columns`."**
 3. **"Thành thục thao tác sao lưu `etcdctl snapshot save` với bộ 3 cờ chứng thực TLS cert."**
 4. **"Duy trì tốc độ phản xạ 4,5 phút mỗi câu để hoàn thành trọn vẹn 20 câu CKA trong 90 phút."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ năng CKA Speed Drill |
-| **29 – 36 điểm** | Xuất sắc | Thành thục 100% 5 miền CKA, jsonpath, etcd backup và Kubelet troubleshooting |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành lại bài CKA speed drill 20 câu với thời gian đếm ngược rút ngắn 75 phút.
-- **BTVN 2:** Viết 5 câu lệnh `jsonpath` khác nhau để trích xuất Node IPs, Service ports, Ingress hosts.
-- **BTVN 3:** Thực hành sao lưu và khôi phục etcd database trên cụm sandbox 3 lần liên tiếp.
-- **BTVN 4 (Chuẩn bị cho Buổi 67 — Giai đoạn 4 Tổng ôn CKAD Tốc độ):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Chứng chỉ CKAD (Certified Kubernetes Application Developer) tập trung vào những mảng kiến thức đối tượng nào?
-  2. Bốn thiết kế ứng dụng phổ biến trong CKAD (ConfigMap/Secret, CronJob, Readiness/Liveness Probes, Multi-container patterns) cần ôn lại những lệnh CLI nào?
-  3. Kỹ năng gõ lệnh `kubectl` tốc độ cao giúp hoàn thành 20 câu CKAD trong 90 phút ra sao?
 
 ---
 
@@ -1117,7 +1175,7 @@ Biên soạn PV và PVC tại `/tmp/pv-pvc.yaml`:
 kubectl get pods -n kube-system -o jsonpath='{.items[*].metadata.name}' > /tmp/failed-pods.txt 2>/dev/null || {
   echo "coredns-123 kube-proxy-456" > /tmp/failed-pods.txt
 }
-```bash
+```
 </div>
 </details>
 
@@ -1131,7 +1189,7 @@ kubectl get pods -n kube-system -o jsonpath='{.items[*].metadata.name}' > /tmp/f
 cat <<EOF > /tmp/etcd-snap.db
 ETCD_SNAPSHOT_BACKUP_BINARY_DATA_OK
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1161,7 +1219,7 @@ spec:
                 port:
                   number: 80
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1197,7 +1255,7 @@ spec:
     requests:
       storage: 3Gi
 EOF
-```yaml
+```
 
 ---
 </div>
@@ -1268,7 +1326,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1287,16 +1345,17 @@ ETCDCTL_API=3 etcdctl snapshot save /tmp/etcd-backup.db \
   --cacert=/etc/kubernetes/pki/etcd/ca.crt \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 32] Vận Hành Thực Tế Cụm Đa Đội Ngũ (Multi-Tenancy): ResourceQuota, LimitRange & Quản Trị Thay Đổi](cka-32-32-van-hanh-that-cum-nhieu-doi.html).
+
 {% endraw %}

@@ -131,7 +131,7 @@ graph TD
 
 ### 3.1. Cấu Trúc Dự Án Security Policy Toàn Doanh Nghiệp
 
-```
+```text
 security-policy-management/ (Repository riêng biệt cấp Group)
 ├── .gitlab/
 │   └── security-policies/
@@ -207,7 +207,7 @@ scan_result_policy:
 
 > **Bối Cảnh**: Trong đợt kiểm toán độc lập thường niên để đạt chứng chỉ **SOC 2 Type II**, đơn vị kiểm toán phát hiện hơn 30 Merge Requests của dịch vụ thanh toán được merge thẳng vào nhánh `main` mà không hề chạy bất kỳ bài kiểm tra an ninh nào. Lý do là các kỹ sư đã tạm thời thêm cờ `[skip ci]` hoặc xóa dòng `include` bảo mật để kịp giờ phát hành tính năng khuyến mãi.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -244,7 +244,7 @@ scan_result_policy:
 - Định nghĩa chính sách Scan Result Policy (SRP) yêu cầu phê duyệt khi có lỗ hổng.
 - Tạo một dự án con, cố tình commit hardcoded secret và quan sát hệ thống tự động chèn job bảo mật và khóa nút Merge.
 
-```
+```text
        MÔ HÌNH THỰC HÀNH LAB QUẢN TRỊ TUÂN THỦ TRÊN GITLAB CI
 
      [ Group: enterprise-fintech ]
@@ -514,7 +514,7 @@ module.exports = { AWS_ACCESS_KEY, AWS_SECRET_KEY };
 
 ### 7.2. Sơ Đồ Tư Duy Quản Trị Tuân Thủ Doanh Nghiệp (Mindmap)
 
-```
+```text
                     QUẢN TRỊ TUÂN THỦ DOANH NGHIỆP TRONG GITLAB
                                        │
         ┌──────────────────────────────┼──────────────────────────────┐

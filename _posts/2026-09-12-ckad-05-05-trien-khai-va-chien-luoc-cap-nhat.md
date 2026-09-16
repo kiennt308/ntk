@@ -475,24 +475,6 @@ Tối đa 5 Pods (4 + 1).
 | Kubernetes Deployment Strategies | `https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy` | Tài liệu chuẩn chiến lược Deployment |
 | Managing Deployments Rollout | `https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment` | Tài liệu quản lý Rollout & Undo |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. RollingUpdate so với Recreate | 12 phút | 12 phút |
-| §5. Tính toán maxSurge & maxUnavailable | 12 phút | 12 phút |
-| §6. Blue-Green và Canary Release | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -890,26 +872,11 @@ test ! -f /tmp/lab35-deploy.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHE
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace | 10 phút | 10 phút |
-| L4. Bước 2: RollingUpdate Strategy | 25 phút | 25 phút |
-| L5. Bước 3: Recreate Strategy | 25 phút | 25 phút |
-| L6. Bước 4: Blue-Green Switch | 25 phút | 25 phút |
-| L7. Bước 5: Canary & Rollback | 15 phút | 15 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -917,179 +884,304 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ý nghĩa của hai tham số <code>maxSurge</code> và <code>maxUnavailable</code> trong cấu hình chiến lược <code>RollingUpdate</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>RollingUpdate</code> thay thế từng Pod cũ bằng Pod mới nối tiếp nhau giúp cập nhật Zero-Downtime. <code>Recreate</code> tiêu diệt toàn bộ 100% Pod cũ trước rồi mới bắt đầu tạo các Pod mới, gây ra Downtime ngắn trong quá trình rollout nhưng đảm bảo không bao giờ có 2 phiên bản code chạy song song.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>maxSurge</code> định nghĩa số lượng Pod tối đa được phép tạo thừa vượt quá <code>replicas</code> khai báo trong lúc rollout. <code>maxUnavailable</code> định nghĩa số lượng Pod tối đa được phép ở trạng thái không sẵn sàng (down) trong lúc rollout.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa maxSurge và maxUnavailable.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 trong 2 tham số.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cả 2 tham số kèm ý nghĩa kiểm soát dung lượng và tính sẵn sàng của cụm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hai tham số này có thể khai báo ở những dạng đơn vị nào? — Khai báo ở dạng số nguyên cụ thể hoặc dạng phần trăm <code>%</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 chiến lược.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được RollingUpdate không downtime nhưng không rõ cơ chế diệt 100% Pod cũ của Recreate.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự khác biệt về Zero-Downtime so với Downtime ngắn và bối cảnh ứng dụng tương thích DB.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Khi nào bắt buộc phải dùng <code>Recreate</code> thay vì <code>RollingUpdate</code>? — Khi phiên bản mới làm thay đổi cấu trúc database không tương thích ngược với phiên bản cũ).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao cờ <code>readinessProbe</code> lại là yếu tố sống còn bắt buộc phải có khi triển khai chiến lược <code>RollingUpdate</code> Zero-Downtime?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Kubelet chỉ dựa vào trạng thái <code>READY</code> của Pod mới để quyết định chuyển sang tiêu diệt Pod cũ. Nếu không có <code>readinessProbe</code>, Pod mới vừa bật lên (chưa nạp xong code/cache) đã bị coi là <code>READY</code>, Kubelet liền diệt ngay Pod cũ khiến người dùng nhận lỗi HTTP 502/503.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết vai trò của readinessProbe trong RollingUpdate.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được readinessProbe kiểm tra Pod sẵn sàng nhưng không giải thích được hậu quả diệt Pod cũ gây lỗi 502.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế Kubelet chuyển bước rollout dựa trên readinessProbe.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu <code>readinessProbe</code> của Pod mới bị fail liên tục thì quá trình <code>RollingUpdate</code> sẽ diễn ra thế nào? — Quá trình rollout bị kẹt dừng lại, các Pod cũ vẫn tiếp tục chạy phục vụ traffic).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Công thức toán học tính số lượng Pod tối đa và tối thiểu có thể xuất hiện trên cụm trong suốt quá trình <code>RollingUpdate</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Số Pod tối thiểu hoạt động là <code>(replicas - maxUnavailable)</code>. Số Pod tối đa hoạt động là <code>(replicas + maxSurge)</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được công thức.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng 1 trong 2 công thức.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cả 2 công thức tính dải biến động số lượng Pod trong lúc rollout.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu <code>replicas: 10</code>, <code>maxSurge: 2</code>, <code>maxUnavailable: 1</code> thì số Pod dao động trong khoảng nào? — Dao động từ 9 Pod đến 12 Pod).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mô hình Blue-Green Deployment được thực hiện như thế nào bằng tài nguyên Kubernetes gốc (Service và Deployment)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Dựng 2 Deployment độc lập (<code>app-blue</code> v1 và <code>app-green</code> v2). Tạo 1 Service định tuyến traffic qua Pod selector (ví dụ <code>version: v1</code>). Khi bản Green sẵn sàng 100%, thực hiện switch selector của Service sang <code>version: v2</code> để chuyển đổi toàn bộ traffic người dùng chỉ trong 1 giây.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được cơ chế switch selector của Service.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 Deployment nhưng không rõ lệnh switch selector trên Service trong 1s.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc quy trình dựng 2 Deployment độc lập và thao tác switch selector Service tức thì.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ưu điểm lớn nhất của Blue-Green Deployment so với RollingUpdate là gì? — Rollback tức thì trong 1 giây nếu bản mới có lỗi và kiểm thử được 100% bản mới trên môi trường cô lập trước khi chuyển traffic).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Mô hình Canary Deployment phân chia tỷ lệ traffic người dùng (ví dụ 10% cho bản mới, 90% cho bản cũ) dựa trên cơ chế nào của Kubernetes Service?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Dựa trên thuật toán cân bằng tải Round-Robin của Service tới danh sách các Endpoints Pod có CÙNG NHÃN selector. Ví dụ dựng <code>app-stable</code> 9 replicas và <code>app-canary</code> 1 replica (cùng mang nhãn <code>app: web</code>), Service sẽ tự động phân chia 10% traffic (1/10) vào Pod canary.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được cơ chế chia traffic qua số lượng bản sao Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chia Pod nhưng quên nhấn mạnh cờ nhãn selector CÙNG NHAU.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác thuật toán Round-Robin của Service dựa trên số lượng bản sao Endpoints.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn điều khiển chính xác tỷ lệ traffic Canary theo trọng số phần trăm mà không phụ thuộc vào số Pod thì dùng giải pháp gì? — Dùng Ingress Controller như Nginx Ingress Canary hoặc Service Mesh như Istio).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tác dụng của lệnh <code>kubectl rollout undo deployment/<name></code> là gì và nó hoạt động dựa trên cơ chế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>kubectl rollout undo</code> dùng để khôi phục ngay lập tức Deployment về phiên bản cũ (revision trước đó). Nó hoạt động bằng cách giảm số bản sao Pod của ReplicaSet mới về 0 và tăng số bản sao Pod của ReplicaSet cũ lên mức ban đầu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh rollout undo.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được quay lại phiên bản cũ nhưng không giải thích cơ chế tương tác với ReplicaSet cũ/mới.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác thao tác rollback và cơ chế điều chỉnh replicas của ReplicaSet Controller.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để rollback về một revision cụ thể N trong lịch sử? — Chạy lệnh <code>kubectl rollout undo deployment/<name> --to-revision=N</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tác dụng của hai lệnh <code>kubectl rollout pause</code> và <code>kubectl rollout resume</code> trong thực tế là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>kubectl rollout pause</code> tạm dừng quá trình cập nhật đang diễn ra (cho phép kỹ sư tạo 1 vài Pod mới để kiểm tra thử nghiệm mà không cập nhật 100% cụm). Lệnh <code>kubectl rollout resume</code> tiếp tục quá trình cập nhật bị tạm dừng để hoàn tất rollout.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết hai lệnh pause/resume.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tạm dừng nhưng không giải thích được ứng dụng kiểm thử một phần Pod trong thực tế.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc mục đích và trường hợp sử dụng thực tế của cờ pause/resume.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu chỉnh sửa nhiều trường cấu hình của Deployment khi đang ở trạng thái <code>pause</code> thì chuyện gì xảy ra? — Tất cả các thay đổi sẽ được gom lại và thực hiện trong 1 đợt rollout duy nhất khi gõ <code>resume</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Trường <code>minReadySeconds</code> trong bản kê khai Deployment có tác dụng gì trong quá trình <code>RollingUpdate</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Trường <code>minReadySeconds</code> định nghĩa số giây tối thiểu mà một Pod mới vừa đạt trạng thái <code>READY</code> phải duy trì hoạt động ổn định trước khi Kubelet tính là sẵn sàng hoàn toàn và chuyển sang tiêu diệt Pod cũ tiếp theo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết minReadySeconds.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được số giây sẵn sàng nhưng không làm rõ mốc thời gian duy trì ổn định trước khi diệt Pod cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò chống lại các Pod bị sập muộn sau vài giây container start.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu giá trị <code>minReadySeconds: 30</code> thì Kubelet sẽ đợi bao lâu sau khi readinessProbe báo thành công? — Đợi đủ 30 giây rồi mới chuyển sang tiêu diệt Pod cũ tiếp theo).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp CLI gõ nhanh để thay đổi ảnh container của Deployment <code>web-deploy</code> thành <code>nginx:1.25</code> trong 2 giây từ terminal là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl set image deployment/web-deploy web=nginx:1.25 -n <namespace></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ lệnh set image.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được set image nhưng gõ sai cấu trúc <code>container-name=image</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cú pháp lệnh <code>kubectl set image</code> từ terminal CLI.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để kiểm tra tiến độ cập nhật của câu lệnh set image trên? — Chạy lệnh <code>kubectl rollout status deployment/web-deploy</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao khi thay đổi ConfigMap hoặc Secret mà Pod của Deployment đang mount vào thì Deployment lại KHÔNG tự động thực hiện <code>RollingUpdate</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Deployment Controller chỉ theo dõi sự thay đổi trong khối <code>spec.template</code> (như image, env, labels, resources). Việc sửa đổi nội dung tệp ConfigMap/Secret độc lập không làm thay đổi hash của <code>spec.template</code>, nên Deployment không phát hiện ra sự thay đổi để trigger rollout.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng sửa ConfigMap là Deployment tự động rollout ngay.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không tự động rollout nhưng không giải thích được cơ chế theo dõi hash của spec.template.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế trigger rollout dựa trên hash của <code>spec.template</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để ép Deployment thực hiện <code>RollingUpdate</code> nạp lại ConfigMap mới mà không đổi image? — Chạy lệnh <code>kubectl rollout restart deployment/<name></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tổng kết lại, bộ 4 lệnh CLI quản lý Rollout quan trọng nhất trong kỳ thi CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bộ 4 lệnh gồm: <code>kubectl rollout status</code> (xem tiến độ), <code>kubectl rollout history</code> (xem lịch sử revision), <code>kubectl rollout undo</code> (quay lui phiên bản), và <code>kubectl rollout restart</code> (khởi động lại toàn bộ Pod).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 lệnh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2-3 lệnh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, chuẩn xác cú pháp và công dụng của trọn bộ 4 lệnh CLI quản lý Rollout.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 36 là gì? — Học về Helm Package Manager: Chart, Values, Release và cách quản lý ứng dụng phức tạp).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Ý nghĩa của hai tham số `maxSurge` và `maxUnavailable` trong cấu hình chiến lược `RollingUpdate` là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `maxSurge` định nghĩa số lượng Pod tối đa được phép tạo thừa vượt quá `replicas` khai báo trong lúc rollout. `maxUnavailable` định nghĩa số lượng Pod tối đa được phép ở trạng thái không sẵn sàng (down) trong lúc rollout.
+1. <b style="color: var(--accent-primary);">"Lựa chọn chính xác chiến lược triển khai (<code>RollingUpdate</code> Zero-Downtime hay <code>Recreate</code>) là yếu tố quyết định sự ổn định của hệ thống khi phát hành phiên bản mới."</b>
+2. <b style="color: var(--accent-primary);">"Mọi Deployment sử dụng <code>RollingUpdate</code> bắt buộc phải đi kèm <code>readinessProbe</code> để tránh hiện tượng rớt kết nối dịch vụ của người dùng."</b>
+3. <b style="color: var(--accent-primary);">"Làm chủ hai kỹ thuật Blue-Green (switch Service selector 1s) và Canary (chia trọng số Endpoints) giúp tự tin phát hành các tính năng lớn trên cụm Production."</b>
+4. <b style="color: var(--accent-primary);">"Thành thục bộ lệnh CLI <code>kubectl rollout</code> (<code>status</code>, <code>history</code>, <code>undo</code>, <code>restart</code>) giúp xử lý ứng cứu sự cố tức thì trong vài giây."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa maxSurge và maxUnavailable.
-- 1đ: Nêu được 1 trong 2 tham số.
-- 3đ: Trình bày chính xác cả 2 tham số kèm ý nghĩa kiểm soát dung lượng và tính sẵn sàng của cụm.
-
-**Câu hỏi đào sâu:** (Hai tham số này có thể khai báo ở những dạng đơn vị nào? — Khai báo ở dạng số nguyên cụ thể hoặc dạng phần trăm `%`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Tại sao cờ `readinessProbe` lại là yếu tố sống còn bắt buộc phải có khi triển khai chiến lược `RollingUpdate` Zero-Downtime?
-
-**Đáp án chuẩn:** Vì Kubelet chỉ dựa vào trạng thái `READY` của Pod mới để quyết định chuyển sang tiêu diệt Pod cũ. Nếu không có `readinessProbe`, Pod mới vừa bật lên (chưa nạp xong code/cache) đã bị coi là `READY`, Kubelet liền diệt ngay Pod cũ khiến người dùng nhận lỗi HTTP 502/503.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết vai trò của readinessProbe trong RollingUpdate.
-- 1đ: Nêu được readinessProbe kiểm tra Pod sẵn sàng nhưng không giải thích được hậu quả diệt Pod cũ gây lỗi 502.
-- 3đ: Phân tích thấu đáo cơ chế Kubelet chuyển bước rollout dựa trên readinessProbe.
-
-**Câu hỏi đào sâu:** (Nếu `readinessProbe` của Pod mới bị fail liên tục thì quá trình `RollingUpdate` sẽ diễn ra thế nào? — Quá trình rollout bị kẹt dừng lại, các Pod cũ vẫn tiếp tục chạy phục vụ traffic).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Công thức toán học tính số lượng Pod tối đa và tối thiểu có thể xuất hiện trên cụm trong suốt quá trình `RollingUpdate` là gì?
-
-**Đáp án chuẩn:** Số Pod tối thiểu hoạt động là `(replicas - maxUnavailable)`. Số Pod tối đa hoạt động là `(replicas + maxSurge)`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được công thức.
-- 1đ: Nêu đúng 1 trong 2 công thức.
-- 3đ: Trình bày chính xác cả 2 công thức tính dải biến động số lượng Pod trong lúc rollout.
-
-**Câu hỏi đào sâu:** (Nếu `replicas: 10`, `maxSurge: 2`, `maxUnavailable: 1` thì số Pod dao động trong khoảng nào? — Dao động từ 9 Pod đến 12 Pod).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Mô hình Blue-Green Deployment được thực hiện như thế nào bằng tài nguyên Kubernetes gốc (Service và Deployment)?
-
-**Đáp án chuẩn:** Dựng 2 Deployment độc lập (`app-blue` v1 và `app-green` v2). Tạo 1 Service định tuyến traffic qua Pod selector (ví dụ `version: v1`). Khi bản Green sẵn sàng 100%, thực hiện switch selector của Service sang `version: v2` để chuyển đổi toàn bộ traffic người dùng chỉ trong 1 giây.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được cơ chế switch selector của Service.
-- 1đ: Nêu được 2 Deployment nhưng không rõ lệnh switch selector trên Service trong 1s.
-- 3đ: Trình bày mạch lạc quy trình dựng 2 Deployment độc lập và thao tác switch selector Service tức thì.
-
-**Câu hỏi đào sâu:** (Ưu điểm lớn nhất của Blue-Green Deployment so với RollingUpdate là gì? — Rollback tức thì trong 1 giây nếu bản mới có lỗi và kiểm thử được 100% bản mới trên môi trường cô lập trước khi chuyển traffic).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Mô hình Canary Deployment phân chia tỷ lệ traffic người dùng (ví dụ 10% cho bản mới, 90% cho bản cũ) dựa trên cơ chế nào của Kubernetes Service?
-
-**Đáp án chuẩn:** Dựa trên thuật toán cân bằng tải Round-Robin của Service tới danh sách các Endpoints Pod có CÙNG NHÃN selector. Ví dụ dựng `app-stable` 9 replicas và `app-canary` 1 replica (cùng mang nhãn `app: web`), Service sẽ tự động phân chia 10% traffic (1/10) vào Pod canary.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được cơ chế chia traffic qua số lượng bản sao Pod.
-- 1đ: Nêu được chia Pod nhưng quên nhấn mạnh cờ nhãn selector CÙNG NHAU.
-- 3đ: Phân tích chuẩn xác thuật toán Round-Robin của Service dựa trên số lượng bản sao Endpoints.
-
-**Câu hỏi đào sâu:** (Nếu muốn điều khiển chính xác tỷ lệ traffic Canary theo trọng số phần trăm mà không phụ thuộc vào số Pod thì dùng giải pháp gì? — Dùng Ingress Controller như Nginx Ingress Canary hoặc Service Mesh như Istio).
-
----
-
-### Câu 7 — 🔥
-**Hỏi:** Tác dụng của lệnh `kubectl rollout undo deployment/<name>` là gì và nó hoạt động dựa trên cơ chế nào?
-
-**Đáp án chuẩn:** Lệnh `kubectl rollout undo` dùng để khôi phục ngay lập tức Deployment về phiên bản cũ (revision trước đó). Nó hoạt động bằng cách giảm số bản sao Pod của ReplicaSet mới về 0 và tăng số bản sao Pod của ReplicaSet cũ lên mức ban đầu.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh rollout undo.
-- 1đ: Nêu được quay lại phiên bản cũ nhưng không giải thích cơ chế tương tác với ReplicaSet cũ/mới.
-- 3đ: Trình bày chính xác thao tác rollback và cơ chế điều chỉnh replicas của ReplicaSet Controller.
-
-**Câu hỏi đào sâu:** (Làm thế nào để rollback về một revision cụ thể N trong lịch sử? — Chạy lệnh `kubectl rollout undo deployment/<name> --to-revision=N`).
-
----
-
-### Câu 8 — ★★★
-**Hỏi:** Tác dụng của hai lệnh `kubectl rollout pause` và `kubectl rollout resume` trong thực tế là gì?
-
-**Đáp án chuẩn:** Lệnh `kubectl rollout pause` tạm dừng quá trình cập nhật đang diễn ra (cho phép kỹ sư tạo 1 vài Pod mới để kiểm tra thử nghiệm mà không cập nhật 100% cụm). Lệnh `kubectl rollout resume` tiếp tục quá trình cập nhật bị tạm dừng để hoàn tất rollout.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết hai lệnh pause/resume.
-- 1đ: Nêu được tạm dừng nhưng không giải thích được ứng dụng kiểm thử một phần Pod trong thực tế.
-- 3đ: Trình bày mạch lạc mục đích và trường hợp sử dụng thực tế của cờ pause/resume.
-
-**Câu hỏi đào sâu:** (Nếu chỉnh sửa nhiều trường cấu hình của Deployment khi đang ở trạng thái `pause` thì chuyện gì xảy ra? — Tất cả các thay đổi sẽ được gom lại và thực hiện trong 1 đợt rollout duy nhất khi gõ `resume`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Trường `minReadySeconds` trong bản kê khai Deployment có tác dụng gì trong quá trình `RollingUpdate`?
-
-**Đáp án chuẩn:** Trường `minReadySeconds` định nghĩa số giây tối thiểu mà một Pod mới vừa đạt trạng thái `READY` phải duy trì hoạt động ổn định trước khi Kubelet tính là sẵn sàng hoàn toàn và chuyển sang tiêu diệt Pod cũ tiếp theo.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết minReadySeconds.
-- 1đ: Nêu được số giây sẵn sàng nhưng không làm rõ mốc thời gian duy trì ổn định trước khi diệt Pod cũ.
-- 3đ: Phân tích thấu đáo vai trò chống lại các Pod bị sập muộn sau vài giây container start.
-
-**Câu hỏi đào sâu:** (Nếu giá trị `minReadySeconds: 30` thì Kubelet sẽ đợi bao lâu sau khi readinessProbe báo thành công? — Đợi đủ 30 giây rồi mới chuyển sang tiêu diệt Pod cũ tiếp theo).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Cú pháp CLI gõ nhanh để thay đổi ảnh container của Deployment `web-deploy` thành `nginx:1.25` trong 2 giây từ terminal là gì?
-
-**Đáp án chuẩn:** `kubectl set image deployment/web-deploy web=nginx:1.25 -n <namespace>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ lệnh set image.
-- 1đ: Nêu được set image nhưng gõ sai cấu trúc `container-name=image`.
-- 3đ: Trình bày chính xác cú pháp lệnh `kubectl set image` từ terminal CLI.
-
-**Câu hỏi đào sâu:** (Làm thế nào để kiểm tra tiến độ cập nhật của câu lệnh set image trên? — Chạy lệnh `kubectl rollout status deployment/web-deploy`).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Tại sao khi thay đổi ConfigMap hoặc Secret mà Pod của Deployment đang mount vào thì Deployment lại KHÔNG tự động thực hiện `RollingUpdate`?
-
-**Đáp án chuẩn:** Vì Deployment Controller chỉ theo dõi sự thay đổi trong khối `spec.template` (như image, env, labels, resources). Việc sửa đổi nội dung tệp ConfigMap/Secret độc lập không làm thay đổi hash của `spec.template`, nên Deployment không phát hiện ra sự thay đổi để trigger rollout.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng sửa ConfigMap là Deployment tự động rollout ngay.
-- 1đ: Nêu được không tự động rollout nhưng không giải thích được cơ chế theo dõi hash của spec.template.
-- 3đ: Phân tích chuẩn xác cơ chế trigger rollout dựa trên hash của `spec.template`.
-
-**Câu hỏi đào sâu:** (Làm thế nào để ép Deployment thực hiện `RollingUpdate` nạp lại ConfigMap mới mà không đổi image? — Chạy lệnh `kubectl rollout restart deployment/<name>`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Tổng kết lại, bộ 4 lệnh CLI quản lý Rollout quan trọng nhất trong kỳ thi CKAD là gì?
-
-**Đáp án chuẩn:** Bộ 4 lệnh gồm: `kubectl rollout status` (xem tiến độ), `kubectl rollout history` (xem lịch sử revision), `kubectl rollout undo` (quay lui phiên bản), và `kubectl rollout restart` (khởi động lại toàn bộ Pod).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 lệnh.
-- 1đ: Nêu được 2-3 lệnh.
-- 3đ: Trình bày tự tin, chuẩn xác cú pháp và công dụng của trọn bộ 4 lệnh CLI quản lý Rollout.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 36 là gì? — Học về Helm Package Manager: Chart, Values, Release và cách quản lý ứng dụng phức tạp).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1099,28 +1191,6 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 2. **"Mọi Deployment sử dụng `RollingUpdate` bắt buộc phải đi kèm `readinessProbe` để tránh hiện tượng rớt kết nối dịch vụ của người dùng."**
 3. **"Làm chủ hai kỹ thuật Blue-Green (switch Service selector 1s) và Canary (chia trọng số Endpoints) giúp tự tin phát hành các tính năng lớn trên cụm Production."**
 4. **"Thành thục bộ lệnh CLI `kubectl rollout` (`status`, `history`, `undo`, `restart`) giúp xử lý ứng cứu sự cố tức thì trong vài giây."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các chiến lược triển khai và rollout CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kỹ thuật Blue-Green, Canary và Rollback Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết bản kê khai Deployment YAML áp dụng `RollingUpdate` với `maxSurge: 1`, `maxUnavailable: 0` và có `readinessProbe`.
-- **BTVN 2:** Thực hành dựng bộ đôi Blue-Green Deployment và dùng lệnh `kubectl patch` switch selector của Service.
-- **BTVN 3:** Viết script tự động cập nhật image Deployment, theo dõi `kubectl rollout status` và tự động `undo` nếu quá 60s chưa xong.
-- **BTVN 4 (Chuẩn bị cho Buổi 36 — Helm cho người viết ứng dụng):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Helm là gì và tại sao Helm lại được gọi là trình quản lý gói (Package Manager) của Kubernetes?
-  2. Ba khái niệm cốt lõi trong Helm là gì (Chart, Values, Release)?
-  3. Lệnh CLI nào được dùng để cài đặt, nâng cấp và quay lui một Helm Release (`helm install`, `helm upgrade`, `helm rollback`)?
 
 ---
 
@@ -1344,14 +1414,15 @@ kubectl rollout undo deployment/<name> -n <ns>
 kubectl patch service <svc-name> -n <ns> -p '{"spec":{"selector":{"version":"v2"}}}'
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 06] Đóng Gói Ứng Dụng Với Helm: Helm Charts, Templates, Values Overrides, Release Management & Cạm Bẫy](ckad-06-06-helm-cho-nguoi-viet-ung-dung.html).
+
 {% endraw %}

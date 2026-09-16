@@ -451,14 +451,12 @@ ansible-playbook -i inventory.ini site.yml
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-Tư duy **Configuration Management** theo mô hình **Push-Based**, **Agentless** và nguyên lý **Idempotency** là nền tảng cốt lõi xuyên suốt toàn bộ chương trình đào tạo Ansible Automation. Nắm vững kỹ năng đối soát thực tế trên máy đích và không phụ thuộc vào `PLAY RECAP` sẽ giúp bạn luôn làm chủ hệ thống trong mọi kịch bản vận hành thực chiến.
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:**
-> Trong **[[Bài 02] Cài Đặt Ansible, Cấu Hình Control Node & Lệnh Ad-Hoc Nâng Cao](ansible-02-02-cai-dat-kien-truc-ad-hoc.html)**, chúng ta sẽ đi sâu vào cấu trúc 4 tầng ưu tiên của `ansible.cfg`, thiết lập SSH Key Authentication bảo mật cao, và làm chủ toàn bộ hệ thống lệnh Ad-hoc thực chiến.
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 02] Kiến Trúc Ansible & Lệnh Ad-Hoc: Control Node, Managed Nodes, SSH Authentication & Thực Thi Module Tức Thì](ansible-02-02-cai-dat-kien-truc-ad-hoc.html).
 
 {% endraw %}

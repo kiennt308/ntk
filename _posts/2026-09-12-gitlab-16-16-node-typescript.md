@@ -241,9 +241,11 @@ graph TD
 <span class="badge badge--rose">🕒 05:40 AM</span> Trong đợt merge mã nguồn monorepo lớn, job biên dịch TypeScript `compile_bundle` bị dừng đột ngột với thông báo lỗi V8 Engine Heap Overflow, làm tê liệt quy trình phát hành bản vá giao diện.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Tiến trình Node.js cạn kiệt bộ nhớ Heap và bị crash ngay giữa pha phân tích Abstract Syntax Tree:
 
 ```text
+
+Tiến trình Node.js cạn kiệt bộ nhớ Heap và bị crash ngay giữa pha phân tích Abstract Syntax Tree:
+
 <--- Last few GCs --->
 [14:0x7f8a9000] 45120 ms: Mark-sweep 1392.4 (1430.5) -> 1385.1 (1431.2) MB, 842.1 / 0.0 ms (average mu = 0.124, current mu = 0.012) allocation failure
 [14:0x7f8a9000] 46012 ms: Mark-sweep 1398.2 (1431.2) -> 1392.8 (1433.0) MB, 892.0 / 0.0 ms (average mu = 0.068, current mu = 0.008) allocation failure

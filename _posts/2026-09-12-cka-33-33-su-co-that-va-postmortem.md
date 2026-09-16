@@ -444,24 +444,6 @@ Lệnh <code>kubectl logs -n kube-system -l k8s-app=kube-dns</code>.
 | Google SRE Book - Postmortem Culture | `https://sre.google/sre-book/postmortem-culture/` | Hướng dẫn văn hóa Blameless Postmortem Google |
 | Kubeadm PKI & Cert Management | `https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/` | Tài liệu quản lý và gia hạn chứng chỉ kubeadm |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Game Day Model & 4-Step Incident Response | 12 phút | 12 phút |
-| §5. Analysis of 4 Planted Incidents (NotReady, OOM, Certs, DNS) | 12 phút | 12 phút |
-| §6. Blameless Postmortem Framework & 6 Sections | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -777,26 +759,11 @@ test ! -f /tmp/gameday/oom-fixed.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Speed Directory | 15 phút | 15 phút |
-| L4. Bước 2: Kubelet Crash & Pod OOMKilled Fixes | 30 phút | 30 phút |
-| L5. Bước 3: TLS Cert Renewal & CoreDNS Fixes | 30 phút | 30 phút |
-| L6. Bước 4: Compile Blameless Postmortem Report | 25 phút | 25 phút |
-| L7. Bước 5: Auto-Grading & SRE Benchmark | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -804,194 +771,285 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Quy trình 4 bước chuẩn trong ứng phó sự cố khẩn cấp (Incident Response Workflow)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Giúp <b style="color: var(--accent-primary);">chủ động cấy sự cố giả lập để kiểm thử phản xạ ứng phó của đội ngũ kỹ sư</b>, giảm thời gian khôi phục sự cố trung bình (MTTR), phát hiện các lỗ hổng hệ thống ẩn giấu trước khi nó gây ra gián đoạn thực tế trên môi trường Production.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Detect (Nhận diện)</b>: Phát hiện cảnh báo từ Prometheus/Alertmanager hoặc báo lỗi từ người dùng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Contain (Khoanh vùng)</b>: Cô lập vị trí sự cố (cordon node/scale 0) tránh lây lan.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Remediate (Khắc phục)</b>: Tìm nguyên nhân gốc rễ RCA và sửa lỗi tận gốc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Review (Đánh giá)</b>: Biên soạn báo cáo Blameless Postmortem để rút kinh nghiệm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 bước Incident Response.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% quy trình 4 bước ứng phó sự cố khẩn cấp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao bước Contain (Khoanh vùng) lại phải thực hiện trước bước Remediate (Khắc phục)? — Để <b style="color: var(--accent-primary);">ngăn sự cố tiếp tục lan rộng</b> sang các Pods/Nodes khác trong khi đang tập trung gỡ lỗi).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu ý nghĩa Game Day.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thử gỡ lỗi nhưng chưa làm rõ MTTR và phát hiện lỗ hổng ẩn giấu.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác mục tiêu và ý nghĩa cốt lõi của hoạt động Game Day SRE.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tên 4 sự cố được cấy sẵn trong bài thực hành Game Day Buổi 70 là gì? — <b style="color: var(--accent-primary);">Node NotReady</b>, <b style="color: var(--accent-primary);">Pod OOMKilled</b>, <b style="color: var(--accent-primary);">Certificate Expired</b>, và <b style="color: var(--accent-primary);">CoreDNS Failure</b>).
+---</div>
 </div>
 </details>
 
----
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Quy trình 3 bước chẩn đoán và khắc phục sự cố Node ở trạng thái <code>NotReady</code> do Kubelet service bị sập?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• SSH vào Node: <code>ssh worker-01</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Soi 50 dòng log Kubelet: <code>sudo journalctl -u kubelet -n 50 --no-pager</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sửa lỗi tệp config và khởi động lại: <code>sudo systemctl restart kubelet</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy trình gỡ lỗi Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được restart Kubelet nhưng thiếu journalctl log.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy trình 3 bước chẩn đoán Kubelet crash.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích của cờ <code>--no-pager</code> khi chạy <code>journalctl</code> là gì? — Giúp <b style="color: var(--accent-primary);">in thẳng log ra màn hình terminal</b> mà không bị ngắt treo ở giao diện Pager interactive).
 
-### Câu 2 — 🔥
-**Hỏi:** Quy trình 4 bước chuẩn trong ứng phó sự cố khẩn cấp (Incident Response Workflow)?
+---</div>
+</div>
+</details>
 
-**Đáp án chuẩn:**
-1. **Detect (Nhận diện)**: Phát hiện cảnh báo từ Prometheus/Alertmanager hoặc báo lỗi từ người dùng.
-2. **Contain (Khoanh vùng)**: Cô lập vị trí sự cố (cordon node/scale 0) tránh lây lan.
-3. **Remediate (Khắc phục)**: Tìm nguyên nhân gốc rễ RCA và sửa lỗi tận gốc.
-4. **Review (Đánh giá)**: Biên soạn báo cáo Blameless Postmortem để rút kinh nghiệm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Nguyên nhân gốc rễ và cách xử lý sự cố Pod bị dừng với mã lỗi Exit Code 137 (OOMKilled)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân</b>: Tiến trình container tiêu tốn bộ nhớ RAM vượt quá trần <code>resources.limits.memory</code> và bị Linux OOM Killer tiêu diệt.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách xử lý</b>: Kiểm tra mức tiêu tốn thực tế qua <code>kubectl top pod</code> và điều chỉnh tăng giá trị <code>resources.limits.memory</code> trong Pod spec phù hợp với nhu cầu ứng dụng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn Exit Code 137 với các lỗi khác.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được hết RAM nhưng thiếu thuộc tính resources.limits.memory.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên nhân và giải pháp sửa lỗi OOMKilled Exit Code 137.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Exit Code 137 khác gì với Exit Code 1? — Exit Code 137 do <b style="color: var(--accent-primary);">bị SIGKILL do OOM Killer</b>, còn Exit Code 1 do <b style="color: var(--accent-primary);">ứng dụng tự thoát lỗi (Application Exception)</b>).
 
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 bước Incident Response.
-- 1đ: Nêu được 2 bước.
-- 3đ: Trình bày chuẩn xác 100% quy trình 4 bước ứng phó sự cố khẩn cấp.
+---</div>
+</div>
+</details>
 
-**Câu hỏi đào sâu:** (Tại sao bước Contain (Khoanh vùng) lại phải thực hiện trước bước Remediate (Khắc phục)? — Để **ngăn sự cố tiếp tục lan rộng** sang các Pods/Nodes khác trong khi đang tập trung gỡ lỗi).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Quy trình gia hạn chứng chỉ TLS cụm Control Plane khi <code>kubectl</code> báo lỗi <code>certificate has expired</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra thời hạn: <code>sudo kubeadm certs check-expiration</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gia hạn 100% certs: <code>sudo kubeadm certs renew all</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nạp lại certs mới: <code>sudo systemctl restart kubelet</code> (khởi động lại Static Pods Control Plane).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy trình gia hạn certs kubeadm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kubeadm certs renew all nhưng thiếu restart Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% quy trình gia hạn chứng chỉ TLS Control Plane.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thời hạn mặc định của chứng chỉ TLS do kubeadm sinh ra khi khởi tạo cụm là bao lâu? — Thời hạn mặc định là <b style="color: var(--accent-primary);"><code>1 năm</code></b> (365 ngày)).
 
----
+---</div>
+</div>
+</details>
 
-### Câu 3 — ★★★
-**Hỏi:** Quy trình 3 bước chẩn đoán và khắc phục sự cố Node ở trạng thái `NotReady` do Kubelet service bị sập?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Các bước chẩn đoán sự cố Pod không phân giải được tên miền dịch vụ do CoreDNS bị sập?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra trạng thái Pod CoreDNS: <code>kubectl get pods -n kube-system -l k8s-app=kube-dns</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đọc log CoreDNS: <code>kubectl logs -n kube-system -l k8s-app=kube-dns</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra kết nối CNI plugin và khởi động lại CoreDNS Deployment: <code>kubectl rollout restart deployment/coredns -n kube-system</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết gỡ lỗi CoreDNS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được restart coredns nhưng thiếu check log và CNI plugin.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác các bước chẩn đoán và khắc phục sự cố CoreDNS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để test phân giải DNS từ bên trong một Pod thử nghiệm? — Lệnh <code>kubectl run test-dns --image=busybox -i --tty --rm -- nslookup kubernetes.default</code>).
 
-**Đáp án chuẩn:**
-1. SSH vào Node: `ssh worker-01`.
-2. Soi 50 dòng log Kubelet: `sudo journalctl -u kubelet -n 50 --no-pager`.
-3. Sửa lỗi tệp config và khởi động lại: `sudo systemctl restart kubelet`.
+---</div>
+</div>
+</details>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết quy trình gỡ lỗi Kubelet.
-- 1đ: Nêu được restart Kubelet nhưng thiếu journalctl log.
-- 3đ: Phân tích chuẩn xác quy trình 3 bước chẩn đoán Kubelet crash.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sáu phần bắt buộc phải có trong một báo cáo sự cố không quy trách nhiệm (Blameless Postmortem Report)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Summary</b>: Tóm tắt ngắn gọn sự cố.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Impact</b>: Ảnh hưởng đối với hoạt động kinh doanh/dịch vụ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Root Cause Analysis (RCA)</b>: Phân tích nguyên nhân gốc rễ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Incident Timeline</b>: Dòng thời gian chi tiết các mốc phát hiện và sửa lỗi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lessons Learned</b>: Bài học kinh nghiệm rút ra.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Action Items</b>: Danh mục hành động kỹ thuật phòng ngừa sự cố tái diễn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 6 phần.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 phần.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 6 phần bắt buộc của tệp Blameless Postmortem Report.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao phần Action Items lại cần phải chỉ định rõ người phụ trách và thời hạn hoàn thành? — Để <b style="color: var(--accent-primary);">đảm bảo các nhiệm vụ kỹ thuật được thực thi triệt để</b>, tránh báo cáo bị bỏ quên).
 
-**Câu hỏi đào sâu:** (Lợi ích của cờ `--no-pager` khi chạy `journalctl` là gì? — Giúp **in thẳng log ra màn hình terminal** mà không bị ngắt treo ở giao diện Pager interactive).
+---</div>
+</div>
+</details>
 
----
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Triết lý "Văn hóa Không Quy trách nhiệm" (Blameless Culture) mang lại lợi ích gì cho tổ chức?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp kỹ sư <b style="color: var(--accent-primary);">tự tin báo cáo sự cố sớm mà không sợ bị trừng phạt</b>, chuyển hướng tập trung từ việc đổ lỗi cá nhân sang việc <b style="color: var(--accent-primary);">tìm và khắc phục các lỗ hổng quy trình/hệ thống</b>, nâng cao tính bền vững lâu dài của hạ tầng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu triết lý Blameless Culture.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không phạt nhân viên nhưng chưa làm rõ việc sửa lỗ hổng hệ thống.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo giá trị của Blameless Culture trong văn hóa SRE doanh nghiệp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu một kỹ sư gõ nhầm lệnh xóa database, báo cáo Blameless Postmortem sẽ ghi nhận nguyên nhân thế nào? — Ghi nhận nguyên nhân là <b style="color: var(--accent-primary);">do hệ thống thiếu cơ chế xác nhận 2 bước và thiếu rào chắn RBAC</b>, chứ không ghi nguyên nhân do sơ suất cá nhân).
 
-### Câu 4 — ★★★
-**Hỏi:** Nguyên nhân gốc rễ và cách xử lý sự cố Pod bị dừng với mã lỗi Exit Code 137 (OOMKilled)?
+---</div>
+</div>
+</details>
 
-**Đáp án chuẩn:**
-- **Nguyên nhân**: Tiến trình container tiêu tốn bộ nhớ RAM vượt quá trần `resources.limits.memory` và bị Linux OOM Killer tiêu diệt.
-- **Cách xử lý**: Kiểm tra mức tiêu tốn thực tế qua `kubectl top pod` và điều chỉnh tăng giá trị `resources.limits.memory` trong Pod spec phù hợp với nhu cầu ứng dụng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Ý nghĩa của chỉ số MTTR (Mean Time To Recovery) và cách hạ thấp chỉ số này trong thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">MTTR là <b style="color: var(--accent-primary);">thời gian trung bình để khôi phục hệ thống từ khi xảy ra sự cố tới khi sống lại hoàn toàn</b>. Hạ thấp MTTR bằng cách: <b style="color: var(--accent-primary);">tự động hóa giám sát/cảnh báo</b>, <b style="color: var(--accent-primary);">tổ chức Game Day diễn tập định kỳ</b>, và <b style="color: var(--accent-primary);">xây dựng kịch bản ứng phó sự cố (Runbooks/Playbooks)</b> chuẩn hóa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết chỉ số MTTR.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng định nghĩa MTTR nhưng thiếu các biện pháp hạ thấp MTTR.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ý nghĩa và các giải pháp hạ thấp chỉ số MTTR.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chỉ số MTTD (Mean Time To Detect) khác gì với MTTR? — MTTD là thời gian từ khi lỗi xảy ra tới khi <b style="color: var(--accent-primary);">phát hiện được cảnh báo</b>, còn MTTR là thời gian tới khi <b style="color: var(--accent-primary);">sửa xong toàn bộ hệ thống</b>).
 
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn Exit Code 137 với các lỗi khác.
-- 1đ: Nêu được hết RAM nhưng thiếu thuộc tính resources.limits.memory.
-- 3đ: Phân tích chuẩn xác nguyên nhân và giải pháp sửa lỗi OOMKilled Exit Code 137.
+---</div>
+</div>
+</details>
 
-**Câu hỏi đào sâu:** (Exit Code 137 khác gì với Exit Code 1? — Exit Code 137 do **bị SIGKILL do OOM Killer**, còn Exit Code 1 do **ứng dụng tự thoát lỗi (Application Exception)**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Kỹ thuật khoanh vùng (Containment) bằng lệnh <code>kubectl cordon</code> và <code>kubectl drain</code> khi 1 Worker Node bị lỗi phần cứng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl cordon <node-name></code>: Chặn Kubelet không cho lập lịch gán thêm Pods mới vào Node đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data</code>: Di tản toàn bộ Pods đang chạy trên Node đó sang các Node lành lặn khác.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa cordon và drain.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cordon chặn Pod drain chuyển Pod nhưng chưa rõ cờ --ignore-daemonsets.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác công dụng và cú pháp lệnh <code>kubectl cordon</code> và <code>kubectl drain</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao phải truyền cờ <code>--ignore-daemonsets</code> khi drain node? — Để <b style="color: var(--accent-primary);">bỏ qua không xóa các DaemonSet Pods</b> (như kube-proxy, CNI) vốn gắn chặt với vòng đời của Host Node).
 
----
+---</div>
+</div>
+</details>
 
-### Câu 5 — 🔥
-**Hỏi:** Quy trình gia hạn chứng chỉ TLS cụm Control Plane khi `kubectl` báo lỗi `certificate has expired`?
-
-**Đáp án chuẩn:**
-1. Kiểm tra thời hạn: `sudo kubeadm certs check-expiration`.
-2. Gia hạn 100% certs: `sudo kubeadm certs renew all`.
-3. Nạp lại certs mới: `sudo systemctl restart kubelet` (khởi động lại Static Pods Control Plane).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết quy trình gia hạn certs kubeadm.
-- 1đ: Nêu được kubeadm certs renew all nhưng thiếu restart Kubelet.
-- 3đ: Trình bày chuẩn xác 100% quy trình gia hạn chứng chỉ TLS Control Plane.
-
-**Câu hỏi đào sâu:** (Thời hạn mặc định của chứng chỉ TLS do kubeadm sinh ra khi khởi tạo cụm là bao lâu? — Thời hạn mặc định là **`1 năm`** (365 ngày)).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Các bước chẩn đoán sự cố Pod không phân giải được tên miền dịch vụ do CoreDNS bị sập?
-
-**Đáp án chuẩn:**
-1. Kiểm tra trạng thái Pod CoreDNS: `kubectl get pods -n kube-system -l k8s-app=kube-dns`.
-2. Đọc log CoreDNS: `kubectl logs -n kube-system -l k8s-app=kube-dns`.
-3. Kiểm tra kết nối CNI plugin và khởi động lại CoreDNS Deployment: `kubectl rollout restart deployment/coredns -n kube-system`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết gỡ lỗi CoreDNS.
-- 1đ: Nêu được restart coredns nhưng thiếu check log và CNI plugin.
-- 3đ: Trình bày chuẩn xác các bước chẩn đoán và khắc phục sự cố CoreDNS.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để test phân giải DNS từ bên trong một Pod thử nghiệm? — Lệnh `kubectl run test-dns --image=busybox -i --tty --rm -- nslookup kubernetes.default`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Sáu phần bắt buộc phải có trong một báo cáo sự cố không quy trách nhiệm (Blameless Postmortem Report)?
-
-**Đáp án chuẩn:**
-1. **Summary**: Tóm tắt ngắn gọn sự cố.
-2. **Impact**: Ảnh hưởng đối với hoạt động kinh doanh/dịch vụ.
-3. **Root Cause Analysis (RCA)**: Phân tích nguyên nhân gốc rễ.
-4. **Incident Timeline**: Dòng thời gian chi tiết các mốc phát hiện và sửa lỗi.
-5. **Lessons Learned**: Bài học kinh nghiệm rút ra.
-6. **Action Items**: Danh mục hành động kỹ thuật phòng ngừa sự cố tái diễn.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 6 phần.
-- 1đ: Nêu được 3 phần.
-- 3đ: Kể tên chuẩn xác 6 phần bắt buộc của tệp Blameless Postmortem Report.
-
-**Câu hỏi đào sâu:** (Tại sao phần Action Items lại cần phải chỉ định rõ người phụ trách và thời hạn hoàn thành? — Để **đảm bảo các nhiệm vụ kỹ thuật được thực thi triệt để**, tránh báo cáo bị bỏ quên).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Triết lý "Văn hóa Không Quy trách nhiệm" (Blameless Culture) mang lại lợi ích gì cho tổ chức?
-
-**Đáp án chuẩn:** Giúp kỹ sư **tự tin báo cáo sự cố sớm mà không sợ bị trừng phạt**, chuyển hướng tập trung từ việc đổ lỗi cá nhân sang việc **tìm và khắc phục các lỗ hổng quy trình/hệ thống**, nâng cao tính bền vững lâu dài của hạ tầng.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu triết lý Blameless Culture.
-- 1đ: Nêu được không phạt nhân viên nhưng chưa làm rõ việc sửa lỗ hổng hệ thống.
-- 3đ: Phân tích thấu đáo giá trị của Blameless Culture trong văn hóa SRE doanh nghiệp.
-
-**Câu hỏi đào sâu:** (Nếu một kỹ sư gõ nhầm lệnh xóa database, báo cáo Blameless Postmortem sẽ ghi nhận nguyên nhân thế nào? — Ghi nhận nguyên nhân là **do hệ thống thiếu cơ chế xác nhận 2 bước và thiếu rào chắn RBAC**, chứ không ghi nguyên nhân do sơ suất cá nhân).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Ý nghĩa của chỉ số MTTR (Mean Time To Recovery) và cách hạ thấp chỉ số này trong thực tế?
-
-**Đáp án chuẩn:** MTTR là **thời gian trung bình để khôi phục hệ thống từ khi xảy ra sự cố tới khi sống lại hoàn toàn**. Hạ thấp MTTR bằng cách: **tự động hóa giám sát/cảnh báo**, **tổ chức Game Day diễn tập định kỳ**, và **xây dựng kịch bản ứng phó sự cố (Runbooks/Playbooks)** chuẩn hóa.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết chỉ số MTTR.
-- 1đ: Nêu đúng định nghĩa MTTR nhưng thiếu các biện pháp hạ thấp MTTR.
-- 3đ: Phân tích chuẩn xác ý nghĩa và các giải pháp hạ thấp chỉ số MTTR.
-
-**Câu hỏi đào sâu:** (Chỉ số MTTD (Mean Time To Detect) khác gì với MTTR? — MTTD là thời gian từ khi lỗi xảy ra tới khi **phát hiện được cảnh báo**, còn MTTR là thời gian tới khi **sửa xong toàn bộ hệ thống**).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Kỹ thuật khoanh vùng (Containment) bằng lệnh `kubectl cordon` và `kubectl drain` khi 1 Worker Node bị lỗi phần cứng?
-
-**Đáp án chuẩn:**
-- `kubectl cordon <node-name>`: Chặn Kubelet không cho lập lịch gán thêm Pods mới vào Node đó.
-- `kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data`: Di tản toàn bộ Pods đang chạy trên Node đó sang các Node lành lặn khác.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa cordon và drain.
-- 1đ: Nêu được cordon chặn Pod drain chuyển Pod nhưng chưa rõ cờ --ignore-daemonsets.
-- 3đ: Phân tích chuẩn xác công dụng và cú pháp lệnh `kubectl cordon` và `kubectl drain`.
-
-**Câu hỏi đào sâu:** (Tại sao phải truyền cờ `--ignore-daemonsets` khi drain node? — Để **bỏ qua không xóa các DaemonSet Pods** (như kube-proxy, CNI) vốn gắn chặt với vòng đời của Host Node).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp markdown chuẩn để biên soạn danh mục hành động phòng ngừa (Action Items) có thời hạn trong tệp `/tmp/postmortem.md` là gì?
-
-**Đáp án chuẩn:**
-```markdown
-## 6. Action Items
-
-- [ ] Gia hạn chứng chỉ TLS tự động qua cert-manager (Người làm: SRE Team - Hạn: 7 ngày)
-- [ ] Cập nhật LimitRange RAM 256Mi cho mọi Namespace (Người làm: DevOps Team - Hạn: 3 ngày)
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai định dạng Action Items.
-- 1đ: Nêu được danh sách gạch đầu dòng nhưng thiếu checkbox và thời hạn.
-- 3đ: Viết chuẩn xác 100% định dạng Action Items trong tệp Postmortem SRE.
-
-**Câu hỏi đào sâu:** (Ký tự `- [ ]` trong markdown có tác dụng gì? — Tạo **ô đánh dấu công việc (Task checkbox)** có thể tích chọn khi hoàn thành).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp markdown chuẩn để biên soạn danh mục hành động phòng ngừa (Action Items) có thời hạn trong tệp <code>/tmp/postmortem.md</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```markdown</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">## 6. Action Items</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• [ ] Gia hạn chứng chỉ TLS tự động qua cert-manager (Người làm: SRE Team - Hạn: 7 ngày)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• [ ] Cập nhật LimitRange RAM 256Mi cho mọi Namespace (Người làm: DevOps Team - Hạn: 3 ngày)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai định dạng Action Items.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được danh sách gạch đầu dòng nhưng thiếu checkbox và thời hạn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% định dạng Action Items trong tệp Postmortem SRE.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ký tự <code>- [ ]</code> trong markdown có tác dụng gì? — Tạo <b style="color: var(--accent-primary);">ô đánh dấu công việc (Task checkbox)</b> có thể tích chọn khi hoàn thành).
 
 ---
 
@@ -1022,32 +1080,23 @@ Giúp <b style="color: var(--accent-primary);">chủ động cấy sự cố gi�
 
 ## V3. Câu chốt để nói khi phỏng vấn
 
+1. <b style="color: var(--accent-primary);">"Làm chủ quy trình 4 bước ứng phó sự cố khẩn cấp: Detect -> Contain -> Remediate -> Review."</b>
+2. <b style="color: var(--accent-primary);">"Bình tĩnh chẩn đoán và khắc phục triệt để các sự cố Kubelet crash, OOMKilled, Expired Certs và CoreDNS."</b>
+3. <b style="color: var(--accent-primary);">"Xây dựng văn hóa Blameless Postmortem tập trung sửa chữa lỗ hổng hệ thống và quy trình."</b>
+4. <b style="color: var(--accent-primary);">"Duy trì thói quen diễn tập Game Day định kỳ để tối ưu hóa chỉ số MTTR cấp doanh nghiệp."</b>
+
+---</div>
+</div>
+</details>
+
+---
+
+## V3. Câu chốt để nói khi phỏng vấn
+
 1. **"Làm chủ quy trình 4 bước ứng phó sự cố khẩn cấp: Detect -> Contain -> Remediate -> Review."**
 2. **"Bình tĩnh chẩn đoán và khắc phục triệt để các sự cố Kubelet crash, OOMKilled, Expired Certs và CoreDNS."**
 3. **"Xây dựng văn hóa Blameless Postmortem tập trung sửa chữa lỗ hổng hệ thống và quy trình."**
 4. **"Duy trì thói quen diễn tập Game Day định kỳ để tối ưu hóa chỉ số MTTR cấp doanh nghiệp."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ năng SRE Incident Response |
-| **29 – 36 điểm** | Xuất sắc | Thành thục 100% Game Day drills, gỡ lỗi 4 sự cố và biên soạn Blameless Postmortem Report |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành lại bài diễn tập Game Day 4 sự cố với thời gian bấm giờ rút ngắn 45 phút.
-- **BTVN 2:** Biên soạn báo cáo Postmortem cho sự cố cụm bị ngắt kết nối etcd do đầy ổ đĩa `/var/lib/etcd`.
-- **BTVN 3:** Viết script Bash tự động kiểm tra trạng thái sức khỏe 4 thành phần (Kubelet, Certs, RAM, CoreDNS).
-- **BTVN 4 (Chuẩn bị cho Buổi 71 — Capstone Dựng Nền Tảng):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Dự án Capstone Buổi 71 yêu cầu dựng một nền tảng Kubernetes hoàn chỉnh với đủ 3 lớp kiểm soát (Cluster Arch, Application Dev, Security Hardening) ra sao?
-  2. Cách tích hợp đồng thời etcd backup, RBAC isolation, NetworkPolicy, Kyverno policy, Ingress TLS, Audit Logging, và Falco rules trong 1 kiến trúc Capstone?
-  3. Kỹ năng bảo vệ thiết kế kiến thức Capstone trước hội đồng đánh giá được thực hiện thế nào?
 
 ---
 
@@ -1265,14 +1314,15 @@ sudo kubeadm certs renew all
 kubectl rollout restart deployment/coredns -n kube-system
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 34] Capstone Hạ Tầng: Xây Dựng Nền Tảng Kubernetes Doanh Nghiệp Tích Hợp Đủ 3 Lớp Bảo Vệ & Quản Trị](cka-34-34-capstone-dung-nen-tang.html).
+
 {% endraw %}

@@ -497,24 +497,6 @@ Container thứ hai sẽ bị lỗi <code>address already in use</code> và sậ
 | Kubernetes Multi-Container Pods | `https://kubernetes.io/docs/concepts/workloads/pods/#how-pods-handle-multiple-containers` | Tài liệu chuẩn K8s Multi-container |
 | K8s Sidecar Containers Feature | `https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/` | Tính năng Native Sidecar Container |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Ba mẫu thiết kế Multi-container | 12 phút | 12 phút |
-| §5. Cơ chế chia sẻ Network và Volume | 12 phút | 12 phút |
-| §6. Native Sidecar Container (K8s v1.28+) | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -874,26 +856,11 @@ test ! -f /tmp/lab33-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKP
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace | 10 phút | 10 phút |
-| L4. Bước 2: Sidecar Pattern | 25 phút | 25 phút |
-| L5. Bước 3: Adapter Pattern | 25 phút | 25 phút |
-| L6. Bước 4: Ambassador Pattern | 25 phút | 25 phút |
-| L7. Bước 5: Native Sidecar & Deploy | 25 phút | 25 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -901,179 +868,304 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Hai container chạy cùng trong một Pod chia sẻ những tài nguyên hạ tầng nào với nhau?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Ba pattern kinh điển gồm: Sidecar Pattern (mở rộng khả năng của container chính như thu thập log/reload config), Adapter Pattern (chuẩn hóa định dạng log/metrics đầu ra), và Ambassador Pattern (làm proxy đại sứ đại diện kết nối tới các dịch vụ bên ngoài qua <code>localhost</code>).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Hai container trong cùng 1 Pod chia sẻ chung 1 địa chỉ IP và Loopback Network Namespace (<code>localhost</code>), đồng thời có thể chia sẻ chung hệ thống tệp tin (filesystem) nếu mount cùng một Volume (thường là <code>emptyDir</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng 2 container trong Pod có IP khác nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chia sẻ IP nhưng thiếu ý chia sẻ Volume đĩa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cả 2 yếu tố mạng (Network Namespace) và đĩa (Shared Volume).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hai container trong cùng 1 Pod có thể lắng nghe trên cùng một cổng TCP/8080 được không? — Không được, sẽ bị lỗi port collision <code>address already in use</code> trên localhost).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 3 pattern hoặc nhầm lẫn công dụng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng tên 3 pattern nhưng không giải thích được mục đích cốt lõi của từng loại.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo, chuẩn xác điểm cốt lõi và trường hợp ứng dụng thực tế của cả 3 pattern.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu muốn thu thập tệp log của Nginx xuất ra stdout thì dùng pattern nào? — Dùng Sidecar Pattern).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Mẫu thiết kế Ambassador Pattern đóng vai trò gì và giúp ích gì cho lập trình viên phát triển ứng dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ambassador Pattern tạo một container đại sứ đóng vai trò Proxy (như HAProxy, Nginx, Socat) lắng nghe trên <code>localhost</code> của Pod. Giúp lập trình viên giấu kín địa chỉ IP và cơ chế Sharding phức tạp của cụm database bên ngoài; ứng dụng chính chỉ cần gửi kết nối tới <code>localhost:<port></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu khái niệm Ambassador.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được proxy nhưng không giải thích được lợi ích giấu kín địa chỉ dịch vụ ngoài với app chính.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác vai trò proxy đại sứ và sự đơn giản hóa cấu hình cho lập trình viên.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu địa chỉ database bên ngoài thay đổi thì có cần build lại container ứng dụng chính không? — Không cần, chỉ cần cập nhật cấu hình của Ambassador container).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Mẫu thiết kế Adapter Pattern giải quyết bài toán nào trong hệ thống giám sát tập trung (Monitoring)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Adapter Pattern giải quyết bài toán dị biệt định dạng. Nó đóng vai trò bộ chuyển đổi, đọc dữ liệu log/metrics định dạng riêng của ứng dụng cũ (như XML, plain text) và biến đổi thành định dạng chuẩn chung (như JSON hoặc Prometheus metrics format) trước khi xuất ra cho hệ thống monitoring thu thập.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được Adapter với Sidecar.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chuyển đổi log nhưng không gắn với bài toán chuẩn hóa dữ liệu cho hệ thống monitoring.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc vai trò chuẩn hóa dữ liệu đầu ra của Adapter Pattern.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Adapter Pattern khác Sidecar Pattern ở điểm cốt lõi nào? — Sidecar thu thập/stream nguyên vẹn dữ liệu, Adapter biến đổi/định dạng lại dữ liệu trước khi stream).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tính năng Native Sidecar Container từ Kubernetes v1.28+ hoạt động dựa trên cơ chế nào trong bản kê khai Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Dựa trên việc khai báo cờ <code>restartPolicy: Always</code> bên trong một container thuộc khối <code>initContainers</code>. Kubelet sẽ nhận biết đây là Native Sidecar Container, khởi chạy nó trước container chính và duy trì chạy ngầm suốt vòng đời của Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ restartPolicy: Always trong initContainers.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được initContainers nhưng quên cờ <code>restartPolicy: Always</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế khởi tạo và cờ cấu hình của Native Sidecar Container từ K8s v1.28+.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu bỏ trống cờ <code>restartPolicy: Always</code> trong initContainers thì container đó sẽ hoạt động thế nào? — Nó sẽ hoạt động như InitContainer thông thường: phải chạy xong và thoát code 0 thì container chính mới được bật).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác biệt về thứ tự khởi chạy giữa Native Sidecar Container và InitContainer thông thường là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">InitContainer thông thường phải chạy xong 100% và thoát với mã lỗi 0 thì Kubelet mới khởi chạy container tiếp theo. Native Sidecar Container cho phép Kubelet khởi chạy container chính ngay khi Native Sidecar vừa ở trạng thái <code>Started</code> (đã qua startup/readiness probe) mà không cần đợi sidecar thoát.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng Native Sidecar cũng phải thoát code 0.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sidecar không thoát nhưng không giải thích được mốc điều kiện <code>Started</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác mốc điều kiện <code>Started</code> giúp container chính bật lên song song với Native Sidecar.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Native Sidecar Container giải quyết được vấn đề gì cho các ứng dụng cần lấy secret từ Vault trước khi chạy? — Giúp Vault Agent chạy lên trước lấy secret, rồi duy trì chạy ngầm để xoay vòng token cho app).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Thứ tự tiêu diệt (shutdown order) của Native Sidecar Container khi Pod bị xóa diễn ra như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kubelet sẽ ngắt container chính trước (gửi <code>SIGTERM</code> và đợi dừng hẳn), sau đó mới gửi <code>SIGTERM</code> tiêu diệt Native Sidecar Container. Thứ tự ngắt này ngược lại với thứ tự khởi tạo, giúp sidecar thu thập đủ log chặng cuối của container chính.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng các container bị ngắt ngẫu nhiên.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sidecar ngắt sau nhưng không rõ lý do thu thập log chặng cuối.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy trình tắt Pod ngược và ý nghĩa bảo toàn dữ liệu log.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu sidecar thường ngắt trước container chính trong K8s cũ thì hậu quả là gì? — Mất dữ liệu log hoặc mất kết nối proxy ở những giây cuối khi container chính đang shutdown).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Làm thế nào để xem log của riêng container thứ hai (container sidecar) trong một Pod có 2 container từ terminal CLI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Sử dụng câu lệnh <code>kubectl logs <pod-name> -c <container-name> -n <namespace></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ -c.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ -c nhưng gõ sai vị trí hoặc quên namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cú pháp cờ <code>-c <container-name></code> để chỉ định tên container cụ thể.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu gõ <code>kubectl logs <pod-name></code> mà không có cờ <code>-c</code> cho Pod đa container thì chuyện gì xảy ra? — Kubelet sẽ tự động chọn container đầu tiên trong danh sách và in ra lời cảnh báo).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao volume loại <code>emptyDir</code> lại là lựa chọn hàng đầu cho việc chia sẻ dữ liệu giữa các container trong cùng một Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì <code>emptyDir</code> được tạo ra tự động khi Pod gắn vào Node và tồn tại suốt vòng đời của Pod. Nó nằm trên bộ nhớ RAM hoặc ổ đĩa SSD cục bộ của Node nên tốc độ đọc/ghi cực nhanh, hoàn hảo cho việc trao đổi file log và socket tạm thời giữa các container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết volume emptyDir.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dung lượng tạm nhưng không rõ tốc độ và tính chất chia sẻ dữ liệu trong cùng 1 Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích ưu điểm tốc độ và tính chất tự dọn dẹp theo vòng đời Pod của <code>emptyDir</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Dữ liệu trong <code>emptyDir</code> có bị mất khi container trong Pod bị restart không? — Không mất, dữ liệu chỉ mất khi toàn bộ Pod bị xóa hoàn toàn khỏi Node).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Chuyện gì xảy ra nếu container Sidecar trong Pod đa container bị crash và thoát với mã lỗi 1?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kubelet sẽ phát hiện container Sidecar bị crash và tự động khởi động lại container Sidecar đó theo chính sách <code>restartPolicy</code> của Pod (mặc định là <code>Always</code>), trong khi container chính vẫn tiếp tục chạy bình thường.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng cả Pod bị xóa vĩnh viễn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Kubelet restart lại container sidecar nhưng không rõ container chính vẫn chạy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế Kubelet restart độc lập từng container bị lỗi trong Pod.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trạng thái của Pod sẽ hiển thị thế nào trong <code>kubectl get pod</code> khi sidecar đang bị restart? — Hiển thị <code>READY 1/2</code> và cột Restarts tăng lên).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao không nên lạm dụng đưa quá nhiều container không liên quan vào cùng một Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì các container trong cùng 1 Pod bị buộc chặt vòng đời và tài nguyên với nhau (cùng bị scale out/in, cùng nằm trên 1 Node). Đưa container không liên quan vào Pod làm lãng phí tài nguyên Node, tăng rủi ro đụng độ cổng <code>localhost</code> và vi phạm nguyên tắc thiết kế Microservices độc lập.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng đưa bao nhiêu container vào Pod cũng được.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tốn tài nguyên nhưng không giải thích được sự ràng buộc vòng đời và nguyên tắc Microservices.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo các lý do về ràng buộc vòng đời, scaling, cổng localhost và kiến thức thiết kế hệ thống.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tiêu chuẩn nào quyết định 2 container nên nằm chung 1 Pod hay tách thành 2 Pod riêng? — Nếu chúng bắt buộc phải chia sẻ Volume đĩa hoặc gọi nhau qua <code>localhost</code> với độ trễ cực thấp thì nằm chung 1 Pod).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Cú pháp YAML chuẩn để định nghĩa một volume <code>emptyDir</code> và mount vào 2 container là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khai báo khối <code>spec.volumes: [{name: shared-vol, emptyDir: {}}]</code>, sau đó trong từng container dưới <code>spec.containers</code> khai báo khối <code>volumeMounts: [{name: shared-vol, mountPath: /path}]</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Khai báo sai cấu trúc YAML.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng khối volumes nhưng quên volumeMounts ở 1 container.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cú pháp YAML kết nối giữa <code>spec.volumes</code> và <code>volumeMounts</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Đường dẫn <code>mountPath</code> ở 2 container có nhất thiết phải giống hệt nhau không? — Không bắt buộc giống nhau, container 1 có thể mount vào <code>/var/log</code> và container 2 mount vào <code>/tmp/logs</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Hai container chạy cùng trong một Pod chia sẻ những tài nguyên hạ tầng nào với nhau?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Hai container trong cùng 1 Pod chia sẻ chung 1 địa chỉ IP và Loopback Network Namespace (`localhost`), đồng thời có thể chia sẻ chung hệ thống tệp tin (filesystem) nếu mount cùng một Volume (thường là `emptyDir`).
+1. <b style="color: var(--accent-primary);">"Làm chủ 3 mẫu thiết kế Multi-Container Pod (Sidecar, Adapter, Ambassador) giúp mở rộng và chuẩn hóa hệ thống mà không cần sửa một dòng mã nguồn ứng dụng gốc."</b>
+2. <b style="color: var(--accent-primary);">"Tất cả các container trong cùng một Pod chia sẻ chung Network Namespace (<code>localhost</code>) và có thể trao đổi dữ liệu tốc độ cao qua Volume <code>emptyDir</code>."</b>
+3. <b style="color: var(--accent-primary);">"Tính năng Native Sidecar Container từ Kubernetes v1.28+ (<code>restartPolicy: Always</code> trong InitContainers) giải quyết triệt để bài toán phụ thuộc thứ tự khởi động và tắt êm ái của ứng dụng."</b>
+4. <b style="color: var(--accent-primary);">"Luôn ghi nhớ cờ <code>-c <container-name></code> khi làm việc với các lệnh chẩn đoán <code>kubectl logs</code> và <code>kubectl exec</code> trên các Pod đa container."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Cho rằng 2 container trong Pod có IP khác nhau.
-- 1đ: Nêu được chia sẻ IP nhưng thiếu ý chia sẻ Volume đĩa.
-- 3đ: Phân tích chuẩn xác cả 2 yếu tố mạng (Network Namespace) và đĩa (Shared Volume).
-
-**Câu hỏi đào sâu:** (Hai container trong cùng 1 Pod có thể lắng nghe trên cùng một cổng TCP/8080 được không? — Không được, sẽ bị lỗi port collision `address already in use` trên localhost).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Mẫu thiết kế Ambassador Pattern đóng vai trò gì và giúp ích gì cho lập trình viên phát triển ứng dụng?
-
-**Đáp án chuẩn:** Ambassador Pattern tạo một container đại sứ đóng vai trò Proxy (như HAProxy, Nginx, Socat) lắng nghe trên `localhost` của Pod. Giúp lập trình viên giấu kín địa chỉ IP và cơ chế Sharding phức tạp của cụm database bên ngoài; ứng dụng chính chỉ cần gửi kết nối tới `localhost:<port>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu khái niệm Ambassador.
-- 1đ: Nêu được proxy nhưng không giải thích được lợi ích giấu kín địa chỉ dịch vụ ngoài với app chính.
-- 3đ: Trình bày chính xác vai trò proxy đại sứ và sự đơn giản hóa cấu hình cho lập trình viên.
-
-**Câu hỏi đào sâu:** (Nếu địa chỉ database bên ngoài thay đổi thì có cần build lại container ứng dụng chính không? — Không cần, chỉ cần cập nhật cấu hình của Ambassador container).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Mẫu thiết kế Adapter Pattern giải quyết bài toán nào trong hệ thống giám sát tập trung (Monitoring)?
-
-**Đáp án chuẩn:** Adapter Pattern giải quyết bài toán dị biệt định dạng. Nó đóng vai trò bộ chuyển đổi, đọc dữ liệu log/metrics định dạng riêng của ứng dụng cũ (như XML, plain text) và biến đổi thành định dạng chuẩn chung (như JSON hoặc Prometheus metrics format) trước khi xuất ra cho hệ thống monitoring thu thập.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được Adapter với Sidecar.
-- 1đ: Nêu được chuyển đổi log nhưng không gắn với bài toán chuẩn hóa dữ liệu cho hệ thống monitoring.
-- 3đ: Trình bày mạch lạc vai trò chuẩn hóa dữ liệu đầu ra của Adapter Pattern.
-
-**Câu hỏi đào sâu:** (Adapter Pattern khác Sidecar Pattern ở điểm cốt lõi nào? — Sidecar thu thập/stream nguyên vẹn dữ liệu, Adapter biến đổi/định dạng lại dữ liệu trước khi stream).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Tính năng Native Sidecar Container từ Kubernetes v1.28+ hoạt động dựa trên cơ chế nào trong bản kê khai Pod?
-
-**Đáp án chuẩn:** Dựa trên việc khai báo cờ `restartPolicy: Always` bên trong một container thuộc khối `initContainers`. Kubelet sẽ nhận biết đây là Native Sidecar Container, khởi chạy nó trước container chính và duy trì chạy ngầm suốt vòng đời của Pod.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ restartPolicy: Always trong initContainers.
-- 1đ: Nêu được initContainers nhưng quên cờ `restartPolicy: Always`.
-- 3đ: Phân tích chuẩn xác cơ chế khởi tạo và cờ cấu hình của Native Sidecar Container từ K8s v1.28+.
-
-**Câu hỏi đào sâu:** (Nếu bỏ trống cờ `restartPolicy: Always` trong initContainers thì container đó sẽ hoạt động thế nào? — Nó sẽ hoạt động như InitContainer thông thường: phải chạy xong và thoát code 0 thì container chính mới được bật).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Sự khác biệt về thứ tự khởi chạy giữa Native Sidecar Container và InitContainer thông thường là gì?
-
-**Đáp án chuẩn:** InitContainer thông thường phải chạy xong 100% và thoát với mã lỗi 0 thì Kubelet mới khởi chạy container tiếp theo. Native Sidecar Container cho phép Kubelet khởi chạy container chính ngay khi Native Sidecar vừa ở trạng thái `Started` (đã qua startup/readiness probe) mà không cần đợi sidecar thoát.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng Native Sidecar cũng phải thoát code 0.
-- 1đ: Nêu được sidecar không thoát nhưng không giải thích được mốc điều kiện `Started`.
-- 3đ: Trình bày chính xác mốc điều kiện `Started` giúp container chính bật lên song song với Native Sidecar.
-
-**Câu hỏi đào sâu:** (Native Sidecar Container giải quyết được vấn đề gì cho các ứng dụng cần lấy secret từ Vault trước khi chạy? — Giúp Vault Agent chạy lên trước lấy secret, rồi duy trì chạy ngầm để xoay vòng token cho app).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Thứ tự tiêu diệt (shutdown order) của Native Sidecar Container khi Pod bị xóa diễn ra như thế nào?
-
-**Đáp án chuẩn:** Kubelet sẽ ngắt container chính trước (gửi `SIGTERM` và đợi dừng hẳn), sau đó mới gửi `SIGTERM` tiêu diệt Native Sidecar Container. Thứ tự ngắt này ngược lại với thứ tự khởi tạo, giúp sidecar thu thập đủ log chặng cuối của container chính.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng các container bị ngắt ngẫu nhiên.
-- 1đ: Nêu được sidecar ngắt sau nhưng không rõ lý do thu thập log chặng cuối.
-- 3đ: Phân tích chuẩn xác quy trình tắt Pod ngược và ý nghĩa bảo toàn dữ liệu log.
-
-**Câu hỏi đào sâu:** (Nếu sidecar thường ngắt trước container chính trong K8s cũ thì hậu quả là gì? — Mất dữ liệu log hoặc mất kết nối proxy ở những giây cuối khi container chính đang shutdown).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Làm thế nào để xem log của riêng container thứ hai (container sidecar) trong một Pod có 2 container từ terminal CLI?
-
-**Đáp án chuẩn:** Sử dụng câu lệnh `kubectl logs <pod-name> -c <container-name> -n <namespace>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ -c.
-- 1đ: Nêu được cờ -c nhưng gõ sai vị trí hoặc quên namespace.
-- 3đ: Trình bày chính xác cú pháp cờ `-c <container-name>` để chỉ định tên container cụ thể.
-
-**Câu hỏi đào sâu:** (Nếu gõ `kubectl logs <pod-name>` mà không có cờ `-c` cho Pod đa container thì chuyện gì xảy ra? — Kubelet sẽ tự động chọn container đầu tiên trong danh sách và in ra lời cảnh báo).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao volume loại `emptyDir` lại là lựa chọn hàng đầu cho việc chia sẻ dữ liệu giữa các container trong cùng một Pod?
-
-**Đáp án chuẩn:** Vì `emptyDir` được tạo ra tự động khi Pod gắn vào Node và tồn tại suốt vòng đời của Pod. Nó nằm trên bộ nhớ RAM hoặc ổ đĩa SSD cục bộ của Node nên tốc độ đọc/ghi cực nhanh, hoàn hảo cho việc trao đổi file log và socket tạm thời giữa các container.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết volume emptyDir.
-- 1đ: Nêu được dung lượng tạm nhưng không rõ tốc độ và tính chất chia sẻ dữ liệu trong cùng 1 Pod.
-- 3đ: Phân tích ưu điểm tốc độ và tính chất tự dọn dẹp theo vòng đời Pod của `emptyDir`.
-
-**Câu hỏi đào sâu:** (Dữ liệu trong `emptyDir` có bị mất khi container trong Pod bị restart không? — Không mất, dữ liệu chỉ mất khi toàn bộ Pod bị xóa hoàn toàn khỏi Node).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Chuyện gì xảy ra nếu container Sidecar trong Pod đa container bị crash và thoát với mã lỗi 1?
-
-**Đáp án chuẩn:** Kubelet sẽ phát hiện container Sidecar bị crash và tự động khởi động lại container Sidecar đó theo chính sách `restartPolicy` của Pod (mặc định là `Always`), trong khi container chính vẫn tiếp tục chạy bình thường.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng cả Pod bị xóa vĩnh viễn.
-- 1đ: Nêu được Kubelet restart lại container sidecar nhưng không rõ container chính vẫn chạy.
-- 3đ: Trình bày chuẩn xác cơ chế Kubelet restart độc lập từng container bị lỗi trong Pod.
-
-**Câu hỏi đào sâu:** (Trạng thái của Pod sẽ hiển thị thế nào trong `kubectl get pod` khi sidecar đang bị restart? — Hiển thị `READY 1/2` và cột Restarts tăng lên).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Tại sao không nên lạm dụng đưa quá nhiều container không liên quan vào cùng một Pod?
-
-**Đáp án chuẩn:** Vì các container trong cùng 1 Pod bị buộc chặt vòng đời và tài nguyên với nhau (cùng bị scale out/in, cùng nằm trên 1 Node). Đưa container không liên quan vào Pod làm lãng phí tài nguyên Node, tăng rủi ro đụng độ cổng `localhost` và vi phạm nguyên tắc thiết kế Microservices độc lập.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng đưa bao nhiêu container vào Pod cũng được.
-- 1đ: Nêu được tốn tài nguyên nhưng không giải thích được sự ràng buộc vòng đời và nguyên tắc Microservices.
-- 3đ: Phân tích thấu đáo các lý do về ràng buộc vòng đời, scaling, cổng localhost và kiến thức thiết kế hệ thống.
-
-**Câu hỏi đào sâu:** (Tiêu chuẩn nào quyết định 2 container nên nằm chung 1 Pod hay tách thành 2 Pod riêng? — Nếu chúng bắt buộc phải chia sẻ Volume đĩa hoặc gọi nhau qua `localhost` với độ trễ cực thấp thì nằm chung 1 Pod).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn để định nghĩa một volume `emptyDir` và mount vào 2 container là gì?
-
-**Đáp án chuẩn:** Khai báo khối `spec.volumes: [{name: shared-vol, emptyDir: {}}]`, sau đó trong từng container dưới `spec.containers` khai báo khối `volumeMounts: [{name: shared-vol, mountPath: /path}]`.
-
-**Tiêu chí chấm:**
-- 0đ: Khai báo sai cấu trúc YAML.
-- 1đ: Nêu đúng khối volumes nhưng quên volumeMounts ở 1 container.
-- 3đ: Trình bày chính xác cú pháp YAML kết nối giữa `spec.volumes` và `volumeMounts`.
-
-**Câu hỏi đào sâu:** (Đường dẫn `mountPath` ở 2 container có nhất thiết phải giống hệt nhau không? — Không bắt buộc giống nhau, container 1 có thể mount vào `/var/log` và container 2 mount vào `/tmp/logs`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1083,28 +1175,6 @@ Ba pattern kinh điển gồm: Sidecar Pattern (mở rộng khả năng của co
 2. **"Tất cả các container trong cùng một Pod chia sẻ chung Network Namespace (`localhost`) và có thể trao đổi dữ liệu tốc độ cao qua Volume `emptyDir`."**
 3. **"Tính năng Native Sidecar Container từ Kubernetes v1.28+ (`restartPolicy: Always` trong InitContainers) giải quyết triệt để bài toán phụ thuộc thứ tự khởi động và tắt êm ái của ứng dụng."**
 4. **"Luôn ghi nhớ cờ `-c <container-name>` khi làm việc với các lệnh chẩn đoán `kubectl logs` và `kubectl exec` trên các Pod đa container."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các mẫu thiết kế Pod đa container CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kỹ thuật Multi-container chuẩn Kubernetes v1.28+ |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết bản kê khai Pod YAML hoàn chỉnh áp dụng Sidecar Pattern đọc log Nginx và xuất ra stdout.
-- **BTVN 2:** Thực hành viết Pod Native Sidecar Container dùng `initContainers` có `restartPolicy: Always` khởi chạy Vault Agent.
-- **BTVN 3:** So sánh ưu nhược điểm giữa việc dùng Ambassador Container và việc dùng Ingress/Service ngoài để kết nối DB.
-- **BTVN 4 (Chuẩn bị cho Buổi 34 — Job, CronJob và Batch Workloads):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Sự khác nhau giữa Pod thông thường (chạy liên tục) và Job (chạy xong thoát với code 0) là gì?
-  2. Ý nghĩa của cờ `completions` và `parallelism` trong bản kê khai Kubernetes Job?
-  3. Cờ `concurrencyPolicy` trong CronJob có 3 giá trị nào (`Allow`, `Forbid`, `Replace`) và ý nghĩa của từng giá trị?
 
 ---
 
@@ -1370,14 +1440,15 @@ kubectl get pod <pod-name> -n <ns> -o jsonpath='{.spec.initContainers[0].restart
 volumes: [{name: vol, emptyDir: {}}]
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 04] Workloads Xử Lý Hàng Loạt (Batch): Job, CronJob, Completions, Parallelism & ConcurrencyPolicy](ckad-04-04-job-cronjob-va-batch.html).
+
 {% endraw %}

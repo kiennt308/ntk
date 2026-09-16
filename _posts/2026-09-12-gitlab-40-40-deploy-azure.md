@@ -44,7 +44,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 > **Một Pipeline CI/CD hiện đại trên Azure bắt buộc phải loại bỏ hoàn toàn Service Principal Client Secrets tĩnh, chuyển dịch sang xác thực Keyless OIDC (Federated Credentials), lưu trữ container trên Azure Container Registry (ACR) và tự động hóa quy trình phát hành an toàn lên App Service, ACA hoặc AKS.**
 
-```
+```text
        QUY TRÌNH PHÂN PHỐI ỨNG DỤNG LÊN MICROSOFT AZURE (OIDC FEDERATION)
 
   [ GitLab CI Runner ] ── 1. Entra ID Federated OIDC ──► [ Azure Bearer Token ]
@@ -247,7 +247,7 @@ swap_slot_to_production:
 
 > **Bối Cảnh**: Nhóm kỹ sư cấu hình biến `DATABASE_URL` trong App Service. Sau khi thực hiện lệnh Swap từ Staging sang Production, môi trường Production bất ngờ ghi dữ liệu vào Database của Staging, làm sai lệch báo cáo tài chính của doanh nghiệp.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -287,7 +287,7 @@ swap_slot_to_production:
 - Viết pipeline GitLab CI tự động deploy lên Azure App Service Staging Slot.
 - Thực hiện hoán đổi Slots Swap sang Production và kiểm tra Zero-Downtime.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB DEPLOY AZURE APP SERVICE SLOTS
 
      [ Mã Nguồn Node.js App ] ──► [ Build Image & Push lên ACR ]
@@ -586,7 +586,7 @@ git push origin main
 
 ### 7.2. Sơ Đồ Tư Duy Triển Khai Ứng Dụng Lên Microsoft Azure (Mindmap)
 
-```
+```text
                        PHÂN PHỐI ỨNG DỤNG LÊN MICROSOFT AZURE
                                           │
         ┌─────────────────────────────────┼─────────────────────────────────┐

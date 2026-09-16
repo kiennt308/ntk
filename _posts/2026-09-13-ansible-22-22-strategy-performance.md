@@ -734,39 +734,12 @@ ansible-playbook site-performance.yml > perf-summary.txt
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Tối ưu tiến trình và kết nối:** Tăng `forks = 20`, bật `pipelining = True` và cấu hình SSH `ControlPersist=60s`.
-2. **Chọn đúng Strategy Plugin:** Dùng `linear` cho Rolling Update và cụm phụ thuộc; dùng `free` cho máy độc lập.
-3. **Rolling Update phân tầng:** Sử dụng mảng `serial: [1, 20%, 100%]` để triển khai an toàn theo mô hình Canary.
-4. **Tác vụ ngầm Non-blocking:** Chạy các lệnh tốn thời gian bằng `async` + `poll: 0` và theo dõi qua `async_status`.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Mọi kịch bản tối ưu hiệu năng ở lượt chạy Lần 2 bắt buộc phải đạt `changed=0`.
-
-```mermaid
-mindmap
-  root((Performance Tuning))
-    Controller Optimization
-      forks = 20-50 worker processes
-      pipelining = True stdin transfer
-      SSH ControlPersist = 60s
-    Strategy Plugins
-      linear: Lock-step sync
-      free: Unlocked independent speed
-      host_pinned: Slot-based execution
-    Zero-Downtime Deployment
-      serial: [1, 20%, 100%]
-      max_fail_percentage
-      Canary testing an toàn
-    Async & Diagnostics
-      async: 300, poll: 0 non-blocking
-      async_status job polling
-      profile_tasks đo lường bottleneck
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 23: Xử Lý Lỗi Chuyên Sâu (Advanced Error Handling): Blocks, Rescue, Always, Failed_when & Changed_when](ansible-23-23-error-handling-nang-cao.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 23] Xử Lý Lỗi Chuyên Sâu (Advanced Error Handling): Blocks, Rescue, Always, Failed_when, Changed_when & Retry Mechanisms](ansible-23-23-error-handling-nang-cao.html).
 
 {% endraw %}

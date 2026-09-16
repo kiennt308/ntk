@@ -211,9 +211,11 @@ graph TD
 <span class="badge badge--rose">🕒 05:15 AM</span> Nhóm phát triển backend Java phản ánh dù đã khai báo `cache: paths: ["~/.m2/repository"]` trong file CI, mỗi lần chạy job `mvn test` hệ thống vẫn tải lại toàn bộ Spring Boot dependencies từ Maven Central mất hơn 4 phút.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-GitLab Runner log đưa ra cảnh báo bị bỏ qua và không lưu lại bất kỳ byte cache nào:
 
 ```text
+
+GitLab Runner log đưa ra cảnh báo bị bỏ qua và không lưu lại bất kỳ byte cache nào:
+
 Executing "step_script" stage of the job script...
 $ mvn test
 [INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/...

@@ -640,36 +640,12 @@ fi
 </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Lockout Protection First:** Đảm bảo cổng SSH 22 luôn được mở ở Task đầu tiên trong mọi Playbook cấu hình tường lửa.
-2. **Bộ Đôi Permanent & Immediate:** Đồng thời lưu cấu hình vào đĩa và nạp trực tiếp vào RAM.
-3. **Lọc IP Nguồn Với Rich Rules:** Tuyệt đối không mở toang các cổng nội bộ như Database ra public.
-4. **Phân Vùng Bảo Mật Zones:** Tách biệt chính sách giữa card mạng đối ngoại và card mạng nội bộ.
-5. **Đạt Idempotency Tuyệt Đối:** Mọi thay đổi tường lửa khi chạy lại lần 2 đều phải trả về `changed=0`.
-
-```mermaid
-mindmap
-  root((An Ninh Mang Firewalld))
-    Nguyen Tac An Toan
-      Lockout Protection First SSH 22
-      Bo doi permanent va immediate
-      Phan vung bao mat Zones
-    Quy Tac Nang Cao
-      Rich Rules loc IP nguon
-      Port Forwarding 80 sang 8080
-      ansible.builtin.iptables cho NAT
-      offline true ghi truc tiep XML
-    Kiem Soat Idempotency
-      ansible.posix.firewalld
-      firewall-cmd --list-all
-      PLAY RECAP changed=0 o Lan 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 29: Quản Trị Tự Động Hóa Doanh Nghiệp Với AWX & Red Hat Ansible Automation Platform (AAP): RBAC, Job Templates & Workflows](ansible-29-29-awx-aap.html) — Khám phá nền tảng quản trị tự động hóa tập trung cấp Enterprise với giao diện Web UI, phân quyền RBAC và Workflow Templates.
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 29] Quản Trị Tự Động Hóa Doanh Nghiệp Với AWX & Red Hat Ansible Automation Platform (AAP): RBAC, Job Templates & Workflows](ansible-29-29-awx-aap.html).
 
 {% endraw %}

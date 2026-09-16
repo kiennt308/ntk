@@ -408,24 +408,6 @@ graph TD
 | Official Docs: Restoring an etcd cluster | Kubernetes v1.35 | Quy trình khôi phục snapshot bằng etcdctl |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Tổng quan kiến trúc etcd và thuật toán đồng thuận Raft | 12 phút |
-| §5 | Giao tiếp an toàn với `etcdctl` sử dụng mTLS x509 | 12 phút |
-| §6 | Quy trình sao lưu etcd snapshot với `etcdctl snapshot save` | 10 phút |
-| §7 | Quy trình phục hồi etcd snapshot và hoán đổi `hostPath` static pod | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -752,24 +734,11 @@ rm -f /tmp/etcd-certs-manifest.txt /tmp/etcd-health.txt /tmp/snapshot-save.log /
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-09/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khảo sát tệp manifest static pod `etcd.yaml` và kiểm tra sức khoẻ etcd | 30 phút |
-| L4 | Bước 2 — Thực thi sao lưu etcd snapshot và kiểm tra tính toàn vẹn | 30 phút |
-| L5 | Bước 3 — Giả lập sự cố mất dữ liệu và thực hiện `etcdctl snapshot restore` | 30 phút |
-| L6 | Bước 4 — Cập nhật `hostPath` manifest static pod và kiểm tra cụm phục hồi | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -783,251 +752,349 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>etcd lưu trữ những loại dữ liệu gì trong cụm Kubernetes? Nếu mất etcd mà không có bản backup snapshot thì hậu quả là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Biến môi trường:</b> <code>ETCDCTL_API=3</code> (chọn phiên bản API v3 cho <code>etcdctl</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3 cờ mTLS bắt buộc:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>--cacert=/etc/kubernetes/pki/etcd/ca.crt</code> (Root CA chứng thực etcd).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>--cert=/etc/kubernetes/pki/etcd/server.crt</code> (Client Certificate xác thực etcdctl).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>--key=/etc/kubernetes/pki/etcd/server.key</code> (Client Private Key).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cùng với cờ điểm cuối <code>--endpoints=https://127.0.0.1:2379</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• etcd lưu trữ <b style="color: var(--accent-primary);">100% trạng thái của cụm Kubernetes</b>: tất cả các bản kê khai API objects (Pods, Deployments, Services, ConfigMaps, Secrets, RBAC, CRD, PersistentVolumeClaim).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hậu quả khi mất etcd không có backup:</b> Toàn bộ cấu hình và định danh cụm bị xoá sạch hoàn toàn. Dù các container Pod đang chạy trên Worker Node chưa chết ngay lập tức, nhưng API Server không còn bất kỳ dữ liệu nào để quản lý hay điều khiển cụm, buộc phải dựng lại toàn bộ cụm từ con số 0.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo etcd chỉ lưu log của Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời lưu cấu hình nhưng không giải thích được sự mất sạch đối tượng API và việc không thể khôi phục cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác etcd lưu 100% Desired State/Actual State và hậu quả mất toàn bộ cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt được container runtime trên worker vẫn chạy nhưng không còn API control plane.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Các tệp chứng chỉ PKI trong <code>/etc/kubernetes/pki/</code> có lưu trong etcd không? *(Đáp án: Không, tệp cert PKI nằm trên đĩa cứng của Control Plane node).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được biến API hoặc cờ mTLS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dùng <code>etcdctl</code> nhưng thiếu <code>ETCDCTL_API=3</code> hoặc thiếu 1 trong 3 cờ mTLS (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác biến <code>ETCDCTL_API=3</code> và đường dẫn 3 cờ mTLS cert.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu vị trí trích xuất nhanh 3 tệp cert trong manifest <code>/etc/kubernetes/manifests/etcd.yaml</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu quên khai báo <code>ETCDCTL_API=3</code> thì điều gì xảy ra? *(Đáp án: etcdctl sẽ dùng API v2 mặc định và báo lỗi command snapshot save not found).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Phân biệt sự khác nhau về chức năng của hai cổng mạng mặc định <code>2379</code> và <code>2380</code> của etcd.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cổng <code>2379</code> (<b style="color: var(--accent-primary);">etcd Client Port</b>):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dành cho các client kết nối truy vấn và ghi dữ liệu (API Server <code>kube-apiserver</code> và công cụ <code>etcdctl</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cổng <code>2380</code> (<b style="color: var(--accent-primary);">etcd Peer Port</b>):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dành riêng cho giao tiếp đồng bộ dữ liệu, bầu chọn Leader theo thuật toán Raft giữa các etcd node trong cụm HA.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 cổng này hoàn toàn giống nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời đúng cổng 2379 cho client nhưng nhầm cổng 2380 cho Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác cổng 2379 cho client (API/etcdctl) vs 2380 cho peer sync (Raft quorum).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng tham số <code>--listen-client-urls</code> và <code>--listen-peer-urls</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi chạy lệnh <code>etcdctl snapshot save</code>, ta cần chỉ định <code>--endpoints</code> trỏ tới cổng nào? *(Đáp án: Trỏ tới cổng Client 2379).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Đâu là nơi nhanh nhất và chính xác nhất để tìm đường dẫn 3 tệp mTLS cert etcd khi làm bài thi CKA?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nơi nhanh nhất là đọc tệp kê khai Static Pod manifest của etcd tại đường dẫn:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>/etc/kubernetes/manifests/etcd.yaml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong tệp YAML này, tìm tới phần <code>spec.containers[0].command</code> sẽ thấy sẵn các cờ:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--cert-file=/etc/kubernetes/pki/etcd/server.crt</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--key-file=/etc/kubernetes/pki/etcd/server.key</code></div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo tìm trong file Kubeconfig <code>admin.conf</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời tìm trong thư mục <code>/etc/kubernetes/pki/</code> nhưng không chỉ ra tệp static pod manifest <code>etcd.yaml</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Chỉ ra chuẩn xác việc đọc tệp <code>/etc/kubernetes/manifests/etcd.yaml</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>grep</code> nhanh trong terminal.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao không nên đoán mò đường dẫn file cert trong phòng thi? *(Đáp án: Vì một số bài thi CKA đổi tên file cert hoặc để thư mục cert ở vị trí tùy biến).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Lệnh <code>etcdctl snapshot status <backup-file.db></code> giúp kiểm tra những thông tin quan trọng nào của tệp sao lưu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>etcdctl snapshot status</code> thực hiện kiểm tra tính toàn vẹn của tệp backup và hiển thị:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hash:</b> Mã băm xác nhận file không bị rỗng hay hỏng đĩa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Revision:</b> Số phiên bản sửa đổi dữ liệu etcd tại thời điểm chụp snapshot.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Total Keys:</b> Tổng số lượng key-value lưu trong snapshot.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Total Size:</b> Kích thước tổng thể của dữ liệu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo lệnh này dùng để khôi phục dữ liệu.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời xem kích thước file nhưng không nêu được Revision, Total Keys và Hash.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 4 thông số: Hash, Revision, Total Keys, Total Size.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng cờ định dạng bảng <code>-w table</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Cờ nào giúp hiển thị thông tin snapshot status dưới dạng bảng đẹp mắt? *(Đáp án: Cờ -w table).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác nhau giữa việc sao lưu etcd bằng <code>etcdctl snapshot save</code> và việc copy trực tiếp thư mục <code>/var/lib/etcd</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>etcdctl snapshot save</code>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thực hiện gọi API etcd để lấy <b style="color: var(--accent-primary);">ảnh chụp nhất quán tại 1 thời điểm (Consistent Point-in-time Snapshot)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• An toàn tuyệt đối, không gây lock đĩa và tạo ra 1 tệp <code>.db</code> nhỏ gọn có thể chuyển đi bất kỳ đâu.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Copy trực tiếp thư mục <code>/var/lib/etcd</code>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thao tác sao lưu đĩa thô khi etcd đang mở file write lock.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Rất dễ bị <b style="color: var(--accent-primary);">corruption (hư hại dữ liệu)</b> do etcd đang ghi dở file <code>WAL</code> (Write-Ahead Log) và snapshot b-tree.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Cho rằng copy thư mục tốt hơn dùng snapshot save.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được snapshot save chuẩn hơn nhưng không giải thích được cơ chế Point-in-time vs Write-Ahead Log corruption.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác Point-in-time consistent snapshot vs rủi ro file write lock corruption khi copy trực tiếp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu trường hợp copy thư mục chỉ an toàn khi dừng hoàn toàn etcd service.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi nào mới được phép copy trực tiếp thư mục <code>/var/lib/etcd</code>? *(Đáp án: Chỉ khi tiến trình etcd đã bị STOP hoàn toàn).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao khi khôi phục etcd bằng <code>etcdctl snapshot restore</code> BẮT BUỘC phải truyền cờ <code>--data-dir</code> chỉ định một thư mục mới (ví dụ <code>/var/lib/etcd-restored</code>)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>etcdctl snapshot restore</code> giải nén và tạo mới lại toàn bộ cấu trúc cơ sở dữ liệu <code>member/snap</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• nếu restore đè trực tiếp vào thư mục gốc đang ở <code>/var/lib/etcd</code>, lệnh sẽ bị từ chối với lỗi <code>data-dir location exists</code> hoặc làm <b style="color: var(--accent-primary);">hỏng vĩnh viễn dữ liệu file lock đang chạy</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ định thư mục mới <code>--data-dir=/var/lib/etcd-restored</code> đảm bảo quá trình khôi phục diễn ra cách ly an toàn 100%.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo restore đè thẳng vào <code>/var/lib/etcd</code> mới đúng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời tạo thư mục mới để không mất file cũ nhưng không giải thích được lỗi <code>data-dir location exists</code> và hư hại file lock (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác cơ chế tránh hư hại file lock và yêu cầu tạo thư mục mới cách ly.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng quy trình hoán đổi <code>hostPath</code> ở bước tiếp theo.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu thư mục chỉ định trong <code>--data-dir</code> đã tồn tại từ trước thì lệnh <code>snapshot restore</code> sẽ báo gì? *(Đáp án: Báo lỗi data-dir location exists).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trình bày 3 bước hoàn tất quy trình khôi phục dữ liệu etcd trên Control Plane node <code>cp-01</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 1 (Restore):</b> Chạy <code>etcdctl snapshot restore <file.db> --data-dir=/var/lib/etcd-restored</code> giải nén ra thư mục dữ liệu mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 2 (Hoán đổi Manifest):</b> Sửa tệp manifest static pod <code>/etc/kubernetes/manifests/etcd.yaml</code>, cập nhật trường <code>volumes[].hostPath.path</code> từ <code>/var/lib/etcd</code> sang <code>/var/lib/etcd-restored</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 3 (Khởi chạy & Kiểm tra):</b> Chờ Kubelet tự động phát hiện manifest thay đổi, restart container etcd mới và kiểm tra <code>kubectl get nodes</code>, <code>kubectl get pods -A</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo phải restart lại toàn bộ hệ điều hành node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được restore và sửa file etcd.yaml nhưng thiếu bước chờ Kubelet restart static pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chuẩn xác 3 bước khôi phục etcd theo đúng tài liệu CKA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt được việc không cần gõ lệnh <code>systemctl restart kubelet</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Ta có cần restart thủ công dịch vụ <code>kubelet</code> sau khi sửa <code>etcd.yaml</code> không? *(Đáp án: Không cần, Kubelet tự dùng inotify file watcher phát hiện etcd.yaml đổi và tự restart container).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao Kubelet lại tự động restart container etcd ngay sau khi ta sửa tệp manifest <code>/etc/kubernetes/manifests/etcd.yaml</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet chạy một cơ chế giám sát file tĩnh <b style="color: var(--accent-primary);">File Watcher (inotify)</b> liên tục theo dõi thư mục <code>/etc/kubernetes/manifests/</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ngay khi tệp <code>etcd.yaml</code> bị sửa đổi (như đổi đường dẫn <code>hostPath</code>), Kubelet tính toán lại chuỗi băm (hash) của manifest, phát hiện sự thay đổi và tự động huỷ (terminate) container static pod etcd cũ, sau đó tạo và khởi chạy container static pod etcd mới với cấu hình volume mới.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo do Docker tự restart.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được Kubelet thấy file đổi nhưng không nêu được cơ chế File Watcher và Static Pod Controller.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế File Watcher (inotify) của Kubelet tự động huỷ và tạo lại Static Pod container.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với cơ chế tương tự của API Server và Controller Manager static pods.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu ta di chuyển tệp <code>etcd.yaml</code> ra khỏi thư mục <code>/etc/kubernetes/manifests/</code> thì Kubelet làm gì? *(Đáp án: Kubelet sẽ lập tức xoá và huỷ container etcd đang chạy).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sau khi khôi phục etcd thành công, điều gì xảy ra đối với các Pod/Deployment được tạo ra <b>SAU</b> thời điểm chụp snapshot?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tất cả các Pod, Deployment, Service hoặc Secret được tạo ra <b style="color: var(--accent-primary);">SAU thời điểm chụp snapshot sẽ hoàn toàn biến mất (bị xoá)</b> khỏi trạng thái của cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do:</b> Khôi phục etcd là đưa toàn bộ cơ sở dữ liệu cụm quay trở về đúng thời điểm chụp snapshot (Point-in-time State). Mọi đối tượng API tạo ra sau đó không hề tồn tại trong tệp snapshot.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo các Pod mới vẫn giữ nguyên.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được bị mất nhưng không giải thích được khái niệm Point-in-time State.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế quay lại trạng thái Point-in-time và việc mất sạch đối tượng tạo sau snapshot.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu khái niệm RPO (Recovery Point Objective) trong vận hành hệ thống.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để giảm thiểu lượng dữ liệu bị mất (RPO) khi gặp sự cố etcd? *(Đáp án: Tăng tần suất chụp snapshot etcd tự động, ví dụ 15-30 phút/lần).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Nếu etcd chạy dưới dạng user non-root (user <code>etcd</code>), sau khi <code>etcdctl snapshot restore</code> ra thư mục mới <code>/var/lib/etcd-restored</code> ta phải thực hiện thêm lệnh Linux nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phải thực hiện phân quyền sở hữu thư mục mới cho user/group <code>etcd</code> bằng câu lệnh:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>sudo chown -R etcd:etcd /var/lib/etcd-restored</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do:</b> Lệnh <code>etcdctl snapshot restore</code> chạy dưới quyền <code>root</code> sẽ tạo ra thư mục thuộc sở hữu của <code>root:root</code>. Nếu container etcd chạy bằng user non-root <code>etcd</code>, nó sẽ bị lỗi <b style="color: var(--accent-primary);">Permission Denied</b> khi truy cập đĩa cứng và kẹt ở <code>CrashLoopBackOff</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo không cần phân quyền gì.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được phân quyền nhưng không nhớ lệnh <code>chown</code> hoặc tên user etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc <code>chown -R etcd:etcd</code> tránh lỗi Permission Denied cho non-root container.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng cách đọc <code>securityContext</code> trong <code>etcd.yaml</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao biết container etcd đang chạy dưới quyền root hay non-root? *(Đáp án: Đọc trường runAsUser trong securityContext của tệp manifest etcd.yaml).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do quên cờ mTLS, 1 âm thầm do quên sửa hostPath <code>etcd.yaml</code>) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Quên 3 cờ mTLS khi backup):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Gõ <code>etcdctl snapshot save</code> bị treo 30s rồi báo lỗi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Log báo <code>context deadline exceeded</code> hoặc <code>permission denied</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Đọc tệp <code>/etc/kubernetes/manifests/etcd.yaml</code> lấy đủ 3 cờ <code>--cacert</code>, <code>--cert</code>, <code>--key</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Quên sửa <code>hostPath</code> trong <code>etcd.yaml</code> sau restore):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Chạy restore báo thành công 100%, nhưng cụm <code>kubectl get pods</code> vẫn mất dữ liệu vừa phục hồi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>etcd.yaml</code> thấy <code>hostPath.path</code> vẫn trỏ tới <code>/var/lib/etcd</code> cũ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa <code>hostPath.path</code> trỏ sang <code>/var/lib/etcd-restored</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân cờ mTLS và hostPath manifest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao kiểm tra container etcd đang thực sự mount vào thư mục đĩa nào trên host? *(Đáp án: Dùng crictl inspectp hoặc docker inspect container etcd để xem Mounts).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** etcd lưu trữ những loại dữ liệu gì trong cụm Kubernetes? Nếu mất etcd mà không có bản backup snapshot thì hậu quả là gì?
-
-**Đáp án chuẩn:**
-- etcd lưu trữ **100% trạng thái của cụm Kubernetes**: tất cả các bản kê khai API objects (Pods, Deployments, Services, ConfigMaps, Secrets, RBAC, CRD, PersistentVolumeClaim).
-- **Hậu quả khi mất etcd không có backup:** Toàn bộ cấu hình và định danh cụm bị xoá sạch hoàn toàn. Dù các container Pod đang chạy trên Worker Node chưa chết ngay lập tức, nhưng API Server không còn bất kỳ dữ liệu nào để quản lý hay điều khiển cụm, buộc phải dựng lại toàn bộ cụm từ con số 0.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo etcd chỉ lưu log của Pod.
-- **1đ:** Trả lời lưu cấu hình nhưng không giải thích được sự mất sạch đối tượng API và việc không thể khôi phục cụm.
-- **2đ:** Phân tích chính xác etcd lưu 100% Desired State/Actual State và hậu quả mất toàn bộ cụm.
-- **3đ:** Trả lời xuất sắc, phân biệt được container runtime trên worker vẫn chạy nhưng không còn API control plane.
-
-**Câu hỏi đào sâu:** Các tệp chứng chỉ PKI trong `/etc/kubernetes/pki/` có lưu trong etcd không? *(Đáp án: Không, tệp cert PKI nằm trên đĩa cứng của Control Plane node).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau về chức năng của hai cổng mạng mặc định `2379` và `2380` của etcd.
-
-**Đáp án chuẩn:**
-- Cổng `2379` (**etcd Client Port**):
-  - Dành cho các client kết nối truy vấn và ghi dữ liệu (API Server `kube-apiserver` và công cụ `etcdctl`).
-- Cổng `2380` (**etcd Peer Port**):
-  - Dành riêng cho giao tiếp đồng bộ dữ liệu, bầu chọn Leader theo thuật toán Raft giữa các etcd node trong cụm HA.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 cổng này hoàn toàn giống nhau.
-- **1đ:** Trả lời đúng cổng 2379 cho client nhưng nhầm cổng 2380 cho Kubelet.
-- **2đ:** Phân biệt chuẩn xác cổng 2379 cho client (API/etcdctl) vs 2380 cho peer sync (Raft quorum).
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng tham số `--listen-client-urls` và `--listen-peer-urls`.
-
-**Câu hỏi đào sâu:** Khi chạy lệnh `etcdctl snapshot save`, ta cần chỉ định `--endpoints` trỏ tới cổng nào? *(Đáp án: Trỏ tới cổng Client 2379).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Đâu là nơi nhanh nhất và chính xác nhất để tìm đường dẫn 3 tệp mTLS cert etcd khi làm bài thi CKA?
-
-**Đáp án chuẩn:**
-- Nơi nhanh nhất là đọc tệp kê khai Static Pod manifest của etcd tại đường dẫn:
-  `/etc/kubernetes/manifests/etcd.yaml`.
-- Trong tệp YAML này, tìm tới phần `spec.containers[0].command` sẽ thấy sẵn các cờ:
-  - `--trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt`
-  - `--cert-file=/etc/kubernetes/pki/etcd/server.crt`
-  - `--key-file=/etc/kubernetes/pki/etcd/server.key`
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo tìm trong file Kubeconfig `admin.conf`.
-- **1đ:** Trả lời tìm trong thư mục `/etc/kubernetes/pki/` nhưng không chỉ ra tệp static pod manifest `etcd.yaml`.
-- **2đ:** Chỉ ra chuẩn xác việc đọc tệp `/etc/kubernetes/manifests/etcd.yaml`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `grep` nhanh trong terminal.
-
-**Câu hỏi đào sâu:** Tại sao không nên đoán mò đường dẫn file cert trong phòng thi? *(Đáp án: Vì một số bài thi CKA đổi tên file cert hoặc để thư mục cert ở vị trí tùy biến).*
-
----
-
-### Câu 5 — ★★
-
-**Hỏi:** Lệnh `etcdctl snapshot status <backup-file.db>` giúp kiểm tra những thông tin quan trọng nào của tệp sao lưu?
-
-**Đáp án chuẩn:**
-- Lệnh `etcdctl snapshot status` thực hiện kiểm tra tính toàn vẹn của tệp backup và hiển thị:
-  1. **Hash:** Mã băm xác nhận file không bị rỗng hay hỏng đĩa.
-  2. **Revision:** Số phiên bản sửa đổi dữ liệu etcd tại thời điểm chụp snapshot.
-  3. **Total Keys:** Tổng số lượng key-value lưu trong snapshot.
-  4. **Total Size:** Kích thước tổng thể của dữ liệu.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo lệnh này dùng để khôi phục dữ liệu.
-- **1đ:** Trả lời xem kích thước file nhưng không nêu được Revision, Total Keys và Hash.
-- **2đ:** Giải thích chuẩn xác 4 thông số: Hash, Revision, Total Keys, Total Size.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng cờ định dạng bảng `-w table`.
-
-**Câu hỏi đào sâu:** Cờ nào giúp hiển thị thông tin snapshot status dưới dạng bảng đẹp mắt? *(Đáp án: Cờ -w table).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Sự khác nhau giữa việc sao lưu etcd bằng `etcdctl snapshot save` và việc copy trực tiếp thư mục `/var/lib/etcd` là gì?
-
-**Đáp án chuẩn:**
-- `etcdctl snapshot save`:
-  - Thực hiện gọi API etcd để lấy **ảnh chụp nhất quán tại 1 thời điểm (Consistent Point-in-time Snapshot)**.
-  - An toàn tuyệt đối, không gây lock đĩa và tạo ra 1 tệp `.db` nhỏ gọn có thể chuyển đi bất kỳ đâu.
-- Copy trực tiếp thư mục `/var/lib/etcd`:
-  - Thao tác sao lưu đĩa thô khi etcd đang mở file write lock.
-  - Rất dễ bị **corruption (hư hại dữ liệu)** do etcd đang ghi dở file `WAL` (Write-Ahead Log) và snapshot b-tree.
-
-**Tiêu chí chấm:**
-- **0đ:** Cho rằng copy thư mục tốt hơn dùng snapshot save.
-- **1đ:** Nói được snapshot save chuẩn hơn nhưng không giải thích được cơ chế Point-in-time vs Write-Ahead Log corruption.
-- **2đ:** Giải thích chuẩn xác Point-in-time consistent snapshot vs rủi ro file write lock corruption khi copy trực tiếp.
-- **3đ:** Trả lời xuất sắc, nêu trường hợp copy thư mục chỉ an toàn khi dừng hoàn toàn etcd service.
-
-**Câu hỏi đào sâu:** Khi nào mới được phép copy trực tiếp thư mục `/var/lib/etcd`? *(Đáp án: Chỉ khi tiến trình etcd đã bị STOP hoàn toàn).*
-
----
-
-### Câu 7 — 🔥
-
-**Hỏi:** Tại sao khi khôi phục etcd bằng `etcdctl snapshot restore` BẮT BUỘC phải truyền cờ `--data-dir` chỉ định một thư mục mới (ví dụ `/var/lib/etcd-restored`)?
-
-**Đáp án chuẩn:**
-- Lệnh `etcdctl snapshot restore` giải nén và tạo mới lại toàn bộ cấu trúc cơ sở dữ liệu `member/snap`.
-- nếu restore đè trực tiếp vào thư mục gốc đang ở `/var/lib/etcd`, lệnh sẽ bị từ chối với lỗi `data-dir location exists` hoặc làm **hỏng vĩnh viễn dữ liệu file lock đang chạy**.
-- Chỉ định thư mục mới `--data-dir=/var/lib/etcd-restored` đảm bảo quá trình khôi phục diễn ra cách ly an toàn 100%.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo restore đè thẳng vào `/var/lib/etcd` mới đúng.
-- **1đ:** Trả lời tạo thư mục mới để không mất file cũ nhưng không giải thích được lỗi `data-dir location exists` và hư hại file lock (dính trần 1đ).
-- **2đ:** Phân tích chính xác cơ chế tránh hư hại file lock và yêu cầu tạo thư mục mới cách ly.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng quy trình hoán đổi `hostPath` ở bước tiếp theo.
-
-**Câu hỏi đào sâu:** Nếu thư mục chỉ định trong `--data-dir` đã tồn tại từ trước thì lệnh `snapshot restore` sẽ báo gì? *(Đáp án: Báo lỗi data-dir location exists).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Trình bày 3 bước hoàn tất quy trình khôi phục dữ liệu etcd trên Control Plane node `cp-01`.
-
-**Đáp án chuẩn:**
-1. **Bước 1 (Restore):** Chạy `etcdctl snapshot restore <file.db> --data-dir=/var/lib/etcd-restored` giải nén ra thư mục dữ liệu mới.
-2. **Bước 2 (Hoán đổi Manifest):** Sửa tệp manifest static pod `/etc/kubernetes/manifests/etcd.yaml`, cập nhật trường `volumes[].hostPath.path` từ `/var/lib/etcd` sang `/var/lib/etcd-restored`.
-3. **Bước 3 (Khởi chạy & Kiểm tra):** Chờ Kubelet tự động phát hiện manifest thay đổi, restart container etcd mới và kiểm tra `kubectl get nodes`, `kubectl get pods -A`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo phải restart lại toàn bộ hệ điều hành node.
-- **1đ:** Nêu được restore và sửa file etcd.yaml nhưng thiếu bước chờ Kubelet restart static pod.
-- **2đ:** Trình bày chuẩn xác 3 bước khôi phục etcd theo đúng tài liệu CKA.
-- **3đ:** Trả lời xuất sắc, phân biệt được việc không cần gõ lệnh `systemctl restart kubelet`.
-
-**Câu hỏi đào sâu:** Ta có cần restart thủ công dịch vụ `kubelet` sau khi sửa `etcd.yaml` không? *(Đáp án: Không cần, Kubelet tự dùng inotify file watcher phát hiện etcd.yaml đổi và tự restart container).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Tại sao Kubelet lại tự động restart container etcd ngay sau khi ta sửa tệp manifest `/etc/kubernetes/manifests/etcd.yaml`?
-
-**Đáp án chuẩn:**
-- Kubelet chạy một cơ chế giám sát file tĩnh **File Watcher (inotify)** liên tục theo dõi thư mục `/etc/kubernetes/manifests/`.
-- Ngay khi tệp `etcd.yaml` bị sửa đổi (như đổi đường dẫn `hostPath`), Kubelet tính toán lại chuỗi băm (hash) của manifest, phát hiện sự thay đổi và tự động huỷ (terminate) container static pod etcd cũ, sau đó tạo và khởi chạy container static pod etcd mới với cấu hình volume mới.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo do Docker tự restart.
-- **1đ:** Nói được Kubelet thấy file đổi nhưng không nêu được cơ chế File Watcher và Static Pod Controller.
-- **2đ:** Giải thích chuẩn xác cơ chế File Watcher (inotify) của Kubelet tự động huỷ và tạo lại Static Pod container.
-- **3đ:** Trả lời xuất sắc, liên hệ với cơ chế tương tự của API Server và Controller Manager static pods.
-
-**Câu hỏi đào sâu:** Nếu ta di chuyển tệp `etcd.yaml` ra khỏi thư mục `/etc/kubernetes/manifests/` thì Kubelet làm gì? *(Đáp án: Kubelet sẽ lập tức xoá và huỷ container etcd đang chạy).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Sau khi khôi phục etcd thành công, điều gì xảy ra đối với các Pod/Deployment được tạo ra **SAU** thời điểm chụp snapshot?
-
-**Đáp án chuẩn:**
-- Tất cả các Pod, Deployment, Service hoặc Secret được tạo ra **SAU thời điểm chụp snapshot sẽ hoàn toàn biến mất (bị xoá)** khỏi trạng thái của cụm.
-- **Lý do:** Khôi phục etcd là đưa toàn bộ cơ sở dữ liệu cụm quay trở về đúng thời điểm chụp snapshot (Point-in-time State). Mọi đối tượng API tạo ra sau đó không hề tồn tại trong tệp snapshot.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo các Pod mới vẫn giữ nguyên.
-- **1đ:** Nói được bị mất nhưng không giải thích được khái niệm Point-in-time State.
-- **2đ:** Giải thích chuẩn xác cơ chế quay lại trạng thái Point-in-time và việc mất sạch đối tượng tạo sau snapshot.
-- **3đ:** Trả lời xuất sắc, nêu khái niệm RPO (Recovery Point Objective) trong vận hành hệ thống.
-
-**Câu hỏi đào sâu:** Làm sao để giảm thiểu lượng dữ liệu bị mất (RPO) khi gặp sự cố etcd? *(Đáp án: Tăng tần suất chụp snapshot etcd tự động, ví dụ 15-30 phút/lần).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Nếu etcd chạy dưới dạng user non-root (user `etcd`), sau khi `etcdctl snapshot restore` ra thư mục mới `/var/lib/etcd-restored` ta phải thực hiện thêm lệnh Linux nào?
-
-**Đáp án chuẩn:**
-- Phải thực hiện phân quyền sở hữu thư mục mới cho user/group `etcd` bằng câu lệnh:
-  `sudo chown -R etcd:etcd /var/lib/etcd-restored`.
-- **Lý do:** Lệnh `etcdctl snapshot restore` chạy dưới quyền `root` sẽ tạo ra thư mục thuộc sở hữu của `root:root`. Nếu container etcd chạy bằng user non-root `etcd`, nó sẽ bị lỗi **Permission Denied** khi truy cập đĩa cứng và kẹt ở `CrashLoopBackOff`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo không cần phân quyền gì.
-- **1đ:** Nói được phân quyền nhưng không nhớ lệnh `chown` hoặc tên user etcd.
-- **2đ:** Giải thích chuẩn xác việc `chown -R etcd:etcd` tránh lỗi Permission Denied cho non-root container.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng cách đọc `securityContext` trong `etcd.yaml`.
-
-**Câu hỏi đào sâu:** Làm sao biết container etcd đang chạy dưới quyền root hay non-root? *(Đáp án: Đọc trường runAsUser trong securityContext của tệp manifest etcd.yaml).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do quên cờ mTLS, 1 âm thầm do quên sửa hostPath `etcd.yaml`) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Quên 3 cờ mTLS khi backup):**
-   - *Triệu chứng:* Gõ `etcdctl snapshot save` bị treo 30s rồi báo lỗi.
-   - *Phát hiện:* Log báo `context deadline exceeded` hoặc `permission denied`.
-   - *Khắc phục:* Đọc tệp `/etc/kubernetes/manifests/etcd.yaml` lấy đủ 3 cờ `--cacert`, `--cert`, `--key`.
-2. **Chế độ hỏng 2 (Âm thầm - Quên sửa `hostPath` trong `etcd.yaml` sau restore):**
-   - *Triệu chứng:* Chạy restore báo thành công 100%, nhưng cụm `kubectl get pods` vẫn mất dữ liệu vừa phục hồi.
-   - *Phát hiện:* Kiểm tra `etcd.yaml` thấy `hostPath.path` vẫn trỏ tới `/var/lib/etcd` cũ.
-   - *Khắc phục:* Sửa `hostPath.path` trỏ sang `/var/lib/etcd-restored`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân cờ mTLS và hostPath manifest.
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.
-
-**Câu hỏi đào sâu:** Làm sao kiểm tra container etcd đang thực sự mount vào thư mục đĩa nào trên host? *(Đáp án: Dùng crictl inspectp hoặc docker inspect container etcd để xem Mounts).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"etcd là bộ lưu trữ key-value phân tán duy nhất lưu 100% trạng thái của cụm Kubernetes; giao tiếp qua cổng <code>2379</code> (client) và cổng <code>2380</code> (peer sync)."*
+2. *"Sao lưu etcd bằng <code>etcdctl snapshot save</code> bắt buộc khai báo <code>ETCDCTL_API=3</code> và đủ 3 cờ mTLS (<code>--cacert</code>, <code>--cert</code>, <code>--key</code>) trỏ vào <code>/etc/kubernetes/pki/etcd/</code>."*
+3. *"Sau khi sao lưu etcd, bắt buộc phải chạy <code>etcdctl snapshot status</code> để verify tính toàn vẹn (Hash, Revision, Total Keys) của tệp backup."*
+4. *"Khi khôi phục etcd, BẮT BUỘC restore ra thư mục dữ liệu mới <code>--data-dir=/var/lib/etcd-restored</code>; tuyệt đối không được restore đè trực tiếp vào thư mục <code>/var/lib/etcd</code> đang chạy."*
+5. *"Hoàn tất khôi phục etcd bằng cách sửa trường <code>hostPath.path</code> trong <code>/etc/kubernetes/manifests/etcd.yaml</code> trỏ sang thư mục mới và chờ Kubelet File Watcher tự động restart container etcd."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1038,40 +1105,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Sau khi sao lưu etcd, bắt buộc phải chạy `etcdctl snapshot status` để verify tính toàn vẹn (Hash, Revision, Total Keys) của tệp backup."*
 4. *"Khi khôi phục etcd, BẮT BUỘC restore ra thư mục dữ liệu mới `--data-dir=/var/lib/etcd-restored`; tuyệt đối không được restore đè trực tiếp vào thư mục `/var/lib/etcd` đang chạy."*
 5. *"Hoàn tất khôi phục etcd bằng cách sửa trường `hostPath.path` trong `/etc/kubernetes/manifests/etcd.yaml` trỏ sang thư mục mới và chờ Kubelet File Watcher tự động restart container etcd."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | `ETCDCTL_API=3` và 3 cờ mTLS certs (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | etcd lưu 100% Desired State và hậu quả khi mất |
-| Câu 3 | ★★★ | 3 | | Phân biệt cổng 2379 (client) vs 2380 (peer sync) |
-| Câu 4 | ★★★ | 3 | | Đọc đường dẫn cert etcd trong `/etc/kubernetes/manifests/etcd.yaml` |
-| Câu 5 | ★★ | 3 | | Các thông số `snapshot status` (Hash, Revision, Total Keys) |
-| Câu 6 | ★★★ | 3 | | Phân biệt `snapshot save` vs copy thư mục trực tiếp |
-| Câu 7 | 🔥 | 3 | | Bắt buộc restore ra thư mục mới `--data-dir` (trần 1đ nếu thiếu) |
-| Câu 8 | ★★★ | 3 | | 3 bước khôi phục etcd trên Control Plane |
-| Câu 9 | ★★★ | 3 | | Cơ chế Kubelet File Watcher (inotify) restart Static Pod |
-| Câu 10 | ★★★ | 3 | | Tình trạng Pod/Deployment tạo sau thời điểm snapshot |
-| Câu 11 | ★★★ | 3 | | Lệnh `chown -R etcd:etcd` khi etcd chạy non-root |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (quên mTLS & quên sửa hostPath) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra kích thước file etcd snapshot đĩa cứng mỗi ngày và cảnh báo nếu file snapshot nhỏ hơn 1MB (nguy cơ file rỗng).
-2. **BTVN 2:** Thực hành sao lưu etcd snapshot, xoá toàn bộ 3 Namespace ứng dụng, sau đó khôi phục etcd thành công đưa 3 Namespace trở lại.
-3. **BTVN 3:** Sử dụng `etcdctl` truy vấn trực tiếp thông tin mTLS endpoint health của tất cả các node etcd trong cụm.
-4. **BTVN 4 — Chuẩn bị cho Buổi 10 (`buoi-10-rbac-vai-va-rang-buoc`):**
-   - *Câu 1:* Phân biệt sự khác nhau giữa hai đối tượng phân quyền `Role` (phạm vi Namespace) và `ClusterRole` (phạm vi toàn Cụm).
-   - *Câu 2:* Đối tượng `RoleBinding` và `ClusterRoleBinding` đóng vai trò gì trong việc liên kết User/Group với Role?
-   - *Câu 3:* Lệnh `kubectl auth can-i <verb> <resource>` giúp kỹ sư kiểm tra nhanh phân quyền của tài khoản như thế nào?
-
-> **Đoạn kết nối Buổi 10:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 10 — buổi học chuyên sâu làm chủ hệ thống phân quyền truy cập dựa trên vai trò Role-Based Access Control (RBAC), tạo các Role/ClusterRole tối thiểu quyền (Principle of Least Privilege) và kiểm tra phân quyền bằng `kubectl auth can-i`.
 
 ---
 
@@ -1315,15 +1348,15 @@ ETCDCTL_API=3 etcdctl snapshot restore /tmp/etcd-backup.db --data-dir=/var/lib/e
 sudo sed -i 's|path: /var/lib/etcd|path: /var/lib/etcd-restored|g' /etc/kubernetes/manifests/etcd.yaml
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 10] Phân Quyền RBAC Chuẩn Enterprise: Role, ClusterRole, RoleBinding, ClusterRoleBinding & auth can-i](cka-10-10-rbac-vai-va-rang-buoc.html).
+
 {% endraw %}

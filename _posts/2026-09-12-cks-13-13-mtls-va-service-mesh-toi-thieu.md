@@ -386,7 +386,7 @@ TLS 1 chiều chỉ xác thực Server, còn mTLS <b style="color: var(--accent-
      spec:
        mtls:
          mode: STRICT
-     ```
+```
 </div>
 </details>
 
@@ -455,7 +455,7 @@ Vì mTLS chỉ mã hóa và xác thực căn cước đường truyền, còn <c
       spec:
         mtls:
           mode: STRICT
-      ```
+```
 </div>
 </details>
 
@@ -468,24 +468,6 @@ Vì mTLS chỉ mã hóa và xác thực căn cước đường truyền, còn <c
 | Istio PeerAuthentication | `https://istio.io/latest/docs/reference/config/security/peer_authentication/` | Tài liệu chuẩn Istio PeerAuthentication |
 | Cilium WireGuard Transparent Encryption | `https://docs.cilium.io/en/stable/security/network/encryption-wireguard/` | Tài liệu CNI Transparent mTLS |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Plaintext Risk & mTLS Principles | 12 phút | 12 phút |
-| §5. PeerAuthentication STRICT vs PERMISSIVE | 12 phút | 12 phút |
-| §6. Service Mesh vs CNI WireGuard mTLS | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -776,26 +758,11 @@ test ! -f /tmp/peerauth-strict.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & PeerAuthentication STRICT | 15 phút | 15 phút |
-| L4. Bước 2: Apply & Verify PeerAuthentication | 25 phút | 25 phút |
-| L5. Bước 3: Deploy Server & Client Pods | 25 phút | 25 phút |
-| L6. Bước 4: Verify mTLS Connection & TLS Block | 25 phút | 25 phút |
-| L7. Bước 5: PERMISSIVE Mode Test & List Policies | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -803,210 +770,330 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Điểm khác biệt cốt lõi về mặt xác thực danh tính giữa TLS thông thường (1 chiều) và Mutual TLS (mTLS 2 chiều) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Lưu lượng mạng nội bộ truyền dạng văn bản thô (<b style="color: var(--accent-primary);">Plaintext</b>). Nếu một container trong cụm bị chiếm quyền, kẻ tấn công có thể chạy công cụ <code>tcpdump</code> trên giao diện mạng để nghe lén (<b style="color: var(--accent-primary);">Packet Sniffing</b>) và lấy cắp toàn bộ token, mật khẩu, thông tin thanh toán truyền giữa các Pods.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">TLS thông thường chỉ xác thực danh tính của Server (1 chiều). Mutual TLS (mTLS) <b style="color: var(--accent-primary);">xác thực danh tính của CẢ CLIENT VÀ SERVER</b> (2 chiều) thông qua chứng chỉ số X.509 do CA nội bộ cấp, đảm bảo 2 bên đều biết rõ căn cước của nhau.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được TLS 1 chiều và mTLS 2 chiều.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 chiều nhưng chưa rõ vai trò chứng chỉ X.509 xác thực Client và Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế xác thực danh tính 2 chiều của mTLS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điều gì xảy ra nếu Client gửi request tới Server mTLS nhưng Client không nạp chứng chỉ X.509? — Kết nối bị ngắt ngay từ bước TLS Handshake (<code>TLS Handshake Failure</code>)).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết rủi ro Plaintext network.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lộ mật khẩu nhưng chưa giải thích tấn công Packet Sniffing qua giao diện mạng veth.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro của Plaintext traffic và lý do bắt buộc áp dụng mTLS mã hóa Pod-to-Pod.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Giải pháp để triệt tiêu nguy cơ Packet Sniffing trong mạng phẳng K8s là gì? — Sử dụng Mutual TLS (mTLS) mã hóa đường truyền Pod-to-Pod).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Vai trò của đối tượng <code>PeerAuthentication</code> trong Service Mesh (Istio) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>PeerAuthentication</code> là tệp cấu hình CRD dùng để định nghĩa chế độ mTLS (STRICT, PERMISSIVE, DISABLE) áp dụng cho một Namespace hoặc cho các Pods cụ thể trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết đối tượng PeerAuthentication.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tệp cấu hình mTLS nhưng chưa rõ các chế độ STRICT/PERMISSIVE.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò định nghĩa chế độ mTLS của <code>PeerAuthentication</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>apiVersion</code> chuẩn của <code>PeerAuthentication</code> là gì? — <code>security.istio.io/v1beta1</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Sự khác nhau giữa 2 chế độ <code>STRICT</code> và <code>PERMISSIVE</code> trong tệp <code>PeerAuthentication</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>STRICT</code>: Bắt buộc <b style="color: var(--accent-primary);">100% kết nối vào Pod phải được mã hóa mTLS</b>; ngắt kết nối ngay lập tức nếu là Plaintext.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>PERMISSIVE</code>: Cho phép <b style="color: var(--accent-primary);">cả kết nối mTLS và kết nối Plaintext</b> cùng hoạt động song song.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa STRICT và PERMISSIVE.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng 1 cái ngắt 1 cái cho qua nhưng chưa giải thích kịch bản sử dụng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế của 2 chế độ STRICT và PERMISSIVE.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao nên đặt cờ <code>PERMISSIVE</code> trước khi chuyển sang <code>STRICT</code> trên môi trường Production? — Để thử nghiệm không làm ngắt kết nối các dịch vụ cũ chưa nâng cấp chứng chỉ mTLS).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>So sánh ưu nhược điểm giữa giải pháp Service Mesh Sidecar (Istio/Linkerd) vs CNI mTLS (Cilium WireGuard/IPsec)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Service Mesh Sidecar</code>: Giàu tính năng (L7 routing, mTLS, tracing) nhưng tiêu tốn thêm RAM/CPU cho Sidecar Proxy và làm tăng độ trễ latency.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>CNI mTLS</code>: Mã hóa mTLS trực tiếp ở tầng Linux Kernel (WireGuard), chi phí RAM/CPU gần như bằng 0, độ trễ cực thấp nhưng ít tính năng L7 hơn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được Mesh Sidecar vs CNI mTLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được CNI nhẹ hơn nhưng chưa rõ cơ chế Kernel WireGuard vs Envoy Sidecar Proxy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo ưu nhược điểm về hiệu năng, tài nguyên và tính năng của 2 giải pháp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu doanh nghiệp chỉ cần duy nhất tính năng mã hóa đường truyền Pod-to-Pod với hiệu năng cao thì nên chọn giải pháp nào? — Chọn giải pháp CNI WireGuard mTLS).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cách kiểm tra và đối soát trực tiếp bằng CLI để xác minh đường truyền giữa 2 Pods đã được mã hóa mTLS hay chưa?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chạy lệnh bắt gói tin <code>tcpdump -i eth0 -A 'tcp port 8080'</code> trên Host Node hoặc giao diện mạng của Pod. Nếu đã được mã hóa mTLS, các gói tin bắt được sẽ chỉ hiển thị các ký tự rác mã hóa TLS (<code>TLSv1.3 Encrypted Data</code>), không còn đọc được văn bản bản rõ HTTP.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết dùng tcpdump đối soát mTLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được bắt gói tin nhưng chưa rõ việc kiểm tra văn bản bản rõ vs TLS Encrypted data.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác quy trình dùng <code>tcpdump</code> bắt gói tin đối soát mTLS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu kết quả <code>tcpdump</code> vẫn in ra chuỗi <code>GET /api/v1/users HTTP/1.1</code> bản rõ thì đường truyền đã mTLS chưa? — CHƯA mTLS, lưu lượng vẫn là văn bản thô!).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nguyên nhân gốc rễ và cách khắc phục khi một Pod ứng dụng gặp lỗi <code>503 Service Unavailable</code> ngay sau khi gán chính sách <code>PeerAuthentication</code> chế độ <code>STRICT</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nguyên nhân do Pod Client gọi tới nằm ngoài môi trường Mesh hoặc chưa được chèn Sidecar Proxy mTLS, nên gửi request Plaintext tới Pod Server <code>STRICT</code> và bị từ chối. Cách sửa: Chèn Sidecar Proxy cho Pod Client hoặc mở nới lỏng sang <code>PERMISSIVE</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không chẩn đoán được lỗi 503 mTLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được do bị mTLS chặn nhưng chưa giải thích Pod Client thiếu Sidecar Proxy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên nhân Pod Client chưa có chứng chỉ mTLS và quy trình gỡ lỗi.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để kiểm tra xem một Pod đã được inject Envoy Sidecar Proxy hay chưa? — Đọc danh sách container qua <code>kubectl get pod <pod-name> -o jsonpath='{.spec.containers[*].name}'</code> xem có <code>istio-proxy</code> chưa).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn để gán chính sách mTLS <code>STRICT</code> chỉ cho các Pods có nhãn <code>app: payment</code> trong Namespace <code>prod</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: security.istio.io/v1beta1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: PeerAuthentication</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: payment-strict</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">selector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">app: payment</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">mtls:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">mode: STRICT</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai khối selector hoặc sai apiVersion.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng mode STRICT nhưng thiếu khối <code>selector.matchLabels</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp <code>PeerAuthentication</code> cấp độ Pod selector.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu bỏ qua khối <code>selector</code> trong PeerAuthentication thì chính sách có hiệu lực thế nào? — Áp dụng mặc định cho 100% tất cả các Pods trong Namespace đó).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao không nên cấu hình <code>PeerAuthentication</code> chế độ <code>STRICT</code> trên Namespace chứa Ingress Controller nếu Ingress chưa được nạp chứng chỉ mTLS Client?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Ingress Controller nhận traffic từ bên ngoài và chuyển tiếp vào Pods. Nếu Ingress chưa có chứng chỉ client mTLS, lệnh <code>STRICT</code> mTLS sẽ ngắt 100% traffic từ Ingress tới Pods backend, làm sập toàn bộ trang web công khai.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết xung đột giữa Ingress và STRICT mTLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sập web nhưng chưa rõ Ingress chưa có mTLS client cert.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác rủi ro ngắt traffic Ingress Edge khi áp STRICT mTLS không đúng cách.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cách xử lý an toàn cho Ingress Namespace là gì? — Đặt chế độ mTLS cho Namespace của Ingress ở dạng <code>PERMISSIVE</code> hoặc cấu hình mTLS client cert trên Ingress).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cơ chế xoay vòng chứng chỉ mTLS (Cert Rotation) tự động trong Istio Service Mesh hoạt động thế nào để đảm bảo tính an toàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Istiod (CA nội bộ) tự động cấp các chứng chỉ X.509 ngắn hạn (short-lived certs, mặc định 24 giờ) cho các Envoy Sidecar Proxies và tự động xoay vòng nạp mới chứng chỉ qua kênh gRPC SDS mà không cần ngắt kết nối Pods.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cơ chế xoay vòng chứng chỉ mTLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tự đổi cert nhưng chưa rõ chứng chỉ ngắn hạn 24h và kênh gRPC SDS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế cấp chứng chỉ X.509 ngắn hạn và xoay vòng tự động của Service Mesh.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích của chứng chỉ mTLS ngắn hạn (24 giờ) là gì? — Dù kẻ tấn công lấy cắp được private key thì chứng chỉ cũng tự động vô hiệu hóa sau 24 giờ).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của tệp <code>PeerAuthentication</code> áp đặt mTLS <code>STRICT</code> cho toàn bộ Namespace <code>prod</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: security.istio.io/v1beta1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: PeerAuthentication</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: default</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">mtls:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">mode: STRICT</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng mode STRICT nhưng thiếu namespace <code>prod</code> hoặc tên <code>default</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp <code>PeerAuthentication</code> mTLS STRICT CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao tên <code>metadata.name</code> phải đặt là <code>default</code>? — Vì Istio quy định tên <code>default</code> đại diện cho chính sách mặc định áp dụng toàn Namespace).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Pod-to-Pod mTLS & Traffic Security CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ép buộc mã hóa mTLS 2 chiều cho tất cả các giao tiếp mạng nội bộ Pod-to-Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng <code>PeerAuthentication</code> ở chế độ <code>PERMISSIVE</code> thử nghiệm trước khi chuyển sang <code>STRICT</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm chứng tính mã hóa bằng câu lệnh bắt gói tin <code>tcpdump</code> đối soát ký tự TLS Encrypted Data.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chọn giải pháp CNI WireGuard mTLS nếu muốn mã hóa nhanh với chi phí tài nguyên thấp.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Traffic Security CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 59 là gì? — Học về <code>Cosign và SBOM CKS: Ký số Container Image & Quản lý Chuỗi cung ứng Software Bill of Materials</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Điểm khác biệt cốt lõi về mặt xác thực danh tính giữa TLS thông thường (1 chiều) và Mutual TLS (mTLS 2 chiều) là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** TLS thông thường chỉ xác thực danh tính của Server (1 chiều). Mutual TLS (mTLS) **xác thực danh tính của CẢ CLIENT VÀ SERVER** (2 chiều) thông qua chứng chỉ số X.509 do CA nội bộ cấp, đảm bảo 2 bên đều biết rõ căn cước của nhau.
+1. <b style="color: var(--accent-primary);">"Mã hóa 100% đường truyền mạng nội bộ Pod-to-Pod bằng Mutual TLS (mTLS 2 chiều) để chống nghe lén <code>tcpdump</code>."</b>
+2. <b style="color: var(--accent-primary);">"Áp đặt chính sách <code>PeerAuthentication</code> chế độ <code>STRICT</code> để ngắt toàn bộ kết nối không mã hóa Plaintext."</b>
+3. <b style="color: var(--accent-primary);">"Dịch chuyển an toàn bằng chế độ <code>PERMISSIVE</code> thử nghiệm trước khi cưỡng chế <code>STRICT</code> trên Production."</b>
+4. <b style="color: var(--accent-primary);">"Tối ưu hiệu năng bằng giải pháp CNI Transparent mTLS (Cilium WireGuard) mã hóa trực tiếp ở tầng Kernel."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được TLS 1 chiều và mTLS 2 chiều.
-- 1đ: Nêu được 2 chiều nhưng chưa rõ vai trò chứng chỉ X.509 xác thực Client và Server.
-- 3đ: Phân tích chuẩn xác cơ chế xác thực danh tính 2 chiều của mTLS.
-
-**Câu hỏi đào sâu:** (Điều gì xảy ra nếu Client gửi request tới Server mTLS nhưng Client không nạp chứng chỉ X.509? — Kết nối bị ngắt ngay từ bước TLS Handshake (`TLS Handshake Failure`)).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Vai trò của đối tượng `PeerAuthentication` trong Service Mesh (Istio) là gì?
-
-**Đáp án chuẩn:** `PeerAuthentication` là tệp cấu hình CRD dùng để định nghĩa chế độ mTLS (STRICT, PERMISSIVE, DISABLE) áp dụng cho một Namespace hoặc cho các Pods cụ thể trong cụm.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết đối tượng PeerAuthentication.
-- 1đ: Nêu được tệp cấu hình mTLS nhưng chưa rõ các chế độ STRICT/PERMISSIVE.
-- 3đ: Phân tích chuẩn xác vai trò định nghĩa chế độ mTLS của `PeerAuthentication`.
-
-**Câu hỏi đào sâu:** (Cú pháp `apiVersion` chuẩn của `PeerAuthentication` là gì? — `security.istio.io/v1beta1`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Sự khác nhau giữa 2 chế độ `STRICT` và `PERMISSIVE` trong tệp `PeerAuthentication` là gì?
-
-**Đáp án chuẩn:**
-- `STRICT`: Bắt buộc **100% kết nối vào Pod phải được mã hóa mTLS**; ngắt kết nối ngay lập tức nếu là Plaintext.
-- `PERMISSIVE`: Cho phép **cả kết nối mTLS và kết nối Plaintext** cùng hoạt động song song.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa STRICT và PERMISSIVE.
-- 1đ: Nêu đúng 1 cái ngắt 1 cái cho qua nhưng chưa giải thích kịch bản sử dụng.
-- 3đ: Phân tích chuẩn xác cơ chế của 2 chế độ STRICT và PERMISSIVE.
-
-**Câu hỏi đào sâu:** (Tại sao nên đặt cờ `PERMISSIVE` trước khi chuyển sang `STRICT` trên môi trường Production? — Để thử nghiệm không làm ngắt kết nối các dịch vụ cũ chưa nâng cấp chứng chỉ mTLS).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** So sánh ưu nhược điểm giữa giải pháp Service Mesh Sidecar (Istio/Linkerd) vs CNI mTLS (Cilium WireGuard/IPsec)?
-
-**Đáp án chuẩn:**
-- `Service Mesh Sidecar`: Giàu tính năng (L7 routing, mTLS, tracing) nhưng tiêu tốn thêm RAM/CPU cho Sidecar Proxy và làm tăng độ trễ latency.
-- `CNI mTLS`: Mã hóa mTLS trực tiếp ở tầng Linux Kernel (WireGuard), chi phí RAM/CPU gần như bằng 0, độ trễ cực thấp nhưng ít tính năng L7 hơn.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được Mesh Sidecar vs CNI mTLS.
-- 1đ: Nêu được CNI nhẹ hơn nhưng chưa rõ cơ chế Kernel WireGuard vs Envoy Sidecar Proxy.
-- 3đ: Phân tích thấu đáo ưu nhược điểm về hiệu năng, tài nguyên và tính năng của 2 giải pháp.
-
-**Câu hỏi đào sâu:** (Nếu doanh nghiệp chỉ cần duy nhất tính năng mã hóa đường truyền Pod-to-Pod với hiệu năng cao thì nên chọn giải pháp nào? — Chọn giải pháp CNI WireGuard mTLS).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Cách kiểm tra và đối soát trực tiếp bằng CLI để xác minh đường truyền giữa 2 Pods đã được mã hóa mTLS hay chưa?
-
-**Đáp án chuẩn:** Chạy lệnh bắt gói tin `tcpdump -i eth0 -A 'tcp port 8080'` trên Host Node hoặc giao diện mạng của Pod. Nếu đã được mã hóa mTLS, các gói tin bắt được sẽ chỉ hiển thị các ký tự rác mã hóa TLS (`TLSv1.3 Encrypted Data`), không còn đọc được văn bản bản rõ HTTP.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết dùng tcpdump đối soát mTLS.
-- 1đ: Nêu được bắt gói tin nhưng chưa rõ việc kiểm tra văn bản bản rõ vs TLS Encrypted data.
-- 3đ: Trình bày chuẩn xác quy trình dùng `tcpdump` bắt gói tin đối soát mTLS.
-
-**Câu hỏi đào sâu:** (Nếu kết quả `tcpdump` vẫn in ra chuỗi `GET /api/v1/users HTTP/1.1` bản rõ thì đường truyền đã mTLS chưa? — CHƯA mTLS, lưu lượng vẫn là văn bản thô!).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Nguyên nhân gốc rễ và cách khắc phục khi một Pod ứng dụng gặp lỗi `503 Service Unavailable` ngay sau khi gán chính sách `PeerAuthentication` chế độ `STRICT`?
-
-**Đáp án chuẩn:** Nguyên nhân do Pod Client gọi tới nằm ngoài môi trường Mesh hoặc chưa được chèn Sidecar Proxy mTLS, nên gửi request Plaintext tới Pod Server `STRICT` và bị từ chối. Cách sửa: Chèn Sidecar Proxy cho Pod Client hoặc mở nới lỏng sang `PERMISSIVE`.
-
-**Tiêu chí chấm:**
-- 0đ: Không chẩn đoán được lỗi 503 mTLS.
-- 1đ: Nêu được do bị mTLS chặn nhưng chưa giải thích Pod Client thiếu Sidecar Proxy.
-- 3đ: Phân tích chuẩn xác nguyên nhân Pod Client chưa có chứng chỉ mTLS và quy trình gỡ lỗi.
-
-**Câu hỏi đào sâu:** (Làm thế nào để kiểm tra xem một Pod đã được inject Envoy Sidecar Proxy hay chưa? — Đọc danh sách container qua `kubectl get pod <pod-name> -o jsonpath='{.spec.containers[*].name}'` xem có `istio-proxy` chưa).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn để gán chính sách mTLS `STRICT` chỉ cho các Pods có nhãn `app: payment` trong Namespace `prod` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: security.istio.io/v1beta1
-kind: PeerAuthentication
-metadata:
-  name: payment-strict
-  namespace: prod
-spec:
-  selector:
-    matchLabels:
-      app: payment
-  mtls:
-    mode: STRICT
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai khối selector hoặc sai apiVersion.
-- 1đ: Nêu đúng mode STRICT nhưng thiếu khối `selector.matchLabels`.
-- 3đ: Viết chuẩn xác 100% tệp `PeerAuthentication` cấp độ Pod selector.
-
-**Câu hỏi đào sâu:** (Nếu bỏ qua khối `selector` trong PeerAuthentication thì chính sách có hiệu lực thế nào? — Áp dụng mặc định cho 100% tất cả các Pods trong Namespace đó).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao không nên cấu hình `PeerAuthentication` chế độ `STRICT` trên Namespace chứa Ingress Controller nếu Ingress chưa được nạp chứng chỉ mTLS Client?
-
-**Đáp án chuẩn:** Vì Ingress Controller nhận traffic từ bên ngoài và chuyển tiếp vào Pods. Nếu Ingress chưa có chứng chỉ client mTLS, lệnh `STRICT` mTLS sẽ ngắt 100% traffic từ Ingress tới Pods backend, làm sập toàn bộ trang web công khai.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết xung đột giữa Ingress và STRICT mTLS.
-- 1đ: Nêu được sập web nhưng chưa rõ Ingress chưa có mTLS client cert.
-- 3đ: Phân tích chuẩn xác rủi ro ngắt traffic Ingress Edge khi áp STRICT mTLS không đúng cách.
-
-**Câu hỏi đào sâu:** (Cách xử lý an toàn cho Ingress Namespace là gì? — Đặt chế độ mTLS cho Namespace của Ingress ở dạng `PERMISSIVE` hoặc cấu hình mTLS client cert trên Ingress).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Cơ chế xoay vòng chứng chỉ mTLS (Cert Rotation) tự động trong Istio Service Mesh hoạt động thế nào để đảm bảo tính an toàn?
-
-**Đáp án chuẩn:** Istiod (CA nội bộ) tự động cấp các chứng chỉ X.509 ngắn hạn (short-lived certs, mặc định 24 giờ) cho các Envoy Sidecar Proxies và tự động xoay vòng nạp mới chứng chỉ qua kênh gRPC SDS mà không cần ngắt kết nối Pods.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cơ chế xoay vòng chứng chỉ mTLS.
-- 1đ: Nêu được tự đổi cert nhưng chưa rõ chứng chỉ ngắn hạn 24h và kênh gRPC SDS.
-- 3đ: Phân tích chuẩn xác cơ chế cấp chứng chỉ X.509 ngắn hạn và xoay vòng tự động của Service Mesh.
-
-**Câu hỏi đào sâu:** (Lợi ích của chứng chỉ mTLS ngắn hạn (24 giờ) là gì? — Dù kẻ tấn công lấy cắp được private key thì chứng chỉ cũng tự động vô hiệu hóa sau 24 giờ).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của tệp `PeerAuthentication` áp đặt mTLS `STRICT` cho toàn bộ Namespace `prod` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: security.istio.io/v1beta1
-kind: PeerAuthentication
-metadata:
-  name: default
-  namespace: prod
-spec:
-  mtls:
-    mode: STRICT
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.
-- 1đ: Nêu đúng mode STRICT nhưng thiếu namespace `prod` hoặc tên `default`.
-- 3đ: Viết chuẩn xác 100% tệp `PeerAuthentication` mTLS STRICT CKS.
-
-**Câu hỏi đào sâu:** (Tại sao tên `metadata.name` phải đặt là `default`? — Vì Istio quy định tên `default` đại diện cho chính sách mặc định áp dụng toàn Namespace).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Pod-to-Pod mTLS & Traffic Security CKS là gì?
-
-**Đáp án chuẩn:**
-1. Ép buộc mã hóa mTLS 2 chiều cho tất cả các giao tiếp mạng nội bộ Pod-to-Pod.
-2. Dùng `PeerAuthentication` ở chế độ `PERMISSIVE` thử nghiệm trước khi chuyển sang `STRICT`.
-3. Kiểm chứng tính mã hóa bằng câu lệnh bắt gói tin `tcpdump` đối soát ký tự TLS Encrypted Data.
-4. Chọn giải pháp CNI WireGuard mTLS nếu muốn mã hóa nhanh với chi phí tài nguyên thấp.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Traffic Security CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 59 là gì? — Học về `Cosign và SBOM CKS: Ký số Container Image & Quản lý Chuỗi cung ứng Software Bill of Materials`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1016,28 +1103,6 @@ spec:
 2. **"Áp đặt chính sách `PeerAuthentication` chế độ `STRICT` để ngắt toàn bộ kết nối không mã hóa Plaintext."**
 3. **"Dịch chuyển an toàn bằng chế độ `PERMISSIVE` thử nghiệm trước khi cưỡng chế `STRICT` trên Production."**
 4. **"Tối ưu hiệu năng bằng giải pháp CNI Transparent mTLS (Cilium WireGuard) mã hóa trực tiếp ở tầng Kernel."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS mTLS Traffic Security |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc PeerAuthentication STRICT và Service Mesh mTLS |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Cài đặt Istio Service Mesh demo profile và bật injection cho Namespace `prod`.
-- **BTVN 2:** Biên soạn `PeerAuthentication` chế độ `STRICT` cho Namespace `prod` và kiểm chứng ngắt kết nối Plaintext.
-- **BTVN 3:** Thực hành chạy `tcpdump` bắt gói tin mạng đối soát trước và sau khi kích hoạt mTLS `STRICT`.
-- **BTVN 4 (Chuẩn bị cho Buổi 59 — Cosign và SBOM: Ký số Hiện vật và Kiểm tra Chuỗi Cung ứng CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Bảo mật chuỗi cung ứng phần mềm (Supply Chain Security) và ký số Container Image bằng công cụ Cosign (Sigstore) đóng vai trò gì?
-  2. Khái niệm Danh mục thành phần phần mềm (Software Bill of Materials - SBOM) là gì và công cụ nào (Syft/Trivy) giúp tạo SBOM?
-  3. Làm thế nào để cấu hình Admission Controller chặn đứng các Container Images chưa được ký số hoặc thiếu SBOM hợp lệ?
 
 ---
 
@@ -1285,14 +1350,15 @@ spec:
 tcpdump -i eth0 -A 'tcp port 8080'
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 14] Ký Số Hiện Vật & Bảo Vệ Chuỗi Cung Ứng Phần Mềm: Sigstore Cosign, Keyless Signing & Tạo File SBOM](cks-14-14-cosign-va-sbom-ky-so-hien-vat.html).
+
 {% endraw %}

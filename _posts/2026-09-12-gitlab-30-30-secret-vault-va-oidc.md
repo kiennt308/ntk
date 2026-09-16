@@ -198,9 +198,11 @@ deploy_to_production:
 <span class="badge badge--rose">🕒 03:30 PM</span> Một kỹ sư thực tập tạo nhánh `feature/update-readme` và thêm lệnh `curl` trong `.gitlab-ci.yml` để gửi toàn bộ biến môi trường của Job về máy chủ cá nhân. Do cấu hình Vault Role không ràng buộc nhánh (`bound_claims` lỏng lẻo), job trên nhánh feature đã lấy thành công JWT Token, đăng nhập vào Vault và đánh cắp toàn bộ Secret của Production Database.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Dữ liệu Production Database bị trích xuất trái phép ra máy chủ bên ngoài thông qua pipeline CI của nhánh tính năng:
 
 ```text
+
+Dữ liệu Production Database bị trích xuất trái phép ra máy chủ bên ngoài thông qua pipeline CI của nhánh tính năng:
+
 [gitlab-runner] › ⚡  Executing job 'test_docs' on branch 'feature/update-readme'
 [gitlab-runner] › ℹ  Requesting Vault JWT Token with Audience 'https://vault.corp.internal'
 [vault-audit]   › ⚡  AUTH SUCCESS: Role 'app-read-role' issued token for sub: project_path:corp/backend:ref:feature/update-readme

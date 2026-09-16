@@ -649,34 +649,12 @@ roles_path = ./shared_roles:/etc/ansible/roles</code></pre>
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-```mermaid
-mindmap
-  root((Ansible Roles Cơ Bản))
-    Cấu Trúc Khung Chuẩn
-      ansible-galaxy role init
-      8 Thư mục quy chuẩn
-      Tách biệt Concern
-    Quản Lý Biến Phân Tầng
-      defaults main.yml Fallback
-      vars main.yml Internal
-      Role Prefix Namespacing
-    Tài Nguyên & Idempotency
-      templates và files tương đối
-      handlers notify
-      Idempotency changed=0 Lần 2
-```
-
-### Năm Điểm Cốt Lõi Phải Ghi Nhớ:
-1. **Khởi tạo bằng `ansible-galaxy role init`:** Đảm bảo 100% cấu trúc 8 thư mục con quy chuẩn đúng quy ước của Ansible Engine.
-2. **Phân định rõ `defaults` và `vars`:** Đặt biến cho phép người dùng ghi đè ở `defaults/main.yml`, hằng số nội bộ đặt ở `vars/main.yml`.
-3. **Role Prefix Namespacing:** Luôn đặt tiền tố tên Role cho mọi biến để ngăn ngừa xung đột không gian biến toàn cục.
-4. **Tham chiếu tương đối tự động:** Tận dụng cơ chế implicit search cho tệp trong `templates/` và `files/` mà không dùng đường dẫn tuyệt đối.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Kiểm thử tính Idempotency của Role ở lượt chạy thứ hai và đối soát sự thật máy đích bằng `docker exec`.
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 15: Kiến Trúc Ansible Roles Nâng Cao: include_role, import_role, role dependencies & Dynamic Reuse](ansible-15-15-roles-advanced.html).
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 15] Kỹ Thuật Role Nâng Cao: Role Dependencies, Search Paths, Parameterized Roles & Tái Cấu Trúc Playbook Quy Mô Lớn](ansible-15-15-roles-advanced.html).
+
 {% endraw %}

@@ -453,24 +453,6 @@ Cờ <code>failSwapOn: true</code> (hoặc <code>false</code>).
 | Trang chủ Kubeadm Certificates | `https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/` | Phiên bản Kubernetes v1.35 |
 | Troubleshooting Control Plane | `https://kubernetes.io/docs/tasks/debug/debug-cluster/` | Hướng dẫn gỡ lỗi Control Plane & Static Pods |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Cứu hộ Kubelet & journalctl | 12 phút | 12 phút |
-| §5. Static Pod Manifests | 12 phút | 12 phút |
-| §6. Swap, DiskPressure & Certs Renew | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -763,25 +745,11 @@ test ! -f /tmp/kube-apiserver.yaml.bak && echo "CHECKPOINT 13 — ĐẠT" || ech
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi bài tập BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Cứu Kubelet & Node NotReady | 30 phút | 30 phút |
-| L4. Bước 2: Cứu API Server Static Pod | 30 phút | 30 phút |
-| L5. Bước 3: Cứu etcd & Xử lý Swap | 30 phút | 30 phút |
-| L6. Bước 4: Kiểm tra & Renew Certs | 20 phút | 20 phút |
-| L7 & L8. Nộp hiện vật & Sự cố | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -789,185 +757,309 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thư mục <code>/etc/kubernetes/manifests/</code> chứa những tệp gì và cơ chế Kubelet quản lý các tệp này như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Bước 1: SSH vào Master Node, kiểm tra trạng thái Kubelet qua <code>systemctl status kubelet</code>. Bước 2: Đọc log OS bằng <code>journalctl -u kubelet -n 50 --no-pager</code>. Bước 3: Dùng <code>crictl ps -a</code> kiểm tra xem các container Static Pod (<code>kube-apiserver</code>, <code>etcd</code>) có đang chạy hay không.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thư mục chứa các tệp YAML định nghĩa Static Pods của Control Plane (<code>kube-apiserver.yaml</code>, <code>etcd.yaml</code>, <code>kube-scheduler.yaml</code>, <code>kube-controller-manager.yaml</code>). Kubelet daemon tự động quét (watch) thư mục này; khi có tệp được thêm, sửa hoặc xóa, Kubelet tự động gọi Container Runtime để tạo, cập nhật hoặc hủy container tương ứng mà không cần qua API Server.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm với thư mục chứng chỉ PKI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu tên các tệp YAML nhưng không giải thích được cơ chế watch của Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Giải thích được Kubelet tự đọc tệp nhưng thiếu chi tiết không phụ thuộc API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích sâu sắc khái niệm Static Pods và cơ chế tự động đồng bộ từ đĩa của Kubelet.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn tạm ngắt API Server để bảo trì thì thao tác tệp trong thư mục này thế nào? — Di chuyển tệp <code>kube-apiserver.yaml</code> ra khỏi thư mục <code>/etc/kubernetes/manifests/</code> sang <code>/tmp/</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tiếp tục gõ lệnh <code>kubectl</code> trên máy client.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được SSH vào Master Node nhưng thiếu lệnh <code>journalctl</code> và <code>crictl</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được <code>systemctl status kubelet</code> và <code>crictl ps</code> nhưng thiếu bước đọc log OS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích mạch lạc luồng 3 bước từ kiểm tra Kubelet service -> log OS -> container runtime tầng thấp.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tại sao lệnh <code>kubectl</code> lại không hoạt động khi API Server sập? — Vì <code>kubectl</code> là API Client gửi HTTP request tới cổng 6443 của API Server, khi API Server chết thì cổng này không mở).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao bộ nhớ đệm <code>Swap</code> bật trên Linux lại làm Kubelet ngưng hoạt động và cách tắt Swap hoàn toàn là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kubelet từ chối chạy trên máy có Swap vì Swap làm mất tính dự đoán được của hiệu năng bộ nhớ (Memory QoS & Throttling). Tắt Swap bằng 2 bước: <code>sudo swapoff -a</code> (tắt tạm thời) và comment/xóa dòng swap trong tệp <code>/etc/fstab</code> (tắt vĩnh viễn sau khi reboot).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh swapoff.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lệnh <code>swapoff -a</code> nhưng quên sửa tệp <code>/etc/fstab</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng 2 lệnh tắt Swap nhưng không giải thích được lý do Memory QoS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày đầy đủ cả tác hại tới Memory QoS và câu lệnh tắt vĩnh viễn 2 bước.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu bắt buộc phải chạy Kubelet trên máy bật Swap thì cấu hình cờ nào trong Kubelet? — Đặt <code>failSwapOn: false</code> trong tệp <code>/var/lib/kubelet/config.yaml</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cách kiểm tra mốc thời gian hết hạn và quy trình gia hạn chứng chỉ TLS cho cụm <code>kubeadm</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bước 1: Kiểm tra hạn qua lệnh <code>kubeadm certs check-expiration</code>. Bước 2: Gia hạn toàn bộ qua lệnh <code>kubeadm certs renew all</code>. Bước 3: Chạy <code>systemctl restart kubelet</code> để Kubelet nạp lại tệp chứng chỉ mới từ đĩa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh <code>kubeadm certs</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lệnh renew nhưng quên kiểm tra expiration.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được 2 lệnh <code>kubeadm certs</code> nhưng quên bước restart Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 3 bước từ kiểm tra -> renew -> restart Kubelet service.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thời hạn mặc định của chứng chỉ do kubeadm sinh ra khi khởi tạo cụm là bao lâu? — Mặc định là 1 năm / 365 ngày).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khi etcd container bị sập, những câu lệnh <code>kubectl</code> nào sẽ bị ảnh hưởng và cách đọc log etcd khi API Server chết là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tất cả các câu lệnh <code>kubectl</code> (cả đọc và ghi) đều bị ảnh hưởng vì API Server không truy xuất được dữ liệu trạng thái cụm. Đọc log etcd bằng công cụ CLI tầng thấp của container runtime: <code>crictl ps --name etcd</code> để tìm Container ID, sau đó dùng <code>crictl logs <container-id></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng lệnh <code>kubectl get</code> vẫn chạy được.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được mọi lệnh bị ngắt nhưng không biết dùng <code>crictl logs</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được dùng <code>crictl</code> nhưng không biết cờ <code>--name etcd</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích vai trò duy nhất của etcd và câu lệnh <code>crictl</code> đọc log chính xác.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đĩa etcd bị báo lỗi <code>mvcc: database space exceeded</code> thì khắc phục thế nào? — Chạy lệnh <code>etcdctl defrag</code> để dọn dẹp phân mảnh đĩa và nới quota).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác nhau giữa lệnh <code>docker</code> và <code>crictl</code> khi gỡ lỗi sự cố hạ tầng trên Kubernetes v1.35 là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>docker</code> không còn tương tác trực tiếp với Kubernetes kể từ khi gỡ bỏ dockershim. <code>crictl</code> là công cụ CLI thiết kế riêng theo chuẩn CRI (Container Runtime Interface) để làm việc trực tiếp với <code>containerd</code> hoặc <code>CRI-O</code> trên Worker Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm tưởng 2 công cụ là giống nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dockershim bị gỡ nhưng không giải thích được chuẩn CRI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích rõ vai trò của <code>crictl</code> theo chuẩn CRI tiêu chuẩn của CNCF trên K8s hiện đại.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tệp cấu hình mặc định của crictl nằm ở đâu? — Tệp <code>/etc/crictl.yaml</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nguyên nhân khiến tệp manifest Static Pod trong <code>/etc/kubernetes/manifests/</code> bị Kubelet từ chối khởi chạy container là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Do tệp YAML bị lỗi cú pháp syntax (sai khoảng trắng indention), sai tên/cờ tham số truyền vào container, sai đường dẫn tệp mount volume (như cert/key không tồn tại), hoặc cấu hình sai cổng mạng (<code>secure-port</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không đưa được lý do kỹ thuật.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sai cú pháp YAML nhưng thiếu các lỗi về cert/volume.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Liệt kê đầy đủ các nguyên nhân từ Cú pháp YAML -> Cờ tham số -> File mount cert.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để tái tạo lại 4 tệp manifest Static Pod nếu lỡ tay xóa mất? — Chạy lệnh <code>kubeadm init phase manifests all</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lỗi <code>cgroup driver mismatch</code> giữa Containerd và Kubelet biểu hiện thế nào và cách sửa dứt điểm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Biểu hiện là dịch vụ Kubelet bị crashloop liên tục, log <code>journalctl</code> báo <code>cgroup driver mismatch</code>. Sửa dứt điểm bằng cách mở tệp <code>/var/lib/kubelet/config.yaml</code>, chỉnh thuộc tính <code>cgroupDriver: systemd</code> cho đồng nhất với cấu hình <code>SystemdCgroup = true</code> của Containerd.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm cgroup driver.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tên cgroup systemd nhưng không nhớ đường dẫn file config.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng file config Kubelet nhưng không nhắc tới file config Containerd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Giải thích nguyên lý đồng nhất cgroup driver giữa Kubelet và Container Runtime và cách sửa.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hai loại cgroup driver phổ biến trong Linux là gì? — <code>systemd</code> và <code>cgroupfs</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Sự cố <code>DiskPressure</code> ở tầng Node được Kubelet phát hiện như thế nào và tác động của nó tới các Pod là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kubelet liên tục giám sát dung lượng ổ đĩa chứa thư mục gốc <code>/var/lib/kubelet</code>. Khi dung lượng khả dụng xuống dưới ngưỡng an toàn (thường là < 15% hoặc đĩa đầy 85%), Kubelet gắn điều kiện <code>DiskPressure=True</code>, ngừng cho phép tạo Pod mới và bắt đầu evict (trục xuất) các Pod cũ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được ngưỡng đĩa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được đĩa đầy nhưng không biết Kubelet ngắt tạo Pod và evict.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác cơ chế giám sát dung lượng đĩa của Kubelet và phản ứng Eviction.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để dọn dẹp các image rác không sử dụng trên Node qua CRI? — Lệnh <code>crictl rmi --prune</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Quy tắc vàng bắt buộc phải thực hiện trước khi chỉnh sửa bất kỳ tệp manifest Static Pod nào trong <code>/etc/kubernetes/manifests/</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bắt buộc phải tạo tệp sao lưu dự phòng (backup) ra một thư mục nằm ngoài phạm vi quét của Kubelet (ví dụ: <code>cp /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/kube-apiserver.yaml.bak</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng sửa trực tiếp không cần backup.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cần backup nhưng backup ngay trong cùng thư mục <code>/etc/kubernetes/manifests/</code> (sai nguy hiểm!).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Nhấn mạnh việc backup ra ngoài thư mục manifests (<code>/tmp/</code>) để tránh Kubelet quét nhầm thành Pod phụ.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu copy file backup nằm ngay trong <code>/etc/kubernetes/manifests/</code> thì chuyện gì xảy ra? — Kubelet sẽ tưởng đó là 1 Static Pod mới và cố khởi chạy 2 API Server trùng cổng gây xung đột).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để phân biệt một Node bị <code>NotReady</code> do ngắt kết nối mạng hay do dịch vụ <code>kubelet</code> trên Node đó bị chết?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">SSH trực tiếp vào Node đó và chạy <code>systemctl status kubelet</code>. Nếu dịch vụ báo <code>inactive (dead)</code> hoặc <code>failed</code>, nguyên nhân do Kubelet chết. Nếu Kubelet vẫn báo <code>active (running)</code>, nguyên nhân do lỗi kết nối mạng (CNI sập hoặc firewall chặn cổng 10250/6443).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách SSH kiểm tra.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được check systemctl nhưng không biết phân biệt mạng vs Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc phương pháp tiêu chuẩn phân lập lỗi giữa Kubelet daemon và CNI/Network.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Kubelet gửi nhịp tim Heartbeat về API Server thông qua tài nguyên đối tượng nào trong K8s? — Đối tượng <code>Lease</code> trong Namespace <code>kube-node-lease</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không được đổi ngày giờ hệ thống máy chủ Linux để giải quyết sự cố chứng chỉ TLS hết hạn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì lùi ngày giờ hệ thống sẽ làm sai lệch mốc thời gian mã hóa (TLS Timestamp), gây hỏng cơ chế đồng bộ transaction log của etcd, và làm mất tính hợp lệ của toàn bộ token xác thực JWT / ServiceAccount.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng đổi ngày giờ là cách làm mẹo hay.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được làm sai giờ nhưng không giải thích được tác hại tới etcd và TLS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích sâu sắc các nguy cơ hỏng dữ liệu etcd và gãy chuỗi xác thực TLS khi lùi mốc thời gian hệ thống.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh chính chuẩn để gia hạn chứng chỉ mà không ảnh hưởng hệ thống là gì? — Lệnh <code>kubeadm certs renew all</code>).
+
 ---
 
-### Câu 2 — ★★★
-**Hỏi:** Thư mục `/etc/kubernetes/manifests/` chứa những tệp gì và cơ chế Kubelet quản lý các tệp này như thế nào?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Thư mục chứa các tệp YAML định nghĩa Static Pods của Control Plane (`kube-apiserver.yaml`, `etcd.yaml`, `kube-scheduler.yaml`, `kube-controller-manager.yaml`). Kubelet daemon tự động quét (watch) thư mục này; khi có tệp được thêm, sửa hoặc xóa, Kubelet tự động gọi Container Runtime để tạo, cập nhật hoặc hủy container tương ứng mà không cần qua API Server.
+1. <b style="color: var(--accent-primary);">"Khi API Server báo Connection Refused, tuyệt đối không dùng <code>kubectl</code> mà phải SSH trực tiếp vào Master Node dùng <code>journalctl -u kubelet</code> để cứu Kubelet ở tầng OS."</b>
+2. <b style="color: var(--accent-primary);">"Bản kê khai Static Pods trong <code>/etc/kubernetes/manifests/</code> là trái tim của Control Plane, cho phép Kubelet tự khôi phục các thành phần cốt lõi mà không phụ thuộc API Server."</b>
+3. <b style="color: var(--accent-primary);">"Gia hạn chứng chỉ TLS bằng <code>kubeadm certs renew all</code> kết hợp restart Kubelet là giải pháp chuẩn hóa để cứu cụm bị liệt do chứng chỉ 1 năm hết hạn."</b>
+4. <b style="color: var(--accent-primary);">"Bộ nhớ Swap là kẻ thù của Kubelet Memory QoS, bắt buộc phải tắt triệt để bằng <code>swapoff -a</code> và xóa khỏi <code>/etc/fstab</code> trên toàn bộ Worker Node."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Nhầm với thư mục chứng chỉ PKI.
-- 1đ: Nêu tên các tệp YAML nhưng không giải thích được cơ chế watch của Kubelet.
-- 2đ: Giải thích được Kubelet tự đọc tệp nhưng thiếu chi tiết không phụ thuộc API Server.
-- 3đ: Phân tích sâu sắc khái niệm Static Pods và cơ chế tự động đồng bộ từ đĩa của Kubelet.
-
-**Câu hỏi đào sâu:** (Nếu muốn tạm ngắt API Server để bảo trì thì thao tác tệp trong thư mục này thế nào? — Di chuyển tệp `kube-apiserver.yaml` ra khỏi thư mục `/etc/kubernetes/manifests/` sang `/tmp/`).
-
----
-
-### Câu 3 — 🔥
-**Hỏi:** Tại sao bộ nhớ đệm `Swap` bật trên Linux lại làm Kubelet ngưng hoạt động và cách tắt Swap hoàn toàn là gì?
-
-**Đáp án chuẩn:** Kubelet từ chối chạy trên máy có Swap vì Swap làm mất tính dự đoán được của hiệu năng bộ nhớ (Memory QoS & Throttling). Tắt Swap bằng 2 bước: `sudo swapoff -a` (tắt tạm thời) và comment/xóa dòng swap trong tệp `/etc/fstab` (tắt vĩnh viễn sau khi reboot).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh swapoff.
-- 1đ: Nêu được lệnh `swapoff -a` nhưng quên sửa tệp `/etc/fstab`.
-- 2đ: Nêu đúng 2 lệnh tắt Swap nhưng không giải thích được lý do Memory QoS.
-- 3đ: Trình bày đầy đủ cả tác hại tới Memory QoS và câu lệnh tắt vĩnh viễn 2 bước.
-
-**Câu hỏi đào sâu:** (Nếu bắt buộc phải chạy Kubelet trên máy bật Swap thì cấu hình cờ nào trong Kubelet? — Đặt `failSwapOn: false` trong tệp `/var/lib/kubelet/config.yaml`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Cách kiểm tra mốc thời gian hết hạn và quy trình gia hạn chứng chỉ TLS cho cụm `kubeadm` là gì?
-
-**Đáp án chuẩn:** Bước 1: Kiểm tra hạn qua lệnh `kubeadm certs check-expiration`. Bước 2: Gia hạn toàn bộ qua lệnh `kubeadm certs renew all`. Bước 3: Chạy `systemctl restart kubelet` để Kubelet nạp lại tệp chứng chỉ mới từ đĩa.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh `kubeadm certs`.
-- 1đ: Nêu được lệnh renew nhưng quên kiểm tra expiration.
-- 2đ: Nêu được 2 lệnh `kubeadm certs` nhưng quên bước restart Kubelet.
-- 3đ: Trình bày chính xác 3 bước từ kiểm tra -> renew -> restart Kubelet service.
-
-**Câu hỏi đào sâu:** (Thời hạn mặc định của chứng chỉ do kubeadm sinh ra khi khởi tạo cụm là bao lâu? — Mặc định là 1 năm / 365 ngày).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Khi etcd container bị sập, những câu lệnh `kubectl` nào sẽ bị ảnh hưởng và cách đọc log etcd khi API Server chết là gì?
-
-**Đáp án chuẩn:** Tất cả các câu lệnh `kubectl` (cả đọc và ghi) đều bị ảnh hưởng vì API Server không truy xuất được dữ liệu trạng thái cụm. Đọc log etcd bằng công cụ CLI tầng thấp của container runtime: `crictl ps --name etcd` để tìm Container ID, sau đó dùng `crictl logs <container-id>`.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng lệnh `kubectl get` vẫn chạy được.
-- 1đ: Nêu được mọi lệnh bị ngắt nhưng không biết dùng `crictl logs`.
-- 2đ: Nêu được dùng `crictl` nhưng không biết cờ `--name etcd`.
-- 3đ: Phân tích vai trò duy nhất của etcd và câu lệnh `crictl` đọc log chính xác.
-
-**Câu hỏi đào sâu:** (Nếu đĩa etcd bị báo lỗi `mvcc: database space exceeded` thì khắc phục thế nào? — Chạy lệnh `etcdctl defrag` để dọn dẹp phân mảnh đĩa và nới quota).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Sự khác nhau giữa lệnh `docker` và `crictl` khi gỡ lỗi sự cố hạ tầng trên Kubernetes v1.35 là gì?
-
-**Đáp án chuẩn:** `docker` không còn tương tác trực tiếp với Kubernetes kể từ khi gỡ bỏ dockershim. `crictl` là công cụ CLI thiết kế riêng theo chuẩn CRI (Container Runtime Interface) để làm việc trực tiếp với `containerd` hoặc `CRI-O` trên Worker Node.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm tưởng 2 công cụ là giống nhau.
-- 1đ: Nêu được dockershim bị gỡ nhưng không giải thích được chuẩn CRI.
-- 3đ: Phân tích rõ vai trò của `crictl` theo chuẩn CRI tiêu chuẩn của CNCF trên K8s hiện đại.
-
-**Câu hỏi đào sâu:** (Tệp cấu hình mặc định của crictl nằm ở đâu? — Tệp `/etc/crictl.yaml`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Nguyên nhân khiến tệp manifest Static Pod trong `/etc/kubernetes/manifests/` bị Kubelet từ chối khởi chạy container là gì?
-
-**Đáp án chuẩn:** Do tệp YAML bị lỗi cú pháp syntax (sai khoảng trắng indention), sai tên/cờ tham số truyền vào container, sai đường dẫn tệp mount volume (như cert/key không tồn tại), hoặc cấu hình sai cổng mạng (`secure-port`).
-
-**Tiêu chí chấm:**
-- 0đ: Không đưa được lý do kỹ thuật.
-- 1đ: Nêu được sai cú pháp YAML nhưng thiếu các lỗi về cert/volume.
-- 3đ: Liệt kê đầy đủ các nguyên nhân từ Cú pháp YAML -> Cờ tham số -> File mount cert.
-
-**Câu hỏi đào sâu:** (Làm thế nào để tái tạo lại 4 tệp manifest Static Pod nếu lỡ tay xóa mất? — Chạy lệnh `kubeadm init phase manifests all`).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Lỗi `cgroup driver mismatch` giữa Containerd và Kubelet biểu hiện thế nào và cách sửa dứt điểm?
-
-**Đáp án chuẩn:** Biểu hiện là dịch vụ Kubelet bị crashloop liên tục, log `journalctl` báo `cgroup driver mismatch`. Sửa dứt điểm bằng cách mở tệp `/var/lib/kubelet/config.yaml`, chỉnh thuộc tính `cgroupDriver: systemd` cho đồng nhất với cấu hình `SystemdCgroup = true` của Containerd.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết khái niệm cgroup driver.
-- 1đ: Nêu được tên cgroup systemd nhưng không nhớ đường dẫn file config.
-- 2đ: Nêu đúng file config Kubelet nhưng không nhắc tới file config Containerd.
-- 3đ: Giải thích nguyên lý đồng nhất cgroup driver giữa Kubelet và Container Runtime và cách sửa.
-
-**Câu hỏi đào sâu:** (Hai loại cgroup driver phổ biến trong Linux là gì? — `systemd` và `cgroupfs`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Sự cố `DiskPressure` ở tầng Node được Kubelet phát hiện như thế nào và tác động của nó tới các Pod là gì?
-
-**Đáp án chuẩn:** Kubelet liên tục giám sát dung lượng ổ đĩa chứa thư mục gốc `/var/lib/kubelet`. Khi dung lượng khả dụng xuống dưới ngưỡng an toàn (thường là < 15% hoặc đĩa đầy 85%), Kubelet gắn điều kiện `DiskPressure=True`, ngừng cho phép tạo Pod mới và bắt đầu evict (trục xuất) các Pod cũ.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được ngưỡng đĩa.
-- 1đ: Nêu được đĩa đầy nhưng không biết Kubelet ngắt tạo Pod và evict.
-- 3đ: Phân tích chính xác cơ chế giám sát dung lượng đĩa của Kubelet và phản ứng Eviction.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để dọn dẹp các image rác không sử dụng trên Node qua CRI? — Lệnh `crictl rmi --prune`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Quy tắc vàng bắt buộc phải thực hiện trước khi chỉnh sửa bất kỳ tệp manifest Static Pod nào trong `/etc/kubernetes/manifests/` là gì?
-
-**Đáp án chuẩn:** Bắt buộc phải tạo tệp sao lưu dự phòng (backup) ra một thư mục nằm ngoài phạm vi quét của Kubelet (ví dụ: `cp /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/kube-apiserver.yaml.bak`).
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng sửa trực tiếp không cần backup.
-- 1đ: Nêu được cần backup nhưng backup ngay trong cùng thư mục `/etc/kubernetes/manifests/` (sai nguy hiểm!).
-- 3đ: Nhấn mạnh việc backup ra ngoài thư mục manifests (`/tmp/`) để tránh Kubelet quét nhầm thành Pod phụ.
-
-**Câu hỏi đào sâu:** (Nếu copy file backup nằm ngay trong `/etc/kubernetes/manifests/` thì chuyện gì xảy ra? — Kubelet sẽ tưởng đó là 1 Static Pod mới và cố khởi chạy 2 API Server trùng cổng gây xung đột).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Làm thế nào để phân biệt một Node bị `NotReady` do ngắt kết nối mạng hay do dịch vụ `kubelet` trên Node đó bị chết?
-
-**Đáp án chuẩn:** SSH trực tiếp vào Node đó và chạy `systemctl status kubelet`. Nếu dịch vụ báo `inactive (dead)` hoặc `failed`, nguyên nhân do Kubelet chết. Nếu Kubelet vẫn báo `active (running)`, nguyên nhân do lỗi kết nối mạng (CNI sập hoặc firewall chặn cổng 10250/6443).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách SSH kiểm tra.
-- 1đ: Nêu được check systemctl nhưng không biết phân biệt mạng vs Kubelet.
-- 3đ: Trình bày mạch lạc phương pháp tiêu chuẩn phân lập lỗi giữa Kubelet daemon và CNI/Network.
-
-**Câu hỏi đào sâu:** (Kubelet gửi nhịp tim Heartbeat về API Server thông qua tài nguyên đối tượng nào trong K8s? — Đối tượng `Lease` trong Namespace `kube-node-lease`).
-
----
-
-### Câu 12 — ★★★
-**Hỏi:** Tại sao không được đổi ngày giờ hệ thống máy chủ Linux để giải quyết sự cố chứng chỉ TLS hết hạn?
-
-**Đáp án chuẩn:** Vì lùi ngày giờ hệ thống sẽ làm sai lệch mốc thời gian mã hóa (TLS Timestamp), gây hỏng cơ chế đồng bộ transaction log của etcd, và làm mất tính hợp lệ của toàn bộ token xác thực JWT / ServiceAccount.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng đổi ngày giờ là cách làm mẹo hay.
-- 1đ: Nêu được làm sai giờ nhưng không giải thích được tác hại tới etcd và TLS.
-- 3đ: Phân tích sâu sắc các nguy cơ hỏng dữ liệu etcd và gãy chuỗi xác thực TLS khi lùi mốc thời gian hệ thống.
-
-**Câu hỏi đào sâu:** (Lệnh chính chuẩn để gia hạn chứng chỉ mà không ảnh hưởng hệ thống là gì? — Lệnh `kubeadm certs renew all`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -977,28 +1069,6 @@ Bước 1: SSH vào Master Node, kiểm tra trạng thái Kubelet qua <code>syst
 2. **"Bản kê khai Static Pods trong `/etc/kubernetes/manifests/` là trái tim của Control Plane, cho phép Kubelet tự khôi phục các thành phần cốt lõi mà không phụ thuộc API Server."**
 3. **"Gia hạn chứng chỉ TLS bằng `kubeadm certs renew all` kết hợp restart Kubelet là giải pháp chuẩn hóa để cứu cụm bị liệt do chứng chỉ 1 năm hết hạn."**
 4. **"Bộ nhớ Swap là kẻ thù của Kubelet Memory QoS, bắt buộc phải tắt triệt để bằng `swapoff -a` và xóa khỏi `/etc/fstab` trên toàn bộ Worker Node."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Chưa nắm vững kỹ thuật gỡ lỗi Linux OS, phụ thuộc vào `kubectl` |
-| **19 – 28 điểm** | Đạt yêu cầu | Hiểu rõ Static Pods, Kubelet systemd và gia hạn certs cho CKA |
-| **29 – 36 điểm** | Xuất sắc | Thành thục mọi kỹ thuật cứu hộ sự cố thảm họa Control Plane và etcd |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết script Bash tự động kiểm tra xem tất cả các Worker Node có bật Swap hay không và tự động thực hiện `swapoff -a`.
-- **BTVN 2:** Tái tạo lại 4 tệp manifest Control Plane bị xóa bằng lệnh `kubeadm init phase manifests all` trên cụm lab.
-- **BTVN 3:** Dùng `openssl x509 -noout -text -in /etc/kubernetes/pki/apiserver.crt` đọc chi tiết SANs và ngày hết hạn của cert API Server.
-- **BTVN 4 (Chuẩn bị cho Buổi 30 — Thi thử CKA đầy đủ 2 giờ):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Cấu trúc bài thi CKA thực tế gồm bao nhiêu câu hỏi và thời gian làm bài là bao nhiêu phút?
-  2. Kỹ thuật quản lý thời gian thi: Những câu hỏi chiếm trọng số cao nào cần ưu tiên làm trước?
-  3. Chiến lược dùng tài liệu chính thức `kubernetes.io/docs` hiệu quả nhất để không bị trôi thời gian thi?
 
 ---
 
@@ -1205,14 +1275,15 @@ kubeadm certs check-expiration
 kubeadm certs renew all && systemctl restart kubelet
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 30] Đề Thi Thử CKA Toàn Diện 120 Phút & Phân Tích Lời Giải Chuẩn Mực Linux Foundation](cka-30-30-thi-thu-cka.html).
+
 {% endraw %}

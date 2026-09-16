@@ -233,9 +233,11 @@ publish_semantic_release:
 <span class="badge badge--rose">🕒 06:15 AM</span> Nhóm kỹ sư cấu hình Semantic-Release để tự động commit tệp `CHANGELOG.md` mới lên nhánh `main`. Ngay sau khi release thành công, commit mới của bot lại kích hoạt một pipeline mới, pipeline này lại tiếp tục chạy release, sinh ra hơn 200 bản release rác trong vòng 30 phút và làm tê liệt toàn bộ Runner pool.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Hàng trăm pipeline đồng thời kích hoạt làm nghẽn hàng đợi Runner, cạn kiệt tài nguyên CI/CD và tạo ra hàng loạt release rác trên GitLab Project:
 
 ```text
+
+Hàng trăm pipeline đồng thời kích hoạt làm nghẽn hàng đợi Runner, cạn kiệt tài nguyên CI/CD và tạo ra hàng loạt release rác trên GitLab Project:
+
 [semantic-release] › ℹ  Start automated release process
 [semantic-release] › ✔  Created tag v1.0.201
 [semantic-release] › ℹ  Pushing changes to origin main...

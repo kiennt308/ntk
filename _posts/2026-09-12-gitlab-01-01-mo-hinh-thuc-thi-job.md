@@ -220,9 +220,11 @@ package-release:
 <span class="badge badge--rose">🕒 02:00 AM</span> Pipeline triển khai tự động lên môi trường Production báo trạng thái <span class="badge badge--emerald">Passed (Xanh)</span> hoàn toàn. Tuy nhiên, sau khi release, toàn bộ website người dùng báo lỗi trắng trang (`HTTP 404 / Missing Assets`). Khi đội ngũ kiểm tra trên máy chủ web thì thư mục chứa mã nguồn tĩnh `dist/` rỗng hoàn toàn.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Job build kết thúc thành công với mã thoát 0 nhưng artifact upload chỉ vỏn vẹn 128 bytes:
 
 ```text
+
+Job build kết thúc thành công với mã thoát 0 nhưng artifact upload chỉ vỏn vẹn 128 bytes:
+
 Executing "step_script" stage of the job script
 $ npm run build
 > build

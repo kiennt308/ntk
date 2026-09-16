@@ -423,24 +423,6 @@ graph TD
 | Official Docs: Flannel CNI Installation | Kubernetes v1.35 | Cài đặt Flannel Overlay Network |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Chuẩn bị hạ tầng Linux: Swap, Kernel Modules và Sysctl | 12 phút |
-| §5 | Cài đặt containerd, `kubeadm`, `kubelet`, `kubectl` và hold phiên bản | 12 phút |
-| §6 | Khởi tạo Control Plane (`kubeadm init`) và Join Worker Nodes | 10 phút |
-| §7 | Cài đặt CNI Plugin chuyển Node sang trạng thái `Ready` | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -847,24 +829,11 @@ rm -f /tmp/swap-err.log /tmp/kubeadm-init.log /tmp/join-cmd.sh
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-06/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Chuẩn bị hạ tầng Linux: Swapoff, modprobe kernel modules và sysctl | 30 phút |
-| L4 | Bước 2 — Cài đặt containerd, `kubeadm`, `kubelet`, `kubectl` và sửa SystemdCgroup | 30 phút |
-| L5 | Bước 3 — Khởi tạo Control Plane với `kubeadm init` và trích xuất join command | 30 phút |
-| L6 | Bước 4 — Join 2 Worker Nodes, cài CNI Flannel và kiểm tra cụm 3 node Ready | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -878,253 +847,351 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày tác dụng của 2 kernel module <code>overlay</code> và <code>br_netfilter</code> khi chuẩn bị node cài Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubernetes được thiết kế dựa trên giả định Kubelet quản lý tài nguyên bộ nhớ RAM tuyệt đối để phân loại các <b style="color: var(--accent-primary);">QoS Classes (Guaranteed, Burstable, BestEffort)</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu đĩa SWAP được bật, Linux kernel sẽ tự ý chuyển các trang nhớ RAM xuống đĩa cứng khi cạn RAM.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hậu quả:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Độ trễ ứng dụng tăng hàng ngàn lần (Disk IOPS chậm hơn RAM rất nhiều).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Thuật toán phát hiện OOM (Out Of Memory) của Kubelet tính toán sai lệch, không thể tiêu huỷ Pod đúng lúc.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Kubelet mặc định chặn preflight check và từ chối khởi chạy trừ khi tắt hẳn SWAP (<code>swapoff -a</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>overlay</code>: Module nhân cho phép Container Runtime (containerd) sử dụng hệ thống tệp <b style="color: var(--accent-primary);">OverlayFS</b> để chồng nhiều lớp mỏng (image layers và read-write container layer) lên nhau, tạo nên container rootfs.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>br_netfilter</code>: Module nhân cho phép các gói tin đi qua card mạng cầu nối ảo (virtual bridge net) được chuyển hướng tới bộ lọc <b style="color: var(--accent-primary);">iptables / netfilter</b> của Linux kernel. Nhờ đó, các chính sách Security, Service ClusterIP và NetworkPolicy mới có thể can thiệp xử lý gói tin.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết 2 module hoặc bảo module này để tăng tốc CPU.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời chung chung cho mạng và lưu trữ nhưng không giải thích được OverlayFS và iptables bridge.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác OverlayFS cho containerd storage và br_netfilter cho iptables bridge.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết được câu lệnh <code>modprobe overlay</code> và <code>modprobe br_netfilter</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Điều gì xảy ra đối với Service ClusterIP nếu thiếu module <code>br_netfilter</code>? *(Đáp án: Gói tin Pod-to-Service sẽ không đi qua iptables rules và bị đánh rơi, Pod không gọi được Service).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo SWAP làm Kubernetes bị tràn ổ đĩa.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được do Kubelet bắt tắt swap nhưng không giải thích được cơ chế quản lý RAM QoS (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác giả định RAM tuyệt đối, QoS classes và lý do thuật toán OOM bị sai lệch.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu câu lệnh <code>swapoff -a</code> và chỉnh sửa tệp <code>/etc/fstab</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu bắt buộc phải bật SWAP trên node (ví dụ môi trường dev máy yếu), Kubelet cho phép cờ cấu hình nào để bỏ qua lỗi swap? *(Đáp án: Cờ --fail-swap-on=false trong KubeletConfiguration).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Ba tham số <code>sysctl</code> bắt buộc nào phải thiết lập để gói tin bridge đi qua iptables và được chuyển tiếp IP (IP Forwarding)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>net.bridge.bridge-nf-call-iptables = 1</code>: Cho phép iptables xử lý gói tin IPv4 đi qua cầu nối bridge.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>net.bridge.bridge-nf-call-ip6tables = 1</code>: Cho phép ip6tables xử lý gói tin IPv6 đi qua cầu nối bridge.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>net.ipv4.ip_forward = 1</code>: Bật tính năng chuyển tiếp IP forwarding trong Linux Kernel, cho phép node hoạt động như một Router định tuyến gói tin giữa các card mạng Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết lệnh sysctl hoặc nêu sai tên tham số.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>ip_forward</code> nhưng thiếu 2 tham số <code>bridge-nf-call-iptables</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Nêu chính xác 3 tham số sysctl và tác dụng chuyển tiếp gói tin.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết được file cấu hình <code>/etc/sysctl.d/k8s.conf</code> và lệnh <code>sysctl --system</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu <code>net.ipv4.ip_forward = 0</code> thì hiện tượng gì xảy ra? *(Đáp án: Các Pod ở hai Worker Node khác nhau không thể ping hay gửi dữ liệu cho nhau được).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao phải chạy lệnh <code>apt-mark hold</code> cho 3 gói phần mềm <code>kubeadm</code>, <code>kubelet</code>, <code>kubectl</code> ngay sau khi cài đặt?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>apt-mark hold</code> giúp khoá phiên bản cố định cho các gói phần mềm trên hệ điều hành Ubuntu/Debian.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do bắt buộc:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hệ quản trị gói <code>apt</code> có các tiến trình cập nhật tự động (Unattended Upgrades) hoặc kỹ sư chạy <code>apt upgrade</code> định kỳ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu không hold, Kubelet hoặc Kubeadm sẽ tự nhảy phiên bản mới (ví dụ từ v1.34 lên v1.35) trong khi Control Plane etcd/API Server chưa được nâng cấp quy trình.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệch phiên bản đột ngột sẽ làm sập Kubelet, gây vỡ tương thích gRPC API và đứt gãy cả cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo apt-mark hold dùng để xoá gói phần mềm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời để khoá phiên bản nhưng không giải thích được nguy cơ tự nâng cấp làm lệch API Control Plane.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích đúng cơ chế chặn Unattended Upgrades và rủi ro phân kỳ phiên bản Kubelet vs Control Plane.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu lệnh <code>apt-mark hold</code> và lệnh kiểm tra <code>apt-mark showhold</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi muốn nâng cấp cụm chính thức thì làm thế nào để mở khoá? *(Đáp án: Chạy lệnh apt-mark unhold kubeadm kubelet kubectl trước khi nâng cấp).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tệp <code>/etc/containerd/config.toml</code> cần chỉnh sửa thông số quan trọng nào để đồng bộ Cgroup Driver với Kubelet?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cần chỉnh sửa thông số: <code>SystemdCgroup = true</code> (nằm dưới mục cấu hình options của <code>runc</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do:</b> Kubelet trên Ubuntu/Debian sử dụng <code>systemd</code> cgroup driver. Nếu containerd dùng mặc định <code>SystemdCgroup = false</code> (<code>cgroupfs</code>), hai bên sẽ tranh chấp cgroup driver khiến Kubelet tự crash ngầm và <code>kubeadm init</code> bị treo ở bước <code>[wait-control-plane]</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết thông số hoặc bảo để <code>SystemdCgroup = false</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được SystemdCgroup nhưng không nhớ vị trí file <code>/etc/containerd/config.toml</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chính xác tham số <code>SystemdCgroup = true</code> và lý do đồng bộ với Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết được câu lệnh <code>sed -i</code> chỉnh sửa tự động và restart containerd.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm thế nào để tạo tệp <code>config.toml</code> chuẩn mặc định của containerd nếu tệp này bị mất? *(Đáp án: Chạy lệnh containerd config default > /etc/containerd/config.toml).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cờ <code>--pod-network-cidr</code> trong lệnh <code>kubeadm init</code> mang ý nghĩa gì? Điều gì xảy ra nếu gõ sai dải CIDR này so với CNI Plugin?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <code>--pod-network-cidr</code> khai báo <b style="color: var(--accent-primary);">dải địa chỉ IP tổng cấp cho toàn bộ các Pod</b> trong cụm (ví dụ <code>--pod-network-cidr=10.244.0.0/16</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa & Hậu quả khi sai:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Controller Manager dựa vào CIDR này để cắt nhỏ các subnet <code>/24</code> gán cho từng Worker Node (<code>.spec.podCIDR</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CNI Plugin (ví dụ Flannel) đọc dải CIDR này từ API Server để khởi tạo card mạng Virtual Bridge (<code>flannel.1</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu gõ sai CIDR so với manifest của CNI (ví dụ Flannel đòi <code>10.244.0.0/16</code> mà gõ <code>192.168.0.0/16</code>), CNI Pods sẽ bị <b style="color: var(--accent-primary);">CrashLoopBackOff</b>, không cấp được IP cho Pod và cụm vĩnh viễn ở trạng thái <code>NotReady</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Nhầm Pod CIDR với IP của máy chủ vật lý.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được dải IP cho Pod nhưng không giải thích được cơ chế gán subnet /24 và sự phụ thuộc của CNI Plugin.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác vai trò khai báo cho Controller Manager/CNI và hậu quả CrashLoopBackOff.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu dải IP chuẩn của Flannel (<code>10.244.0.0/16</code>) và Calico (<code>192.168.0.0/16</code>).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có thể sửa lại <code>--pod-network-cidr</code> sau khi đã <code>kubeadm init</code> xong dễ dàng không? *(Đáp án: Rất khó, phải sửa ConfigMap kubeadm-config và reset lại CNI).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Mã Join Token do <code>kubeadm init</code> sinh ra có thời hạn mặc định bao lâu? Làm thế nào để sinh lại lệnh <code>kubeadm join</code> đầy đủ khi token cũ đã hết hạn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mã Join Token có thời hạn sử dụng mặc định đúng <b style="color: var(--accent-primary);">24 giờ</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách sinh lại:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• SSH vào Control Plane node (<code>cp-01</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chạy câu lệnh: <code>kubeadm token create --print-join-command</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh này sẽ tự động sinh 1 token mới và in ra toàn bộ câu lệnh <code>kubeadm join</code> đầy đủ bao gồm IP, Port 6443, Token mới và mã sha256 CA cert hash.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo token có thời hạn vĩnh viễn hoặc chỉ 5 phút.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 24 giờ nhưng không nhớ câu lệnh <code>--print-join-command</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trả lời chính xác 24 giờ và viết đúng câu lệnh <code>kubeadm token create --print-join-command</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, giải thích lý do an ninh giới hạn 24h để tránh lộ token.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm thế nào để liệt kê danh sách các token đang còn hạn trong cụm? *(Đáp án: Chạy lệnh kubeadm token list trên Control Plane).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cờ <code>--discovery-token-ca-cert-hash</code> trong lệnh <code>kubeadm join</code> phục vụ cơ chế an ninh nào? Chuỗi hash này có độ dài bao nhiêu ký tự?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phục vụ cơ chế <b style="color: var(--accent-primary);">Xác thực chứng chỉ hai chiều (Mutual Authentication / TLS Bootstrapping)</b> chống lại tấn công Man-in-the-Middle (MitM).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chuỗi hash là mã <b style="color: var(--accent-primary);">sha256</b> đăm từ tệp chứng chỉ CA root (<code>ca.crt</code>) của Control Plane.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi Worker Node join cụm, nó tải chứng chỉ CA từ Control Plane về và tự tính toán mã sha256. Nếu mã sha256 tính được khớp 100% với chuỗi <code>--discovery-token-ca-cert-hash</code>, Worker Node mới tin tưởng đây là Control Plane thật và tiếp tục tải Kubeconfig.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chuỗi hash có độ dài đúng <b style="color: var(--accent-primary);">64 ký tự hex</b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cờ này dùng để mã hoá mật khẩu root.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được xác thực chứng chỉ nhưng không giải thích được cơ chế sha256 chống Man-in-the-Middle.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác mã sha256 của CA root <code>ca.crt</code> và độ dài 64 ký tự hex.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu câu lệnh OpenSSL dùng để tự tính mã sha256 hash từ tệp <code>ca.crt</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Câu lệnh OpenSSL nào giúp tự tính mã hash CA cert từ tệp <code>ca.crt</code>? *(Đáp án: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der | openssl dgst -sha256 -hex).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao ngay sau khi <code>kubeadm init</code> và <code>kubeadm join</code> hoàn tất 100%, tất cả các Node trong cụm vẫn ở trạng thái <code>NotReady</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ngay sau khi init và join, các Node giữ trạng thái <code>NotReady</code> vì <b style="color: var(--accent-primary);">chưa có CNI Plugin (Container Network Interface) nào được cài đặt</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubelet</code> trên từng Node liên tục quét thư mục <code>/etc/cni/net.d/</code> để tìm tệp cấu hình mạng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi chưa cài CNI, thư mục này trống rỗng, Kubelet báo cáo tình trạng <code>NetworkReady=false</code> về API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• API Server đánh dấu Node là <code>NotReady</code> để chặn không cho Scheduler xếp Pod ứng dụng vào Node (tránh việc Pod không xin được IP mạng).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo do Kubelet bị hỏng hoặc etcd chưa chạy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do chưa cài mạng CNI nhưng không nêu được tệp cấu hình trong <code>/etc/cni/net.d/</code> (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế Kubelet kiểm tra thư mục <code>/etc/cni/net.d/</code> và cờ <code>NetworkReady=false</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chứng minh bằng việc quan sát Node chuyển sang <code>Ready</code> ngay sau khi <code>kubectl apply</code> Flannel CNI.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi Node ở trạng thái <code>NotReady</code> do thiếu CNI, các Static Pods trong <code>kube-system</code> (như etcd, apiserver) có chạy được không? *(Đáp án: Vẫn chạy bình thường vì Static Pods dùng hostNetwork=true).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>CNI Plugin (Flannel / Calico) làm nhiệm vụ gì để chuyển các Node từ <code>NotReady</code> sang <code>Ready</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CNI Plugin thực hiện 3 nhiệm vụ hạ tầng mạng cốt lõi:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ghi tệp cấu hình CNI:</b> Tạo tệp cấu hình mạng JSON vào thư mục <code>/etc/cni/net.d/</code> trên tất cả các Node (giúp Kubelet chuyển <code>NetworkReady=true</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tạo Card mạng ảo (Virtual Bridge):</b> Tạo card mạng cầu nối (như <code>flannel.1</code> hoặc <code>cni0</code>) và giao diện <code>veth</code> kết nối container với nhân Linux.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Phân chia Subnet và Định tuyến (Overlay Network):</b> Chia dải Pod CIDR tổng (ví dụ <code>10.244.0.0/16</code>) thành các subnet <code>/24</code> cho từng Node và thiết lập bảng chuyển tiếp gói tin giữa các Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo CNI Plugin dùng để cấp RAM cho Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được CNI cấp IP cho Pod nhưng không giải thích được 3 nhiệm vụ (tệp cni.d, card virtual bridge, overlay routing).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác 3 nhiệm vụ hạ tầng của CNI Plugin và việc chuyển cờ NetworkReady.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt cơ chế VXLAN của Flannel và BGP của Calico.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Flannel CNI sử dụng công nghệ đóng gói gói tin (encapsulation) nào mặc định? *(Đáp án: Đóng gói VXLAN UDP qua cổng 8472).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Phân biệt sự khác nhau cốt lõi giữa cụm ảo <code>kind</code> (dùng ở Buổi 01–05) và cụm <code>kubeadm</code> thật (từ Buổi 06 trở đi).</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kind</code> (Kubernetes in Docker): Dùng Docker container giả lập làm các Node. Phù hợp cho việc học tập nhanh, test nhẹ trên máy cá nhân. Cụm tự động cài sẵn CNI và cấu hình sẵn mọi thứ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubeadm</code> (Kubernetes Admin): Công cụ cài đặt cụm chuẩn production trên các máy chủ ảo (VM) hoặc máy chủ vật lý (Bare-metal) thật. Người quản trị phải tự tay làm 100% các bước hạ tầng (swapoff, modules, sysctl, containerd config, CNI plugin, PKI certificates).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo kind và kubeadm là một.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời kind chạy trong docker còn kubeadm cài trên máy thật nhưng thiếu phân tích trách nhiệm cấu hình hạ tầng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác sự khác biệt giữa giả lập Docker container (kind) vs cài đặt hạ tầng thực tế từ số 0 (kubeadm).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra bài thi CKA tập trung 100% vào kỹ năng quản trị cụm <code>kubeadm</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trong bài thi CKA chính thức, môi trường thi sử dụng <code>kind</code> hay <code>kubeadm</code>? *(Đáp án: Bài thi CKA sử dụng 100% cụm chuẩn dựng bằng kubeadm).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 ồn ào do quên swapoff, 1 âm thầm do quên --pod-network-cidr) và cách phát hiện/khắc phục khi dựng cụm.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Ồn ào - Quên swapoff):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Lệnh <code>kubeadm init</code> bị ngắt ngay lập tức ở bước preflight check.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Terminal in ra lỗi đỏ: <code>[ERROR Swap]: running with swap on is not supported</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Chạy <code>sudo swapoff -a</code> và comment dòng swap trong <code>/etc/fstab</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Quên <code>--pod-network-cidr</code> khi init):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Lệnh <code>kubeadm init</code> báo thành công 100%, nhưng khi apply Flannel CNI, Pod Flannel bị <code>CrashLoopBackOff</code> kéo dài, Node kẹt ở <code>NotReady</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Đọc log Pod Flannel thấy lỗi <code>Failed to find pod cidr</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Chạy <code>kubeadm reset -f</code> và thực hiện <code>kubeadm init --pod-network-cidr=10.244.0.0/16</code> lại từ đầu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân ngắt preflight vs CrashLoopBackOff.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và quy trình reset/khắc phục.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế khi thực hành bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào giúp dọn dẹp sạch sẽ một Control Plane bị init sai để làm lại từ đầu? *(Đáp án: Lệnh sudo kubeadm reset -f kết hợp iptables -F).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Trình bày tác dụng của 2 kernel module `overlay` và `br_netfilter` khi chuẩn bị node cài Kubernetes.
-
-**Đáp án chuẩn:**
-- `overlay`: Module nhân cho phép Container Runtime (containerd) sử dụng hệ thống tệp **OverlayFS** để chồng nhiều lớp mỏng (image layers và read-write container layer) lên nhau, tạo nên container rootfs.
-- `br_netfilter`: Module nhân cho phép các gói tin đi qua card mạng cầu nối ảo (virtual bridge net) được chuyển hướng tới bộ lọc **iptables / netfilter** của Linux kernel. Nhờ đó, các chính sách Security, Service ClusterIP và NetworkPolicy mới có thể can thiệp xử lý gói tin.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết 2 module hoặc bảo module này để tăng tốc CPU.
-- **1đ:** Trả lời chung chung cho mạng và lưu trữ nhưng không giải thích được OverlayFS và iptables bridge.
-- **2đ:** Giải thích chuẩn xác OverlayFS cho containerd storage và br_netfilter cho iptables bridge.
-- **3đ:** Trả lời xuất sắc, viết được câu lệnh `modprobe overlay` và `modprobe br_netfilter`.
-
-**Câu hỏi đào sâu:** Điều gì xảy ra đối với Service ClusterIP nếu thiếu module `br_netfilter`? *(Đáp án: Gói tin Pod-to-Service sẽ không đi qua iptables rules và bị đánh rơi, Pod không gọi được Service).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Ba tham số `sysctl` bắt buộc nào phải thiết lập để gói tin bridge đi qua iptables và được chuyển tiếp IP (IP Forwarding)?
-
-**Đáp án chuẩn:**
-1. `net.bridge.bridge-nf-call-iptables = 1`: Cho phép iptables xử lý gói tin IPv4 đi qua cầu nối bridge.
-2. `net.bridge.bridge-nf-call-ip6tables = 1`: Cho phép ip6tables xử lý gói tin IPv6 đi qua cầu nối bridge.
-3. `net.ipv4.ip_forward = 1`: Bật tính năng chuyển tiếp IP forwarding trong Linux Kernel, cho phép node hoạt động như một Router định tuyến gói tin giữa các card mạng Pod.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết lệnh sysctl hoặc nêu sai tên tham số.
-- **1đ:** Nêu được `ip_forward` nhưng thiếu 2 tham số `bridge-nf-call-iptables`.
-- **2đ:** Nêu chính xác 3 tham số sysctl và tác dụng chuyển tiếp gói tin.
-- **3đ:** Trả lời xuất sắc, viết được file cấu hình `/etc/sysctl.d/k8s.conf` và lệnh `sysctl --system`.
-
-**Câu hỏi đào sâu:** Nếu `net.ipv4.ip_forward = 0` thì hiện tượng gì xảy ra? *(Đáp án: Các Pod ở hai Worker Node khác nhau không thể ping hay gửi dữ liệu cho nhau được).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Tại sao phải chạy lệnh `apt-mark hold` cho 3 gói phần mềm `kubeadm`, `kubelet`, `kubectl` ngay sau khi cài đặt?
-
-**Đáp án chuẩn:**
-- Lệnh `apt-mark hold` giúp khoá phiên bản cố định cho các gói phần mềm trên hệ điều hành Ubuntu/Debian.
-- **Lý do bắt buộc:**
-  - Hệ quản trị gói `apt` có các tiến trình cập nhật tự động (Unattended Upgrades) hoặc kỹ sư chạy `apt upgrade` định kỳ.
-  - Nếu không hold, Kubelet hoặc Kubeadm sẽ tự nhảy phiên bản mới (ví dụ từ v1.34 lên v1.35) trong khi Control Plane etcd/API Server chưa được nâng cấp quy trình.
-  - Lệch phiên bản đột ngột sẽ làm sập Kubelet, gây vỡ tương thích gRPC API và đứt gãy cả cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo apt-mark hold dùng để xoá gói phần mềm.
-- **1đ:** Trả lời để khoá phiên bản nhưng không giải thích được nguy cơ tự nâng cấp làm lệch API Control Plane.
-- **2đ:** Phân tích đúng cơ chế chặn Unattended Upgrades và rủi ro phân kỳ phiên bản Kubelet vs Control Plane.
-- **3đ:** Trả lời xuất sắc, nêu lệnh `apt-mark hold` và lệnh kiểm tra `apt-mark showhold`.
-
-**Câu hỏi đào sâu:** Khi muốn nâng cấp cụm chính thức thì làm thế nào để mở khoá? *(Đáp án: Chạy lệnh apt-mark unhold kubeadm kubelet kubectl trước khi nâng cấp).*
-
----
-
-### Câu 5 — ★★
-
-**Hỏi:** Tệp `/etc/containerd/config.toml` cần chỉnh sửa thông số quan trọng nào để đồng bộ Cgroup Driver với Kubelet?
-
-**Đáp án chuẩn:**
-- Cần chỉnh sửa thông số: `SystemdCgroup = true` (nằm dưới mục cấu hình options của `runc`).
-- **Lý do:** Kubelet trên Ubuntu/Debian sử dụng `systemd` cgroup driver. Nếu containerd dùng mặc định `SystemdCgroup = false` (`cgroupfs`), hai bên sẽ tranh chấp cgroup driver khiến Kubelet tự crash ngầm và `kubeadm init` bị treo ở bước `[wait-control-plane]`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết thông số hoặc bảo để `SystemdCgroup = false`.
-- **1đ:** Nêu được SystemdCgroup nhưng không nhớ vị trí file `/etc/containerd/config.toml`.
-- **2đ:** Giải thích chính xác tham số `SystemdCgroup = true` và lý do đồng bộ với Kubelet.
-- **3đ:** Trả lời xuất sắc, viết được câu lệnh `sed -i` chỉnh sửa tự động và restart containerd.
-
-**Câu hỏi đào sâu:** Làm thế nào để tạo tệp `config.toml` chuẩn mặc định của containerd nếu tệp này bị mất? *(Đáp án: Chạy lệnh containerd config default > /etc/containerd/config.toml).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Cờ `--pod-network-cidr` trong lệnh `kubeadm init` mang ý nghĩa gì? Điều gì xảy ra nếu gõ sai dải CIDR này so với CNI Plugin?
-
-**Đáp án chuẩn:**
-- Cờ `--pod-network-cidr` khai báo **dải địa chỉ IP tổng cấp cho toàn bộ các Pod** trong cụm (ví dụ `--pod-network-cidr=10.244.0.0/16`).
-- **Ý nghĩa & Hậu quả khi sai:**
-  - Controller Manager dựa vào CIDR này để cắt nhỏ các subnet `/24` gán cho từng Worker Node (`.spec.podCIDR`).
-  - CNI Plugin (ví dụ Flannel) đọc dải CIDR này từ API Server để khởi tạo card mạng Virtual Bridge (`flannel.1`).
-  - Nếu gõ sai CIDR so với manifest của CNI (ví dụ Flannel đòi `10.244.0.0/16` mà gõ `192.168.0.0/16`), CNI Pods sẽ bị **CrashLoopBackOff**, không cấp được IP cho Pod và cụm vĩnh viễn ở trạng thái `NotReady`.
-
-**Tiêu chí chấm:**
-- **0đ:** Nhầm Pod CIDR với IP của máy chủ vật lý.
-- **1đ:** Nêu được dải IP cho Pod nhưng không giải thích được cơ chế gán subnet /24 và sự phụ thuộc của CNI Plugin.
-- **2đ:** Phân tích chính xác vai trò khai báo cho Controller Manager/CNI và hậu quả CrashLoopBackOff.
-- **3đ:** Trả lời xuất sắc, nêu dải IP chuẩn của Flannel (`10.244.0.0/16`) và Calico (`192.168.0.0/16`).
-
-**Câu hỏi đào sâu:** Có thể sửa lại `--pod-network-cidr` sau khi đã `kubeadm init` xong dễ dàng không? *(Đáp án: Rất khó, phải sửa ConfigMap kubeadm-config và reset lại CNI).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Mã Join Token do `kubeadm init` sinh ra có thời hạn mặc định bao lâu? Làm thế nào để sinh lại lệnh `kubeadm join` đầy đủ khi token cũ đã hết hạn?
-
-**Đáp án chuẩn:**
-- Mã Join Token có thời hạn sử dụng mặc định đúng **24 giờ**.
-- **Cách sinh lại:**
-  - SSH vào Control Plane node (`cp-01`).
-  - Chạy câu lệnh: `kubeadm token create --print-join-command`.
-  - Lệnh này sẽ tự động sinh 1 token mới và in ra toàn bộ câu lệnh `kubeadm join` đầy đủ bao gồm IP, Port 6443, Token mới và mã sha256 CA cert hash.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo token có thời hạn vĩnh viễn hoặc chỉ 5 phút.
-- **1đ:** Nêu được 24 giờ nhưng không nhớ câu lệnh `--print-join-command`.
-- **2đ:** Trả lời chính xác 24 giờ và viết đúng câu lệnh `kubeadm token create --print-join-command`.
-- **3đ:** Trả lời xuất sắc, giải thích lý do an ninh giới hạn 24h để tránh lộ token.
-
-**Câu hỏi đào sâu:** Làm thế nào để liệt kê danh sách các token đang còn hạn trong cụm? *(Đáp án: Chạy lệnh kubeadm token list trên Control Plane).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Cờ `--discovery-token-ca-cert-hash` trong lệnh `kubeadm join` phục vụ cơ chế an ninh nào? Chuỗi hash này có độ dài bao nhiêu ký tự?
-
-**Đáp án chuẩn:**
-- Phục vụ cơ chế **Xác thực chứng chỉ hai chiều (Mutual Authentication / TLS Bootstrapping)** chống lại tấn công Man-in-the-Middle (MitM).
-- **Cơ chế:**
-  - Chuỗi hash là mã **sha256** đăm từ tệp chứng chỉ CA root (`ca.crt`) của Control Plane.
-  - Khi Worker Node join cụm, nó tải chứng chỉ CA từ Control Plane về và tự tính toán mã sha256. Nếu mã sha256 tính được khớp 100% với chuỗi `--discovery-token-ca-cert-hash`, Worker Node mới tin tưởng đây là Control Plane thật và tiếp tục tải Kubeconfig.
-- Chuỗi hash có độ dài đúng **64 ký tự hex**.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo cờ này dùng để mã hoá mật khẩu root.
-- **1đ:** Nói được xác thực chứng chỉ nhưng không giải thích được cơ chế sha256 chống Man-in-the-Middle.
-- **2đ:** Phân tích chính xác mã sha256 của CA root `ca.crt` và độ dài 64 ký tự hex.
-- **3đ:** Trả lời xuất sắc, nêu câu lệnh OpenSSL dùng để tự tính mã sha256 hash từ tệp `ca.crt`.
-
-**Câu hỏi đào sâu:** Câu lệnh OpenSSL nào giúp tự tính mã hash CA cert từ tệp `ca.crt`? *(Đáp án: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der | openssl dgst -sha256 -hex).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Tại sao ngay sau khi `kubeadm init` và `kubeadm join` hoàn tất 100%, tất cả các Node trong cụm vẫn ở trạng thái `NotReady`?
-
-**Đáp án chuẩn:**
-- Ngay sau khi init và join, các Node giữ trạng thái `NotReady` vì **chưa có CNI Plugin (Container Network Interface) nào được cài đặt**.
-- **Cơ chế:**
-  - `kubelet` trên từng Node liên tục quét thư mục `/etc/cni/net.d/` để tìm tệp cấu hình mạng.
-  - Khi chưa cài CNI, thư mục này trống rỗng, Kubelet báo cáo tình trạng `NetworkReady=false` về API Server.
-  - API Server đánh dấu Node là `NotReady` để chặn không cho Scheduler xếp Pod ứng dụng vào Node (tránh việc Pod không xin được IP mạng).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo do Kubelet bị hỏng hoặc etcd chưa chạy.
-- **1đ:** Trả lời do chưa cài mạng CNI nhưng không nêu được tệp cấu hình trong `/etc/cni/net.d/` (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác cơ chế Kubelet kiểm tra thư mục `/etc/cni/net.d/` và cờ `NetworkReady=false`.
-- **3đ:** Trả lời xuất sắc, chứng minh bằng việc quan sát Node chuyển sang `Ready` ngay sau khi `kubectl apply` Flannel CNI.
-
-**Câu hỏi đào sâu:** Khi Node ở trạng thái `NotReady` do thiếu CNI, các Static Pods trong `kube-system` (như etcd, apiserver) có chạy được không? *(Đáp án: Vẫn chạy bình thường vì Static Pods dùng hostNetwork=true).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** CNI Plugin (Flannel / Calico) làm nhiệm vụ gì để chuyển các Node từ `NotReady` sang `Ready`?
-
-**Đáp án chuẩn:**
-- CNI Plugin thực hiện 3 nhiệm vụ hạ tầng mạng cốt lõi:
-  1. **Ghi tệp cấu hình CNI:** Tạo tệp cấu hình mạng JSON vào thư mục `/etc/cni/net.d/` trên tất cả các Node (giúp Kubelet chuyển `NetworkReady=true`).
-  2. **Tạo Card mạng ảo (Virtual Bridge):** Tạo card mạng cầu nối (như `flannel.1` hoặc `cni0`) và giao diện `veth` kết nối container với nhân Linux.
-  3. **Phân chia Subnet và Định tuyến (Overlay Network):** Chia dải Pod CIDR tổng (ví dụ `10.244.0.0/16`) thành các subnet `/24` cho từng Node và thiết lập bảng chuyển tiếp gói tin giữa các Node.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo CNI Plugin dùng để cấp RAM cho Pod.
-- **1đ:** Nêu được CNI cấp IP cho Pod nhưng không giải thích được 3 nhiệm vụ (tệp cni.d, card virtual bridge, overlay routing).
-- **2đ:** Phân tích chính xác 3 nhiệm vụ hạ tầng của CNI Plugin và việc chuyển cờ NetworkReady.
-- **3đ:** Trả lời xuất sắc, phân biệt cơ chế VXLAN của Flannel và BGP của Calico.
-
-**Câu hỏi đào sâu:** Flannel CNI sử dụng công nghệ đóng gói gói tin (encapsulation) nào mặc định? *(Đáp án: Đóng gói VXLAN UDP qua cổng 8472).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau cốt lõi giữa cụm ảo `kind` (dùng ở Buổi 01–05) và cụm `kubeadm` thật (từ Buổi 06 trở đi).
-
-**Đáp án chuẩn:**
-- `kind` (Kubernetes in Docker): Dùng Docker container giả lập làm các Node. Phù hợp cho việc học tập nhanh, test nhẹ trên máy cá nhân. Cụm tự động cài sẵn CNI và cấu hình sẵn mọi thứ.
-- `kubeadm` (Kubernetes Admin): Công cụ cài đặt cụm chuẩn production trên các máy chủ ảo (VM) hoặc máy chủ vật lý (Bare-metal) thật. Người quản trị phải tự tay làm 100% các bước hạ tầng (swapoff, modules, sysctl, containerd config, CNI plugin, PKI certificates).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo kind và kubeadm là một.
-- **1đ:** Trả lời kind chạy trong docker còn kubeadm cài trên máy thật nhưng thiếu phân tích trách nhiệm cấu hình hạ tầng.
-- **2đ:** Phân tích chính xác sự khác biệt giữa giả lập Docker container (kind) vs cài đặt hạ tầng thực tế từ số 0 (kubeadm).
-- **3đ:** Trả lời xuất sắc, chỉ ra bài thi CKA tập trung 100% vào kỹ năng quản trị cụm `kubeadm`.
-
-**Câu hỏi đào sâu:** Trong bài thi CKA chính thức, môi trường thi sử dụng `kind` hay `kubeadm`? *(Đáp án: Bài thi CKA sử dụng 100% cụm chuẩn dựng bằng kubeadm).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 ồn ào do quên swapoff, 1 âm thầm do quên --pod-network-cidr) và cách phát hiện/khắc phục khi dựng cụm.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Ồn ào - Quên swapoff):**
-   - *Triệu chứng:* Lệnh `kubeadm init` bị ngắt ngay lập tức ở bước preflight check.
-   - *Phát hiện:* Terminal in ra lỗi đỏ: `[ERROR Swap]: running with swap on is not supported`.
-   - *Khắc phục:* Chạy `sudo swapoff -a` và comment dòng swap trong `/etc/fstab`.
-2. **Chế độ hỏng 2 (Âm thầm - Quên `--pod-network-cidr` khi init):**
-   - *Triệu chứng:* Lệnh `kubeadm init` báo thành công 100%, nhưng khi apply Flannel CNI, Pod Flannel bị `CrashLoopBackOff` kéo dài, Node kẹt ở `NotReady`.
-   - *Phát hiện:* Đọc log Pod Flannel thấy lỗi `Failed to find pod cidr`.
-   - *Khắc phục:* Chạy `kubeadm reset -f` và thực hiện `kubeadm init --pod-network-cidr=10.244.0.0/16` lại từ đầu.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân ngắt preflight vs CrashLoopBackOff.
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và quy trình reset/khắc phục.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế khi thực hành bài lab.
-
-**Câu hỏi đào sâu:** Lệnh nào giúp dọn dẹp sạch sẽ một Control Plane bị init sai để làm lại từ đầu? *(Đáp án: Lệnh sudo kubeadm reset -f kết hợp iptables -F).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Dựng cụm <code>kubeadm</code> chuẩn sản xuất bắt buộc 5 bước hạ tầng: Tắt SWAP 0MB cho RAM QoS, nạp <code>overlay</code> & <code>br_netfilter</code>, cấu hình <code>sysctl</code> iptables bridge, sửa <code>SystemdCgroup = true</code> cho containerd, và khoá 3 gói bằng <code>apt-mark hold</code>."*
+2. *"<code>kubeadm init</code> bắt buộc phải truyền <code>--pod-network-cidr=10.244.0.0/16</code> tương thích với Flannel CNI để Controller Manager gán subnet /24 cho từng Node."*
+3. *"Mã Join Token có thời hạn 24 giờ, gia nhập Worker Node bằng <code>kubeadm join</code> kết hợp mã sha256 CA cert hash 64 ký tự để xác thực hai chiều chống tấn công Man-in-the-Middle."*
+4. *"Ngay sau khi init và join, tất cả các Node sẽ ở trạng thái <code>NotReady</code> cho tới khi CNI Plugin (Flannel/Calico) được apply để tạo tệp cấu hình mạng trong <code>/etc/cni/net.d/</code> và rải nhựa đường virtual bridge."*
+5. *"Bộ đôi câu lệnh quyền lực nhất để dọn dẹp và làm lại khi init sai là <code>sudo kubeadm reset -f</code> và <code>kubeadm token create --print-join-command</code> để sinh lại token."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1135,40 +1202,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Mã Join Token có thời hạn 24 giờ, gia nhập Worker Node bằng `kubeadm join` kết hợp mã sha256 CA cert hash 64 ký tự để xác thực hai chiều chống tấn công Man-in-the-Middle."*
 4. *"Ngay sau khi init và join, tất cả các Node sẽ ở trạng thái `NotReady` cho tới khi CNI Plugin (Flannel/Calico) được apply để tạo tệp cấu hình mạng trong `/etc/cni/net.d/` và rải nhựa đường virtual bridge."*
 5. *"Bộ đôi câu lệnh quyền lực nhất để dọn dẹp và làm lại khi init sai là `sudo kubeadm reset -f` và `kubeadm token create --print-join-command` để sinh lại token."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Tắt SWAP 0MB cho RAM QoS (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Module `overlay` cho storage & `br_netfilter` cho iptables bridge |
-| Câu 3 | ★★★ | 3 | | 3 tham số sysctl chuyển tiếp gói tin bridge |
-| Câu 4 | ★★★ | 3 | | Khoá 3 gói bằng `apt-mark hold` tránh rủi ro lệch API |
-| Câu 5 | ★★ | 3 | | Sửa `SystemdCgroup = true` trong `config.toml` |
-| Câu 6 | ★★★ | 3 | | Ý nghĩa `--pod-network-cidr` và CNI CrashLoopBackOff |
-| Câu 7 | ★★★ | 3 | | Token 24h & `kubeadm token create --print-join-command` |
-| Câu 8 | ★★★ | 3 | | Cờ `--discovery-token-ca-cert-hash` sha256 64 ký tự |
-| Câu 9 | ★★★ | 3 | | Node NotReady do thiếu CNI trong `/etc/cni/net.d/` (trần 1đ nếu thiếu) |
-| Câu 10 | ★★★ | 3 | | 3 nhiệm vụ hạ tầng của CNI Plugin (Flannel) |
-| Câu 11 | ★★★ | 3 | | Phân biệt cụm ảo `kind` vs cụm thật `kubeadm` |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (quên swapoff & quên --pod-network-cidr) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash kiểm tra tự động 5 bước chuẩn bị hạ tầng Linux (Swap, Modules, Sysctl, Cgroup, Apt-hold) trên một node mới trước khi cho phép chạy `kubeadm join`.
-2. **BTVN 2:** Thực hành lệnh `kubeadm token create --ttl 1h --print-join-command` tạo token join ngắn hạn 1 giờ và verify bằng `kubeadm token list`.
-3. **BTVN 3:** Tìm hiểu cách trích xuất mã sha256 CA cert hash từ tệp `/etc/kubernetes/pki/ca.crt` bằng câu lệnh `openssl`.
-4. **BTVN 4 — Chuẩn bị cho Buổi 07 (`buoi-07-chung-chi-pki-va-kubeconfig`):**
-   - *Câu 1:* Tìm hiểu các chứng chỉ x509 được lưu trong thư mục `/etc/kubernetes/pki/`. Chứng chỉ nào là chứng chỉ Root CA?
-   - *Câu 2:* Cấu trúc tệp Kubeconfig (`~/.kube/config`) gồm 3 phần chính nào (`clusters`, `contexts`, `users`)?
-   - *Câu 3:* Lệnh `kubeadm certs check-expiration` kiểm tra điều gì và lệnh nào giúp gia hạn toàn bộ chứng chỉ trước khi hết hạn 1 năm?
-
-> **Đoạn kết nối Buổi 07:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 07 — buổi học bóc tách toàn bộ hạ tầng chứng chỉ PKI, cơ chế xác thực x509, cấu trúc Kubeconfig và quy trình gia hạn chứng chỉ cụm không gây downtime.
 
 ---
 
@@ -1422,15 +1455,15 @@ kubeadm token create --print-join-command
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 07] Hạ Tầng Khóa Công Khai (PKI) & Kubeconfig: Quản Trị Chứng Chỉ TLS, Gia Hạn & Xác Thực Người Dùng](cka-07-07-chung-chi-pki-va-kubeconfig.html).
+
 {% endraw %}

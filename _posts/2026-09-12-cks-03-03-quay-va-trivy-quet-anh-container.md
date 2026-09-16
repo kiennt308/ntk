@@ -456,24 +456,6 @@ Cú pháp <code>COPY --chown=10001:10001 --from=builder /app /app</code>.
 | Trivy Documentation | `https://aquasecurity.github.io/trivy/latest/` | Tài liệu chuẩn công cụ quét Trivy |
 | Google Distroless Images | `https://github.com/GoogleContainerTools/distroless` | Tài liệu chuẩn ảnh cơ sở Distroless |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Tổng quan quét ảnh & Trivy | 12 phút | 12 phút |
-| §5. Gia cố Dockerfile CKS Hardening | 12 phút | 12 phút |
-| §6. Tích hợp Trivy CI/CD Pipeline | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -769,26 +751,11 @@ test ! -f /tmp/Dockerfile.vulnerable && echo "CHECKPOINT 13 — ĐẠT" || echo 
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và Trivy CLI | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Trivy verify | 15 phút | 15 phút |
-| L4. Bước 2: Trivy scanning & filter | 25 phút | 25 phút |
-| L5. Bước 3: Dockerfile vulnerable test | 25 phút | 25 phút |
-| L6. Bước 4: Dockerfile hardened CKS | 25 phút | 25 phút |
-| L7. Bước 5: Deploy Hardened Pod | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -796,197 +763,319 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cú pháp lệnh CLI Trivy chuẩn để quét ảnh <code>nginx:1.19</code> và chỉ hiển thị các lỗ hổng mức <code>CRITICAL</code> đã có bản vá sửa lỗi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Quét lỗ hổng ảnh container thực thi nguyên tắc Shift-Left Security, tự động soi chiếu các lớp layer của ảnh container với cơ sở dữ liệu lỗ hổng quốc tế (CVEs) để phát hiện và ngăn chặn các mã độc hại trước khi ảnh được đẩy lên kho chứa hoặc triển khai vào cụm Production.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>trivy image --severity CRITICAL --ignore-unfixed nginx:1.19</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai cú pháp lệnh trivy image.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng severity nhưng quên cờ <code>--ignore-unfixed</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% cú pháp lệnh Trivy lọc <code>--severity CRITICAL</code> và <code>--ignore-unfixed</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--ignore-unfixed</code> đóng vai trò gì? — Bỏ qua các lỗ hổng CVEs chưa có bản sửa lỗi từ phía nhà sản xuất OS để tránh làm báo cáo bị nhiễu).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu vai trò của quét ảnh container.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được quét CVE nhưng chưa làm rõ nguyên tắc Shift-Left Security.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò của quét ảnh container trong chuỗi cung ứng phần mềm CKS.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Công cụ quét lỗ hổng ảnh container mã nguồn mở chính thức được dùng trong bài thi CKS là gì? — Công cụ Trivy của Aqua Security).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cờ thuộc tính nào trong lệnh Trivy giúp tự động trả về lỗi (exit code 1) để đánh sập CI/CD pipeline khi phát hiện lỗ hổng <code>CRITICAL</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>--exit-code 1</code> (ví dụ <code>trivy image --exit-code 1 --severity CRITICAL <image></code>). Nếu phát hiện lỗ hổng mức <code>CRITICAL</code>, Trivy sẽ dừng với exit code 1 làm bước build CI/CD bị thất bại.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ exit-code trong CI/CD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sập build nhưng thiếu cờ <code>--exit-code 1</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò cờ <code>--exit-code 1</code> tự động hóa rào chắn an ninh trong CI/CD pipeline.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn Trivy xuất kết quả định dạng JSON cho script CI/CD trích xuất thì dùng cờ gì? — Thêm cờ <code>--format json</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao việc sử dụng ảnh cơ sở Distroless (<code>gcr.io/distroless/*</code>) lại giúp giảm đến 90% số lượng lỗ hổng CVEs so với ảnh cơ sở Ubuntu hay Debian?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì ảnh Distroless được thiết kế tối giản tuyệt đối, chỉ chứa duy nhất ứng dụng và các thư viện phụ thuộc của nó; hoàn toàn loại bỏ hệ điều hành shell (<code>/bin/sh</code>), trình quản lý gói (<code>apt</code>/<code>dpkg</code>) và các tiện ích hệ thống thừa, từ đó triệt tiêu hầu hết các lỗ hổng CVEs hệ điều hành.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết đặc điểm ảnh Distroless.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được ảnh nhẹ hơn nhưng chưa làm rõ việc loại bỏ OS shell và utilities.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo lý do Distroless triệt tiêu 90% lỗ hổng CVEs.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu kẻ tấn công chiếm được container chạy Distroless thì chúng có dùng được lệnh <code>sh</code> hay <code>bash</code> không? — Không được, vì Distroless hoàn toàn không chứa file nhị phân <code>sh</code> hay <code>bash</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Kỹ thuật Multi-stage Build trong Dockerfile hoạt động ra sao và mang lại lợi ích bảo mật gì cho ảnh container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Multi-stage Build sử dụng nhiều chỉ thị <code>FROM</code> trong cùng một Dockerfile: Stage 1 (Builder) dùng ảnh đầy đủ công cụ để biên dịch mã nguồn; Stage 2 (Runtime) chỉ copy sản phẩm binary đã biên dịch sang một ảnh cơ sở siêu sạch (như Distroless hay Alpine). Lợi ích: Loại bỏ toàn bộ công cụ biên dịch (<code>gcc</code>, <code>make</code>) khỏi ảnh chạy Production.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết Multi-stage build.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tách 2 stage nhưng chưa rõ lợi ích gỡ bỏ compiler ở runtime.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế Multi-stage build và lợi ích bảo mật triệt tiêu bề mặt tấn công.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp copy file binary từ stage <code>builder</code> sang stage <code>runtime</code> là gì? — <code>COPY --from=builder /app/myapp /app/myapp</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao chỉ thị <code>USER 10001</code> lại là yêu cầu bắt buộc trong tệp Dockerfile chuẩn CKS Hardening?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Mặc định nếu không khai báo <code>USER</code>, container sẽ chạy dưới quyền <code>root</code> (UID 0). Khai báo <code>USER 10001</code> ép buộc container vận hành dưới quyền người dùng phi root thường, ngăn chặn nguy cơ kẻ tấn công thực hiện kỹ thuật thoát rào chắn container (Container Breakout) chiếm quyền root của Host Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tác dụng chỉ thị USER.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cấm root nhưng chưa rõ nguy cơ Container Breakout chiếm Host Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác vai trò chỉ thị <code>USER 10001</code> triệt tiêu nguy cơ chiếm Host Node.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao chỉ thị <code>WORKDIR</code> nên được khai báo TRƯỚC chỉ thị <code>USER 10001</code> trong Dockerfile? — Để Docker daemon tạo thư mục WORKDIR với quyền root trước, tránh lỗi Permission Denied cho user thường).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cách đối soát kết quả quét lỗ hổng Trivy để tìm đúng phiên bản gói thư viện chứa bản vá để nâng cấp là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Quan sát bảng kết quả Trivy tại hai cột: <code>INSTALLED</code> (phiên bản gói thư viện hiện tại đang dính lỗi) và <code>FIXED VERSION</code> (phiên bản đã được sửa lỗi). Sau đó cập nhật chỉ thị trong Dockerfile hoặc <code>package.json</code> nâng cấp gói thư viện lên phiên bản <code>>= FIXED VERSION</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách đọc bảng kết quả Trivy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xem phiên bản nhưng chưa rõ 2 cột INSTALLED và FIXED VERSION.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy trình đọc cột FIXED VERSION để nâng cấp bản vá.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cột <code>FIXED VERSION</code> bị bỏ trống thì nghĩa là gì? — Nghĩa là lỗ hổng đó chưa có bản vá chính thức từ nhà sản xuất).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp Dockerfile chuẩn CKS Hardening hoàn chỉnh cho một ứng dụng viết bằng Go/NodeJS gồm các thành phần cốt lõi nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```dockerfile</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"># Stage 1: Build</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">FROM golang:1.21-alpine AS builder</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">WORKDIR /app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">COPY . .</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">RUN CGO_ENABLED=0 go build -o app .</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"># Stage 2: Runtime</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">FROM gcr.io/distroless/static-debian11</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">WORKDIR /app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">COPY --chown=10001:10001 --from=builder /app/app .</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">USER 10001</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">CMD ["./app"]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết Dockerfile 1 stage không có USER hay Distroless.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Multi-stage nhưng thiếu USER 10001 hoặc COPY --chown.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Dockerfile CKS Hardening.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--chown=10001:10001</code> trong chỉ thị COPY đóng vai trò gì? — Gán quyền sở hữu file cho user 10001 để tránh lỗi Permission Denied).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Khái niệm SBOM (Software Bill of Materials) trong bảo mật chuỗi cung ứng CKS là gì và Trivy hỗ trợ xuất SBOM thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">SBOM là bản danh mục thống kê toàn bộ các thành phần phần mềm, thư viện và phụ thuộc có trong ảnh container. Trivy hỗ trợ xuất SBOM theo chuẩn quốc tế SPDX/CycloneDX qua lệnh <code>trivy image --format spdx-json <image></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm SBOM.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được danh mục thư viện nhưng chưa rõ lệnh Trivy xuất SPDX/CycloneDX.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác khái niệm SBOM và lệnh Trivy xuất SBOM.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích của SBOM trong quản lý an ninh doanh nghiệp là gì? — Cho phép nhanh chóng tra cứu xem doanh nghiệp có bị ảnh hưởng khi xuất hiện 1 lỗ hổng CVE mới công bố không).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác nhau giữa việc quét ảnh container tĩnh (Static Image Scanning) vs Giám sát thời gian thực (Runtime Security) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Quét ảnh tĩnh (Trivy, Quay) thực hiện trước khi triển khai (CI/CD) để phát hiện lỗ hổng đính kèm trong file ảnh. Giám sát thời gian thực (Falco, Sysdig) thực hiện khi container ĐANG CHẠY trên cụm để phát hiện các hành vi bất thường (như gọi bash shell, sửa file hệ thống).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa Static Scanning và Runtime Security.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được trước và sau nhưng chưa rõ công cụ Trivy vs Falco.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ranh giới nhiệm vụ giữa Static Image Scanning vs Runtime Security.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ nào nổi tiếng nhất trong CKS về giám sát hành vi thời gian thực at Runtime? — Công cụ Falco của Sysdig).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao không nên cài đặt trình quản lý gói (<code>apt-get</code>, <code>apk</code>) hoặc công cụ <code>curl</code>/<code>wget</code> trong ảnh container ở môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì nếu hacker chiếm được container qua lỗ hổng ứng dụng, chúng sẽ dùng <code>curl</code>/<code>wget</code> để tải mã độc (malware/rootkit) từ bên ngoài về và dùng <code>apt</code>/<code>apk</code> để cài đặt các công cụ tấn công leo thang ngay trên container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng cài curl trong container Production là vô hại.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được hacker tải mã độc nhưng thiếu việc triệt tiêu công cụ tải/biên dịch.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo lý do loại bỏ apt/curl ở môi trường Production.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu ứng dụng bắt buộc phải tải dữ liệu từ ngoài thì làm thế nào mà không cần curl? — Sử dụng trực tiếp thư viện HTTP Client có sẵn trong mã nguồn ngôn ngữ lập trình).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để gia cố tệp Dockerfile chuẩn CKS Hardening là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Áp dụng Multi-stage Build tách biệt giai đoạn build và runtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng ảnh cơ sở tối giản (Distroless hay Alpine) loại bỏ OS shell.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bắt buộc khai báo <code>USER 10001</code> chạy dưới quyền phi root.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Quét kiểm tra bằng <code>trivy image --severity CRITICAL --ignore-unfixed</code> đảm bảo 0 CVE Critical.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Dockerfile Hardening CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 49 là gì? — Học về <code>Sysdig và Falco Phát hiện Đe dọa CKS: Runtime Security & System Call Auditing</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Cú pháp lệnh CLI Trivy chuẩn để quét ảnh `nginx:1.19` và chỉ hiển thị các lỗ hổng mức `CRITICAL` đã có bản vá sửa lỗi là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `trivy image --severity CRITICAL --ignore-unfixed nginx:1.19`.
+1. <b style="color: var(--accent-primary);">"Thực thi nguyên tắc Shift-Left Security bằng cách quét lỗ hổng ảnh container qua Trivy CLI ngay trong CI/CD pipeline."</b>
+2. <b style="color: var(--accent-primary);">"Sử dụng cờ <code>--exit-code 1 --severity CRITICAL</code> để tự động đánh sập pipeline nếu phát hiện ảnh dính lỗ hổng nguy cấp."</b>
+3. <b style="color: var(--accent-primary);">"Gia cố Dockerfile bằng Multi-stage build kết hợp Distroless base image để giảm 90% dung lượng và bề mặt tấn công."</b>
+4. <b style="color: var(--accent-primary);">"Luôn khai báo chỉ thị <code>USER 10001</code> ở giai đoạn runtime để đảm bảo container KHÔNG BAO GIỜ chạy dưới quyền root."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai cú pháp lệnh trivy image.
-- 1đ: Nêu đúng severity nhưng quên cờ `--ignore-unfixed`.
-- 3đ: Trình bày chính xác 100% cú pháp lệnh Trivy lọc `--severity CRITICAL` và `--ignore-unfixed`.
-
-**Câu hỏi đào sâu:** (Cờ `--ignore-unfixed` đóng vai trò gì? — Bỏ qua các lỗ hổng CVEs chưa có bản sửa lỗi từ phía nhà sản xuất OS để tránh làm báo cáo bị nhiễu).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Cờ thuộc tính nào trong lệnh Trivy giúp tự động trả về lỗi (exit code 1) để đánh sập CI/CD pipeline khi phát hiện lỗ hổng `CRITICAL`?
-
-**Đáp án chuẩn:** Cờ `--exit-code 1` (ví dụ `trivy image --exit-code 1 --severity CRITICAL <image>`). Nếu phát hiện lỗ hổng mức `CRITICAL`, Trivy sẽ dừng với exit code 1 làm bước build CI/CD bị thất bại.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ exit-code trong CI/CD.
-- 1đ: Nêu được sập build nhưng thiếu cờ `--exit-code 1`.
-- 3đ: Phân tích chuẩn xác vai trò cờ `--exit-code 1` tự động hóa rào chắn an ninh trong CI/CD pipeline.
-
-**Câu hỏi đào sâu:** (Nếu muốn Trivy xuất kết quả định dạng JSON cho script CI/CD trích xuất thì dùng cờ gì? — Thêm cờ `--format json`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Tại sao việc sử dụng ảnh cơ sở Distroless (`gcr.io/distroless/*`) lại giúp giảm đến 90% số lượng lỗ hổng CVEs so với ảnh cơ sở Ubuntu hay Debian?
-
-**Đáp án chuẩn:** Vì ảnh Distroless được thiết kế tối giản tuyệt đối, chỉ chứa duy nhất ứng dụng và các thư viện phụ thuộc của nó; hoàn toàn loại bỏ hệ điều hành shell (`/bin/sh`), trình quản lý gói (`apt`/`dpkg`) và các tiện ích hệ thống thừa, từ đó triệt tiêu hầu hết các lỗ hổng CVEs hệ điều hành.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết đặc điểm ảnh Distroless.
-- 1đ: Nêu được ảnh nhẹ hơn nhưng chưa làm rõ việc loại bỏ OS shell và utilities.
-- 3đ: Phân tích thấu đáo lý do Distroless triệt tiêu 90% lỗ hổng CVEs.
-
-**Câu hỏi đào sâu:** (Nếu kẻ tấn công chiếm được container chạy Distroless thì chúng có dùng được lệnh `sh` hay `bash` không? — Không được, vì Distroless hoàn toàn không chứa file nhị phân `sh` hay `bash`).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Kỹ thuật Multi-stage Build trong Dockerfile hoạt động ra sao và mang lại lợi ích bảo mật gì cho ảnh container?
-
-**Đáp án chuẩn:** Multi-stage Build sử dụng nhiều chỉ thị `FROM` trong cùng một Dockerfile: Stage 1 (Builder) dùng ảnh đầy đủ công cụ để biên dịch mã nguồn; Stage 2 (Runtime) chỉ copy sản phẩm binary đã biên dịch sang một ảnh cơ sở siêu sạch (như Distroless hay Alpine). Lợi ích: Loại bỏ toàn bộ công cụ biên dịch (`gcc`, `make`) khỏi ảnh chạy Production.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết Multi-stage build.
-- 1đ: Nêu được tách 2 stage nhưng chưa rõ lợi ích gỡ bỏ compiler ở runtime.
-- 3đ: Phân tích thấu đáo cơ chế Multi-stage build và lợi ích bảo mật triệt tiêu bề mặt tấn công.
-
-**Câu hỏi đào sâu:** (Cú pháp copy file binary từ stage `builder` sang stage `runtime` là gì? — `COPY --from=builder /app/myapp /app/myapp`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Tại sao chỉ thị `USER 10001` lại là yêu cầu bắt buộc trong tệp Dockerfile chuẩn CKS Hardening?
-
-**Đáp án chuẩn:** Mặc định nếu không khai báo `USER`, container sẽ chạy dưới quyền `root` (UID 0). Khai báo `USER 10001` ép buộc container vận hành dưới quyền người dùng phi root thường, ngăn chặn nguy cơ kẻ tấn công thực hiện kỹ thuật thoát rào chắn container (Container Breakout) chiếm quyền root của Host Node.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tác dụng chỉ thị USER.
-- 1đ: Nêu được cấm root nhưng chưa rõ nguy cơ Container Breakout chiếm Host Node.
-- 3đ: Trình bày chuẩn xác vai trò chỉ thị `USER 10001` triệt tiêu nguy cơ chiếm Host Node.
-
-**Câu hỏi đào sâu:** (Tại sao chỉ thị `WORKDIR` nên được khai báo TRƯỚC chỉ thị `USER 10001` trong Dockerfile? — Để Docker daemon tạo thư mục WORKDIR với quyền root trước, tránh lỗi Permission Denied cho user thường).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cách đối soát kết quả quét lỗ hổng Trivy để tìm đúng phiên bản gói thư viện chứa bản vá để nâng cấp là gì?
-
-**Đáp án chuẩn:** Quan sát bảng kết quả Trivy tại hai cột: `INSTALLED` (phiên bản gói thư viện hiện tại đang dính lỗi) và `FIXED VERSION` (phiên bản đã được sửa lỗi). Sau đó cập nhật chỉ thị trong Dockerfile hoặc `package.json` nâng cấp gói thư viện lên phiên bản `>= FIXED VERSION`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách đọc bảng kết quả Trivy.
-- 1đ: Nêu được xem phiên bản nhưng chưa rõ 2 cột INSTALLED và FIXED VERSION.
-- 3đ: Phân tích chuẩn xác quy trình đọc cột FIXED VERSION để nâng cấp bản vá.
-
-**Câu hỏi đào sâu:** (Nếu cột `FIXED VERSION` bị bỏ trống thì nghĩa là gì? — Nghĩa là lỗ hổng đó chưa có bản vá chính thức từ nhà sản xuất).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp Dockerfile chuẩn CKS Hardening hoàn chỉnh cho một ứng dụng viết bằng Go/NodeJS gồm các thành phần cốt lõi nào?
-
-**Đáp án chuẩn:**
-```dockerfile
-# Stage 1: Build
-FROM golang:1.21-alpine AS builder
-WORKDIR /app
-COPY . .
-RUN CGO_ENABLED=0 go build -o app .
-
-# Stage 2: Runtime
-FROM gcr.io/distroless/static-debian11
-WORKDIR /app
-COPY --chown=10001:10001 --from=builder /app/app .
-USER 10001
-CMD ["./app"]
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết Dockerfile 1 stage không có USER hay Distroless.
-- 1đ: Nêu được Multi-stage nhưng thiếu USER 10001 hoặc COPY --chown.
-- 3đ: Viết chuẩn xác 100% bản kê khai Dockerfile CKS Hardening.
-
-**Câu hỏi đào sâu:** (Cờ `--chown=10001:10001` trong chỉ thị COPY đóng vai trò gì? — Gán quyền sở hữu file cho user 10001 để tránh lỗi Permission Denied).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Khái niệm SBOM (Software Bill of Materials) trong bảo mật chuỗi cung ứng CKS là gì và Trivy hỗ trợ xuất SBOM thế nào?
-
-**Đáp án chuẩn:** SBOM là bản danh mục thống kê toàn bộ các thành phần phần mềm, thư viện và phụ thuộc có trong ảnh container. Trivy hỗ trợ xuất SBOM theo chuẩn quốc tế SPDX/CycloneDX qua lệnh `trivy image --format spdx-json <image>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết khái niệm SBOM.
-- 1đ: Nêu được danh mục thư viện nhưng chưa rõ lệnh Trivy xuất SPDX/CycloneDX.
-- 3đ: Phân tích chuẩn xác khái niệm SBOM và lệnh Trivy xuất SBOM.
-
-**Câu hỏi đào sâu:** (Lợi ích của SBOM trong quản lý an ninh doanh nghiệp là gì? — Cho phép nhanh chóng tra cứu xem doanh nghiệp có bị ảnh hưởng khi xuất hiện 1 lỗ hổng CVE mới công bố không).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Sự khác nhau giữa việc quét ảnh container tĩnh (Static Image Scanning) vs Giám sát thời gian thực (Runtime Security) là gì?
-
-**Đáp án chuẩn:** Quét ảnh tĩnh (Trivy, Quay) thực hiện trước khi triển khai (CI/CD) để phát hiện lỗ hổng đính kèm trong file ảnh. Giám sát thời gian thực (Falco, Sysdig) thực hiện khi container ĐANG CHẠY trên cụm để phát hiện các hành vi bất thường (như gọi bash shell, sửa file hệ thống).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa Static Scanning và Runtime Security.
-- 1đ: Nêu được trước và sau nhưng chưa rõ công cụ Trivy vs Falco.
-- 3đ: Phân tích chuẩn xác ranh giới nhiệm vụ giữa Static Image Scanning vs Runtime Security.
-
-**Câu hỏi đào sâu:** (Công cụ nào nổi tiếng nhất trong CKS về giám sát hành vi thời gian thực at Runtime? — Công cụ Falco của Sysdig).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Tại sao không nên cài đặt trình quản lý gói (`apt-get`, `apk`) hoặc công cụ `curl`/`wget` trong ảnh container ở môi trường Production?
-
-**Đáp án chuẩn:** Vì nếu hacker chiếm được container qua lỗ hổng ứng dụng, chúng sẽ dùng `curl`/`wget` để tải mã độc (malware/rootkit) từ bên ngoài về và dùng `apt`/`apk` để cài đặt các công cụ tấn công leo thang ngay trên container.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng cài curl trong container Production là vô hại.
-- 1đ: Nêu được hacker tải mã độc nhưng thiếu việc triệt tiêu công cụ tải/biên dịch.
-- 3đ: Phân tích thấu đáo lý do loại bỏ apt/curl ở môi trường Production.
-
-**Câu hỏi đào sâu:** (Nếu ứng dụng bắt buộc phải tải dữ liệu từ ngoài thì làm thế nào mà không cần curl? — Sử dụng trực tiếp thư viện HTTP Client có sẵn trong mã nguồn ngôn ngữ lập trình).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để gia cố tệp Dockerfile chuẩn CKS Hardening là gì?
-
-**Đáp án chuẩn:**
-1. Áp dụng Multi-stage Build tách biệt giai đoạn build và runtime.
-2. Dùng ảnh cơ sở tối giản (Distroless hay Alpine) loại bỏ OS shell.
-3. Bắt buộc khai báo `USER 10001` chạy dưới quyền phi root.
-4. Quét kiểm tra bằng `trivy image --severity CRITICAL --ignore-unfixed` đảm bảo 0 CVE Critical.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Dockerfile Hardening CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 49 là gì? — Học về `Sysdig và Falco Phát hiện Đe dọa CKS: Runtime Security & System Call Auditing`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -996,28 +1085,6 @@ CMD ["./app"]
 2. **"Sử dụng cờ `--exit-code 1 --severity CRITICAL` để tự động đánh sập pipeline nếu phát hiện ảnh dính lỗ hổng nguy cấp."**
 3. **"Gia cố Dockerfile bằng Multi-stage build kết hợp Distroless base image để giảm 90% dung lượng và bề mặt tấn công."**
 4. **"Luôn khai báo chỉ thị `USER 10001` ở giai đoạn runtime để đảm bảo container KHÔNG BAO GIỜ chạy dưới quyền root."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Supply Chain Security |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kỹ thuật Trivy Scanning & Dockerfile Hardening |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết script Bash tự động quét tất cả các tệp Dockerfile trong repository và cảnh báo nếu thiếu chỉ thị `USER`.
-- **BTVN 2:** Thực hành chuyển đổi một ứng dụng Python Django từ ảnh `python:3.9` sang `gcr.io/distroless/python3`.
-- **BTVN 3:** So sánh điểm khác biệt về cơ chế phát hiện CVE giữa Trivy, Clair (Quay.io) và Anchore Grype.
-- **BTVN 4 (Chuẩn bị cho Buổi 49 — Sysdig và Falco Phát hiện Đe dọa CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Giám sát an ninh thời gian thực (Runtime Threat Detection) ở cấp độ CKS khác gì so với quét lỗ hổng ảnh container trước khi triển khai?
-  2. Công cụ `Falco` của Sysdig hoạt động ra sao ở cấp độ Linux Kernel System Calls (`syscalls`)?
-  3. Cấu trúc một tệp luật Falco Rule (`rule`, `desc`, `condition`, `output`, `priority`) gồm những trường thuộc tính nào?
 
 ---
 
@@ -1232,14 +1299,15 @@ USER 10001
 CMD ["./binary"]
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 04] Giám Sát & Phát Hiện Mối Đe Dọa Thời Gian Chạy: Sysdig, Falco Engine & System Call Auditing](cks-04-04-sysdig-falco-phat-hien-de-doa.html).
+
 {% endraw %}

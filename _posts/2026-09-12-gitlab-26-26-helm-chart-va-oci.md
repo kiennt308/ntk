@@ -187,9 +187,11 @@ graph TD
 <span class="badge badge--rose">🕒 06:35 AM</span> Một kỹ sư sửa đổi cấu hình Port trong `templates/service.yaml` nhưng quên tăng số `version` trong `Chart.yaml` (vẫn giữ nguyên `1.0.0`). Khi chạy pipeline, bản build mới bị ghi đè ngầm hoặc bị ArgoCD bỏ qua không đồng bộ, dẫn đến toàn bộ hệ thống frontend không thể kết nối tới backend sau khi release.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Hệ thống Frontend mất kết nối hoàn toàn tới Microservices Backend, gây lỗi 502 Bad Gateway:
 
 ```text
+
+Hệ thống Frontend mất kết nối hoàn toàn tới Microservices Backend, gây lỗi 502 Bad Gateway:
+
 $ helm upgrade --install core-service oci://registry.corp.internal/charts/core-service --version 1.0.0
 Release "core-service" has been upgraded. Happy Helming!
 $ kubectl get svc core-service -o jsonpath='{.spec.ports[0].port}'

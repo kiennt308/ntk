@@ -44,7 +44,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 > **Một Pipeline CD hiện đại trên AWS bắt buộc phải kết hợp xác thực Keyless OIDC (loại bỏ IAM User Keys), đẩy image vào Amazon ECR, và cập nhật tài nguyên đích (ECS Service / EKS Deployment / Lambda Function) với cơ chế Rolling Update đảm bảo Zero-Downtime.**
 
-```
+```text
        QUY TRÌNH PHÂN PHỐI ỨNG DỤNG LÊN AWS (ECS, EKS, LAMBDA)
 
   [ GitLab CI Runner ] ── 1. OIDC AssumeRole ──► [ AWS IAM STS Session ]
@@ -226,7 +226,7 @@ deploy_to_eks:
 
 > **Bối Cảnh**: Một kỹ sư cập nhật biến môi trường bí mật trong Task Definition mới của ECS Fargate. Sau khi pipeline kích hoạt `aws ecs update-service`, service liên tục rơi vào vòng lặp tạo Task mới rồi Task bị sập (Task stopped reason: `Essential container in task exited`). Toàn bộ quá trình rollout bị nghẽn trong 2 giờ và cạn kiệt tài nguyên IP của Subnet.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -265,7 +265,7 @@ deploy_to_eks:
 - Viết pipeline GitLab CI tự động build và deploy lên AWS ECS Service.
 - Triển khai cập nhật hàm Serverless Lambda và kiểm tra tính sẵn sàng.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB DEPLOY AWS TRÊN GITLAB CI
 
      [ Mã Nguồn Go Microservice ]
@@ -601,7 +601,7 @@ curl -i http://alb.production.internal/
 
 ### 7.2. Sơ Đồ Tư Duy Triển Khai Ứng Dụng Lên AWS (Mindmap)
 
-```
+```text
                        PHÂN PHỐI ỨNG DỤNG LÊN AMAZON WEB SERVICES
                                           │
         ┌─────────────────────────────────┼─────────────────────────────────┐

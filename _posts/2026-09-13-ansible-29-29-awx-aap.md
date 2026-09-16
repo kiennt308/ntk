@@ -643,37 +643,12 @@ fi
 </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Nền Tảng Quản Trị Tập Trung:** Loại bỏ thói quen chạy CLI cá nhân phân tán, chuyển đổi sang AWX / AAP.
-2. **Execution Environment Chuẩn Hóa:** Đóng gói toàn bộ dependencies vào OCI Container Image để tránh xung đột thư viện.
-3. **Bảo Mật Credentials Tuyệt Đối:** Mã hóa AES-256 thông tin xác thực, không lưu vết secret trong mã nguồn.
-4. **Quy Trình Tự Động Hóa Với Workflow:** Kết hợp đa Job Templates phân nhánh theo `On Success` và `On Failure`.
-5. **Đạt Idempotency Tuyệt Đối:** Mọi kịch bản thi hành qua AWX ở lần chạy thứ hai đều phải đạt `changed=0`.
-
-```mermaid
-mindmap
-  root((AWX & AAP Enterprise))
-    Kien Truc & Moi Truong
-      Control Plane Web UI va REST API
-      Execution Environments EE Container
-      AES-256 Encrypted Credentials
-      Project Git Sync scm_update_on_launch
-    Tu Dong Hoa & Quy Trinh
-      Job Templates launch prompt
-      Workflow Job Templates On Success Failure
-      GitLab GitHub Webhook Triggers
-      Event-Driven Ansible EDA Rulebooks
-    Kiem Soat & An Toan
-      RBAC Admin Execute Read
-      Centralized Audit Logging
-      PLAY RECAP changed=0 o Lan 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 30: Đồ Án Capstone: Xây Dựng Hệ Thống Tự Động Hóa Hạ Tầng Doanh Nghiệp Đa Tầng (Load Balancer, Web, DB, Security) End-to-End](ansible-30-30-capstone-tu-dong-hoa-da-tang.html) — Đỉnh cao của khóa học, hợp nhất toàn bộ 29 bài học vào một đồ án Capstone tự động hóa hạ tầng đa tầng hoàn chỉnh chuẩn Enterprise!
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 30] Đồ Án Capstone: Xây Dựng Hệ Thống Tự Động Hóa Hạ Tầng Doanh Nghiệp Đa Tầng (Load Balancer, Web, DB, Security) End-to-End](ansible-30-30-capstone-tu-dong-hoa-da-tang.html).
 
 {% endraw %}

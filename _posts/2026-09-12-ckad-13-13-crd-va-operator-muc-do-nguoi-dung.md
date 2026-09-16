@@ -478,24 +478,6 @@ Quy tắc bắt buộc phải có dạng <code><plural>.<group></code> (ví dụ
 | Custom Resources Documentation | `https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/` | Tài liệu chuẩn K8s Custom Resources |
 | Operator Pattern Documentation | `https://kubernetes.io/docs/concepts/extend-kubernetes/operator/` | Tài liệu chuẩn K8s Operator Pattern |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. CRD: Mở rộng API Server | 12 phút | 12 phút |
-| §5. Custom Resource và Validation | 12 phút | 12 phút |
-| §6. Operator Pattern & Reconciliation | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -831,26 +813,11 @@ test ! -f /tmp/crd-appconfig.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CH
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & CRD Namespaced | 15 phút | 15 phút |
-| L4. Bước 2: Custom Resource thực thể | 25 phút | 25 phút |
-| L5. Bước 3: OpenAPI Validation Test | 25 phút | 25 phút |
-| L6. Bước 4: CRD & CR Cluster-scoped | 25 phút | 25 phút |
-| L7. Bước 5: Thao tác CLI nâng cao | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -858,182 +825,306 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Mô hình <code>Operator Pattern</code> trong Kubernetes hoạt động như thế nào để đóng gói tri thức vận hành ứng dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>CustomResourceDefinition</code> (CRD) là bản thiết kế mở rộng API Server nhằm đăng ký một Kind loại tài nguyên mới (ví dụ kind <code>AppConfig</code>). <code>Custom Resource</code> (CR) là một đối tượng thực thể chứa dữ liệu cấu hình cụ thể được tạo ra dựa trên bản thiết kế CRD đó.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Operator Pattern kết hợp một Custom Resource (CRD) với một Custom Controller. Custom Controller liên tục chạy vòng lặp <code>Reconciliation Loop</code> để theo dõi các sự thay đổi của CR và tự động thực thi các tác vụ vận hành phức tạp (như Backup, Restore, Failover Cluster, Upgrade) hệt như một kỹ sư SRE thực thụ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết mô hình Operator Pattern.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tự động hóa nhưng chưa làm rõ sự phối hợp giữa CRD và Custom Controller.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế đóng gói tri thức SRE qua CRD + Custom Controller và Reconciliation Loop.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nêu tên 2 Operator nổi tiếng được sử dụng rộng rãi trên thực tế? — Prometheus Operator và cert-manager Operator).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được CRD và CR.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được CRD là thiết kế, CR là thực thể nhưng chưa làm rõ cơ chế đăng ký API Server.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo khái niệm bản thiết kế đăng ký API Server (CRD) vs đối tượng thực thể (CR).</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tương quan giữa CRD và CR giống như tương quan giữa lớp Class và đối tượng Object thế nào trong lập trình OOP? — CRD giống như Class định nghĩa kiểu dữ liệu; CR giống như Object instance cụ thể).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cơ chế <code>Reconciliation Loop</code> trong Custom Controller của Operator hoạt động ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Controller liên tục so sánh trạng thái mong muốn (<code>spec</code> khai báo trong Custom Resource) với trạng thái thực tế (<code>status</code> đang chạy trên cụm). Nếu có sự lệch pha, Controller tự động thực hiện các hành động khắc phục để đưa trạng thái thực tế về đúng bằng trạng thái mong muốn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được Reconciliation Loop.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được so sánh trạng thái nhưng chưa rõ Desired State vs Actual State.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo việc đối sánh <code>spec</code> (Desired State) vs <code>status</code> (Actual State) và cơ chế tự chữa lành.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu người dùng cố tình xóa 1 Pod do Operator quản lý thì Reconciliation Loop sẽ làm gì? — Controller phát hiện thiếu Pod và tự động tạo lại Pod mới).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Vai trò của thuộc tính <code>schema.openAPIV3Schema</code> trong tệp YAML định nghĩa CRD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thuộc tính này định nghĩa quy tắc kiểm tra cú pháp (Validation) cho các Custom Resource. Khi người dùng gõ <code>kubectl apply -f cr.yaml</code>, API Server sẽ dùng schema này để kiểm tra kiểu dữ liệu (integer, string, boolean) và các trường bắt buộc (<code>required</code>), từ chối tệp nếu vi phạm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết vai trò của openAPIV3Schema.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kiểm tra dữ liệu nhưng chưa làm rõ cơ chế validation tại API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế chặn dữ liệu rác tại vòng API Server trước khi ghi vào etcd.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu một trường khai báo <code>type: integer</code> nhưng tệp CR nhập vào chuỗi <code>"3"</code> thì API Server phản ứng thế nào? — Trả về lỗi validation <code>must be of type integer</code> và từ chối tạo đối tượng).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Điều gì nguy hiểm xảy ra khi bạn thực thi lệnh xóa một CRD (<code>kubectl delete crd <name></code>) trên cụm Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kubernetes sẽ tự động xóa sạch TOÀN BỘ các Custom Resource (CR) thực thể thuộc CRD đó trên 100% các Namespace. Đây là hành động cực kỳ nguy hiểm có thể làm mất toàn bộ dữ liệu cấu hình của dự án.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng xóa CRD không ảnh hưởng tới các CR đã tạo.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xóa CR nhưng chưa nhấn mạnh tính chất xóa dây chuyền toàn cụm (Cascading Delete).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo nguy cơ mất dữ liệu dây chuyền trên toàn bộ các Namespace khi xóa CRD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để phòng tránh việc xóa nhầm CRD trên Production? — Phân quyền RBAC hạn chế quyền delete crd và áp dụng cờ bảo vệ deletion protection).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu lệnh CLI nào dùng để kiểm tra danh sách tất cả các loại tài nguyên API (bao gồm các CRD mới) cùng tên viết tắt shortNames trên cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl api-resources</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm với <code>kubectl get crd</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng lệnh nhưng không giải thích được vai trò tra cứu shortNames.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>kubectl api-resources</code> và vai trò tra cứu kind, group, shortNames.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu CRD khai báo <code>shortNames: [ac]</code> thì câu lệnh gõ nhanh để xem danh sách Custom Resource là gì? — Lệnh <code>kubectl get ac</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự khác nhau giữa trường <code>scope: Namespaced</code> và <code>scope: Cluster</code> trong tệp YAML CRD spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>scope: Namespaced</code> quy định các Custom Resource tạo ra sẽ thuộc về từng Namespace độc lập (phải chỉ định <code>-n <namespace></code>). <code>scope: Cluster</code> quy định các Custom Resource nằm ở phạm vi toàn cụm (không thuộc Namespace nào, hệt như Node hay PersistentVolume).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 giá trị scope.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái trong Namespace, 1 cái toàn cụm nhưng chưa rõ khai báo metadata.namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế phân vùng tài nguyên của scope Namespaced vs Cluster.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu CRD có <code>scope: Cluster</code> nhưng tệp CR YAML lại khai báo <code>metadata.namespace: prod</code> thì điều gì xảy ra? — API Server sẽ từ chối hoặc bỏ qua trường namespace).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp gõ lệnh CLI nào dùng để xem danh sách tất cả các tệp định nghĩa tài nguyên tùy biến <code>CustomResourceDefinition</code> trên cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl get crd</code> (hoặc <code>kubectl get customresourcedefinitions</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm với <code>kubectl api-resources</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng lệnh nhưng chưa phân biệt với việc get Custom Resource thực thể.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>kubectl get crd</code> xem danh sách các bản thiết kế CRD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh <code>kubectl get crd</code> có hiển thị các Custom Resource thực thể do lập trình viên tạo ra không? — Không, chỉ hiển thị danh sách các CRD spec).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Quy tắc bắt buộc về việc đặt tên <code>metadata.name</code> cho tệp YAML CRD spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tên <code>metadata.name</code> của CRD bắt buộc phải được ghép theo cú pháp <code><plural>.<group></code> (ví dụ nếu <code>plural: appconfigs</code> và <code>group: stable.example.com</code> thì tên CRD bắt buộc phải là <code>appconfigs.stable.example.com</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ quy tắc đặt tên CRD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được ghép tên nhưng nhầm thứ tự group.plural.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác công thức ghép tên <code><plural>.<group></code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đặt tên CRD sai quy tắc <code><plural>.<group></code> thì API Server báo lỗi gì? — Báo lỗi <code>metadata.name must be spec.names.plural + "." + spec.group</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp <code>apiVersion</code> của một tệp Custom Resource (CR) được xác định như thế nào dựa trên CRD spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cú pháp <code>apiVersion</code> của tệp CR được xác định bằng cách ghép trường <code>group</code> và trường <code>version</code> trong CRD spec theo dạng <code><group>/<version></code> (ví dụ <code>stable.example.com/v1</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm apiVersion của CR với apiVersion của CRD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được group và version nhưng nhầm dấu nối.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác công thức ghép <code>apiVersion</code> cho Custom Resource.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (apiVersion của tệp CRD spec chính chủ là gì? — Là <code>apiextensions.k8s.io/v1</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao các ứng dụng Stateful (như PostgreSQL, Kafka) lại rất cần đến Operator mà không thể chỉ dùng StatefulSet thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì StatefulSet chỉ hỗ trợ quản lý định danh Pod cố định và mount đĩa đính kèm. Nó không có tri thức nghiệp vụ để tự làm các việc phức tạp như: Replicate dữ liệu, bầu chọn Master mới khi sự cố, tự động backup đĩa định kỳ hay upgrade phiên bản Database mà không mất dữ liệu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng StatefulSet làm được mọi việc của Operator.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được StatefulSet thiếu tính năng nhưng chưa giải thích được tri thức nghiệp vụ tự động hóa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo các giới hạn của StatefulSet và lý do cần đến Operator để tự động hóa Domain Knowledge.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Vai trò của lập trình viên ứng dụng CKAD đối với các Operator là gì? — Chỉ cần đọc tài liệu và viết tệp YAML Custom Resource khai báo thông số cho Operator chạy).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 3 bước quy trình làm việc chuẩn của lập trình viên khi khai thác một Operator mới trên cụm là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tra cứu danh sách CRD và shortNames có sẵn qua <code>kubectl get crd</code> và <code>kubectl api-resources</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Biên soạn tệp YAML Custom Resource (CR) khai báo cấu hình mong muốn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Apply tệp CR và theo dõi trạng thái qua <code>kubectl get <cr></code> và <code>kubectl describe <cr></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đúng 3 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 3 bước quy trình khai thác Operator của lập trình viên.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 44 là gì? — Học về <code>Mạng cho người viết ứng dụng: Service và Ingress</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Mô hình `Operator Pattern` trong Kubernetes hoạt động như thế nào để đóng gói tri thức vận hành ứng dụng?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Operator Pattern kết hợp một Custom Resource (CRD) với một Custom Controller. Custom Controller liên tục chạy vòng lặp `Reconciliation Loop` để theo dõi các sự thay đổi của CR và tự động thực thi các tác vụ vận hành phức tạp (như Backup, Restore, Failover Cluster, Upgrade) hệt như một kỹ sư SRE thực thụ.
+1. <b style="color: var(--accent-primary);">"CRD mở rộng API Server bằng cách đăng ký Kind tài nguyên mới; Custom Resource là thực thể cấu hình cụ thể khởi tạo từ CRD."</b>
+2. <b style="color: var(--accent-primary);">"Operator Pattern đóng gói tri thức SRE bằng cách kết hợp CRD với Custom Controller chạy Reconciliation Loop tự động chữa lành."</b>
+3. <b style="color: var(--accent-primary);">"Dùng <code>kubectl api-resources</code> để tra cứu nhanh nhóm API và shortNames của toàn bộ các Custom Resource có trên cụm."</b>
+4. <b style="color: var(--accent-primary);">"Thao tác cẩn trọng tuyệt đối với lệnh <code>kubectl delete crd</code> vì nó sẽ xóa sạch dây chuyền toàn bộ Custom Resource thực thể trên mọi Namespace."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết mô hình Operator Pattern.
-- 1đ: Nêu được tự động hóa nhưng chưa làm rõ sự phối hợp giữa CRD và Custom Controller.
-- 3đ: Trình bày chuẩn xác cơ chế đóng gói tri thức SRE qua CRD + Custom Controller và Reconciliation Loop.
-
-**Câu hỏi đào sâu:** (Nêu tên 2 Operator nổi tiếng được sử dụng rộng rãi trên thực tế? — Prometheus Operator và cert-manager Operator).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Cơ chế `Reconciliation Loop` trong Custom Controller của Operator hoạt động ra sao?
-
-**Đáp án chuẩn:** Controller liên tục so sánh trạng thái mong muốn (`spec` khai báo trong Custom Resource) với trạng thái thực tế (`status` đang chạy trên cụm). Nếu có sự lệch pha, Controller tự động thực hiện các hành động khắc phục để đưa trạng thái thực tế về đúng bằng trạng thái mong muốn.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được Reconciliation Loop.
-- 1đ: Nêu được so sánh trạng thái nhưng chưa rõ Desired State vs Actual State.
-- 3đ: Phân tích thấu đáo việc đối sánh `spec` (Desired State) vs `status` (Actual State) và cơ chế tự chữa lành.
-
-**Câu hỏi đào sâu:** (Nếu người dùng cố tình xóa 1 Pod do Operator quản lý thì Reconciliation Loop sẽ làm gì? — Controller phát hiện thiếu Pod và tự động tạo lại Pod mới).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Vai trò của thuộc tính `schema.openAPIV3Schema` trong tệp YAML định nghĩa CRD là gì?
-
-**Đáp án chuẩn:** Thuộc tính này định nghĩa quy tắc kiểm tra cú pháp (Validation) cho các Custom Resource. Khi người dùng gõ `kubectl apply -f cr.yaml`, API Server sẽ dùng schema này để kiểm tra kiểu dữ liệu (integer, string, boolean) và các trường bắt buộc (`required`), từ chối tệp nếu vi phạm.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết vai trò của openAPIV3Schema.
-- 1đ: Nêu được kiểm tra dữ liệu nhưng chưa làm rõ cơ chế validation tại API Server.
-- 3đ: Phân tích chuẩn xác cơ chế chặn dữ liệu rác tại vòng API Server trước khi ghi vào etcd.
-
-**Câu hỏi đào sâu:** (Nếu một trường khai báo `type: integer` nhưng tệp CR nhập vào chuỗi `"3"` thì API Server phản ứng thế nào? — Trả về lỗi validation `must be of type integer` và từ chối tạo đối tượng).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Điều gì nguy hiểm xảy ra khi bạn thực thi lệnh xóa một CRD (`kubectl delete crd <name>`) trên cụm Kubernetes?
-
-**Đáp án chuẩn:** Kubernetes sẽ tự động xóa sạch TOÀN BỘ các Custom Resource (CR) thực thể thuộc CRD đó trên 100% các Namespace. Đây là hành động cực kỳ nguy hiểm có thể làm mất toàn bộ dữ liệu cấu hình của dự án.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng xóa CRD không ảnh hưởng tới các CR đã tạo.
-- 1đ: Nêu được xóa CR nhưng chưa nhấn mạnh tính chất xóa dây chuyền toàn cụm (Cascading Delete).
-- 3đ: Phân tích thấu đáo nguy cơ mất dữ liệu dây chuyền trên toàn bộ các Namespace khi xóa CRD.
-
-**Câu hỏi đào sâu:** (Làm thế nào để phòng tránh việc xóa nhầm CRD trên Production? — Phân quyền RBAC hạn chế quyền delete crd và áp dụng cờ bảo vệ deletion protection).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Câu lệnh CLI nào dùng để kiểm tra danh sách tất cả các loại tài nguyên API (bao gồm các CRD mới) cùng tên viết tắt shortNames trên cụm?
-
-**Đáp án chuẩn:** `kubectl api-resources`.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm với `kubectl get crd`.
-- 1đ: Nêu đúng lệnh nhưng không giải thích được vai trò tra cứu shortNames.
-- 3đ: Trình bày chính xác lệnh `kubectl api-resources` và vai trò tra cứu kind, group, shortNames.
-
-**Câu hỏi đào sâu:** (Nếu CRD khai báo `shortNames: [ac]` thì câu lệnh gõ nhanh để xem danh sách Custom Resource là gì? — Lệnh `kubectl get ac`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Sự khác nhau giữa trường `scope: Namespaced` và `scope: Cluster` trong tệp YAML CRD spec là gì?
-
-**Đáp án chuẩn:** `scope: Namespaced` quy định các Custom Resource tạo ra sẽ thuộc về từng Namespace độc lập (phải chỉ định `-n <namespace>`). `scope: Cluster` quy định các Custom Resource nằm ở phạm vi toàn cụm (không thuộc Namespace nào, hệt như Node hay PersistentVolume).
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 2 giá trị scope.
-- 1đ: Nêu được 1 cái trong Namespace, 1 cái toàn cụm nhưng chưa rõ khai báo metadata.namespace.
-- 3đ: Phân tích chuẩn xác cơ chế phân vùng tài nguyên của scope Namespaced vs Cluster.
-
-**Câu hỏi đào sâu:** (Nếu CRD có `scope: Cluster` nhưng tệp CR YAML lại khai báo `metadata.namespace: prod` thì điều gì xảy ra? — API Server sẽ từ chối hoặc bỏ qua trường namespace).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp gõ lệnh CLI nào dùng để xem danh sách tất cả các tệp định nghĩa tài nguyên tùy biến `CustomResourceDefinition` trên cụm?
-
-**Đáp án chuẩn:** `kubectl get crd` (hoặc `kubectl get customresourcedefinitions`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm với `kubectl api-resources`.
-- 1đ: Nêu đúng lệnh nhưng chưa phân biệt với việc get Custom Resource thực thể.
-- 3đ: Trình bày chính xác lệnh `kubectl get crd` xem danh sách các bản thiết kế CRD.
-
-**Câu hỏi đào sâu:** (Lệnh `kubectl get crd` có hiển thị các Custom Resource thực thể do lập trình viên tạo ra không? — Không, chỉ hiển thị danh sách các CRD spec).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Quy tắc bắt buộc về việc đặt tên `metadata.name` cho tệp YAML CRD spec là gì?
-
-**Đáp án chuẩn:** Tên `metadata.name` của CRD bắt buộc phải được ghép theo cú pháp `<plural>.<group>` (ví dụ nếu `plural: appconfigs` và `group: stable.example.com` thì tên CRD bắt buộc phải là `appconfigs.stable.example.com`).
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ quy tắc đặt tên CRD.
-- 1đ: Nêu được ghép tên nhưng nhầm thứ tự group.plural.
-- 3đ: Trình bày chính xác công thức ghép tên `<plural>.<group>`.
-
-**Câu hỏi đào sâu:** (Nếu đặt tên CRD sai quy tắc `<plural>.<group>` thì API Server báo lỗi gì? — Báo lỗi `metadata.name must be spec.names.plural + "." + spec.group`).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Cú pháp `apiVersion` của một tệp Custom Resource (CR) được xác định như thế nào dựa trên CRD spec?
-
-**Đáp án chuẩn:** Cú pháp `apiVersion` của tệp CR được xác định bằng cách ghép trường `group` và trường `version` trong CRD spec theo dạng `<group>/<version>` (ví dụ `stable.example.com/v1`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm apiVersion của CR với apiVersion của CRD.
-- 1đ: Nêu được group và version nhưng nhầm dấu nối.
-- 3đ: Phân tích chuẩn xác công thức ghép `apiVersion` cho Custom Resource.
-
-**Câu hỏi đào sâu:** (apiVersion của tệp CRD spec chính chủ là gì? — Là `apiextensions.k8s.io/v1`).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Tại sao các ứng dụng Stateful (như PostgreSQL, Kafka) lại rất cần đến Operator mà không thể chỉ dùng StatefulSet thông thường?
-
-**Đáp án chuẩn:** Vì StatefulSet chỉ hỗ trợ quản lý định danh Pod cố định và mount đĩa đính kèm. Nó không có tri thức nghiệp vụ để tự làm các việc phức tạp như: Replicate dữ liệu, bầu chọn Master mới khi sự cố, tự động backup đĩa định kỳ hay upgrade phiên bản Database mà không mất dữ liệu.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng StatefulSet làm được mọi việc của Operator.
-- 1đ: Nêu được StatefulSet thiếu tính năng nhưng chưa giải thích được tri thức nghiệp vụ tự động hóa.
-- 3đ: Phân tích thấu đáo các giới hạn của StatefulSet và lý do cần đến Operator để tự động hóa Domain Knowledge.
-
-**Câu hỏi đào sâu:** (Vai trò của lập trình viên ứng dụng CKAD đối với các Operator là gì? — Chỉ cần đọc tài liệu và viết tệp YAML Custom Resource khai báo thông số cho Operator chạy).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 3 bước quy trình làm việc chuẩn của lập trình viên khi khai thác một Operator mới trên cụm là gì?
-
-**Đáp án chuẩn:**
-1. Tra cứu danh sách CRD và shortNames có sẵn qua `kubectl get crd` và `kubectl api-resources`.
-2. Biên soạn tệp YAML Custom Resource (CR) khai báo cấu hình mong muốn.
-3. Apply tệp CR và theo dõi trạng thái qua `kubectl get <cr>` và `kubectl describe <cr>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đúng 3 bước.
-- 1đ: Nêu được 2 bước.
-- 3đ: Trình bày tự tin, mạch lạc bộ 3 bước quy trình khai thác Operator của lập trình viên.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 44 là gì? — Học về `Mạng cho người viết ứng dụng: Service và Ingress`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1043,28 +1134,6 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 2. **"Operator Pattern đóng gói tri thức SRE bằng cách kết hợp CRD với Custom Controller chạy Reconciliation Loop tự động chữa lành."**
 3. **"Dùng `kubectl api-resources` để tra cứu nhanh nhóm API và shortNames của toàn bộ các Custom Resource có trên cụm."**
 4. **"Thao tác cẩn trọng tuyệt đối với lệnh `kubectl delete crd` vì nó sẽ xóa sạch dây chuyền toàn bộ Custom Resource thực thể trên mọi Namespace."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc khái niệm CRD & Operator Pattern CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục khai thác và gỡ lỗi Custom Resources Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp YAML CRD `redisclusters.cache.example.com` có `shortNames: [rc]` và OpenAPI validation.
-- **BTVN 2:** Thực hành tạo 2 Custom Resource kiểu `RedisCluster` và sử dụng lệnh `kubectl get rc` để tra cứu.
-- **BTVN 3:** So sánh điểm khác biệt về kiến trúc giữa CRD (CustomResourceDefinition) và AA (Aggregated API Server).
-- **BTVN 4 (Chuẩn bị cho Buổi 44 — Mạng cho người viết ứng dụng: Service và Ingress):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Sự khác nhau về cơ chế định tuyến giữa `ClusterIP`, `NodePort` và `LoadBalancer` Service là gì?
-  2. Lớp đối tượng `Ingress` và `IngressController` đóng vai trò gì trong việc chuyển tiếp traffic HTTP/HTTPS vào Pod?
-  3. Lệnh CLI nào dùng để kiểm tra địa chỉ IP và Endpoints của Service (`kubectl get svc`, `kubectl get ep`)?
 
 ---
 
@@ -1297,14 +1366,15 @@ metadata: {name: my-cr, namespace: prod}
 spec: {KEY: VAL}
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 14] Mạng Ứng Dụng Dành Cho Developer: Service Discovery, Ingress Routing Theo Host/Path & Chứng Chỉ TLS](ckad-14-14-mang-cho-nguoi-viet-ung-dung.html).
+
 {% endraw %}

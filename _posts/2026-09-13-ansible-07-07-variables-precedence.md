@@ -109,7 +109,7 @@ graph TD
 
 Dưới đây là kiến trúc phân cấp biến chuẩn Production tích hợp đầy đủ `group_vars`, `host_vars`, `vars_files`, `register`, `set_fact` và `debug`:
 
-```
+```text
 lab-ansible-07/
 ├── ansible.cfg
 ├── inventory.ini
@@ -181,8 +181,6 @@ Một đội ngũ DevOps di chuyển hệ thống sang hạ tầng mới. Trong 
 Để sửa nhanh khi chạy thực tế, một kỹ sư khác đã lạm dụng cờ `-e "database_port=5432"` trên lệnh CLI triển khai định kỳ của Jenkins.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-- Trình phân giải Jinja2 hiểu nhầm `{{ database-port }}` là phép trừ `database` trừ `port`, khiến Playbook văng lỗi `AnsibleUndefinedVariable: 'database' is undefined` làm dừng pipeline phát hành.
-- Việc lạm dụng Extra Vars `-e` đè bẹp toàn bộ file `host_vars` chuyên biệt của môi trường Disaster Recovery, dẫn tới việc cụm máy chủ dự phòng kết nối nhầm vào Database chính, gây xung đột và khóa bảng dữ liệu giao dịch trong 40 phút.
 
 ```diff
 --- group_vars/all.yml (Broken Variable Name)
@@ -195,6 +193,10 @@ Một đội ngũ DevOps di chuyển hệ thống sang hạ tầng mới. Trong 
 +database_port: 3306
 +app_secret_key: "xyz"
 ```
+
+- Trình phân giải Jinja2 hiểu nhầm `{{ database-port }}` là phép trừ `database` trừ `port`, khiến Playbook văng lỗi `AnsibleUndefinedVariable: 'database' is undefined` làm dừng pipeline phát hành.
+- Việc lạm dụng Extra Vars `-e` đè bẹp toàn bộ file `host_vars` chuyên biệt của môi trường Disaster Recovery, dẫn tới việc cụm máy chủ dự phòng kết nối nhầm vào Database chính, gây xung đột và khóa bảng dữ liệu giao dịch trong 40 phút.
+
 
 ```mermaid
 flowchart TD
@@ -668,40 +670,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Nắm vững 22 tầng ưu tiên:** Role Defaults thấp nhất, Extra Vars (`-e`) cao nhất tuyệt đối.
-2. **Quy tắc đặt tên Snake_case:** Luôn dùng `app_port`, tuyệt đối không dùng `app-port` (dấu gạch ngang bị coi là phép trừ trong Jinja2).
-3. **Bọc ngoặc kép đúng lúc:** Khi thuộc tính YAML bắt đầu bằng `{{ var }}`, bắt buộc bọc trong `"{...}"`.
-4. **Phân định rõ Scopes:** Global Scope (toàn bộ), Play Scope (trong 1 Play), Host Scope (gắn liền theo từng máy).
-5. **Debug và Đối soát sự thật:** Dùng `debug` với `var:` để soi cấu trúc dữ liệu và `docker exec` đối soát giá trị biến thực tế trên máy đích.
-
-```mermaid
-mindmap
-  root((Variables Mastery))
-    Precedence Hierarchy
-      Role Defaults: Tầng 1 lowest
-      group_vars & host_vars
-      Play vars & vars_files
-      set_fact & register
-      Extra Vars -e: Tầng 22 highest
-    Variable Scopes
-      Global: CLI -e & config
-      Play: vars & vars_files
-      Host: host_vars & facts
-    Syntax Standards
-      Jinja2 interpolation
-      YAML quote protection
-      Strict snake_case naming
-    Enterprise Debugging
-      debug msg vs var
-      register execution data
-      docker exec ground truth
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 08: Làm Chủ Facts & Magic Variables: Khai Thác Setup Module, Ansible Facts & Custom Facts](ansible-08-08-facts.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 08] Làm Chủ Ansible Facts & Custom Facts: Khai Thác Setup Module, Local Facts & Fact Caching](ansible-08-08-facts.html).
+
 {% endraw %}

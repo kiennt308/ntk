@@ -689,7 +689,8 @@ echo "Lab 04 cleaned up successfully."
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <p><b>Nguyên nhân</b>: Lệch pha thời gian giữa $t_0$ và $t_1$. <code>rules:if</code> thẩm định tại $t_0$, trong khi file dotenv chỉ được tạo ra và nạp vào Runner tại $t_1$ (khi job phía trước chạy xong). Tại $t_0$, Parser thấy biến đó có giá trị rỗng (<code>null</code>) nên rule đánh giá ra <code>false</code> $ightarrow$ Job biến mất trong im lặng.</p>
+    <p><b>Nguyên nhân</b>: Lệch pha thời gian giữa $t_0$ và $t_1$. <code>rules:if</code> thẩm định tại $t_0$, trong khi file dotenv chỉ được tạo ra và nạp vào Runner tại $t_1$ (khi job phía trước chạy xong). Tại $t_0$, Parser thấy biến đó có giá trị rỗng (<code>null</code>) nên rule đánh giá ra <code>false</code> $
+ightarrow$ Job biến mất trong im lặng.</p>
     <p><b>Giải pháp chuẩn</b>:</p>
     <ul>
       <li>Sử dụng các biến tĩnh có sẵn tại $t_0$ (như <code>$CI_COMMIT_TAG</code>, <code>$CI_PIPELINE_SOURCE</code>) để điều khiển <code>rules</code> của job.</li>

@@ -496,7 +496,7 @@ Thông điệp lỗi <b style="color: var(--accent-primary);"><code>MountVolume.
               readOnly: true
               volumeAttributes:
                 secretProviderClass: "vault-spc"
-      ```
+```
 </div>
 </details>
 
@@ -509,24 +509,6 @@ Thông điệp lỗi <b style="color: var(--accent-primary);"><code>MountVolume.
 | Secrets Store CSI Driver | `https://secrets-store-csi-driver.sigs.k8s.io/` | Tài liệu chuẩn Secrets Store CSI Driver |
 | HashiCorp Vault Provider | `https://github.com/hashicorp/vault-csi-provider` | Provider tích hợp với HashiCorp Vault |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Rủi ro Base64 & CSI Architecture | 12 phút | 12 phút |
-| §5. SecretProviderClass & Pod Mounting | 12 phút | 12 phút |
-| §6. Secret Rotation & Image Hygiene | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -576,7 +558,7 @@ graph TD
     CSIDriver -->|"2. Process SPC Config"| SPC[SecretProviderClass vault-db-secrets]
     SPC -->|"3. Mount to Pod Memory tmpfs"| Pod[Pod app-csi-pod in lab57]
     Pod -->|"4. Access Secrets"| SecretFile[/mnt/secrets-store/db-password]
-```yaml
+```
 
 ---
 
@@ -603,19 +585,19 @@ spec:
         secretPath: "secret/data/dbconfig"
         secretKey: "password"
 EOF
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab57`.**
 
 ```bash
 kubectl get ns lab57 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/spc-vault.yaml`.**
 
 ```bash
 grep -q "vault-db-secrets" /tmp/spc-vault.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+```
 
 ---
 
@@ -625,19 +607,19 @@ grep -q "vault-db-secrets" /tmp/spc-vault.yaml && echo "CHECKPOINT 2 — ĐẠT"
 
 ```bash
 kubectl apply -f /tmp/spc-vault.yaml 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra apply `SecretProviderClass`.**
 
 ```bash
 test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra tệp `SecretProviderClass` ready.**
 
 ```bash
 test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```yaml
+```
 
 ---
 
@@ -670,25 +652,25 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-csi-secret.yaml 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra driver `secrets-store.csi.k8s.io` trong `/tmp/pod-csi-secret.yaml`.**
 
 ```bash
 grep -q "secrets-store.csi.k8s.io" /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra lệnh apply Pod `app-csi-pod`.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra Pod `app-csi-pod` ở trạng thái `Running`.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+```
 
 ---
 
@@ -698,19 +680,19 @@ test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHEC
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "SECRET_READ_TEST" >/dev/null
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra đường dẫn mount Secret.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra tệp secret nằm trên hệ thống tệp RAM `tmpfs`.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```yaml
+```
 
 ---
 
@@ -724,25 +706,25 @@ FROM alpine:3.19
 RUN apk add --no-cache curl
 CMD ["sh"]
 EOF
-```bash
+```
 
 **CHECKPOINT 10 — Kiểm tra tệp `/tmp/Dockerfile.clean`.**
 
 ```bash
 test -f /tmp/Dockerfile.clean && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```bash
+```
 
 **CHECKPOINT 11 — Quét rà soát bí mật nhúng.**
 
 ```bash
 test -f /tmp/Dockerfile.clean && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Đồng bộ Secret thành K8s Secret qua `secretObjects`.**
 
 ```bash
 test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -753,13 +735,13 @@ test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOI
 ```bash
 kubectl delete namespace lab57
 rm -f /tmp/spc-vault.yaml /tmp/pod-csi-secret.yaml /tmp/Dockerfile.clean
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/spc-vault.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -805,26 +787,11 @@ test ! -f /tmp/spc-vault.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKP
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & SecretProviderClass | 15 phút | 15 phút |
-| L4. Bước 2: Apply & Verify SecretProviderClass | 25 phút | 25 phút |
-| L5. Bước 3: Deploy Pod CSI Volume Mount | 25 phút | 25 phút |
-| L6. Bước 4: Read Secret on RAM tmpfs | 25 phút | 25 phút |
-| L7. Bước 5: Dockerfile Hygiene & Trivy Scan | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -832,201 +799,323 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cơ chế hoạt động của Secrets Store CSI Driver trong việc cung cấp Secret cho Pod từ kho lưu trữ bên ngoài (Vault, AWS Secrets Manager) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Vì Base64 chỉ là một giải pháp nén/chuyển đổi định dạng chuỗi (<b style="color: var(--accent-primary);">encoding</b>), hoàn toàn không phải là mã hóa (<b style="color: var(--accent-primary);">encryption</b>). Bất kỳ ai đọc được cơ sở dữ liệu etcd hoặc có quyền xem Secret đều có thể giải mã ngược lại thành mật khẩu thô trong vài miliseconds.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">CSI Driver lấy tệp Secret trực tiếp từ kho bên ngoài (Vault/AWS) và mount nó vào Pod dưới dạng hệ thống tệp tạm trên RAM (<b style="color: var(--accent-primary);"><code>tmpfs</code></b>). Tệp Secret chỉ tồn tại trong bộ nhớ RAM của Pod và biến mất khi Pod bị dừng, không lưu vết trên etcd.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu cơ chế của Secrets Store CSI Driver.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lấy từ Vault nhưng chưa rõ việc mount dưới dạng <code>tmpfs</code> RAM volume không ghi etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế hoạt động mount Secret trực tiếp từ Vault vào <code>tmpfs</code> RAM volume của Secrets Store CSI Driver.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>driver</code> bắt buộc phải khai báo dưới khối <code>spec.volumes[x].csi</code> của Pod là gì? — Cờ <code>driver: secrets-store.csi.k8s.io</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết hạn chế của Base64 encoding.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Base64 dễ giải mã nhưng chưa phân biệt encoding vs encryption.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro của mã hóa Base64 và lý do cần dùng etcd Encryption at Rest hoặc Secrets Store CSI Driver.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Giải pháp để bảo vệ Secret không bị lưu vết bản rõ trên đĩa etcd là gì? — Sử dụng Secrets Store CSI Driver để mount trực tiếp từ kho bên ngoài vào bộ nhớ RAM <code>tmpfs</code> của Pod).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Đối tượng <code>SecretProviderClass</code> đóng vai trò gì trong kiến trúc Secrets Store CSI Driver?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>SecretProviderClass</code> là một Custom Resource Definition (CRD) dùng để định nghĩa các tham số kết nối (địa chỉ Vault, IAM role) và danh sách các tệp/phím secret (<code>objects</code>) cần trích xuất từ kho lưu trữ bên ngoài.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết đối tượng SecretProviderClass.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tệp cấu hình Vault nhưng chưa làm rõ các thông số provider và objects.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò định nghĩa nhà cung cấp và phím bí mật của <code>SecretProviderClass</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>apiVersion</code> chuẩn của <code>SecretProviderClass</code> là gì? — <code>secrets-store.csi.k8s.io/v1</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao nên ưu tiên mount Secret dưới dạng tệp tin trong <code>tmpfs</code> thay vì truyền Secret qua biến môi trường (<code>env</code>) dưới Pod spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì biến môi trường (<code>env</code>) hiển thị công khai trong bản kê khai của Pod (<code>kubectl get pod -o yaml</code>), đồng thời dễ bị rò rỉ qua nhật ký tiến trình (process environment logs) hoặc các lệnh kiểm tra hệ thống. Tệp tin mount trên <code>tmpfs</code> được bảo vệ thắt chặt và tự động mất đi khi Pod dừng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng truyền qua env an toàn hơn file mount.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được env dễ thấy nhưng chưa rõ rủi ro rò rỉ qua kubectl describe pod và process logs.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác rủi ro rò rỉ của biến môi trường <code>env</code> và ưu điểm bảo mật của <code>tmpfs</code> file mounting.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ thuộc tính bắt buộc phải khai báo khi mount CSI volume Secret vào Pod là gì? — Cờ <code>readOnly: true</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tính năng tự động xoay vòng bí mật (Automatic Secret Rotation) trong Secrets Store CSI Driver hoạt động như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi bật cờ <code>enable-secret-rotation</code>, CSI Driver sẽ định kỳ kiểm tra kho lưu trữ bên ngoài (Vault/AWS). Nếu mật khẩu trên Vault bị đổi, CSI Driver sẽ tự động đồng bộ và cập nhật lại nội dung tệp secret trong Pod mà không cần restart Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tính năng Secret Rotation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tự đổi pass nhưng chưa làm rõ việc cập nhật file trong Pod không cần restart Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế tự động xoay vòng mật khẩu của Secrets Store CSI Driver.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để ứng dụng nhận biết mật khẩu mới khi file secret bị đổi? — Ứng dụng đọc lại tệp file secret từ đĩa hoặc dùng file watcher event).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao cấm tuyệt đối hành vi nhúng cứng (hardcode) mật khẩu hoặc API Keys vào trong tệp Dockerfile hoặc Container Image?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Container Image được lưu trữ vĩnh viễn trên Container Registry và các chỉ thị trong Dockerfile được ghi thành các lớp (layers) vĩnh viễn. Bất kỳ ai có quyền pull image hoặc dùng công cụ kiểm tra (Trivy/SecretLint) đều trích xuất lại được Secret bản rõ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết rủi ro hardcoded secrets trong Image.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lộ mật khẩu nhưng chưa giải thích rủi ro lưu vĩnh viễn trên Image layers.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do cấm hardcode secrets do cơ chế lưu vết theo layers của Docker Image.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ CLI nào dùng để quét phát hiện các hardcoded secrets trong Container Image? — Công cụ <b style="color: var(--accent-primary);"><code>trivy image --scanners secret <image-name></code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nếu xóa một dòng <code>ENV API_KEY="secret-123"</code> ở cuối Dockerfile thì mật khẩu đó có còn bị rò rỉ trong Container Image không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><b style="color: var(--accent-primary);">VẪN BỊ RÒ RỈ!</b> Vì ở layer trước của Dockerfile, chỉ thị <code>ENV</code> đó đã được ghi lại vĩnh viễn. Kẻ tấn công có thể soi lại history của image layers để lấy mật khẩu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng xóa ở dòng sau là hết rò rỉ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được vẫn lộ nhưng chưa giải thích cơ chế immutability của Docker layers.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do secret vẫn lộ ở layer trước dù đã bị xóa ở dòng sau.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Giải pháp đúng để loại bỏ hoàn toàn Secret bị dính vào Image là gì? — Sử dụng <code>.dockerignore</code> và build lại image mới từ đầu không chứa Secret).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Khối thuộc tính <code>spec.secretObjects</code> trong <code>SecretProviderClass</code> được sử dụng để làm gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khối <code>spec.secretObjects</code> dùng để tự động tạo (đồng bộ) một Kubernetes Secret chuẩn từ tệp secret mount bởi CSI Driver, giúp các ứng dụng cũ vẫn có thể đọc Secret theo cách truyền thống nếu chưa hỗ trợ đọc file trực tiếp.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tác dụng của secretObjects.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tạo K8s Secret nhưng chưa rõ việc đồng bộ từ tệp mount CSI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò đồng bộ tệp mount CSI thành K8s Secret của <code>spec.secretObjects</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (K8s Secret tạo bởi secretObjects sẽ tự động biến mất khi nào? — Khi Pod sử dụng CSI Volume đó bị xóa khỏi cụm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cách chẩn đoán và khắc phục nhanh nhất khi Pod bị kẹt ở trạng thái <code>ContainerCreating</code> với lỗi <code>MountVolume.SetUp failed for volume "secrets-store-inline"</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Đọc câu lệnh <code>kubectl describe pod <pod-name></code> để tìm thông điệp lỗi của CSI Driver; kiểm tra tệp <code>SecretProviderClass</code> xem gõ sai tên <code>secretKey</code>, gõ sai <code>vaultAddress</code> hay thiếu quyền RBAC kết nối Vault.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không chẩn đoán được lỗi MountVolume.SetUp failed.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng describe pod nhưng chưa rõ đối soát phím key và vaultAddress trong SPC.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác quy trình describe pod gỡ lỗi mount volume của Secrets Store CSI Driver.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu lỗi báo <code>provider error: key not found</code> thì nguyên nhân là gì? — Do tên phím Secret khai báo trong <code>SecretProviderClass</code> không tồn tại trên Vault Server).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Phân biệt sự khác nhau cơ bản giữa <code>Secrets Store CSI Driver</code> và <code>External Secrets Operator (ESO)</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Secrets Store CSI Driver</code>: Lấy Secret mount trực tiếp dưới dạng tệp tin (<code>tmpfs</code>) vào trong Pod qua Volume.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>External Secrets Operator (ESO)</code>: Lấy Secret từ Vault/AWS về và sinh ra một <b style="color: var(--accent-primary);">Kubernetes Secret chuẩn</b> lưu trong etcd để Pod sử dụng qua <code>secretRef</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được Secrets Store CSI Driver và ESO.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả hai lấy từ Vault nhưng chưa rõ 1 cái mount file RAM 1 cái sync ra K8s Secret etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt về kiến trúc giữa Secrets Store CSI Driver (Volume Mount) và ESO (K8s Secret Syncing).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ nào đảm bảo không lưu bất kỳ bản rõ Secret nào dưới etcd? — Công cụ <b style="color: var(--accent-primary);">Secrets Store CSI Driver</b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của tệp <code>SecretProviderClass</code> kết nối Vault chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: secrets-store.csi.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: SecretProviderClass</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: vault-db-secrets</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">provider: vault</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">parameters:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">vaultAddress: "https://vault.internal:8200"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">roleName: "app-role"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">objects: |</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• objectName: "db-password"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">secretPath: "secret/data/dbconfig"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">secretKey: "password"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng provider vault nhưng thiếu apiVersion <code>secrets-store.csi.k8s.io/v1</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai <code>SecretProviderClass</code> Vault CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khai báo Volume csi trong Pod spec cần chỉ định thuộc tính nào để link tới SPC này? — Thuộc tính <code>volumeAttributes.secretProviderClass: "vault-db-secrets"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Enterprise Secret Management & Secrets Store CSI Driver chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CẤM TUYỆT ĐỐI nhúng cứng API Keys hay mật khẩu vào Dockerfile và Container Image.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không coi mã hóa Base64 K8s Secret là bảo mật; dùng Secrets Store CSI Driver mount trực tiếp từ Vault.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Luôn mount tệp Secret dưới dạng <code>readOnly: true</code> trên hệ thống tệp tạm RAM (<code>tmpfs</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bật cờ <code>enableSecretRotation</code> để tự động cập nhật mật khẩu mới khi Vault thực hiện xoay vòng bí mật.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Enterprise Secret Security CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 58 là gì? — Học về <code>mTLS và Service Mesh Tối thiểu CKS: Pod-to-Pod Encryption & Traffic Security</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Cơ chế hoạt động của Secrets Store CSI Driver trong việc cung cấp Secret cho Pod từ kho lưu trữ bên ngoài (Vault, AWS Secrets Manager) là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** CSI Driver lấy tệp Secret trực tiếp từ kho bên ngoài (Vault/AWS) và mount nó vào Pod dưới dạng hệ thống tệp tạm trên RAM (**`tmpfs`**). Tệp Secret chỉ tồn tại trong bộ nhớ RAM của Pod và biến mất khi Pod bị dừng, không lưu vết trên etcd.
+1. <b style="color: var(--accent-primary);">"Quản lý Secret an toàn bằng cách loại bỏ hoàn toàn lưu vết bản rõ trên etcd qua Secrets Store CSI Driver."</b>
+2. <b style="color: var(--accent-primary);">"Tích hợp kho bí mật bên ngoài (Vault / AWS Secrets Manager) thông qua đối tượng <code>SecretProviderClass</code>."</b>
+3. <b style="color: var(--accent-primary);">"Mount tệp Secret trực tiếp vào hệ thống tệp tạm RAM <code>tmpfs</code> dưới dạng <code>readOnly: true</code> để triệt tiêu rủi ro lộ credentials."</b>
+4. <b style="color: var(--accent-primary);">"Cấm tuyệt đối nhúng cứng Secret vào Dockerfile và sử dụng công cụ Trivy để rà soát vệ sinh Container Image."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không hiểu cơ chế của Secrets Store CSI Driver.
-- 1đ: Nêu được lấy từ Vault nhưng chưa rõ việc mount dưới dạng `tmpfs` RAM volume không ghi etcd.
-- 3đ: Phân tích chuẩn xác cơ chế hoạt động mount Secret trực tiếp từ Vault vào `tmpfs` RAM volume của Secrets Store CSI Driver.
-
-**Câu hỏi đào sâu:** (Cờ `driver` bắt buộc phải khai báo dưới khối `spec.volumes[x].csi` của Pod là gì? — Cờ `driver: secrets-store.csi.k8s.io`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Đối tượng `SecretProviderClass` đóng vai trò gì trong kiến trúc Secrets Store CSI Driver?
-
-**Đáp án chuẩn:** `SecretProviderClass` là một Custom Resource Definition (CRD) dùng để định nghĩa các tham số kết nối (địa chỉ Vault, IAM role) và danh sách các tệp/phím secret (`objects`) cần trích xuất từ kho lưu trữ bên ngoài.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết đối tượng SecretProviderClass.
-- 1đ: Nêu được tệp cấu hình Vault nhưng chưa làm rõ các thông số provider và objects.
-- 3đ: Phân tích chuẩn xác vai trò định nghĩa nhà cung cấp và phím bí mật của `SecretProviderClass`.
-
-**Câu hỏi đào sâu:** (Cú pháp `apiVersion` chuẩn của `SecretProviderClass` là gì? — `secrets-store.csi.k8s.io/v1`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Tại sao nên ưu tiên mount Secret dưới dạng tệp tin trong `tmpfs` thay vì truyền Secret qua biến môi trường (`env`) dưới Pod spec?
-
-**Đáp án chuẩn:** Vì biến môi trường (`env`) hiển thị công khai trong bản kê khai của Pod (`kubectl get pod -o yaml`), đồng thời dễ bị rò rỉ qua nhật ký tiến trình (process environment logs) hoặc các lệnh kiểm tra hệ thống. Tệp tin mount trên `tmpfs` được bảo vệ thắt chặt và tự động mất đi khi Pod dừng.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng truyền qua env an toàn hơn file mount.
-- 1đ: Nêu được env dễ thấy nhưng chưa rõ rủi ro rò rỉ qua kubectl describe pod và process logs.
-- 3đ: Phân tích chuẩn xác rủi ro rò rỉ của biến môi trường `env` và ưu điểm bảo mật của `tmpfs` file mounting.
-
-**Câu hỏi đào sâu:** (Cờ thuộc tính bắt buộc phải khai báo khi mount CSI volume Secret vào Pod là gì? — Cờ `readOnly: true`).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Tính năng tự động xoay vòng bí mật (Automatic Secret Rotation) trong Secrets Store CSI Driver hoạt động như thế nào?
-
-**Đáp án chuẩn:** Khi bật cờ `enable-secret-rotation`, CSI Driver sẽ định kỳ kiểm tra kho lưu trữ bên ngoài (Vault/AWS). Nếu mật khẩu trên Vault bị đổi, CSI Driver sẽ tự động đồng bộ và cập nhật lại nội dung tệp secret trong Pod mà không cần restart Pod.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tính năng Secret Rotation.
-- 1đ: Nêu được tự đổi pass nhưng chưa làm rõ việc cập nhật file trong Pod không cần restart Pod.
-- 3đ: Phân tích chuẩn xác cơ chế tự động xoay vòng mật khẩu của Secrets Store CSI Driver.
-
-**Câu hỏi đào sâu:** (Làm thế nào để ứng dụng nhận biết mật khẩu mới khi file secret bị đổi? — Ứng dụng đọc lại tệp file secret từ đĩa hoặc dùng file watcher event).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Tại sao cấm tuyệt đối hành vi nhúng cứng (hardcode) mật khẩu hoặc API Keys vào trong tệp Dockerfile hoặc Container Image?
-
-**Đáp án chuẩn:** Vì Container Image được lưu trữ vĩnh viễn trên Container Registry và các chỉ thị trong Dockerfile được ghi thành các lớp (layers) vĩnh viễn. Bất kỳ ai có quyền pull image hoặc dùng công cụ kiểm tra (Trivy/SecretLint) đều trích xuất lại được Secret bản rõ.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết rủi ro hardcoded secrets trong Image.
-- 1đ: Nêu được lộ mật khẩu nhưng chưa giải thích rủi ro lưu vĩnh viễn trên Image layers.
-- 3đ: Phân tích chuẩn xác lý do cấm hardcode secrets do cơ chế lưu vết theo layers của Docker Image.
-
-**Câu hỏi đào sâu:** (Công cụ CLI nào dùng để quét phát hiện các hardcoded secrets trong Container Image? — Công cụ **`trivy image --scanners secret <image-name>`**).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Nếu xóa một dòng `ENV API_KEY="secret-123"` ở cuối Dockerfile thì mật khẩu đó có còn bị rò rỉ trong Container Image không?
-
-**Đáp án chuẩn:** **VẪN BỊ RÒ RỈ!** Vì ở layer trước của Dockerfile, chỉ thị `ENV` đó đã được ghi lại vĩnh viễn. Kẻ tấn công có thể soi lại history của image layers để lấy mật khẩu.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng xóa ở dòng sau là hết rò rỉ.
-- 1đ: Nêu được vẫn lộ nhưng chưa giải thích cơ chế immutability của Docker layers.
-- 3đ: Phân tích chuẩn xác lý do secret vẫn lộ ở layer trước dù đã bị xóa ở dòng sau.
-
-**Câu hỏi đào sâu:** (Giải pháp đúng để loại bỏ hoàn toàn Secret bị dính vào Image là gì? — Sử dụng `.dockerignore` và build lại image mới từ đầu không chứa Secret).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Khối thuộc tính `spec.secretObjects` trong `SecretProviderClass` được sử dụng để làm gì?
-
-**Đáp án chuẩn:** Khối `spec.secretObjects` dùng để tự động tạo (đồng bộ) một Kubernetes Secret chuẩn từ tệp secret mount bởi CSI Driver, giúp các ứng dụng cũ vẫn có thể đọc Secret theo cách truyền thống nếu chưa hỗ trợ đọc file trực tiếp.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tác dụng của secretObjects.
-- 1đ: Nêu được tạo K8s Secret nhưng chưa rõ việc đồng bộ từ tệp mount CSI.
-- 3đ: Phân tích chuẩn xác vai trò đồng bộ tệp mount CSI thành K8s Secret của `spec.secretObjects`.
-
-**Câu hỏi đào sâu:** (K8s Secret tạo bởi secretObjects sẽ tự động biến mất khi nào? — Khi Pod sử dụng CSI Volume đó bị xóa khỏi cụm).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Cách chẩn đoán và khắc phục nhanh nhất khi Pod bị kẹt ở trạng thái `ContainerCreating` với lỗi `MountVolume.SetUp failed for volume "secrets-store-inline"`?
-
-**Đáp án chuẩn:** Đọc câu lệnh `kubectl describe pod <pod-name>` để tìm thông điệp lỗi của CSI Driver; kiểm tra tệp `SecretProviderClass` xem gõ sai tên `secretKey`, gõ sai `vaultAddress` hay thiếu quyền RBAC kết nối Vault.
-
-**Tiêu chí chấm:**
-- 0đ: Không chẩn đoán được lỗi MountVolume.SetUp failed.
-- 1đ: Nêu được dùng describe pod nhưng chưa rõ đối soát phím key và vaultAddress trong SPC.
-- 3đ: Trình bày chuẩn xác quy trình describe pod gỡ lỗi mount volume của Secrets Store CSI Driver.
-
-**Câu hỏi đào sâu:** (Nếu lỗi báo `provider error: key not found` thì nguyên nhân là gì? — Do tên phím Secret khai báo trong `SecretProviderClass` không tồn tại trên Vault Server).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Phân biệt sự khác nhau cơ bản giữa `Secrets Store CSI Driver` và `External Secrets Operator (ESO)`?
-
-**Đáp án chuẩn:**
-- `Secrets Store CSI Driver`: Lấy Secret mount trực tiếp dưới dạng tệp tin (`tmpfs`) vào trong Pod qua Volume.
-- `External Secrets Operator (ESO)`: Lấy Secret từ Vault/AWS về và sinh ra một **Kubernetes Secret chuẩn** lưu trong etcd để Pod sử dụng qua `secretRef`.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được Secrets Store CSI Driver và ESO.
-- 1đ: Nêu được cả hai lấy từ Vault nhưng chưa rõ 1 cái mount file RAM 1 cái sync ra K8s Secret etcd.
-- 3đ: Phân tích chuẩn xác sự khác biệt về kiến trúc giữa Secrets Store CSI Driver (Volume Mount) và ESO (K8s Secret Syncing).
-
-**Câu hỏi đào sâu:** (Công cụ nào đảm bảo không lưu bất kỳ bản rõ Secret nào dưới etcd? — Công cụ **Secrets Store CSI Driver**).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của tệp `SecretProviderClass` kết nối Vault chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: secrets-store.csi.k8s.io/v1
-kind: SecretProviderClass
-metadata:
-  name: vault-db-secrets
-  namespace: prod
-spec:
-  provider: vault
-  parameters:
-    vaultAddress: "https://vault.internal:8200"
-    roleName: "app-role"
-    objects: |
-      - objectName: "db-password"
-        secretPath: "secret/data/dbconfig"
-        secretKey: "password"
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.
-- 1đ: Nêu đúng provider vault nhưng thiếu apiVersion `secrets-store.csi.k8s.io/v1`.
-- 3đ: Viết chuẩn xác 100% bản kê khai `SecretProviderClass` Vault CKS.
-
-**Câu hỏi đào sâu:** (Khai báo Volume csi trong Pod spec cần chỉ định thuộc tính nào để link tới SPC này? — Thuộc tính `volumeAttributes.secretProviderClass: "vault-db-secrets"`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Enterprise Secret Management & Secrets Store CSI Driver chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-1. CẤM TUYỆT ĐỐI nhúng cứng API Keys hay mật khẩu vào Dockerfile và Container Image.
-2. Không coi mã hóa Base64 K8s Secret là bảo mật; dùng Secrets Store CSI Driver mount trực tiếp từ Vault.
-3. Luôn mount tệp Secret dưới dạng `readOnly: true` trên hệ thống tệp tạm RAM (`tmpfs`).
-4. Bật cờ `enableSecretRotation` để tự động cập nhật mật khẩu mới khi Vault thực hiện xoay vòng bí mật.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Enterprise Secret Security CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 58 là gì? — Học về `mTLS và Service Mesh Tối thiểu CKS: Pod-to-Pod Encryption & Traffic Security`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1036,28 +1125,6 @@ spec:
 2. **"Tích hợp kho bí mật bên ngoài (Vault / AWS Secrets Manager) thông qua đối tượng `SecretProviderClass`."**
 3. **"Mount tệp Secret trực tiếp vào hệ thống tệp tạm RAM `tmpfs` dưới dạng `readOnly: true` để triệt tiêu rủi ro lộ credentials."**
 4. **"Cấm tuyệt đối nhúng cứng Secret vào Dockerfile và sử dụng công cụ Trivy để rà soát vệ sinh Container Image."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Secret Management |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc Secrets Store CSI Driver và rà soát nhúng mật khẩu |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Cài đặt Secrets Store CSI Driver và Vault Provider bằng Helm chart trên cụm lab.
-- **BTVN 2:** Biên soạn `SecretProviderClass` đồng bộ tệp Secret mount thành 1 K8s Secret chuẩn sử dụng `secretObjects`.
-- **BTVN 3:** Viết script Bash tự động chạy Trivy quét 5 tệp Dockerfile phát hiện các cờ `ENV` chứa hardcoded secrets.
-- **BTVN 4 (Chuẩn bị cho Buổi 58 — mTLS và Service Mesh Tối thiểu CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Nguyên lý mã hóa đường truyền mTLS (Mutual TLS) giữa các Pods trong cụm Kubernetes đóng vai trò gì?
-  2. Tại sao mTLS giúp bảo vệ cụm trước nguy cơ Man-in-the-Middle (MitM) và Sniffing traffic nội bộ?
-  3. Điểm khác biệt giữa mTLS mức ứng dụng (Application mTLS) vs mTLS hạ tầng do Service Mesh (Istio/Linkerd) quản lý?
 
 ---
 
@@ -1135,7 +1202,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/app-spc.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1168,7 +1235,7 @@ spec:
         volumeAttributes:
           secretProviderClass: "app-spc"
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1203,7 +1270,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/broken-spc-pod.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1219,7 +1286,7 @@ FROM alpine:3.19
 RUN apk add --no-cache curl
 CMD ["sh"]
 EOF
-```yaml
+```
 
 ---
 </div>
@@ -1290,7 +1357,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1322,16 +1389,17 @@ spec:
         readOnly: true
         volumeAttributes:
           secretProviderClass: "spc-name"
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 13] Mã Hóa Mạng Pod-to-Pod Bằng mTLS & Service Mesh Tối Thiểu (Minimal Service Mesh Security)](cks-13-13-mtls-va-service-mesh-toi-thieu.html).
+
 {% endraw %}

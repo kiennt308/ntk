@@ -229,10 +229,6 @@ Một công ty thương mại điện tử triển khai đợt nâng cấp bảo
 3. Dùng module `cron` đặt lịch chạy mà không khai báo thuộc tính `name`.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Khi pipeline CI/CD chạy lại kịch bản qua nhiều đợt phát hành:
-- File `/etc/ssh/sshd_config` bị chèn đúp 15 dòng `Port 2222` liên tiếp, khiến dịch vụ `sshd` từ chối khởi động lại sau lệnh reload hệ điều hành.
-- File cấu hình Nginx chính bị ghi đè mất toàn bộ SSL certificate parameters cũ, gây downtime diện rộng 45 phút cho toàn bộ cổng thanh toán.
-- Bảng Crontab của root bị rác với hơn 20 dòng cron job giống hệt nhau cùng chạy một lúc, làm nghẽn CPU và Disk I/O vào 02:00 sáng.
 
 ```diff
 --- /etc/ssh/sshd_config (Old / Broken)
@@ -246,6 +242,12 @@ Khi pipeline CI/CD chạy lại kịch bản qua nhiều đợt phát hành:
 +# Sửa: Dùng lineinfile với Regex chuẩn xác
 +Port 2222
 ```
+
+Khi pipeline CI/CD chạy lại kịch bản qua nhiều đợt phát hành:
+- File `/etc/ssh/sshd_config` bị chèn đúp 15 dòng `Port 2222` liên tiếp, khiến dịch vụ `sshd` từ chối khởi động lại sau lệnh reload hệ điều hành.
+- File cấu hình Nginx chính bị ghi đè mất toàn bộ SSL certificate parameters cũ, gây downtime diện rộng 45 phút cho toàn bộ cổng thanh toán.
+- Bảng Crontab của root bị rác với hơn 20 dòng cron job giống hệt nhau cùng chạy một lúc, làm nghẽn CPU và Disk I/O vào 02:00 sáng.
+
 
 ```mermaid
 flowchart TD
@@ -695,38 +697,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Module chuyên dụng là ưu tiên số 1:** Luôn dùng `package`, `service`, `copy`, `lineinfile`, `user` thay cho `command`/`shell`/`raw`.
-2. **Luôn bật Backup khi sửa file:** Thêm `backup=yes` khi dùng `copy` hoặc `lineinfile` để bảo vệ file gốc khi có sự cố.
-3. **Lineinfile bắt buộc dùng Regexp:** Luôn dùng cờ `regexp` để đảm bảo dòng cấu hình chỉ xuất hiện duy nhất 1 lần trong file đích.
-4. **Cron Job bắt buộc có Name:** Thuộc tính `name` là khóa định danh bắt buộc để tránh tạo rác crontab khi chạy lại nhiều lần.
-5. **Chứng minh tính Idempotency:** Mọi lệnh gọi module chuẩn khi chạy lại lần 2 **bắt buộc** phải báo `changed=false` và được đối soát qua `docker exec`.
-
-```mermaid
-mindmap
-  root((Core Modules Mastery))
-    System & Services
-      package: state=present/latest/absent
-      service: state=started/reloaded enabled=yes
-    Files & Configs
-      file: state=directory/link mode=0755
-      copy: backup=yes md5 checksum
-      lineinfile: regexp state=present
-      blockinfile: marker tags
-    Users & Cron
-      user & group: uid gid append=yes
-      cron: name identifier
-      stat: read-only JSON metadata
-    Production Standards
-      Idempotency changed=false
-      Real verification docker exec
-      Safe dry-run check & diff
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 05: Playbook Đầu Tiên — Cấu Trúc Khai Báo YAML, Play, Task, Handlers & Phân Tích PLAY RECAP Chuyên Sâu](ansible-05-05-playbook-dau-tien.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 05] Xây Dựng Playbook Đầu Tiên: Cấu Trúc YAML, Plays, Tasks, Become Privilege Escalation & Đọc PLAY RECAP](ansible-05-05-playbook-dau-tien.html).
+
 {% endraw %}

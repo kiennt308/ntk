@@ -654,38 +654,12 @@ docker exec target1 cat /etc/cicd-deployment.conf
 </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Pipeline 4 Stage Chuẩn:** Luôn thiết lập các lá chắn kiểm thử `lint` và `test` trước khi triển khai `staging` và `production`.
-2. **Zero Hardcoded Secrets:** Quản lý toàn bộ SSH keys và Vault passwords qua CI/CD Secret Variables.
-3. **Phân Tách Inventory:** Tách biệt hoàn toàn inventory giữa các môi trường để ngăn ngừa deploy nhầm.
-4. **Zero Downtime Deployment:** Áp dụng `serial: 1` hoặc `serial: ["20%", "50%"]` cho môi trường Production.
-5. **Đảm Bảo Idempotency Tuyệt Đối:** Re-run pipeline lần 2 khi không đổi mã nguồn bắt buộc phải đạt `changed=0`.
-
-```mermaid
-mindmap
-  root((Ansible trong CI/CD))
-    4 Giai Doan Pipeline
-      Stage 1 lint: syntax-check va ansible-lint
-      Stage 2 test: Molecule container test
-      Stage 3 staging: Auto-deploy staging
-      Stage 4 production: Manual approval gate
-    Bao Mat Secrets
-      CI/CD Secret Variables
-      before_script: chmod 0600 .vault_pass
-      after_script: rm -f .vault_pass
-      no_log true va Masked variables
-    Van Hanh Production
-      serial 1 Zero Downtime
-      when manual tren branch main
-      ANSIBLE_HOST_KEY_CHECKING False
-      Idempotency changed=0 o Lan 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 27: Quản Lý Systemd Unit & Custom Services: Tạo Daemon, Quản Trị Vòng Đời Tiến Trình & Health Check Tự Phục Hồi](ansible-27-27-systemd-custom-service.html) — Bước vào Giai đoạn 5 (Nâng cao và Capstone), làm chủ kỹ thuật đóng gói và quản trị tiến trình hệ thống Linux với Systemd.
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 27] Quản Lý Systemd Unit & Custom Services: Tạo Daemon, Quản Trị Vòng Đời Tiến Trình & Health Check Tự Phục Hồi](ansible-27-27-systemd-custom-service.html).
 
 {% endraw %}

@@ -432,24 +432,6 @@ graph TD
 | Official Docs: Performing a Rolling Update | Kubernetes v1.35 | Hướng dẫn sử dụng kubectl rollout status, history và undo |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Tổng quan mối quan hệ 3 tầng: Deployment -> ReplicaSet -> Pod | 12 phút |
-| §5 | Hai chiến lược cập nhật: `RollingUpdate` vs `Recreate` | 12 phút |
-| §6 | Công thức tính toán `maxSurge` và `maxUnavailable` | 10 phút |
-| §7 | Bộ lệnh kiểm soát tiến trình `kubectl rollout` | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -818,24 +800,11 @@ rm -f /tmp/rs-name.txt /tmp/paused-status.txt /tmp/rollout-status.log /tmp/rollo
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-15/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khởi tạo Deployment ứng dụng Web và khảo sát ReplicaSet | 30 phút |
-| L4 | Bước 2 — Cấu hình chiến lược `RollingUpdate` với `maxSurge` và `maxUnavailable` | 30 phút |
-| L5 | Bước 3 — Thực thi quy trình Rollout, Pause, Resume và Nâng cấp phiên bản | 30 phút |
-| L6 | Bước 4 — Thực hành Rollback khẩn cấp với `kubectl rollout undo` | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -849,252 +818,351 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thao tác nào sẽ làm Deployment sinh ra một <code>ReplicaSet</code> mới và một Revision mới trong lịch sử? Thao tác <code>kubectl scale</code> có sinh ra Revision mới không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mối quan hệ 3 tầng:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>Deployment</code>: Đối tượng quản lý cấp cao nhất chịu trách nhiệm về vòng đời ứng dụng, các phiên bản nâng cấp (Revisions) và chiến lược triển khai (<code>RollingUpdate</code> / <code>Recreate</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>ReplicaSet</code>: Đối tượng trung gian trực tiếp quản lý số lượng bản sao Pod cố định theo khai báo <code>replicas</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>Pod</code>: Đơn vị thực thi thực tế chứa các container chạy ứng dụng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế liên kết:</b> Deployment tự động tính toán mã băm từ cấu hình <code>spec.template</code> và gắn nhãn <b style="color: var(--accent-primary);"><code>pod-template-hash</code></b> ngẫu nhiên lên ReplicaSet và các Pod. ReplicaSet dùng <code>spec.selector</code> khớp với nhãn <code>pod-template-hash</code> này để quản lý tập Pod thuộc phiên bản đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Điều kiện sinh Revision mới:</b> Chỉ khi có sự thay đổi trong cấu hình mẫu Pod <b style="color: var(--accent-primary);"><code>spec.template</code></b> (như đổi tag image, thay đổi biến môi trường env, sửa resource limits/requests, đổi readinessProbe) thì Deployment mới sinh ra 1 ReplicaSet mới và 1 Revision mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thao tác <code>kubectl scale</code>:</b> <b style="color: var(--accent-primary);">KHÔNG sinh ra Revision mới</b>. Việc scale chỉ thay đổi chỉ số <code>spec.replicas</code> trên <code>ReplicaSet</code> hiện tại đang hoạt động.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo gõ <code>kubectl scale</code> sẽ làm sinh ra Revision mới.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời đổi image sinh revision mới nhưng không khẳng định được nguyên tắc chung là thay đổi ở <code>spec.template</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc sửa <code>spec.template</code> sinh Revision mới còn <code>kubectl scale</code> thì không.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra việc xem <code>kubectl rollout history</code> để kiểm chứng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Sửa comment hoặc annotation bên ngoài <code>spec.template</code> có sinh ra Revision mới không? *(Đáp án: Không, trừ khi annotation nằm dưới <code>spec.template.metadata.annotations</code>).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Deployment trực tiếp tạo và quản lý Pod.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 3 tầng nhưng không giải thích được cơ chế liên kết nhãn <code>pod-template-hash</code> (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác mối quan hệ 3 tầng và cơ chế liên kết qua nhãn <code>pod-template-hash</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl get rs -l app=web</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi bạn xóa trực tiếp 1 Pod thuộc Deployment quản lý thì đối tượng nào sẽ tự động tạo lại Pod mới? *(Đáp án: Đối tượng <code>ReplicaSet</code> trực tiếp phát hiện thiếu Pod và spawn Pod mới).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Phân biệt sự khác nhau về cơ chế hoạt động và trường hợp sử dụng giữa hai chiến lược cập nhật <code>RollingUpdate</code> và <code>Recreate</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>RollingUpdate</code> (Chiến lược cuốn chiếu - Mặc định):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Thay thế dần dần các Pod v1 cũ bằng các Pod v2 mới theo công thức <code>maxSurge</code> và <code>maxUnavailable</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Đặc điểm:* Đảm bảo ứng dụng hoạt động liên tục <b style="color: var(--accent-primary);">0-downtime</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Sử dụng:* Tiêu chuẩn cho 90% ứng dụng Web, API, Microservices không trạng thái.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Recreate</code> (Chiến lược tạo lại):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Xoá sạch 100% các Pod v1 cũ trước, sau đó mới khởi tạo 100% các Pod v2 mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Đặc điểm:* Xuất hiện khoảng thời gian gián đoạn dịch vụ (<b style="color: var(--accent-primary);">Downtime</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Sử dụng:* Dành cho ứng dụng legacy không hỗ trợ chạy 2 phiên bản cũ/mới song song (như ứng dụng độc quyền khóa schema database).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>Recreate</code> không gây downtime.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời RollingUpdate không downtime còn Recreate có downtime nhưng không giải thích được cơ chế xoá Pod dần dần vs xoá sạch 100%.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác cơ chế hoạt động và trường hợp sử dụng phù hợp của 2 chiến lược <code>RollingUpdate</code> vs <code>Recreate</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc cấu hình <code>spec.strategy.type</code> trong YAML.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao một ứng dụng Web mua sắm trực tuyến lại không bao giờ nên dùng chiến lược <code>Recreate</code> trên production? *(Đáp án: Vì Recreate làm sập 100% Pods gây rớt toàn bộ giao dịch mua hàng của khách).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ý nghĩa của hai tham số <code>maxSurge: 25%</code> và <code>maxUnavailable: 25%</code> trong chiến lược <code>RollingUpdate</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>maxSurge</code> (Số lượng vượt mức tối đa):</b> Quy định số Pod tối đa có thể được tạo <b style="color: var(--accent-primary);">vượt quá mức <code>replicas</code></b> mong muốn trong quá trình rollout. (Ví dụ: <code>replicas: 4</code>, <code>maxSurge: 25%</code> -> được tạo thêm tối đa 1 Pod v2 mới, tổng là 5 Pods).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>maxUnavailable</code> (Số lượng gián đoạn tối đa):</b> Quy định số Pod tối đa có thể <b style="color: var(--accent-primary);">tạm dừng hoạt động / không khả dụng</b> trong quá trình rollout. (Ví dụ: <code>replicas: 4</code>, <code>maxUnavailable: 25%</code> -> được xoá tối đa 1 Pod v1 cũ, duy trì tối thiểu 3 Pods active = 75% capacity).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được 2 tham số.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>maxSurge</code> là tạo thêm còn <code>maxUnavailable</code> là xoá bớt nhưng không tính toán được con số phần trăm/tuyệt đối.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác ý nghĩa <code>maxSurge</code> và <code>maxUnavailable</code> kèm ví dụ tính toán cụ thể.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra giá trị mặc định 25% của Kubernetes.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có thể cấu hình <code>maxSurge</code> và <code>maxUnavailable</code> dưới dạng số nguyên tuyệt đối (như <code>maxSurge: 1</code>, <code>maxUnavailable: 0</code>) thay vì phần trăm được không? *(Đáp án: Hoàn toàn được).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Nếu một Deployment có <code>replicas: 4</code>, <code>maxSurge: 0</code> và <code>maxUnavailable: 1</code> thì trong quá trình rollout số Pod active tối đa và tối thiểu là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Số Pod active tối đa:</b> <b style="color: var(--accent-primary);">4 Pods</b> (Do <code>maxSurge: 0</code>, Kubernetes không bao giờ tạo thêm Pod dư thừa vượt quá <code>replicas: 4</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Số Pod active tối thiểu:</b> <b style="color: var(--accent-primary);">3 Pods</b> (Do <code>maxUnavailable: 1</code>, Kubernetes xoá 1 Pod cũ trước, duy trì 3 Pods running = 75% capacity, sau đó mới tạo 1 Pod mới).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trường hợp áp dụng:</b> Cấu hình này cực kỳ hữu ích cho môi trường bị giới hạn nghiêm ngặt về Resource Quota CPU/RAM không cho phép spawn Pod dư thừa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Tính toán sai con số tối đa/tối thiểu.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tối đa 4 nhưng không giải thích được cơ chế xoá trước 1 Pod cũ rồi mới tạo Pod mới.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác số Pod tối đa = 4 và tối thiểu = 3 kèm lý do vận hành Resource Quota.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, so sánh với cấu hình <code>maxSurge: 1</code> và <code>maxUnavailable: 0</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu đặt <code>maxSurge: 1</code> và <code>maxUnavailable: 0</code> thì số Pod active tối thiểu là bao nhiêu? *(Đáp án: Tối thiểu là 4 Pods = 100% capacity, không bao giờ bị giảm năng lực phục vụ).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Liệt kê 5 lệnh kiểm soát tiến trình thuộc bộ lệnh <code>kubectl rollout</code> và giải thích ngắn gọn tác dụng từng lệnh.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl rollout status deployment/<name></code>: Theo dõi tiến trình cập nhật theo thời gian thực.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl rollout history deployment/<name></code>: Xem danh sách lịch sử các lần nâng cấp (Revisions).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl rollout pause deployment/<name></code>: Tạm dừng tiến trình rollout hiện tại để kiểm thử.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl rollout resume deployment/<name></code>: Tiếp tục tiến trình rollout sau khi đã pause.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl rollout undo deployment/<name></code>: Quay lui phiên bản Deployment về revision trước đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không liệt kê được 5 lệnh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 3-4 lệnh nhưng quên <code>pause</code> hoặc <code>resume</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Liệt kê chuẩn xác 5 lệnh <code>status</code>, <code>history</code>, <code>pause</code>, <code>resume</code>, <code>undo</code> và tác dụng từng cái.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ kịch bản Canary Deployment kết hợp <code>pause</code> và <code>resume</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh <code>kubectl rollout restart deployment/<name></code> làm gì? *(Đáp án: Khởi tạo lại tất cả các Pods trong Deployment bằng cách kích hoạt RollingUpdate mà không cần sửa cấu hình).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Lệnh nào giúp quay lui Deployment về một phiên bản Revision 2 cụ thể trong lịch sử và cơ chế bên dưới của nó diễn ra như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl rollout undo deployment/<name> --to-revision=2 -n <namespace></code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế bên dưới:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Deployment tìm lại đối tượng <code>ReplicaSet</code> cũ ứng với Revision 2 trong etcd, tăng <code>spec.replicas</code> của ReplicaSet v2 đó lên, đồng thời giảm <code>spec.replicas</code> của ReplicaSet v3 hiện tại về 0.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tốc độ:</b> Vì ReplicaSet cũ đã được tạo sẵn từ trước, thời gian rollback diễn ra gần như <b style="color: var(--accent-primary);">tức thì trong vài giây</b>, hạ thời gian MTTR xuống tối thiểu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo gõ <code>kubectl delete deployment</code> rồi cài lại.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được <code>kubectl rollout undo</code> nhưng quên cờ <code>--to-revision=2</code> và không giải thích được cơ chế tăng/giảm replicas trên ReplicaSet cũ (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lệnh <code>kubectl rollout undo --to-revision=2</code> và cơ chế điều chỉnh replicas trên ReplicaSet cũ trong vài giây.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc kiểm tra <code>kubectl rollout history</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu gõ <code>kubectl rollout undo deployment/<name></code> mà KHÔNG truyền cờ <code>--to-revision</code> thì Deployment sẽ quay lui về revision nào? *(Đáp án: Quay lui về đúng revision 1 bước liền trước revision hiện tại).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Hai cờ <code>kubectl rollout pause</code> và <code>kubectl rollout resume</code> được sử dụng trong kịch bản triển khai ứng dụng thực tế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kịch bản Canary Deployment (Triển khai chim canary thử nghiệm):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Bước 1:* Bạn gõ <code>kubectl set image deployment/web nginx=nginx:1.27-alpine</code> để bắt đầu rollout.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Bước 2:* Ngay lập tức gõ <code>kubectl rollout pause deployment/web</code>. Tiến trình rollout bị đóng băng: 1 Pod v2 mới được tạo ra chạy song song với 3 Pod v1 cũ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Bước 3:* Đội QA/DevOps thực hiện kiểm thử lưu lượng thực tế trên 1 Pod v2 Canary đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Bước 4:* Nếu kết quả OK, gõ <code>kubectl rollout resume deployment/web</code> để cho phép 100% các Pod còn lại nâng cấp lên v2. Nếu bị bug, gõ <code>kubectl rollout undo</code> để huỷ bỏ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo pause và resume chỉ dùng để nghịch cho vui.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời tạm dừng và tiếp tục nhưng không trình bày được kịch bản Canary Deployment 4 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác kịch bản Canary Deployment kết hợp <code>pause</code> để test 1 Pod v2 trước khi <code>resume</code> toàn bộ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với việc phân tách traffic bằng Service selector.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu Deployment đang ở trạng thái <code>pause</code> mà bạn gõ <code>kubectl set image</code> lần thứ 2 thì chuyện gì xảy ra? *(Đáp án: Cấu hình mới được ghi nhận vào spec nhưng các Pod sẽ KHÔNG được thay đổi cho tới khi gõ <code>resume</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Thuộc tính <code>revisionHistoryLimit</code> trong Deployment spec có vai trò gì và giá trị mặc định của nó là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò:</b> Quy định <b style="color: var(--accent-primary);">số lượng ReplicaSet cũ tối đa được giữ lại</b> trong lịch sử etcd để phục vụ việc rollback (<code>kubectl rollout undo</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giá trị mặc định:</b> Mặc định là <b style="color: var(--accent-primary);">10</b> (nếu không khai báo trong YAML spec).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tối ưu vận hành:</b> Khi số lượng Revision vượt quá 10, Kubernetes sẽ tự động xoá các ReplicaSet cũ nhất. Giúp ngăn việc dọn dẹp etcd thủ công và tránh làm chậm lệnh query API Server.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ thuộc tính này.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được giới hạn lịch sử nhưng không nhớ con số mặc định là 10 ReplicaSets.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò lưu vết ReplicaSet cũ để undo và con số mặc định 10.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra hậu quả nếu đặt <code>revisionHistoryLimit: 0</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Điều gì xảy ra nếu bạn đặt <code>revisionHistoryLimit: 0</code> trong Deployment spec? *(Đáp án: Tất cả ReplicaSet cũ bị xoá lập tức khi rollout xong, bạn KHÔNG thể dùng <code>kubectl rollout undo</code> được nữa).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao thuộc tính <code>spec.selector</code> trong Deployment spec lại được quy định là bất biến (immutable) sau khi đối tượng được tạo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do thiết kế:</b> Thuộc tính <code>spec.selector</code> định nghĩa tập nhãn Label mà Deployment và các ReplicaSet bên dưới chịu trách nhiệm quản lý các Pods.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Rủi ro nếu cho phép sửa:</b> Nếu API Server cho phép sửa <code>spec.selector</code> của một Deployment đang chạy, Deployment sẽ ngay lập tức <b style="color: var(--accent-primary);">mất dấu (orphan)</b> toàn bộ các ReplicaSet và Pods cũ đang hoạt động. Nó sẽ coi như các Pods đó không tồn tại và spawn ra một tập Pods hoàn toàn mới, gây tranh chấp nhãn và xung đột lưu lượng mạng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách xử lý:</b> Muốn đổi selector bắt buộc phải đập đi tạo lại Deployment (<code>kubectl delete</code> và <code>kubectl apply</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo selector sửa thoải mái.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời bất biến do Kubernetes quy định nhưng không giải thích được nguy cơ mất dấu Pod (orphan Pods) và tranh chấp nhãn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác tính bất biến và nguy cơ orphan ReplicaSet/Pods nếu sửa selector.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ lỗi <code>field is immutable</code> khi apply.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để cập nhật ứng dụng thay đổi selector mà không gây downtime? *(Đáp án: Tạo 1 Deployment mới mang selector mới song song, chuyển Service selector sang Deployment mới rồi xoá Deployment cũ).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi nâng cấp image mới bị sai tag (<code>nginx:invalid-tag</code>), tại sao cấu hình <code>maxUnavailable: 0</code> lại giúp bảo vệ dịch vụ production an toàn hơn so với <code>maxUnavailable: 25%</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trường hợp <code>maxUnavailable: 25%</code>:</b> Khi image dính lỗi <code>ImagePullBackOff</code>, Kubernetes đã lỡ <b style="color: var(--accent-primary);">xoá 25% số Pod v1 cũ đang chạy</b>. Dịch vụ tuy không sập hẳn nhưng bị suy giảm 25% năng lực phục vụ traffic.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trường hợp <code>maxUnavailable: 0</code>:</b> Kubernetes <b style="color: var(--accent-primary);">bắt buộc phải tạo 1 Pod v2 mới thành công (<code>Ready</code>) trước</b> rồi mới được phép xoá bất kỳ Pod v1 cũ nào. Vì image v2 bị lỗi <code>ImagePullBackOff</code> nên Pod v2 không bao giờ <code>Ready</code>. <b style="color: var(--accent-primary);">100% số Pod v1 cũ được giữ nguyên an toàn 100% năng lực phục vụ</b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 cái như nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>maxUnavailable: 0</code> tốt hơn nhưng không giải thích được cơ chế bắt buộc Pod v2 phải Ready mới xoá Pod v1.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc giữ 100% Pod v1 cũ khi Pod v2 bị ImagePullBackOff nhờ <code>maxUnavailable: 0</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, kết hợp với vai trò của Readiness Probe.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Cần bổ sung cấu hình gì trong Pod spec để Kubelet biết chính xác container v2 mới đã sẵn sàng nhận traffic? *(Đáp án: Khai báo tệp <code>readinessProbe</code> trong Pod spec).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do quên Readiness Probe làm RollingUpdate xoá Pod cũ quá sớm gây 502, 1 âm thầm do kẹt cờ pause) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Quên Readiness Probe làm đứt kết nối 502 khi rollout):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Nâng cấp Deployment, Kubelet thấy container v2 vừa ở trạng thái <code>Running</code> (dù code ứng dụng bên trong chưa khởi động xong) lập tức xoá Pod v1 cũ, dẫn đến người dùng dính lỗi 502 Bad Gateway liên tục.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra Pod spec thấy thiếu <code>readinessProbe</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Bắt buộc khai báo <code>readinessProbe</code> (HTTP GET /port) để Kubelet chỉ xoá Pod cũ khi Pod mới thực sự <code>Ready</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Deployment kẹt trạng thái <code>pause</code> khiến lệnh update image không có tác dụng):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Gõ <code>kubectl set image</code> nhưng không thấy bất kỳ Pod mới nào được tạo ra, hệ thống âm thầm giữ nguyên phiên bản cũ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl get deploy <name> -o jsonpath='{.spec.paused}'</code> trả về <code>true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Gõ lệnh <code>kubectl rollout resume deployment/<name></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu readinessProbe và cờ paused = true (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi một Deployment bị kẹt rollout không nhúc nhích, câu lệnh nào giúp kiểm tra nguyên nhân nhanh nhất? *(Đáp án: Lệnh <code>kubectl rollout status deployment/<name></code> và <code>kubectl describe deploy <name></code>).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Thao tác nào sẽ làm Deployment sinh ra một `ReplicaSet` mới và một Revision mới trong lịch sử? Thao tác `kubectl scale` có sinh ra Revision mới không?
-
-**Đáp án chuẩn:**
-- **Điều kiện sinh Revision mới:** Chỉ khi có sự thay đổi trong cấu hình mẫu Pod **`spec.template`** (như đổi tag image, thay đổi biến môi trường env, sửa resource limits/requests, đổi readinessProbe) thì Deployment mới sinh ra 1 ReplicaSet mới và 1 Revision mới.
-- **Thao tác `kubectl scale`:** **KHÔNG sinh ra Revision mới**. Việc scale chỉ thay đổi chỉ số `spec.replicas` trên `ReplicaSet` hiện tại đang hoạt động.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo gõ `kubectl scale` sẽ làm sinh ra Revision mới.
-- **1đ:** Trả lời đổi image sinh revision mới nhưng không khẳng định được nguyên tắc chung là thay đổi ở `spec.template`.
-- **2đ:** Giải thích chuẩn xác việc sửa `spec.template` sinh Revision mới còn `kubectl scale` thì không.
-- **3đ:** Trả lời xuất sắc, chỉ ra việc xem `kubectl rollout history` để kiểm chứng.
-
-**Câu hỏi đào sâu:** Sửa comment hoặc annotation bên ngoài `spec.template` có sinh ra Revision mới không? *(Đáp án: Không, trừ khi annotation nằm dưới `spec.template.metadata.annotations`).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau về cơ chế hoạt động và trường hợp sử dụng giữa hai chiến lược cập nhật `RollingUpdate` và `Recreate`.
-
-**Đáp án chuẩn:**
-- **`RollingUpdate` (Chiến lược cuốn chiếu - Mặc định):**
-  - *Cơ chế:* Thay thế dần dần các Pod v1 cũ bằng các Pod v2 mới theo công thức `maxSurge` và `maxUnavailable`.
-  - *Đặc điểm:* Đảm bảo ứng dụng hoạt động liên tục **0-downtime**.
-  - *Sử dụng:* Tiêu chuẩn cho 90% ứng dụng Web, API, Microservices không trạng thái.
-- **`Recreate` (Chiến lược tạo lại):**
-  - *Cơ chế:* Xoá sạch 100% các Pod v1 cũ trước, sau đó mới khởi tạo 100% các Pod v2 mới.
-  - *Đặc điểm:* Xuất hiện khoảng thời gian gián đoạn dịch vụ (**Downtime**).
-  - *Sử dụng:* Dành cho ứng dụng legacy không hỗ trợ chạy 2 phiên bản cũ/mới song song (như ứng dụng độc quyền khóa schema database).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `Recreate` không gây downtime.
-- **1đ:** Trả lời RollingUpdate không downtime còn Recreate có downtime nhưng không giải thích được cơ chế xoá Pod dần dần vs xoá sạch 100%.
-- **2đ:** Phân tích chuẩn xác cơ chế hoạt động và trường hợp sử dụng phù hợp của 2 chiến lược `RollingUpdate` vs `Recreate`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc cấu hình `spec.strategy.type` trong YAML.
-
-**Câu hỏi đào sâu:** Tại sao một ứng dụng Web mua sắm trực tuyến lại không bao giờ nên dùng chiến lược `Recreate` trên production? *(Đáp án: Vì Recreate làm sập 100% Pods gây rớt toàn bộ giao dịch mua hàng của khách).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Ý nghĩa của hai tham số `maxSurge: 25%` và `maxUnavailable: 25%` trong chiến lược `RollingUpdate` là gì?
-
-**Đáp án chuẩn:**
-- **`maxSurge` (Số lượng vượt mức tối đa):** Quy định số Pod tối đa có thể được tạo **vượt quá mức `replicas`** mong muốn trong quá trình rollout. (Ví dụ: `replicas: 4`, `maxSurge: 25%` -> được tạo thêm tối đa 1 Pod v2 mới, tổng là 5 Pods).
-- **`maxUnavailable` (Số lượng gián đoạn tối đa):** Quy định số Pod tối đa có thể **tạm dừng hoạt động / không khả dụng** trong quá trình rollout. (Ví dụ: `replicas: 4`, `maxUnavailable: 25%` -> được xoá tối đa 1 Pod v1 cũ, duy trì tối thiểu 3 Pods active = 75% capacity).
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được 2 tham số.
-- **1đ:** Trả lời `maxSurge` là tạo thêm còn `maxUnavailable` là xoá bớt nhưng không tính toán được con số phần trăm/tuyệt đối.
-- **2đ:** Giải thích chuẩn xác ý nghĩa `maxSurge` và `maxUnavailable` kèm ví dụ tính toán cụ thể.
-- **3đ:** Trả lời xuất sắc, chỉ ra giá trị mặc định 25% của Kubernetes.
-
-**Câu hỏi đào sâu:** Có thể cấu hình `maxSurge` và `maxUnavailable` dưới dạng số nguyên tuyệt đối (như `maxSurge: 1`, `maxUnavailable: 0`) thay vì phần trăm được không? *(Đáp án: Hoàn toàn được).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Nếu một Deployment có `replicas: 4`, `maxSurge: 0` và `maxUnavailable: 1` thì trong quá trình rollout số Pod active tối đa và tối thiểu là bao nhiêu?
-
-**Đáp án chuẩn:**
-- **Số Pod active tối đa:** **4 Pods** (Do `maxSurge: 0`, Kubernetes không bao giờ tạo thêm Pod dư thừa vượt quá `replicas: 4`).
-- **Số Pod active tối thiểu:** **3 Pods** (Do `maxUnavailable: 1`, Kubernetes xoá 1 Pod cũ trước, duy trì 3 Pods running = 75% capacity, sau đó mới tạo 1 Pod mới).
-- **Trường hợp áp dụng:** Cấu hình này cực kỳ hữu ích cho môi trường bị giới hạn nghiêm ngặt về Resource Quota CPU/RAM không cho phép spawn Pod dư thừa.
-
-**Tiêu chí chấm:**
-- **0đ:** Tính toán sai con số tối đa/tối thiểu.
-- **1đ:** Nêu được tối đa 4 nhưng không giải thích được cơ chế xoá trước 1 Pod cũ rồi mới tạo Pod mới.
-- **2đ:** Giải thích chuẩn xác số Pod tối đa = 4 và tối thiểu = 3 kèm lý do vận hành Resource Quota.
-- **3đ:** Trả lời xuất sắc, so sánh với cấu hình `maxSurge: 1` và `maxUnavailable: 0`.
-
-**Câu hỏi đào sâu:** Nếu đặt `maxSurge: 1` và `maxUnavailable: 0` thì số Pod active tối thiểu là bao nhiêu? *(Đáp án: Tối thiểu là 4 Pods = 100% capacity, không bao giờ bị giảm năng lực phục vụ).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Liệt kê 5 lệnh kiểm soát tiến trình thuộc bộ lệnh `kubectl rollout` và giải thích ngắn gọn tác dụng từng lệnh.
-
-**Đáp án chuẩn:**
-1. `kubectl rollout status deployment/<name>`: Theo dõi tiến trình cập nhật theo thời gian thực.
-2. `kubectl rollout history deployment/<name>`: Xem danh sách lịch sử các lần nâng cấp (Revisions).
-3. `kubectl rollout pause deployment/<name>`: Tạm dừng tiến trình rollout hiện tại để kiểm thử.
-4. `kubectl rollout resume deployment/<name>`: Tiếp tục tiến trình rollout sau khi đã pause.
-5. `kubectl rollout undo deployment/<name>`: Quay lui phiên bản Deployment về revision trước đó.
-
-**Tiêu chí chấm:**
-- **0đ:** Không liệt kê được 5 lệnh.
-- **1đ:** Nêu được 3-4 lệnh nhưng quên `pause` hoặc `resume`.
-- **2đ:** Liệt kê chuẩn xác 5 lệnh `status`, `history`, `pause`, `resume`, `undo` và tác dụng từng cái.
-- **3đ:** Trả lời xuất sắc, minh hoạ kịch bản Canary Deployment kết hợp `pause` và `resume`.
-
-**Câu hỏi đào sâu:** Lệnh `kubectl rollout restart deployment/<name>` làm gì? *(Đáp án: Khởi tạo lại tất cả các Pods trong Deployment bằng cách kích hoạt RollingUpdate mà không cần sửa cấu hình).*
-
----
-
-### Câu 7 — 🔥
-
-**Hỏi:** Lệnh nào giúp quay lui Deployment về một phiên bản Revision 2 cụ thể trong lịch sử và cơ chế bên dưới của nó diễn ra như thế nào?
-
-**Đáp án chuẩn:**
-- **Câu lệnh chuẩn:**
-  `kubectl rollout undo deployment/<name> --to-revision=2 -n <namespace>`
-- **Cơ chế bên dưới:**
-  Deployment tìm lại đối tượng `ReplicaSet` cũ ứng với Revision 2 trong etcd, tăng `spec.replicas` của ReplicaSet v2 đó lên, đồng thời giảm `spec.replicas` của ReplicaSet v3 hiện tại về 0.
-- **Tốc độ:** Vì ReplicaSet cũ đã được tạo sẵn từ trước, thời gian rollback diễn ra gần như **tức thì trong vài giây**, hạ thời gian MTTR xuống tối thiểu.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo gõ `kubectl delete deployment` rồi cài lại.
-- **1đ:** Nói được `kubectl rollout undo` nhưng quên cờ `--to-revision=2` và không giải thích được cơ chế tăng/giảm replicas trên ReplicaSet cũ (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác lệnh `kubectl rollout undo --to-revision=2` và cơ chế điều chỉnh replicas trên ReplicaSet cũ trong vài giây.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc kiểm tra `kubectl rollout history`.
-
-**Câu hỏi đào sâu:** Nếu gõ `kubectl rollout undo deployment/<name>` mà KHÔNG truyền cờ `--to-revision` thì Deployment sẽ quay lui về revision nào? *(Đáp án: Quay lui về đúng revision 1 bước liền trước revision hiện tại).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Hai cờ `kubectl rollout pause` và `kubectl rollout resume` được sử dụng trong kịch bản triển khai ứng dụng thực tế nào?
-
-**Đáp án chuẩn:**
-- **Kịch bản Canary Deployment (Triển khai chim canary thử nghiệm):**
-  - *Bước 1:* Bạn gõ `kubectl set image deployment/web nginx=nginx:1.27-alpine` để bắt đầu rollout.
-  - *Bước 2:* Ngay lập tức gõ `kubectl rollout pause deployment/web`. Tiến trình rollout bị đóng băng: 1 Pod v2 mới được tạo ra chạy song song với 3 Pod v1 cũ.
-  - *Bước 3:* Đội QA/DevOps thực hiện kiểm thử lưu lượng thực tế trên 1 Pod v2 Canary đó.
-  - *Bước 4:* Nếu kết quả OK, gõ `kubectl rollout resume deployment/web` để cho phép 100% các Pod còn lại nâng cấp lên v2. Nếu bị bug, gõ `kubectl rollout undo` để huỷ bỏ.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo pause và resume chỉ dùng để nghịch cho vui.
-- **1đ:** Trả lời tạm dừng và tiếp tục nhưng không trình bày được kịch bản Canary Deployment 4 bước.
-- **2đ:** Phân tích chuẩn xác kịch bản Canary Deployment kết hợp `pause` để test 1 Pod v2 trước khi `resume` toàn bộ.
-- **3đ:** Trả lời xuất sắc, liên hệ với việc phân tách traffic bằng Service selector.
-
-**Câu hỏi đào sâu:** Nếu Deployment đang ở trạng thái `pause` mà bạn gõ `kubectl set image` lần thứ 2 thì chuyện gì xảy ra? *(Đáp án: Cấu hình mới được ghi nhận vào spec nhưng các Pod sẽ KHÔNG được thay đổi cho tới khi gõ `resume`).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Thuộc tính `revisionHistoryLimit` trong Deployment spec có vai trò gì và giá trị mặc định của nó là bao nhiêu?
-
-**Đáp án chuẩn:**
-- **Vai trò:** Quy định **số lượng ReplicaSet cũ tối đa được giữ lại** trong lịch sử etcd để phục vụ việc rollback (`kubectl rollout undo`).
-- **Giá trị mặc định:** Mặc định là **10** (nếu không khai báo trong YAML spec).
-- **Tối ưu vận hành:** Khi số lượng Revision vượt quá 10, Kubernetes sẽ tự động xoá các ReplicaSet cũ nhất. Giúp ngăn việc dọn dẹp etcd thủ công và tránh làm chậm lệnh query API Server.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ thuộc tính này.
-- **1đ:** Nói được giới hạn lịch sử nhưng không nhớ con số mặc định là 10 ReplicaSets.
-- **2đ:** Giải thích chuẩn xác vai trò lưu vết ReplicaSet cũ để undo và con số mặc định 10.
-- **3đ:** Trả lời xuất sắc, chỉ ra hậu quả nếu đặt `revisionHistoryLimit: 0`.
-
-**Câu hỏi đào sâu:** Điều gì xảy ra nếu bạn đặt `revisionHistoryLimit: 0` trong Deployment spec? *(Đáp án: Tất cả ReplicaSet cũ bị xoá lập tức khi rollout xong, bạn KHÔNG thể dùng `kubectl rollout undo` được nữa).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Tại sao thuộc tính `spec.selector` trong Deployment spec lại được quy định là bất biến (immutable) sau khi đối tượng được tạo?
-
-**Đáp án chuẩn:**
-- **Lý do thiết kế:** Thuộc tính `spec.selector` định nghĩa tập nhãn Label mà Deployment và các ReplicaSet bên dưới chịu trách nhiệm quản lý các Pods.
-- **Rủi ro nếu cho phép sửa:** Nếu API Server cho phép sửa `spec.selector` của một Deployment đang chạy, Deployment sẽ ngay lập tức **mất dấu (orphan)** toàn bộ các ReplicaSet và Pods cũ đang hoạt động. Nó sẽ coi như các Pods đó không tồn tại và spawn ra một tập Pods hoàn toàn mới, gây tranh chấp nhãn và xung đột lưu lượng mạng.
-- **Cách xử lý:** Muốn đổi selector bắt buộc phải đập đi tạo lại Deployment (`kubectl delete` và `kubectl apply`).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo selector sửa thoải mái.
-- **1đ:** Trả lời bất biến do Kubernetes quy định nhưng không giải thích được nguy cơ mất dấu Pod (orphan Pods) và tranh chấp nhãn.
-- **2đ:** Giải thích chuẩn xác tính bất biến và nguy cơ orphan ReplicaSet/Pods nếu sửa selector.
-- **3đ:** Trả lời xuất sắc, minh hoạ lỗi `field is immutable` khi apply.
-
-**Câu hỏi đào sâu:** Làm sao để cập nhật ứng dụng thay đổi selector mà không gây downtime? *(Đáp án: Tạo 1 Deployment mới mang selector mới song song, chuyển Service selector sang Deployment mới rồi xoá Deployment cũ).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Khi nâng cấp image mới bị sai tag (`nginx:invalid-tag`), tại sao cấu hình `maxUnavailable: 0` lại giúp bảo vệ dịch vụ production an toàn hơn so với `maxUnavailable: 25%`?
-
-**Đáp án chuẩn:**
-- **Trường hợp `maxUnavailable: 25%`:** Khi image dính lỗi `ImagePullBackOff`, Kubernetes đã lỡ **xoá 25% số Pod v1 cũ đang chạy**. Dịch vụ tuy không sập hẳn nhưng bị suy giảm 25% năng lực phục vụ traffic.
-- **Trường hợp `maxUnavailable: 0`:** Kubernetes **bắt buộc phải tạo 1 Pod v2 mới thành công (`Ready`) trước** rồi mới được phép xoá bất kỳ Pod v1 cũ nào. Vì image v2 bị lỗi `ImagePullBackOff` nên Pod v2 không bao giờ `Ready`. **100% số Pod v1 cũ được giữ nguyên an toàn 100% năng lực phục vụ**.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 cái như nhau.
-- **1đ:** Trả lời `maxUnavailable: 0` tốt hơn nhưng không giải thích được cơ chế bắt buộc Pod v2 phải Ready mới xoá Pod v1.
-- **2đ:** Giải thích chuẩn xác việc giữ 100% Pod v1 cũ khi Pod v2 bị ImagePullBackOff nhờ `maxUnavailable: 0`.
-- **3đ:** Trả lời xuất sắc, kết hợp với vai trò của Readiness Probe.
-
-**Câu hỏi đào sâu:** Cần bổ sung cấu hình gì trong Pod spec để Kubelet biết chính xác container v2 mới đã sẵn sàng nhận traffic? *(Đáp án: Khai báo tệp `readinessProbe` trong Pod spec).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do quên Readiness Probe làm RollingUpdate xoá Pod cũ quá sớm gây 502, 1 âm thầm do kẹt cờ pause) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Quên Readiness Probe làm đứt kết nối 502 khi rollout):**
-   - *Triệu chứng:* Nâng cấp Deployment, Kubelet thấy container v2 vừa ở trạng thái `Running` (dù code ứng dụng bên trong chưa khởi động xong) lập tức xoá Pod v1 cũ, dẫn đến người dùng dính lỗi 502 Bad Gateway liên tục.
-   - *Phát hiện:* Kiểm tra Pod spec thấy thiếu `readinessProbe`.
-   - *Khắc phục:* Bắt buộc khai báo `readinessProbe` (HTTP GET /port) để Kubelet chỉ xoá Pod cũ khi Pod mới thực sự `Ready`.
-2. **Chế độ hỏng 2 (Âm thầm - Deployment kẹt trạng thái `pause` khiến lệnh update image không có tác dụng):**
-   - *Triệu chứng:* Gõ `kubectl set image` nhưng không thấy bất kỳ Pod mới nào được tạo ra, hệ thống âm thầm giữ nguyên phiên bản cũ.
-   - *Phát hiện:* Gõ `kubectl get deploy <name> -o jsonpath='{.spec.paused}'` trả về `true`.
-   - *Khắc phục:* Gõ lệnh `kubectl rollout resume deployment/<name>`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu readinessProbe và cờ paused = true (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi một Deployment bị kẹt rollout không nhúc nhích, câu lệnh nào giúp kiểm tra nguyên nhân nhanh nhất? *(Đáp án: Lệnh `kubectl rollout status deployment/<name>` và `kubectl describe deploy <name>`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Deployment quản lý ứng dụng không trạng thái (Stateless Workloads) thông qua các đối tượng <code>ReplicaSet</code> trung gian bằng nhãn <code>pod-template-hash</code>."*
+2. *"Chỉ khi thay đổi cấu hình <code>spec.template</code> (như đổi tag image) thì Deployment mới sinh ra Revision và ReplicaSet mới; <code>kubectl scale</code> thì không."*
+3. *"Chiến lược <code>RollingUpdate</code> với <code>maxSurge</code> và <code>maxUnavailable</code> (mặc định 25%) đảm bảo cập nhật phiên bản ứng dụng 0-downtime."*
+4. *"Cấu hình <code>maxSurge: 1</code> và <code>maxUnavailable: 0</code> kết hợp <code>readinessProbe</code> đảm bảo năng lực phục vụ luôn duy trì tối thiểu 100% trong suốt quá trình nâng cấp."*
+5. *"Lệnh <code>kubectl rollout undo deployment/<name> --to-revision=<N></code> cho phép quay lui ứng dụng về phiên bản cũ an toàn trong vài giây."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1105,40 +1173,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Chiến lược `RollingUpdate` với `maxSurge` và `maxUnavailable` (mặc định 25%) đảm bảo cập nhật phiên bản ứng dụng 0-downtime."*
 4. *"Cấu hình `maxSurge: 1` và `maxUnavailable: 0` kết hợp `readinessProbe` đảm bảo năng lực phục vụ luôn duy trì tối thiểu 100% trong suốt quá trình nâng cấp."*
 5. *"Lệnh `kubectl rollout undo deployment/<name> --to-revision=<N>` cho phép quay lui ứng dụng về phiên bản cũ an toàn trong vài giây."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Mối quan hệ 3 tầng Deployment -> ReplicaSet -> Pod & `pod-template-hash` (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Điều kiện sinh Revision mới (sửa `spec.template` vs `kubectl scale`) |
-| Câu 3 | ★★★ | 3 | | Phân biệt `RollingUpdate` (0 downtime) vs `Recreate` (downtime) |
-| Câu 4 | ★★★ | 3 | | Ý nghĩa `maxSurge` (vượt mức) và `maxUnavailable` (gián đoạn) |
-| Câu 5 | ★★★ | 3 | | Tính toán Pod active khi `maxSurge: 0` và `maxUnavailable: 1` |
-| Câu 6 | ★★★ | 3 | | Bộ 5 lệnh `kubectl rollout` (`status`, `history`, `pause`, `resume`, `undo`) |
-| Câu 7 | 🔥 | 3 | | Lệnh `kubectl rollout undo --to-revision=<N>` hạ MTTR (trần 1đ nếu thiếu) |
-| Câu 8 | ★★★ | 3 | | Kịch bản Canary Deployment kết hợp `pause` và `resume` |
-| Câu 9 | ★★★ | 3 | | Thuộc tính `revisionHistoryLimit` (mặc định 10 ReplicaSets) |
-| Câu 10 | ★★★ | 3 | | Tính bất biến immutable của `spec.selector` trong Deployment |
-| Câu 11 | ★★★ | 3 | | Bảo vệ dịch vụ khi image lỗi với `maxUnavailable: 0` |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (quên Readiness Probe & kẹt cờ pause) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các Deployment trong cụm và phát hiện bất kỳ Deployment nào đang có `AVAILABLE < REPLICAS`.
-2. **BTVN 2:** Thực hành tạo 1 Deployment Nginx, cập nhật qua 3 phiên bản image (`1.25`, `1.26`, `1.27`), sau đó rollback chính xác về Revision 2.
-3. **BTVN 3:** Thử nghiệm kịch bản Canary Deployment bằng cách dùng `kubectl rollout pause` sau khi set image mới và trích xuất danh sách Pods thuộc 2 phiên bản.
-4. **BTVN 4 — Chuẩn bị cho Buổi 16 (`buoi-16-daemonset-statefulset-job`):**
-   - *Câu 1:* Đối tượng `DaemonSet` khác `Deployment` như thế nào về mục đích triển khai trên các Node trong cụm?
-   - *Câu 2:* Tại sao các ứng dụng có trạng thái (Stateful Workloads như Database) bắt buộc phải dùng `StatefulSet` thay vì `Deployment`?
-   - *Câu 3:* Phân biệt sự khác nhau giữa đối tượng `Job` (chạy 1 lần) và `CronJob` (chạy định kỳ theo lịch cron).
-
-> **Đoạn kết nối Buổi 16:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 16 — buổi học mở rộng sang các kiểu workload đặc thù trong Kubernetes: DaemonSet (chạy log/monitoring agent trên mọi Node), StatefulSet (chạy cơ sở dữ liệu có định danh mạng và đĩa riêng), Job và CronJob (xử lý tác vụ tính toán lô định kỳ) trong CKA và CKAD.
 
 ---
 
@@ -1424,15 +1458,15 @@ kubectl rollout resume deployment/<deploy-name> -n <namespace>
 kubectl rollout undo deployment/<deploy-name> --to-revision=<N> -n <namespace>
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 16] Chuyên Sâu Workloads Phức Tạp: DaemonSet, StatefulSet (Headless Service), Job & CronJob Xử Lý Batch](cka-16-16-daemonset-statefulset-job.html).
+
 {% endraw %}

@@ -590,34 +590,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-```mermaid
-mindmap
-  root((FQCN & Collections))
-    Cấu Trúc Tên Định Danh
-      namespace.collection.plugin
-      ansible.builtin cốt lõi
-      community.general mở rộng
-    Cú Pháp & Tài Liệu CLI
-      collections directive rút gọn
-      ansible-doc tra cứu snippet
-      FQCN cho Lookup & Filter
-    Chuẩn Hóa Enterprise
-      Triệt tiêu xung đột module
-      ansible-lint gác cổng CI/CD
-      Idempotency changed=0 Lần 2
-```
-
-### Năm Điểm Cốt Lõi Phải Ghi Nhớ:
-1. **Áp dụng 100% FQCN:** Bắt buộc dùng `ansible.builtin.<module>` cho mọi task thay thế hoàn toàn tên ngắn cũ.
-2. **Cấu trúc 3 tầng quy chuẩn:** FQCN gồm `namespace.collection.plugin_name`.
-3. **Làm chủ `ansible-doc`:** Tra cứu tài liệu và ví dụ mẫu snippet trực tiếp từ dòng lệnh.
-4. **Dùng `collections:` directive đúng nơi:** Rút ngắn cú pháp khi gọi nhiều module từ cùng một Collection.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Chuẩn hóa FQCN đảm bảo giữ nguyên tính Idempotency và đối soát thực tế trên máy đích.
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 18: Tái Sử Dụng Mã Nguồn Tối Ưu Với include vs import: Phân Biệt Tĩnh (Static) & Động (Dynamic) Trong Kịch Bản Phức Tạp](ansible-18-18-include-import.html).
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 18] So Sánh Thực Chiến Include vs Import: Dynamic Runtime Evaluation vs Static Pre-Processing Của Tasks/Roles](ansible-18-18-include-import.html).
+
 {% endraw %}

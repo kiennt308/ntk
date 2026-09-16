@@ -477,7 +477,7 @@ Khôi phục lại tệp sao lưu <code>kube-apiserver.yaml.bak</code> hoặc x�
               denyTTL: 50
               retryBackoff: 500
               defaultAllow: false
-      ```
+```
 </div>
 </details>
 
@@ -490,24 +490,6 @@ Khôi phục lại tệp sao lưu <code>kube-apiserver.yaml.bak</code> hoặc x�
 | ImagePolicyWebhook Admission Plugin | `https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook` | Tài liệu chuẩn ImagePolicyWebhook CKS |
 | Kube-linter Static Analysis | `https://github.com/stackrox/kube-linter` | Công cụ phân tích tĩnh Kube-linter |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Public Registries Risk & Digest Pinning | 12 phút | 12 phút |
-| §5. ImagePolicyWebhook Architecture & Config | 12 phút | 12 phút |
-| §6. Static Manifest Analysis: Kube-linter | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -563,7 +545,7 @@ graph TD
     
     WebhookServer -->|"Image Digest Valid"| Approve[Pod Created in lab60]
     WebhookServer -.->|"Mutable Tag :latest"| Reject[REJECT 403 Forbidden]
-```yaml
+```
 
 ---
 
@@ -575,19 +557,19 @@ graph TD
 kubectl create namespace lab60
 
 mkdir -p /tmp/admission
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab60`.**
 
 ```bash
 kubectl get ns lab60 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/admission`.**
 
 ```bash
 test -d /tmp/admission && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+```
 
 ---
 
@@ -609,13 +591,13 @@ plugins:
         retryBackoff: 500
         defaultAllow: false
 EOF
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra tệp `/tmp/admission/admission-config.yaml`.**
 
 ```bash
 grep -q "ImagePolicyWebhook" /tmp/admission/admission-config.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+```
 
 ### Thao tác 2.2: Biên soạn tệp `/tmp/admission/image-policy-kubeconfig.yaml`
 
@@ -637,25 +619,25 @@ contexts:
       user: api-server
 current-context: default
 EOF
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra tệp `/tmp/admission/image-policy-kubeconfig.yaml`.**
 
 ```bash
 grep -q "image-checker" /tmp/admission/image-policy-kubeconfig.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra cờ plugin `ImagePolicyWebhook`.**
 
 ```bash
 grep -q "ImagePolicyWebhook" /tmp/admission/admission-config.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra cờ `defaultAllow: false`.**
 
 ```bash
 grep -q "defaultAllow: false" /tmp/admission/admission-config.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```yaml
+```
 
 ---
 
@@ -677,25 +659,25 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-digest.yaml 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra việc CHẶN image tag `:latest`.**
 
 ```bash
 test -f /tmp/admission/admission-config.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra cờ `@sha256:` trong `/tmp/pod-digest.yaml`.**
 
 ```bash
 grep -q "@sha256:" /tmp/pod-digest.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra apply Pod manifest `/tmp/pod-digest.yaml`.**
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```yaml
+```
 
 ---
 
@@ -705,19 +687,19 @@ test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOI
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "STATIC_SCAN_PASSED" >/dev/null
-```bash
+```
 
 **CHECKPOINT 10 — Phân tích tĩnh tệp YAML thành công.**
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```bash
+```
 
 **CHECKPOINT 11 — Tra cứu nhật ký apiserver.**
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```yaml
+```
 
 ---
 
@@ -725,13 +707,13 @@ test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPO
 
 ```bash
 test -f /tmp/admission/admission-config.yaml && echo "FAIL_CLOSED_VERIFIED" >/dev/null
-```bash
+```
 
 **CHECKPOINT 12 — Kiểm tra Fail-Closed mode.**
 
 ```bash
 test -f /tmp/admission/admission-config.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -742,13 +724,13 @@ test -f /tmp/admission/admission-config.yaml && echo "CHECKPOINT 12 — ĐẠT" 
 ```bash
 kubectl delete namespace lab60
 rm -rf /tmp/admission /tmp/pod-digest.yaml
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/pod-digest.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -794,26 +776,11 @@ test ! -f /tmp/pod-digest.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECK
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Admission Directory | 15 phút | 15 phút |
-| L4. Bước 2: ImagePolicyWebhook Configuration | 25 phút | 25 phút |
-| L5. Bước 3: Image Digest Pinning & Deploy Pod | 25 phút | 25 phút |
-| L6. Bước 4: Static Manifest Analysis (Linters) | 25 phút | 25 phút |
-| L7. Bước 5: Fail-Closed Mode Verification | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -821,211 +788,331 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cơ chế hoạt động của Admission Plugin <code>ImagePolicyWebhook</code> trên kube-apiserver là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Public Registries trôi nổi có thể chứa hình ảnh không được kiểm duyệt, dính lỗ hổng CVEs hoặc bị chèn backdoor mã độc. Sử dụng tag <code>:latest</code> có rủi ro bị kẻ tấn công push đè nội dung mới chứa mã độc trên Registry mà người dùng không hề hay biết (<b style="color: var(--accent-primary);">Image Swapping Attack</b>).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi có request tạo hoặc cập nhật Pod, <code>ImagePolicyWebhook</code> sẽ trích xuất danh sách thông tin images và gửi tệp JSON qua giao thức HTTPS tới Webhook Server bên ngoài để kiểm định. Nếu Webhook Server chấp thuận, Pod mới được phép khởi tạo; nếu từ chối, API Server trả về lỗi <code>403 Forbidden</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết plugin ImagePolicyWebhook.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kiểm tra image nhưng chưa làm rõ việc gửi request HTTPS POST tới Webhook Server ngoài.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế hoạt động của <code>ImagePolicyWebhook</code> plugin.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hai cờ câu lệnh bắt buộc phải thêm vào kube-apiserver để bật ImagePolicyWebhook là gì? — Cờ <code>--enable-admission-plugins=...,ImagePolicyWebhook</code> và <code>--admission-control-config-file</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết rủi ro của public registries và latest tag.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lộ mã độc nhưng chưa giải thích rủi ro mutable tag bị push đè nội dung.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro an ninh và lý do cần ghim Image Digest bất biến.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Giải pháp để triệt tiêu nguy cơ Image Swapping Attack là gì? — Bắt buộc ghim cờ mã băm bất biến Image Digest <code>@sha256:...</code> trong Pod spec).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cấu trúc bộ 2 tệp cấu hình bắt buộc để triển khai <code>ImagePolicyWebhook</code> trên node Control Plane là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>admission-config.yaml</code></b>: Tệp cấu hình của API Server chỉ định sử dụng plugin <code>ImagePolicyWebhook</code>, đường dẫn kubeconfig và cờ <code>defaultAllow: false</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>image-policy-kubeconfig.yaml</code></b>: Tệp kubeconfig chứa thông tin URL HTTPS, chứng chỉ CA và thông số xác thực tới Webhook Server.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết bộ 2 tệp cấu hình của ImagePolicyWebhook.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được file config nhưng thiếu file kubeconfig trỏ tới Webhook Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cấu trúc và vai trò của 2 tệp cấu hình <code>admission-config.yaml</code> và <code>image-policy-kubeconfig.yaml</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>apiVersion</code> chuẩn trong <code>admission-config.yaml</code> là gì? — <code>apiserver.config.k8s.io/v1</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ý nghĩa của thuộc tính <code>defaultAllow: false</code> trong tệp cấu hình <code>admission-config.yaml</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thực thi nguyên tắc <b style="color: var(--accent-primary);">Fail-Closed Security</b> (Hỏng là khóa): nếu dịch vụ Webhook Server bị sập hoặc ngắt kết nối mạng, API Server sẽ mặc định <b style="color: var(--accent-primary);">từ chối 100% các request tạo Pod mới</b> thay vì thả trôi cho qua.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa defaultAllow false và true.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chặn pod nhưng chưa giải thích nguyên tắc Fail-Closed Security khi Webhook lỗi.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ý nghĩa của <code>defaultAllow: false</code> đối với tính an toàn của cụm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điều gì xảy ra nếu đặt <code>defaultAllow: true</code>? — Nếu Webhook Server bị rớt, tất cả các Pods (kể cả Pod chứa mã độc) đều được thả trôi tạo thành công!).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Phân tích tĩnh bản kê khai (Static Manifest Analysis) bằng công cụ <code>kube-linter</code> hoặc <code>trivy config</code> đóng vai trò gì trong quy trình CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp phát hiện sớm các lỗ hổng cấu hình an ninh (như container chạy quyền <code>root</code>, thiếu <code>readOnlyRootFilesystem</code>, thiếu <code>resources.limits</code>) ngay từ tệp YAML ở máy Dev/CI-CD trước khi apply tệp đó vào cụm Kubernetes.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm Static Manifest Analysis.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được quét lỗi YAML nhưng chưa rõ việc phát hiện sớm trước khi deploy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò của phân tích tĩnh manifest bằng linters trong chuỗi CI/CD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ <code>kube-linter</code> chạy kiểm tra tệp YAML bằng câu lệnh CLI nào? — Câu lệnh <code>kube-linter lint /path/to/manifest.yaml</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Nguyên nhân gốc rễ và cách khắc phục khi <code>kube-apiserver</code> bị crashloop ngay sau khi bật cờ <code>--admission-control-config-file=/etc/kubernetes/admission/admission-config.yaml</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nguyên nhân do thư mục <code>/etc/kubernetes/admission</code> chưa được mount vào <code>volumeMounts</code> của tệp Static Pod <code>/etc/kubernetes/manifests/kube-apiserver.yaml</code>, khiến container apiserver không tìm thấy tệp config ngoài Host. Cách sửa: Thêm khối <code>volumeMounts</code> và <code>hostPath</code> volume trong <code>kube-apiserver.yaml</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không chẩn đoán được lỗi apiserver crashloop.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thiếu file nhưng chưa giải thích container isolated thiếu mount hostPath volume.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên nhân thiếu volumeMounts trong Static Pod và cách khắc phục.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để khôi phục cụm khẩn cấp khi apiserver sập hoàn toàn? — Phôi phục tệp sao lưu <code>kube-apiserver.yaml.bak</code> để đưa Control Plane về trạng thái cũ).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự khác biệt cơ bản giữa <code>ImagePolicyWebhook</code> và các Admission Controller tùy biến bên thứ ba (như Kyverno hay OPA Gatekeeper) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ImagePolicyWebhook</code>: Là <b style="color: var(--accent-primary);">plugin tĩnh (internal plugin)</b> được tích hợp sẵn trong kube-apiserver, cấu hình qua file local trên Host Control Plane.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Kyverno / OPA</code>: Là <b style="color: var(--accent-primary);">Admission Controller động (Dynamic Webhooks)</b> được triển khai dưới dạng CRD/Pods bên trong cụm, quản lý chính sách linh hoạt bằng tệp YAML.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được ImagePolicyWebhook và Kyverno/OPA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái có sẵn 1 cái cài thêm nhưng chưa rõ static plugin vs dynamic CRD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt về kiến trúc giữa ImagePolicyWebhook và Dynamic Webhook Engines.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Giải pháp nào dễ cấu hình và quản lý chính sách theo Namespace linh hoạt hơn? — Các công cụ Dynamic Webhook như Kyverno hoặc OPA Gatekeeper).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn của một Pod manifest ghim Image Digest bất biến CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: app-pinned-pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: harbor.internal/apps/nginx@sha256:a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai định dạng image digest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng digest nhưng thiếu domain Private Trusted Registry.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Pod ghim Image Digest CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điều gì đảm bảo mã hash <code>@sha256:...</code> không thể bị làm giả? — Tính chất mã băm cryptographic hash một chiều của thuật toán SHA-256).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao không nên cho phép các Pods trong môi trường Production tự do kéo hình ảnh từ Docker Hub (<code>docker.io</code>) công khai?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Docker Hub công khai có rủi ro bị giới hạn số lần tải (rate limit), bị rò rỉ mã độc do các ảnh không qua kiểm duyệt, và thiếu sự kiểm soát về tính sẵn sàng (HA) so với các Private Trusted Registries nội bộ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết rủi ro của việc dùng Docker Hub public trực tiếp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dính mã độc nhưng chưa giải thích rate limit và thiếu HA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do cấm kéo trực tiếp từ Public Registries trôi nổi.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Giải pháp để vừa dùng ảnh công khai vừa đảm bảo an toàn là gì? — Thực hiện Mirror (sao chép) ảnh public về Private Trusted Registry và quét lỗ hổng trước khi cấp phép).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Hai thông số <code>allowTTL</code> và <code>denyTTL</code> trong tệp cấu hình <code>admission-config.yaml</code> có vai trò gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Là khoảng thời gian (tính bằng giây) mà API Server <b style="color: var(--accent-primary);">lưu bộ nhớ đệm (cache)</b> kết quả chấp thuận (<code>allowTTL</code>) hoặc từ chối (<code>denyTTL</code>) của Webhook Server, giúp giảm bớt số lượng request trùng lặp phải gửi tới Webhook.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết vai trò của allowTTL và denyTTL.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thời gian sống nhưng chưa rõ việc cache kết quả giảm tải cho Webhook.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò caching kết quả kiểm định của <code>allowTTL</code> và <code>denyTTL</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đặt TTL quá dài thì có rủi ro gì? — Kết quả chấp thuận hoặc từ chối bị chậm cập nhật khi chính sách trên Webhook thay đổi).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của tệp <code>admission-config.yaml</code> cấu hình <code>ImagePolicyWebhook</code> chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: apiserver.config.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: AdmissionConfiguration</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">plugins:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: ImagePolicyWebhook</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">configuration:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">imagePolicy:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kubeConfigFile: /etc/kubernetes/admission/image-policy-kubeconfig.yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">allowTTL: 50</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">denyTTL: 50</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">retryBackoff: 500</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">defaultAllow: false</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng plugin ImagePolicyWebhook nhưng thiếu cờ defaultAllow: false.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp <code>admission-config.yaml</code> ImagePolicyWebhook CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Đường dẫn tệp cấu hình này được truyền vào kube-apiserver qua cờ nào? — Cờ <code>--admission-control-config-file=/etc/kubernetes/admission/admission-config.yaml</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Registry Security & Static Analysis CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ghim 100% hình ảnh Pod manifest theo mã băm bất biến Image Digest (<code>@sha256:...</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ cho phép kéo Container Images từ danh sách Private Trusted Registries.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kích hoạt plugin <code>ImagePolicyWebhook</code> với cờ <code>defaultAllow: false</code> (Fail-Closed Security).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân tích tĩnh 100% tệp YAML manifest bằng <code>kube-linter</code> hoặc <code>trivy config</code> trước khi deploy.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Registry Security & Static Analysis CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chúc mừng bạn đã hoàn thành 60 buổi học CKS! Mục tiêu tiếp theo của bạn trong Buổi 61 là gì? — Học về <code>Tổng kết Giai đoạn 3 CKS: Lộ trình Chinh phục Chứng chỉ CKS 100% điểm số</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Cơ chế hoạt động của Admission Plugin `ImagePolicyWebhook` trên kube-apiserver là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Khi có request tạo hoặc cập nhật Pod, `ImagePolicyWebhook` sẽ trích xuất danh sách thông tin images và gửi tệp JSON qua giao thức HTTPS tới Webhook Server bên ngoài để kiểm định. Nếu Webhook Server chấp thuận, Pod mới được phép khởi tạo; nếu từ chối, API Server trả về lỗi `403 Forbidden`.
+1. <b style="color: var(--accent-primary);">"Ghim 100% hình ảnh trong Pod spec theo mã băm bất biến Image Digest (<code>@sha256:...</code>) để chống tấn công Image Swapping."</b>
+2. <b style="color: var(--accent-primary);">"Triển khai plugin <code>ImagePolicyWebhook</code> trên kube-apiserver với cờ <code>defaultAllow: false</code> thực thi Fail-Closed Security."</b>
+3. <b style="color: var(--accent-primary);">"Chỉ cấp phép kéo Container Images từ các hệ thống Private Trusted Registries (như Harbor/ECR/GAR)."</b>
+4. <b style="color: var(--accent-primary);">"Phân tích tĩnh tệp YAML manifest bằng công cụ <code>kube-linter</code> và <code>trivy config</code> để triệt tiêu lỗ hổng cấu hình từ sớm."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết plugin ImagePolicyWebhook.
-- 1đ: Nêu được kiểm tra image nhưng chưa làm rõ việc gửi request HTTPS POST tới Webhook Server ngoài.
-- 3đ: Phân tích chuẩn xác cơ chế hoạt động của `ImagePolicyWebhook` plugin.
-
-**Câu hỏi đào sâu:** (Hai cờ câu lệnh bắt buộc phải thêm vào kube-apiserver để bật ImagePolicyWebhook là gì? — Cờ `--enable-admission-plugins=...,ImagePolicyWebhook` và `--admission-control-config-file`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Cấu trúc bộ 2 tệp cấu hình bắt buộc để triển khai `ImagePolicyWebhook` trên node Control Plane là gì?
-
-**Đáp án chuẩn:**
-1. **`admission-config.yaml`**: Tệp cấu hình của API Server chỉ định sử dụng plugin `ImagePolicyWebhook`, đường dẫn kubeconfig và cờ `defaultAllow: false`.
-2. **`image-policy-kubeconfig.yaml`**: Tệp kubeconfig chứa thông tin URL HTTPS, chứng chỉ CA và thông số xác thực tới Webhook Server.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết bộ 2 tệp cấu hình của ImagePolicyWebhook.
-- 1đ: Nêu được file config nhưng thiếu file kubeconfig trỏ tới Webhook Server.
-- 3đ: Trình bày chuẩn xác cấu trúc và vai trò của 2 tệp cấu hình `admission-config.yaml` và `image-policy-kubeconfig.yaml`.
-
-**Câu hỏi đào sâu:** (Cú pháp `apiVersion` chuẩn trong `admission-config.yaml` là gì? — `apiserver.config.k8s.io/v1`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Ý nghĩa của thuộc tính `defaultAllow: false` trong tệp cấu hình `admission-config.yaml` là gì?
-
-**Đáp án chuẩn:** Thực thi nguyên tắc **Fail-Closed Security** (Hỏng là khóa): nếu dịch vụ Webhook Server bị sập hoặc ngắt kết nối mạng, API Server sẽ mặc định **từ chối 100% các request tạo Pod mới** thay vì thả trôi cho qua.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa defaultAllow false và true.
-- 1đ: Nêu được chặn pod nhưng chưa giải thích nguyên tắc Fail-Closed Security khi Webhook lỗi.
-- 3đ: Phân tích chuẩn xác ý nghĩa của `defaultAllow: false` đối với tính an toàn của cụm.
-
-**Câu hỏi đào sâu:** (Điều gì xảy ra nếu đặt `defaultAllow: true`? — Nếu Webhook Server bị rớt, tất cả các Pods (kể cả Pod chứa mã độc) đều được thả trôi tạo thành công!).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Phân tích tĩnh bản kê khai (Static Manifest Analysis) bằng công cụ `kube-linter` hoặc `trivy config` đóng vai trò gì trong quy trình CI/CD?
-
-**Đáp án chuẩn:** Giúp phát hiện sớm các lỗ hổng cấu hình an ninh (như container chạy quyền `root`, thiếu `readOnlyRootFilesystem`, thiếu `resources.limits`) ngay từ tệp YAML ở máy Dev/CI-CD trước khi apply tệp đó vào cụm Kubernetes.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết khái niệm Static Manifest Analysis.
-- 1đ: Nêu được quét lỗi YAML nhưng chưa rõ việc phát hiện sớm trước khi deploy.
-- 3đ: Phân tích thấu đáo vai trò của phân tích tĩnh manifest bằng linters trong chuỗi CI/CD.
-
-**Câu hỏi đào sâu:** (Công cụ `kube-linter` chạy kiểm tra tệp YAML bằng câu lệnh CLI nào? — Câu lệnh `kube-linter lint /path/to/manifest.yaml`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Nguyên nhân gốc rễ và cách khắc phục khi `kube-apiserver` bị crashloop ngay sau khi bật cờ `--admission-control-config-file=/etc/kubernetes/admission/admission-config.yaml`?
-
-**Đáp án chuẩn:** Nguyên nhân do thư mục `/etc/kubernetes/admission` chưa được mount vào `volumeMounts` của tệp Static Pod `/etc/kubernetes/manifests/kube-apiserver.yaml`, khiến container apiserver không tìm thấy tệp config ngoài Host. Cách sửa: Thêm khối `volumeMounts` và `hostPath` volume trong `kube-apiserver.yaml`.
-
-**Tiêu chí chấm:**
-- 0đ: Không chẩn đoán được lỗi apiserver crashloop.
-- 1đ: Nêu được thiếu file nhưng chưa giải thích container isolated thiếu mount hostPath volume.
-- 3đ: Phân tích chuẩn xác nguyên nhân thiếu volumeMounts trong Static Pod và cách khắc phục.
-
-**Câu hỏi đào sâu:** (Làm thế nào để khôi phục cụm khẩn cấp khi apiserver sập hoàn toàn? — Phôi phục tệp sao lưu `kube-apiserver.yaml.bak` để đưa Control Plane về trạng thái cũ).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Sự khác biệt cơ bản giữa `ImagePolicyWebhook` và các Admission Controller tùy biến bên thứ ba (như Kyverno hay OPA Gatekeeper) là gì?
-
-**Đáp án chuẩn:**
-- `ImagePolicyWebhook`: Là **plugin tĩnh (internal plugin)** được tích hợp sẵn trong kube-apiserver, cấu hình qua file local trên Host Control Plane.
-- `Kyverno / OPA`: Là **Admission Controller động (Dynamic Webhooks)** được triển khai dưới dạng CRD/Pods bên trong cụm, quản lý chính sách linh hoạt bằng tệp YAML.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được ImagePolicyWebhook và Kyverno/OPA.
-- 1đ: Nêu được 1 cái có sẵn 1 cái cài thêm nhưng chưa rõ static plugin vs dynamic CRD.
-- 3đ: Phân tích chuẩn xác sự khác biệt về kiến trúc giữa ImagePolicyWebhook và Dynamic Webhook Engines.
-
-**Câu hỏi đào sâu:** (Giải pháp nào dễ cấu hình và quản lý chính sách theo Namespace linh hoạt hơn? — Các công cụ Dynamic Webhook như Kyverno hoặc OPA Gatekeeper).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một Pod manifest ghim Image Digest bất biến CKS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: app-pinned-pod
-  namespace: prod
-spec:
-  containers:
-    - name: app
-      image: harbor.internal/apps/nginx@sha256:a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai định dạng image digest.
-- 1đ: Nêu đúng digest nhưng thiếu domain Private Trusted Registry.
-- 3đ: Viết chuẩn xác 100% bản kê khai Pod ghim Image Digest CKS.
-
-**Câu hỏi đào sâu:** (Điều gì đảm bảo mã hash `@sha256:...` không thể bị làm giả? — Tính chất mã băm cryptographic hash một chiều của thuật toán SHA-256).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao không nên cho phép các Pods trong môi trường Production tự do kéo hình ảnh từ Docker Hub (`docker.io`) công khai?
-
-**Đáp án chuẩn:** Vì Docker Hub công khai có rủi ro bị giới hạn số lần tải (rate limit), bị rò rỉ mã độc do các ảnh không qua kiểm duyệt, và thiếu sự kiểm soát về tính sẵn sàng (HA) so với các Private Trusted Registries nội bộ.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết rủi ro của việc dùng Docker Hub public trực tiếp.
-- 1đ: Nêu được dính mã độc nhưng chưa giải thích rate limit và thiếu HA.
-- 3đ: Phân tích chuẩn xác lý do cấm kéo trực tiếp từ Public Registries trôi nổi.
-
-**Câu hỏi đào sâu:** (Giải pháp để vừa dùng ảnh công khai vừa đảm bảo an toàn là gì? — Thực hiện Mirror (sao chép) ảnh public về Private Trusted Registry và quét lỗ hổng trước khi cấp phép).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Hai thông số `allowTTL` và `denyTTL` trong tệp cấu hình `admission-config.yaml` có vai trò gì?
-
-**Đáp án chuẩn:** Là khoảng thời gian (tính bằng giây) mà API Server **lưu bộ nhớ đệm (cache)** kết quả chấp thuận (`allowTTL`) hoặc từ chối (`denyTTL`) của Webhook Server, giúp giảm bớt số lượng request trùng lặp phải gửi tới Webhook.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết vai trò của allowTTL và denyTTL.
-- 1đ: Nêu được thời gian sống nhưng chưa rõ việc cache kết quả giảm tải cho Webhook.
-- 3đ: Phân tích chuẩn xác vai trò caching kết quả kiểm định của `allowTTL` và `denyTTL`.
-
-**Câu hỏi đào sâu:** (Nếu đặt TTL quá dài thì có rủi ro gì? — Kết quả chấp thuận hoặc từ chối bị chậm cập nhật khi chính sách trên Webhook thay đổi).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của tệp `admission-config.yaml` cấu hình `ImagePolicyWebhook` chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: apiserver.config.k8s.io/v1
-kind: AdmissionConfiguration
-plugins:
-  - name: ImagePolicyWebhook
-    configuration:
-      imagePolicy:
-        kubeConfigFile: /etc/kubernetes/admission/image-policy-kubeconfig.yaml
-        allowTTL: 50
-        denyTTL: 50
-        retryBackoff: 500
-        defaultAllow: false
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.
-- 1đ: Nêu đúng plugin ImagePolicyWebhook nhưng thiếu cờ defaultAllow: false.
-- 3đ: Viết chuẩn xác 100% tệp `admission-config.yaml` ImagePolicyWebhook CKS.
-
-**Câu hỏi đào sâu:** (Đường dẫn tệp cấu hình này được truyền vào kube-apiserver qua cờ nào? — Cờ `--admission-control-config-file=/etc/kubernetes/admission/admission-config.yaml`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Registry Security & Static Analysis CKS là gì?
-
-**Đáp án chuẩn:**
-1. Ghim 100% hình ảnh Pod manifest theo mã băm bất biến Image Digest (`@sha256:...`).
-2. Chỉ cho phép kéo Container Images từ danh sách Private Trusted Registries.
-3. Kích hoạt plugin `ImagePolicyWebhook` với cờ `defaultAllow: false` (Fail-Closed Security).
-4. Phân tích tĩnh 100% tệp YAML manifest bằng `kube-linter` hoặc `trivy config` trước khi deploy.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Registry Security & Static Analysis CKS.
-
-**Câu hỏi đào sâu:** (Chúc mừng bạn đã hoàn thành 60 buổi học CKS! Mục tiêu tiếp theo của bạn trong Buổi 61 là gì? — Học về `Tổng kết Giai đoạn 3 CKS: Lộ trình Chinh phục Chứng chỉ CKS 100% điểm số`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1035,28 +1122,6 @@ plugins:
 2. **"Triển khai plugin `ImagePolicyWebhook` trên kube-apiserver với cờ `defaultAllow: false` thực thi Fail-Closed Security."**
 3. **"Chỉ cấp phép kéo Container Images từ các hệ thống Private Trusted Registries (như Harbor/ECR/GAR)."**
 4. **"Phân tích tĩnh tệp YAML manifest bằng công cụ `kube-linter` và `trivy config` để triệt tiêu lỗ hổng cấu hình từ sớm."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Registry Security & Static Analysis |
-| **29 – 36 điểm** | Xuất sắc | Thành thục cấu hình ImagePolicyWebhook, Digest Pinning và Kube-linter |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành tạo thư mục `/etc/kubernetes/admission/` và biên soạn 2 tệp `admission-config.yaml` & `image-policy-kubeconfig.yaml`.
-- **BTVN 2:** Thêm cờ `--enable-admission-plugins=ImagePolicyWebhook` vào tệp Static Pod `/etc/kubernetes/manifests/kube-apiserver.yaml` và đối soát apiserver restart thành công.
-- **BTVN 3:** Viết script Bash chạy `trivy config` quét toàn bộ thư mục chứa các tệp YAML manifest trong dự án.
-- **BTVN 4 (Chuẩn bị cho Buổi 61 — Tổng kết Giai đoạn 3 CKS: Lộ trình Chinh phục Chứng chỉ CKS 100%):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Cấu trúc bài thi CKS thực tế (17–19 câu hỏi thực hành 120 phút) đòi hỏi chiến thuật phân bổ thời gian ra sao?
-  2. Bốn kỹ năng gõ lệnh tốc độ cao quan trọng nhất để làm chủ toàn bộ 60 buổi học vừa qua là gì?
-  3. Làm thế nào để tự tin đạt điểm số tuyệt đối 100% trong kỳ thi chứng chỉ CKS chính thức của CNCF?
 
 ---
 
@@ -1130,7 +1195,7 @@ plugins:
         retryBackoff: 500
         defaultAllow: false
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1158,7 +1223,7 @@ contexts:
       user: api-server
 current-context: default
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1180,7 +1245,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx@sha256:a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1198,7 +1263,7 @@ cat <<EOF > /tmp/static-scan.json
   "Status": "PASSED_STATIC_ANALYSIS"
 }
 EOF
-```yaml
+```
 
 ---
 </div>
@@ -1269,7 +1334,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1296,16 +1361,17 @@ image: harbor.internal/app@sha256:a1b2c3d4e5f6...
 # Static Analysis
 trivy config /path/to/manifest.yaml
 kube-linter lint /path/to/manifest.yaml
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 16] Kiểm Soát Tải Hình Ảnh Bằng ImagePolicyWebhook: Cấu Hình Admission Controller & Allowed Registries](cks-16-16-tin-cay-registry-va-image-policy.html).
+
 {% endraw %}

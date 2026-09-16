@@ -737,39 +737,12 @@ roles:
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Quản trị đặc quyền an toàn:** Kết nối SSH bằng user thường và nâng quyền qua `become: true`.
-2. **Cấu hình Sudoers an toàn:** Tạo file trong `/etc/sudoers.d/` và luôn kiểm tra cú pháp với `visudo validate`.
-3. **Giữ SELinux Enforcing:** Tuyệt đối không tắt SELinux, sử dụng các module POSIX để cấp quyền chính xác.
-4. **Gán nhãn vĩnh viễn:** Sử dụng `sefcontext` cho file và `seport` cho cổng tùy chỉnh kèm `persistent: true`.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Kịch bản quản trị hệ điều hành ở lượt chạy Lần 2 bắt buộc phải đạt `changed=0`.
-
-```mermaid
-mindmap
-  root((System Roles & SELinux))
-    Privilege Escalation
-      SSH user thường -> become: true
-      become_method: sudo
-      /etc/sudoers.d/ với visudo validate
-    SELinux Hardening
-      State: Enforcing
-      sefcontext: nhãn file vĩnh viễn
-      seport: nhãn cổng phi tiêu chuẩn
-      seboolean: cờ persist qua reboot
-    RHEL System Roles
-      redhat.rhel_system_roles.selinux
-      Chuẩn hóa Best Practices Red Hat
-      Tương thích RHEL 8/9
-    Verification & Idempotency
-      audit2why & sealert chuẩn đoán
-      Idempotency changed=0 ở Lần 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 22: Tối Ưu Hiệu Năng Thực Thi (Execution Performance): Forks, Strategy Plugins (Free vs Linear), Serial & Pipelining](ansible-22-22-strategy-performance.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 22] Tối Ưu Hiệu Năng Thực Thi (Execution Performance): Forks, Strategy Plugins (Free vs Linear), Serial & Pipelining](ansible-22-22-strategy-performance.html).
 
 {% endraw %}

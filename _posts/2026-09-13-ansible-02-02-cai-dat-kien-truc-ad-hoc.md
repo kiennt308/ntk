@@ -63,9 +63,9 @@ flowchart TD
     T1 & T2 --> EXEC
     EXEC -->|"JSON Output: changed, rc, stdout, diff"| CLI
 
-    style ControlNode fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
-    style SSHConn fill:#0f172a,stroke:#f59e0b,stroke-width:2px,color:#fff
-    style ManagedNodes fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#fff
+    style ControlNode fill:none,stroke:#38bdf8,stroke-width:2px,color:#fff
+    style SSHConn fill:none,stroke:#f59e0b,stroke-width:2px,color:#fff
+    style ManagedNodes fill:none,stroke:#10b981,stroke-width:2px,color:#fff
 ```
 
 ### 1.1. Kiến Trúc Agentless & Quy Trình Khởi Tạo Kết Nối SSH
@@ -90,14 +90,14 @@ graph TD
     F -- "Có file" --> G["Sử dụng ~/.ansible.cfg của User hiện tại"]
     F -- "Không có" --> H["4. Sử dụng cấu hình mặc định toàn hệ thống /etc/ansible/ansible.cfg"]
 
-    style A fill:#334155,stroke:#94a3b8,color:#fff
-    style B fill:#1e293b,stroke:#38bdf8,color:#fff
-    style C fill:#065f46,stroke:#34d399,color:#fff
-    style D fill:#1e293b,stroke:#38bdf8,color:#fff
-    style E fill:#065f46,stroke:#34d399,color:#fff
-    style F fill:#1e293b,stroke:#38bdf8,color:#fff
-    style G fill:#065f46,stroke:#34d399,color:#fff
-    style H fill:#1e293b,stroke:#f59e0b,color:#fff
+    style A fill:none,stroke:#94a3b8,color:#fff
+    style B fill:none,stroke:#38bdf8,color:#fff
+    style C fill:none,stroke:#34d399,color:#fff
+    style D fill:none,stroke:#38bdf8,color:#fff
+    style E fill:none,stroke:#34d399,color:#fff
+    style F fill:none,stroke:#38bdf8,color:#fff
+    style G fill:none,stroke:#34d399,color:#fff
+    style H fill:none,stroke:#f59e0b,color:#fff
 ```
 
 > [!WARNING]
@@ -218,10 +218,10 @@ flowchart TD
     E --> F["Lệnh thực thi với quyền user thường trên Target Node"]
     F --> G["LỖI NGHIÊM TRỌNG: Permission Denied khi cài package"]
 
-    style A fill:#7f1d1d,stroke:#f87171,color:#fff
-    style C fill:#1e293b,stroke:#f59e0b,color:#fff
-    style D fill:#7f1d1d,stroke:#f87171,color:#fff
-    style G fill:#7f1d1d,stroke:#f87171,color:#fff
+    style A fill:none,stroke:#f87171,color:#fff
+    style C fill:none,stroke:#f59e0b,color:#fff
+    style D fill:none,stroke:#f87171,color:#fff
+    style G fill:none,stroke:#f87171,color:#fff
 ```
 
 ### Hậu Quả & Log Lỗi Thực Tế:
@@ -526,41 +526,12 @@ ansible webservers -m ansible.builtin.service -a "name=sshd state=started enable
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### Tóm Tắt Các Điểm Cốt Lõi:
-1. **Kiến trúc Agentless:** Không cài daemon ngầm trên máy đích; mọi tác vụ điều khiển sử dụng SSH bảo mật và Python execution ngắn hạn.
-2. **Thứ tự ưu tiên `ansible.cfg`:** Luôn kiểm soát chặt chẽ file cấu hình tại thư mục dự án và tuyệt đối tránh cấp quyền `world-writable` (`chmod 777`).
-3. **Ưu tiên Module Chuẩn Idempotent:** Hạn chế tối đa lệnh shell thô; luôn dùng các module chuyên dụng (`package`, `service`, `user`, `copy`) để đảm bảo tính bất biến.
-4. **Quy tắc Kiểm tra Thực tế:** Luôn chạy thử với `--check --diff` và thực hiện xác minh sự thật khách quan trên máy đích sau khi thực thi.
-
-```mermaid
-mindmap
-  root((Kiến Trúc & Ad-hoc))
-    Agentless Architecture
-      SSH Key Authentication
-      Ansiballz Python Bundles
-      Dọn dẹp Temp Directory
-    ansible.cfg Hierarchy
-      Env ANSIBLE_CONFIG
-      Local ./ansible.cfg
-      User ~/.ansible.cfg
-      Global /etc/ansible
-    Ad-hoc Execution
-      Module Thô: command, shell, raw
-      Module Chuẩn: package, service, user
-      Idempotency: changed=false
-    An Toàn Production
-      Tránh World-writable 777
-      Sử dụng --limit
-      Dry-run với --check --diff
-```
-
----
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 03: Thiết Kế & Quản Trị Inventory Chuẩn Enterprise: Static, Group, Host/Group Vars & Patterns](ansible-03-03-inventory.html) - Khám phá các chiến lược tổ chức kho máy chủ quy mô lớn, phân bổ biến đa tầng và kỹ thuật lọc Host Pattern nâng cao trong Ansible.
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 03] Thiết Kế Inventory Chuẩn Enterprise: Static vs Dynamic Inventory, Host Groups, Group Vars & Host Vars](ansible-03-03-inventory.html).
 
 {% endraw %}

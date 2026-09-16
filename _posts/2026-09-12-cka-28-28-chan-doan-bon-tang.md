@@ -485,24 +485,6 @@ Vì nguyên nhân gốc rễ có thể nằm ở các tầng dưới như Node b
 | Trang chủ Troubleshoot Applications | `https://kubernetes.io/docs/tasks/debug/debug-application/` | Phiên bản Kubernetes v1.35 |
 | Kubernetes Ephemeral Containers Debug | `https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/` | Hướng dẫn dùng kubectl debug |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Phễu chẩn đoán 4 tầng | 12 phút | 12 phút |
-| §5. Tra cứu Nhật ký sự kiện & Describe | 12 phút | 12 phút |
-| §6. Cây quyết định 4 trạng thái lỗi | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -999,25 +981,11 @@ kubectl get namespace lab28 2>&1 | grep -q "NotFound" && echo "CHECKPOINT 13 —
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi bài tập BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo kịch bản 8 Ca hỏng | 30 phút | 30 phút |
-| L4. Bước 2: Cứu Ca 1 đến Ca 4 | 30 phút | 30 phút |
-| L5. Bước 3: Cứu Ca 5 đến Ca 8 | 30 phút | 30 phút |
-| L6. Bước 4: Events & kubectl debug | 20 phút | 20 phút |
-| L7 & L8. Nộp hiện vật & Sự cố | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -1025,187 +993,311 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao <code>kubectl get events</code> được coi là công cụ vàng trong chẩn đoán sự cố và câu lệnh lọc sắp xếp thời gian là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Thứ tự phễu gồm 4 tầng: Tầng 1: Control Plane & API Server -> Tầng 2: Sức khỏe Node vật lý (Kubelet/Disk/RAM) -> Tầng 3: Khởi tạo Workload Pod -> Tầng 4: Định tuyến Mạng & Service Endpoints.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>events</code> ghi lại toàn bộ các quyết định bất thường của Scheduler, Kubelet và Controllers (lý do từ chối Pod, lỗi kéo ảnh, lỗi probe). Lệnh chuẩn: <code>kubectl get events -n <namespace> --sort-by='.metadata.creationTimestamp'</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh get events.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lệnh get events nhưng thiếu cờ sort-by.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng cờ sort-by nhưng chưa giải thích được giá trị của events so với logs.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích sâu sắc vai trò của events trong việc xác định nguyên nhân gốc rễ và gõ chính xác câu lệnh sort-by.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khoảng thời gian mặc định Kubernetes tự động dọn dẹp các đối tượng Event là bao lâu? — Mặc định là 1 giờ).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được các tầng hoặc nêu sai thứ tự.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 4 tầng nhưng nhảy thẳng vào sửa Pod trước.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng 4 tầng theo thứ tự nhưng thiếu câu lệnh kiểm tra cho từng tầng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc 4 tầng từ Cụm -> Node -> Workload -> Mạng cùng các câu lệnh CLI tương ứng.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tại sao không nên kiểm tra tầng Mạng trước tầng Node? — Vì nếu Node đang NotReady thì CNI plugin trên Node đó đã sập, kiểm tra mạng ở tầng 4 sẽ vô nghĩa).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác nhau giữa <code>Exit Code 137</code> và <code>Exit Code 1</code> trong kết quả <code>kubectl describe pod</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>Exit Code 137</code> là container bị nhân Linux tiêu diệt do lỗi tràn bộ nhớ <code>OOMKilled</code> (vượt <code>limits.memory</code> hoặc hết RAM Node). <code>Exit Code 1</code> là tiến trình ứng dụng tự thoát do lỗi mã nguồn hoặc sai cấu hình.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 mã thoát.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 137 là RAM nhưng không nhắc tới OOMKilled/Kernel.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Phân biệt được OOMKilled vs Error nhưng không giải thích được hướng xử lý.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cơ chế của nhân OS bắn SIGKILL 9 (128+9=137) đối với OOM và mã thoát ứng dụng Exit Code 1.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để xử lý triệt để Pod bị Exit Code 137? — Tăng <code>limits.memory</code> cho container hoặc tối ưu giảm dung lượng bộ nhớ của ứng dụng).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khi một Pod bị kẹt ở trạng thái <code>CrashLoopBackOff</code>, tại sao lệnh <code>kubectl logs <pod-name></code> đôi khi lại trả về kết quả rỗng và cách xử lý là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kết quả rỗng vì container hiện tại vừa mới được restart lại nên chưa kịp ghi log. Cách xử lý là thêm cờ <code>-p</code> (<code>kubectl logs <pod-name> -p</code>) để xem log của container đã bị sập (previous instance) ngay trước đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ -p.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng cờ -p nhưng không giải thích được nguyên nhân log rỗng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Giải thích được nguyên nhân container restart lại nhưng gõ thiếu cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Giải thích mạch lạc nguyên lý vòng lặp restart của Kubelet và cờ <code>--previous</code> / <code>-p</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Kubelet tăng khoảng thời gian chờ giữa các lần restart trong CrashLoopBackOff tối đa là bao lâu? — Tối đa là 5 phút).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Ba nguyên nhân phổ biến nhất khiến một Pod bị kẹt ở trạng thái <code>Pending</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">(1) Không có Node nào đủ CPU/RAM đáp ứng <code>requests</code> của Pod. (2) Tất cả các Node đều có <code>Taint</code> mà Pod thiếu <code>Toleration</code> tương ứng (hoặc sai <code>nodeSelector</code>). (3) PersistentVolumeClaim (PVC) của Pod chưa ở trạng thái <code>Bound</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được nguyên nhân.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 nguyên nhân (như thiếu CPU).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được 2 nguyên nhân nhưng thiếu PVC hoặc Taint.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày đầy đủ 3 nguyên nhân cốt lõi khiến Scheduler không thể xếp lịch cho Pod.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh nào giúp xác định chính xác nguyên nhân Pod bị Pending? — Lệnh <code>kubectl describe pod <pod-name></code> xem mục Events ở cuối).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao một Pod bị kẹt ở trạng thái <code>Terminating</code> mãi mãi và lệnh CLI nào giúp gỡ kẹt dứt điểm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Do Pod vướng các <code>finalizers</code> bảo vệ chưa dọn dẹp xong hoặc Node chứa Pod đó bị rớt mạng khiến Kubelet không gửi được phản hồi xác nhận xóa. Gỡ kẹt bằng lệnh ép xóa: <code>kubectl delete pod <pod-name> -n <ns> --force --grace-period=0</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết nguyên nhân và không biết cờ --force.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ --force nhưng không nhớ cờ --grace-period=0.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng lệnh ép xóa nhưng chưa giải thích được lý do kẹt do finalizers/Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích sâu sắc cơ chế xóa an toàn của API Server, vai trò của Kubelet và câu lệnh ép xóa chuẩn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Rủi ro lớn nhất khi dùng <code>--force --grace-period=0</code> với một Pod StatefulSet Database là gì? — Nguy cơ Split-Brain hai Pod cùng ghi vào một ổ đĩa gây hỏng dữ liệu).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Khi ứng dụng đóng gói bằng ảnh <code>distroless</code> không có <code>sh</code> hay <code>bash</code>, làm thế nào để nhảy vào kiểm tra mạng và tệp tin bên trong Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Sử dụng tính năng Ephemeral Containers của <code>kubectl debug</code> bằng lệnh: <code>kubectl debug -it <pod-name> -n <ns> --image=busybox --target=<container-name></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng không thể truy cập được.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng kubectl debug nhưng không đưa được cờ --image và --target.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng lệnh debug nhưng chưa giải thích được cơ chế chia sẻ Process Namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>kubectl debug</code> đính kèm container cứu hộ vào Pod đang chạy.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--target</code> trong lệnh <code>kubectl debug</code> có tác dụng gì? — Cho phép container cứu hộ chia sẻ Process Namespace với container mục tiêu để soi tiến trình).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Sự khác biệt giữa <code>Liveness probe failed</code> và <code>Readiness probe failed</code> về mặt triệu chứng tác động là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>Liveness probe failed</code> làm Kubelet tiêu diệt container và khởi động lại Pod. <code>Readiness probe failed</code> KHÔNG restart Pod mà chỉ gỡ IP của Pod khỏi danh sách Endpoints của Service để ngừng nhận traffic.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Lẫn lộn tác động của 2 loại probe.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được một bên restart, một bên gỡ Service nhưng chưa rõ Kubelet vs Endpoints.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác phản ứng của Kubelet với Liveness (Restart) và phản ứng của Endpoints Controller với Readiness (Traffic Isolation).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu ứng dụng khởi động mất 2 phút mà Liveness Probe check sau 10 giây thì chuyện gì xảy ra? — Pod bị rơi vào vòng lặp restart liên tục CrashLoopBackOff).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Khi truy cập vào một Service nhận được lỗi <code>503 Service Unavailable</code> hoặc <code>Connection Refused</code>, các bước chẩn đoán tầng 4 (Mạng) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bước 1: <code>kubectl get ep <svc-name></code> kiểm tra xem Service có Endpoints IP nào không. Bước 2: Nêu rỗng, kiểm tra trường <code>selector</code> trong Service có khớp với <code>labels</code> của Pod không. Bước 3: Nếu có IP, kiểm tra <code>targetPort</code> trong Service có đúng với cổng ứng dụng lắng nghe trong Pod không.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời chung chung kiểm tra mạng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kiểm tra selector Service nhưng thiếu Endpoints CLI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được check ep và check selector nhưng thiếu bước check targetPort.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày đầy đủ luồng 3 bước chẩn đoán từ Endpoints -> Selector -> TargetPort.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Endpoints có IP nhưng Pod vẫn không nhận được gói tin thì nguyên nhân ở đâu? — Có thể do NetworkPolicy chặn traffic Egress/Ingress hoặc CNI plugin sập).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Ba lý do phổ biến dẫn tới trạng thái <code>ImagePullBackOff</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">(1) Gõ sai tên ảnh hoặc tag ảnh (404 Not Found). (2) Registry yêu cầu đăng nhập nhưng Pod thiếu <code>imagePullSecrets</code> (401 Unauthorized). (3) Worker Node mất kết nối mạng hoặc DNS không phân giải được host của Registry.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Chỉ nêu được gõ sai tên ảnh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gõ sai tên ảnh và thiếu secret.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Nêu chuẩn xác 3 lý do từ Tên/Tag -> Authorization Secret -> Mạng/DNS Node.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sự khác nhau giữa trạng thái <code>ErrImagePull</code> và <code>ImagePullBackOff</code> là gì? — ErrImagePull là thất bại ở lần thử đầu tiên, ImagePullBackOff là trạng thái chờ thử lại với khoảng thời gian giãn cách tăng dần).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để phân biệt một Pod bị sập do lỗi ở tầng Node (Hạ tầng) hay lỗi ở tầng Workload (Ứng dụng)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kiểm tra <code>kubectl get nodes</code>. Nếu Node chứa Pod hiển thị <code>NotReady</code>, lỗi nằm ở tầng Node. Nếu tất cả các Node đều <code>Ready</code> mà chỉ riêng Pod đó sập (<code>CrashLoopBackOff</code>/<code>OOMKilled</code>), lỗi nằm ở tầng Workload ứng dụng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách phân biệt.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xem lệnh get nodes nhưng không rõ tiêu chí đánh giá.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích mạch lạc tiêu chí phân lập lỗi giữa Node NotReady và Pod Crash/OOM.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Node báo <code>Ready</code> nhưng có điều kiện <code>MemoryPressure=True</code> thì Pod bị ảnh hưởng thế nào? — Kubelet sẽ tiến hành evict trục xuất các Pod có độ ưu tiên thấp khỏi Node đó).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên nhảy thẳng vào chỉnh sửa bản kê khai YAML của Pod khi phát hiện sự cố trên cụm Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì chỉnh sửa YAML Pod khi chưa xác định Root Cause có thể làm trầm trọng hơn sự cố (ví dụ tăng Quotas làm cạn kiệt tài nguyên cụm) hoặc sửa sai vị trí khi nguyên nhân gốc rễ nằm ở tầng Node/CNI/Storage bên dưới.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng sửa YAML Pod là cách làm nhanh nhất.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được có thể sửa sai nhưng chưa liên hệ tới nguyên tắc phễu 4 tầng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày thuyết phục tầm quan trọng của việc chẩn đoán khoanh vùng đúng tầng lỗi trước khi thực hiện hành động can thiệp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Quy tắc quan trọng nhất trong việc lập báo cáo chẩn đoán sự cố là gì? — Phải ghi rõ 4 phần: Triệu chứng -> Bằng chứng CLI -> Nguyên nhân gốc rễ -> Giải pháp khắc phục).
+
 ---
 
-### Câu 2 — ★★★
-**Hỏi:** Tại sao `kubectl get events` được coi là công cụ vàng trong chẩn đoán sự cố và câu lệnh lọc sắp xếp thời gian là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `events` ghi lại toàn bộ các quyết định bất thường của Scheduler, Kubelet và Controllers (lý do từ chối Pod, lỗi kéo ảnh, lỗi probe). Lệnh chuẩn: `kubectl get events -n <namespace> --sort-by='.metadata.creationTimestamp'`.
+1. <b style="color: var(--accent-primary);">"Tư duy chẩn đoán sự cố chuyên nghiệp tuân thủ nghiêm ngặt phễu 4 tầng từ Cụm -> Node -> Workload -> Mạng giúp khoanh vùng chính xác nguyên nhân gốc rễ thay vì đoán mò."</b>
+2. <b style="color: var(--accent-primary);">"Lệnh <code>kubectl get events --sort-by='.metadata.creationTimestamp'</code> là chìa khóa vàng ghi lại mốc thời gian diễn biến sự cố, giúp rút ngắn 80 % thời gian khoanh vùng lỗi."</b>
+3. <b style="color: var(--accent-primary);">"Đối với Pod sập vòng lặp <code>CrashLoopBackOff</code>, lệnh <code>kubectl logs -p</code> là bắt buộc để truy vết log nguyên văn của lần sập ngay trước đó."</b>
+4. <b style="color: var(--accent-primary);">"Mã thoát <code>Exit Code 137</code> là bằng chứng không thể chối cãi của việc container bị nhân Linux tiêu diệt do lỗi tràn bộ nhớ <code>OOMKilled</code>."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh get events.
-- 1đ: Nêu được lệnh get events nhưng thiếu cờ sort-by.
-- 2đ: Nêu đúng cờ sort-by nhưng chưa giải thích được giá trị của events so với logs.
-- 3đ: Phân tích sâu sắc vai trò của events trong việc xác định nguyên nhân gốc rễ và gõ chính xác câu lệnh sort-by.
-
-**Câu hỏi đào sâu:** (Khoảng thời gian mặc định Kubernetes tự động dọn dẹp các đối tượng Event là bao lâu? — Mặc định là 1 giờ).
-
----
-
-### Câu 3 — 🔥
-**Hỏi:** Sự khác nhau giữa `Exit Code 137` và `Exit Code 1` trong kết quả `kubectl describe pod` là gì?
-
-**Đáp án chuẩn:** `Exit Code 137` là container bị nhân Linux tiêu diệt do lỗi tràn bộ nhớ `OOMKilled` (vượt `limits.memory` hoặc hết RAM Node). `Exit Code 1` là tiến trình ứng dụng tự thoát do lỗi mã nguồn hoặc sai cấu hình.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 2 mã thoát.
-- 1đ: Nêu được 137 là RAM nhưng không nhắc tới OOMKilled/Kernel.
-- 2đ: Phân biệt được OOMKilled vs Error nhưng không giải thích được hướng xử lý.
-- 3đ: Trình bày chính xác cơ chế của nhân OS bắn SIGKILL 9 (128+9=137) đối với OOM và mã thoát ứng dụng Exit Code 1.
-
-**Câu hỏi đào sâu:** (Làm thế nào để xử lý triệt để Pod bị Exit Code 137? — Tăng `limits.memory` cho container hoặc tối ưu giảm dung lượng bộ nhớ của ứng dụng).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Khi một Pod bị kẹt ở trạng thái `CrashLoopBackOff`, tại sao lệnh `kubectl logs <pod-name>` đôi khi lại trả về kết quả rỗng và cách xử lý là gì?
-
-**Đáp án chuẩn:** Kết quả rỗng vì container hiện tại vừa mới được restart lại nên chưa kịp ghi log. Cách xử lý là thêm cờ `-p` (`kubectl logs <pod-name> -p`) để xem log của container đã bị sập (previous instance) ngay trước đó.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ -p.
-- 1đ: Nêu được dùng cờ -p nhưng không giải thích được nguyên nhân log rỗng.
-- 2đ: Giải thích được nguyên nhân container restart lại nhưng gõ thiếu cờ.
-- 3đ: Giải thích mạch lạc nguyên lý vòng lặp restart của Kubelet và cờ `--previous` / `-p`.
-
-**Câu hỏi đào sâu:** (Kubelet tăng khoảng thời gian chờ giữa các lần restart trong CrashLoopBackOff tối đa là bao lâu? — Tối đa là 5 phút).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Ba nguyên nhân phổ biến nhất khiến một Pod bị kẹt ở trạng thái `Pending` là gì?
-
-**Đáp án chuẩn:** (1) Không có Node nào đủ CPU/RAM đáp ứng `requests` của Pod. (2) Tất cả các Node đều có `Taint` mà Pod thiếu `Toleration` tương ứng (hoặc sai `nodeSelector`). (3) PersistentVolumeClaim (PVC) của Pod chưa ở trạng thái `Bound`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được nguyên nhân.
-- 1đ: Nêu được 1 nguyên nhân (như thiếu CPU).
-- 2đ: Nêu được 2 nguyên nhân nhưng thiếu PVC hoặc Taint.
-- 3đ: Trình bày đầy đủ 3 nguyên nhân cốt lõi khiến Scheduler không thể xếp lịch cho Pod.
-
-**Câu hỏi đào sâu:** (Lệnh nào giúp xác định chính xác nguyên nhân Pod bị Pending? — Lệnh `kubectl describe pod <pod-name>` xem mục Events ở cuối).
-
----
-
-### Câu 6 — 🔥
-**Hỏi:** Tại sao một Pod bị kẹt ở trạng thái `Terminating` mãi mãi và lệnh CLI nào giúp gỡ kẹt dứt điểm?
-
-**Đáp án chuẩn:** Do Pod vướng các `finalizers` bảo vệ chưa dọn dẹp xong hoặc Node chứa Pod đó bị rớt mạng khiến Kubelet không gửi được phản hồi xác nhận xóa. Gỡ kẹt bằng lệnh ép xóa: `kubectl delete pod <pod-name> -n <ns> --force --grace-period=0`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết nguyên nhân và không biết cờ --force.
-- 1đ: Nêu được cờ --force nhưng không nhớ cờ --grace-period=0.
-- 2đ: Nêu đúng lệnh ép xóa nhưng chưa giải thích được lý do kẹt do finalizers/Kubelet.
-- 3đ: Phân tích sâu sắc cơ chế xóa an toàn của API Server, vai trò của Kubelet và câu lệnh ép xóa chuẩn.
-
-**Câu hỏi đào sâu:** (Rủi ro lớn nhất khi dùng `--force --grace-period=0` với một Pod StatefulSet Database là gì? — Nguy cơ Split-Brain hai Pod cùng ghi vào một ổ đĩa gây hỏng dữ liệu).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Khi ứng dụng đóng gói bằng ảnh `distroless` không có `sh` hay `bash`, làm thế nào để nhảy vào kiểm tra mạng và tệp tin bên trong Pod?
-
-**Đáp án chuẩn:** Sử dụng tính năng Ephemeral Containers của `kubectl debug` bằng lệnh: `kubectl debug -it <pod-name> -n <ns> --image=busybox --target=<container-name>`.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng không thể truy cập được.
-- 1đ: Nêu được dùng kubectl debug nhưng không đưa được cờ --image và --target.
-- 2đ: Nêu đúng lệnh debug nhưng chưa giải thích được cơ chế chia sẻ Process Namespace.
-- 3đ: Trình bày chính xác lệnh `kubectl debug` đính kèm container cứu hộ vào Pod đang chạy.
-
-**Câu hỏi đào sâu:** (Cờ `--target` trong lệnh `kubectl debug` có tác dụng gì? — Cho phép container cứu hộ chia sẻ Process Namespace với container mục tiêu để soi tiến trình).
-
----
-
-### Câu 8 — ★★★
-**Hỏi:** Sự khác biệt giữa `Liveness probe failed` và `Readiness probe failed` về mặt triệu chứng tác động là gì?
-
-**Đáp án chuẩn:** `Liveness probe failed` làm Kubelet tiêu diệt container và khởi động lại Pod. `Readiness probe failed` KHÔNG restart Pod mà chỉ gỡ IP của Pod khỏi danh sách Endpoints của Service để ngừng nhận traffic.
-
-**Tiêu chí chấm:**
-- 0đ: Lẫn lộn tác động của 2 loại probe.
-- 1đ: Nêu được một bên restart, một bên gỡ Service nhưng chưa rõ Kubelet vs Endpoints.
-- 3đ: Phân tích chính xác phản ứng của Kubelet với Liveness (Restart) và phản ứng của Endpoints Controller với Readiness (Traffic Isolation).
-
-**Câu hỏi đào sâu:** (Nếu ứng dụng khởi động mất 2 phút mà Liveness Probe check sau 10 giây thì chuyện gì xảy ra? — Pod bị rơi vào vòng lặp restart liên tục CrashLoopBackOff).
-
----
-
-### Câu 9 — 🔥
-**Hỏi:** Khi truy cập vào một Service nhận được lỗi `503 Service Unavailable` hoặc `Connection Refused`, các bước chẩn đoán tầng 4 (Mạng) là gì?
-
-**Đáp án chuẩn:** Bước 1: `kubectl get ep <svc-name>` kiểm tra xem Service có Endpoints IP nào không. Bước 2: Nêu rỗng, kiểm tra trường `selector` trong Service có khớp với `labels` của Pod không. Bước 3: Nếu có IP, kiểm tra `targetPort` trong Service có đúng với cổng ứng dụng lắng nghe trong Pod không.
-
-**Tiêu chí chấm:**
-- 0đ: Trả lời chung chung kiểm tra mạng.
-- 1đ: Nêu được kiểm tra selector Service nhưng thiếu Endpoints CLI.
-- 2đ: Nêu được check ep và check selector nhưng thiếu bước check targetPort.
-- 3đ: Trình bày đầy đủ luồng 3 bước chẩn đoán từ Endpoints -> Selector -> TargetPort.
-
-**Câu hỏi đào sâu:** (Nếu Endpoints có IP nhưng Pod vẫn không nhận được gói tin thì nguyên nhân ở đâu? — Có thể do NetworkPolicy chặn traffic Egress/Ingress hoặc CNI plugin sập).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Ba lý do phổ biến dẫn tới trạng thái `ImagePullBackOff` là gì?
-
-**Đáp án chuẩn:** (1) Gõ sai tên ảnh hoặc tag ảnh (404 Not Found). (2) Registry yêu cầu đăng nhập nhưng Pod thiếu `imagePullSecrets` (401 Unauthorized). (3) Worker Node mất kết nối mạng hoặc DNS không phân giải được host của Registry.
-
-**Tiêu chí chấm:**
-- 0đ: Chỉ nêu được gõ sai tên ảnh.
-- 1đ: Nêu được gõ sai tên ảnh và thiếu secret.
-- 3đ: Nêu chuẩn xác 3 lý do từ Tên/Tag -> Authorization Secret -> Mạng/DNS Node.
-
-**Câu hỏi đào sâu:** (Sự khác nhau giữa trạng thái `ErrImagePull` và `ImagePullBackOff` là gì? — ErrImagePull là thất bại ở lần thử đầu tiên, ImagePullBackOff là trạng thái chờ thử lại với khoảng thời gian giãn cách tăng dần).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Làm thế nào để phân biệt một Pod bị sập do lỗi ở tầng Node (Hạ tầng) hay lỗi ở tầng Workload (Ứng dụng)?
-
-**Đáp án chuẩn:** Kiểm tra `kubectl get nodes`. Nếu Node chứa Pod hiển thị `NotReady`, lỗi nằm ở tầng Node. Nếu tất cả các Node đều `Ready` mà chỉ riêng Pod đó sập (`CrashLoopBackOff`/`OOMKilled`), lỗi nằm ở tầng Workload ứng dụng.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách phân biệt.
-- 1đ: Nêu được xem lệnh get nodes nhưng không rõ tiêu chí đánh giá.
-- 3đ: Phân tích mạch lạc tiêu chí phân lập lỗi giữa Node NotReady và Pod Crash/OOM.
-
-**Câu hỏi đào sâu:** (Nếu Node báo `Ready` nhưng có điều kiện `MemoryPressure=True` thì Pod bị ảnh hưởng thế nào? — Kubelet sẽ tiến hành evict trục xuất các Pod có độ ưu tiên thấp khỏi Node đó).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Tại sao không nên nhảy thẳng vào chỉnh sửa bản kê khai YAML của Pod khi phát hiện sự cố trên cụm Production?
-
-**Đáp án chuẩn:** Vì chỉnh sửa YAML Pod khi chưa xác định Root Cause có thể làm trầm trọng hơn sự cố (ví dụ tăng Quotas làm cạn kiệt tài nguyên cụm) hoặc sửa sai vị trí khi nguyên nhân gốc rễ nằm ở tầng Node/CNI/Storage bên dưới.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng sửa YAML Pod là cách làm nhanh nhất.
-- 1đ: Nêu được có thể sửa sai nhưng chưa liên hệ tới nguyên tắc phễu 4 tầng.
-- 3đ: Trình bày thuyết phục tầm quan trọng của việc chẩn đoán khoanh vùng đúng tầng lỗi trước khi thực hiện hành động can thiệp.
-
-**Câu hỏi đào sâu:** (Quy tắc quan trọng nhất trong việc lập báo cáo chẩn đoán sự cố là gì? — Phải ghi rõ 4 phần: Triệu chứng -> Bằng chứng CLI -> Nguyên nhân gốc rễ -> Giải pháp khắc phục).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1215,28 +1307,6 @@ Thứ tự phễu gồm 4 tầng: Tầng 1: Control Plane & API Server -> Tầng
 2. **"Lệnh `kubectl get events --sort-by='.metadata.creationTimestamp'` là chìa khóa vàng ghi lại mốc thời gian diễn biến sự cố, giúp rút ngắn 80 % thời gian khoanh vùng lỗi."**
 3. **"Đối với Pod sập vòng lặp `CrashLoopBackOff`, lệnh `kubectl logs -p` là bắt buộc để truy vết log nguyên văn của lần sập ngay trước đó."**
 4. **"Mã thoát `Exit Code 137` là bằng chứng không thể chối cãi của việc container bị nhân Linux tiêu diệt do lỗi tràn bộ nhớ `OOMKilled`."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Chưa có tư duy phân tầng chẩn đoán, phụ thuộc vào đoán mò |
-| **19 – 28 điểm** | Đạt yêu cầu | Hiểu rõ quy trình phễu 4 tầng, tra cứu tốt `events` và `describe` cho CKA |
-| **29 – 36 điểm** | Xuất sắc | Thành thục mọi cây quyết định chẩn đoán, cứu hộ nhuần nhuyễn các ca sự cố phức tạp |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết script Bash tự động thu thập thông tin chẩn đoán 4 tầng cho một Pod bất kỳ (Node status -> Events -> Describe -> Logs -p).
-- **BTVN 2:** Tái hiện ca sự cố Pod bị `OOMKilled` và dùng `kubectl top pod` theo dõi dung lượng RAM tăng liên tục trước khi bị tiêu diệt.
-- **BTVN 3:** Thực hành lệnh `kubectl debug` cứu hộ một Pod `distroless` và dùng `netstat` kiểm tra cổng dịch vụ đang mở.
-- **BTVN 4 (Chuẩn bị cho Buổi 29 — Chẩn đoán Control Plane & Node):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Khi `kubectl` không thể kết nối tới API Server (lỗi `Connection refused`), các bước kiểm tra cứu hộ đầu tiên trên Master Node là gì?
-  2. Các tệp manifest của Static Pods nằm ở đường dẫn mặc định nào trên Control Plane Node?
-  3. Lệnh CLI nào giúp xem trực tiếp log của `kubelet` service ở tầng hệ điều hành Linux?
 
 ---
 
@@ -1441,14 +1511,15 @@ kubectl patch pod <pod-name> -n <ns> -p '{"metadata":{"finalizers":null}}' --typ
 kubectl debug -it <pod-name> -n <ns> --image=busybox --target=<container-name>
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 29] Cứu Hộ Control Plane Hỏng, Node NotReady, Kubelet Crash & Sự Cố Hệ Thống Tầng Sâu](cka-29-29-chan-doan-control-plane-va-node.html).
+
 {% endraw %}

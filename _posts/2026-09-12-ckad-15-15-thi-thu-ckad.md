@@ -450,24 +450,6 @@ Chinh phục chứng chỉ bảo mật chuyên sâu <b style="color: var(--accen
 | CKAD Curriculum Guidelines | `https://github.com/cncf/curriculum` | Tài liệu chuẩn ma trận đề thi CNCF CKAD |
 | Linux Foundation Candidate Handbook | `https://docs.linuxfoundation.org/tc-docs/certification/` | Hướng dẫn thí sinh dự thi chứng chỉ CNCF |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Cấu trúc và ma trận 5 miền CKAD | 12 phút | 12 phút |
-| §5. Chiến thuật 120 phút và mẹo CLI | 12 phút | 12 phút |
-| §6. Quy trình chữa đề và đánh giá | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -994,25 +976,11 @@ bash /tmp/check-ckad-exam.sh | grep -q "ĐẠT NGƯỠNG AN TOÀN" && echo "CHEC
 | Báo cáo rút kinh nghiệm | Trả lời đầy đủ câu hỏi BT1 và BT4 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và Alias | 10 phút | 10 phút |
-| L4. Bước 2: Miền 1 — App Design & Storage | 25 phút | 25 phút |
-| L5. Bước 3: Miền 2 — App Deployment | 25 phút | 25 phút |
-| L6. Bước 4: Miền 3 — Environment & Security | 25 phút | 25 phút |
-| L7. Bước 5: Miền 4 & 5 — Networking & Observability | 25 phút | 25 phút |
-| L8. Chạy script tự chấm điểm tổng kết | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -1020,207 +988,328 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Chiến thuật 3 lượt phân bổ 120 phút thi bấm giờ CKAD để đạt điểm tối ưu là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Bài thi CKAD gồm 5 miền: (1) Application Environment, Configuration and Security (25%); (2) Application Design and Build (20%); (3) Application Deployment (20%); (4) Services and Networking (20%); (5) Application Observability and Maintenance (15%).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lượt 1 (0-50 phút): Giải quyết 10-12 câu dễ/trung bình để thu 60-70% điểm số.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lượt 2 (50-100 phút): Xử lý các câu khó đã bấm Flagged (thu thêm 20-25% điểm).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lượt 3 (100-120 phút): Rà soát lại Namespace, kiểm tra cờ lệnh và xác minh trạng thái Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không có chiến thuật phân bổ thời gian.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được làm câu dễ trước nhưng chưa rõ 3 lượt thời gian.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo chiến thuật 3 lượt và mốc thời gian cụ thể.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu dính câu khó làm quá 8 phút chưa xong thì phải xử lý thế nào? — Bấm cờ Flagged bỏ qua ngay, làm câu tiếp theo rồi quay lại sau).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ các miền kiến thức CKAD.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng 3-4 miền nhưng nhầm trọng số.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cả 5 miền kiến thức và phần trăm trọng số của từng miền.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Miền nào chiếm phần trăm trọng số lớn nhất trong bài thi CKAD? — Miền Application Environment, Configuration and Security chiếm 25%).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Bộ 3 cờ lệnh imperative CLI thần tốc nào giúp tiết kiệm 40% thời gian biên soạn tệp YAML trong phòng thi?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>alias k=kubectl</code> (Gõ k thay cho kubectl).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>export do="--dry-run=client -o yaml"</code> (Sinh khung YAML cực nhanh).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>export now="--force --grace-period=0"</code> (Xóa Pods tức thì).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết các cờ imperative gõ nhanh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ dry-run nhưng thiếu alias hoặc export.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác bộ 3 cờ lệnh thần tốc và ví dụ áp dụng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp sinh khung Deployment Nginx nhanh bằng bộ cờ trên là gì? — <code>k create deploy web --image=nginx $do > deploy.yaml</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao lỗi nhầm lẫn Namespace lại là nguyên nhân gây mất điểm đáng tiếc nhất trong bài thi CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì script tự động chấm điểm của Linux Foundation kiểm tra đối tượng trong Namespace yêu cầu của đề bài. Nếu thí sinh tạo đúng 100% bản kê khai YAML nhưng lại apply nhầm vào Namespace <code>default</code>, script chấm điểm không tìm thấy đối tượng và cho 0 điểm câu đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng script tự động quét tìm đối tượng ở mọi Namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được mất điểm do sai Namespace nhưng chưa rõ cơ chế chấm điểm tự động.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế chấm điểm tự động theo Namespace và đưa ra giải pháp phòng ngừa.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cách phòng ngừa lỗi này tốt nhất ở đầu mỗi câu thi là gì? — Chạy lệnh <code>k config set-context --current --namespace=<required-ns></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Bộ 3 lệnh gỡ rối thần tốc cần gõ ngay khi một Pod trong bài thi bị kẹt trạng thái <code>CrashLoopBackOff</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl describe pod <pod-name> -n <ns></code> (Xem sự kiện Events và lý do crash).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl logs <pod-name> -n <ns></code> (Xem nhật ký ghi log của ứng dụng).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl get ep <service-name> -n <ns></code> (Kiểm tra xem Service có đính kèm Pod không).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách chẩn đoán Pod crash.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1-2 lệnh describe hoặc logs.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác bộ 3 lệnh gỡ rối thần tốc và mục đích của từng lệnh.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container trong Pod đã bị restart nhiều lần và muốn xem log của phiên chạy TRƯỚC ĐÓ thì dùng cờ gì? — Thêm cờ <code>kubectl logs <pod> -p</code> hoặc <code>--previous</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác biệt về mục đích cấu hình giữa <code>securityContext</code> cấp Pod và cấp Container khi làm câu hỏi Security trong CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cấp Pod định nghĩa các thuộc tính chung cho toàn bộ các container bên trong (như <code>runAsUser</code>, <code>runAsGroup</code>, <code>fsGroup</code>). Cấp Container định nghĩa các thuộc tính bảo mật riêng biệt (như <code>readOnlyRootFilesystem: true</code>, <code>allowPrivilegeEscalation: false</code>, <code>capabilities.drop: ["ALL"]</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn vị trí thuộc tính giữa Pod spec và Container spec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Pod chung Container riêng nhưng chưa rõ danh sách thuộc tính hỗ trợ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác các thuộc tính thuộc Pod-level vs Container-level.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cờ <code>readOnlyRootFilesystem: true</code> bị gõ nhầm lên cấp Pod spec thì API Server báo lỗi gì? — Báo lỗi unknown field <code>readOnlyRootFilesystem</code> in PodSecurityContext).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Giải pháp chuẩn nhất để vượt qua câu hỏi thi yêu cầu triển khai Pod vào Namespace có bật <code>ResourceQuota</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bắt buộc phải khai báo đầy đủ khối <code>resources.requests</code> (CPU, RAM) và <code>resources.limits</code> (CPU, RAM) trong container spec của Pod tệp YAML, nếu không API Server sẽ từ chối tạo Pod với lỗi <code>must specify cpu</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết nguyên nhân Pod bị từ chối khi Namespace có Quota.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thêm tài nguyên nhưng chưa làm rõ phải có đủ cả requests và limits.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế bắt buộc có khối resources và cú pháp khai báo.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đề bài đã cài sẵn <code>LimitRange</code> trong Namespace thì Pod thiếu resources có bị chặn không? — Không bị chặn, LimitRange tự động tiêm giá trị <code>default</code>/<code>defaultRequest</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn của một Ingress rule định tuyến tên miền <code>app.com</code> đường dẫn <code>/api</code> tới Service <code>api-svc</code> cổng 8080 là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: networking.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Ingress</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: app-ingress</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingressClassName: nginx</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">rules:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• host: app.com</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">http:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">paths:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: /api</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">pathType: Prefix</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">backend:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">service:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: api-svc</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">port:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">number: 8080</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai cú pháp v1 Ingress.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng rule nhưng gõ nhầm <code>servicePort</code> kiểu v1beta1 cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Ingress v1.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trường thuộc tính nào bắt buộc phải có dưới <code>spec</code> để Nginx Ingress Controller tiếp nhận xử lý? — Trường <code>ingressClassName: nginx</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Kỹ thuật làm câu hỏi Sidecar Container trong bài thi CKAD yêu cầu 2 container chia sẻ dữ liệu qua đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Hai container (Main App container và Sidecar Log Reader container) chia sẻ dữ liệu với nhau bằng cách cùng mount vào một <code>emptyDir</code> volume chung tại các đường dẫn thư mục log tương ứng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách chia sẻ dữ liệu giữa 2 container trong Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng volume nhưng chưa rõ kiểu <code>emptyDir</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo mô hình Sidecar dùng <code>emptyDir</code> volume mount chung.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để xem log của riêng container <code>sidecar</code> trong Pod chứa 2 container? — Lệnh <code>kubectl logs <pod-name> -c <sidecar-container-name></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác biệt giữa ngưỡng điểm đỗ chứng chỉ CKAD chính thức (66%) và ngưỡng an toàn thi thử (75%) thể hiện điều gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ngưỡng 66% là điểm tối thiểu để được CNCF cấp chứng chỉ. Ngưỡng 75% trong thi thử là rào chắn an toàn giúp thí sinh làm chủ tâm lý, bù đắp các rủi ro phát sinh khi thi thật (như gõ nhầm Namespace, lỗi mạng kết nối hoặc câu hỏi lạ).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết điểm đỗ thi CKAD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 66% nhưng chưa giải thích được vai trò của ngưỡng 75% thi thử.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ý nghĩa của ngưỡng điểm an toàn 75% thi thử.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu bài thi thử đạt 78 điểm thì thí sinh đã sẵn sàng thi chứng chỉ quốc tế chưa? — Hoàn toàn sẵn sàng, đạt ngưỡng an toàn tuyệt đối).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Những vật dụng và điều kiện phòng thi nào thí sinh được phép chuẩn bị khi làm bài thi CKAD chính thức qua PSI Browser?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thí sinh thi trong một phòng riêng yên tĩnh, bàn làm việc sạch sẽ không có tài liệu/thiết bị điện tử khác. Được phép có 1 chai nước trong suốt tháo nhãn. Được phép truy cập duy nhất 1 tab tài liệu chính thức <code>kubernetes.io/docs/</code> tích hợp trong giao diện thi.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy định phòng thi PSI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được phòng riêng nhưng chưa rõ quy định tài liệu K8s docs.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác điều kiện phòng thi và quy định tài liệu K8s docs.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thí sinh có được phép mở bookmark trình duyệt cá nhân khi thi không? — Không, bắt buộc dùng trình duyệt PSI Secure Browser).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Cột mốc hoàn thành Buổi 45 tốt nghiệp Giai đoạn 2 CKAD mở ra lộ trình chinh phục Giai đoạn 3 tiếp theo là chứng chỉ gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Mở ra Giai đoạn 3 (từ Buổi 46 đến Buổi 65) chinh phục chứng chỉ cao cấp <b style="color: var(--accent-primary);">CKS (Certified Kubernetes Security Specialist)</b> — chứng chỉ chuyên gia bảo mật hàng đầu của CNCF.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết chứng chỉ tiếp theo.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được CKS nhưng chưa rõ tên đầy đủ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, tự hào về cột mốc tốt nghiệp CKAD và mục tiêu chinh phục CKS Giai đoạn 3.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chủ đề mở đầu của Buổi 46 trong Giai đoạn 3 CKS là gì? — Chủ đề <code>CKS Network Security Policy: NetworkPolicy Ingress & Egress Hardening</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Chiến thuật 3 lượt phân bổ 120 phút thi bấm giờ CKAD để đạt điểm tối ưu là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:**
-- Lượt 1 (0-50 phút): Giải quyết 10-12 câu dễ/trung bình để thu 60-70% điểm số.
-- Lượt 2 (50-100 phút): Xử lý các câu khó đã bấm Flagged (thu thêm 20-25% điểm).
-- Lượt 3 (100-120 phút): Rà soát lại Namespace, kiểm tra cờ lệnh và xác minh trạng thái Pod.
+1. <b style="color: var(--accent-primary);">"Tốt nghiệp Giai đoạn 2 CKAD với điểm thi thử > 75% khẳng định năng lực thực chiến bấm giờ và làm chủ 100% 5 miền kiến thức chứng chỉ CNCF."</b>
+2. <b style="color: var(--accent-primary);">"Luôn làm câu dễ trước, cài đặt bộ alias gõ tắt thần tốc và kiểm tra cờ Namespace ở đầu mỗi câu để đạt điểm số tối đa."</b>
+3. <b style="color: var(--accent-primary);">"Thành thạo bộ 3 lệnh gỡ rối <code>describe pod</code>, <code>logs -p</code>, và <code>get ep</code> để khắc phục sự cố ứng dụng trong vòng 30 giây."</b>
+4. <b style="color: var(--accent-primary);">"Sẵn sàng bước tiếp sang Giai đoạn 3 để chinh phục đỉnh cao bảo mật Kubernetes với chứng chỉ CKS!"</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không có chiến thuật phân bổ thời gian.
-- 1đ: Nêu được làm câu dễ trước nhưng chưa rõ 3 lượt thời gian.
-- 3đ: Phân tích thấu đáo chiến thuật 3 lượt và mốc thời gian cụ thể.
-
-**Câu hỏi đào sâu:** (Nếu dính câu khó làm quá 8 phút chưa xong thì phải xử lý thế nào? — Bấm cờ Flagged bỏ qua ngay, làm câu tiếp theo rồi quay lại sau).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Bộ 3 cờ lệnh imperative CLI thần tốc nào giúp tiết kiệm 40% thời gian biên soạn tệp YAML trong phòng thi?
-
-**Đáp án chuẩn:**
-1. `alias k=kubectl` (Gõ k thay cho kubectl).
-2. `export do="--dry-run=client -o yaml"` (Sinh khung YAML cực nhanh).
-3. `export now="--force --grace-period=0"` (Xóa Pods tức thì).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết các cờ imperative gõ nhanh.
-- 1đ: Nêu được cờ dry-run nhưng thiếu alias hoặc export.
-- 3đ: Trình bày chuẩn xác bộ 3 cờ lệnh thần tốc và ví dụ áp dụng.
-
-**Câu hỏi đào sâu:** (Cú pháp sinh khung Deployment Nginx nhanh bằng bộ cờ trên là gì? — `k create deploy web --image=nginx $do > deploy.yaml`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Tại sao lỗi nhầm lẫn Namespace lại là nguyên nhân gây mất điểm đáng tiếc nhất trong bài thi CKAD?
-
-**Đáp án chuẩn:** Vì script tự động chấm điểm của Linux Foundation kiểm tra đối tượng trong Namespace yêu cầu của đề bài. Nếu thí sinh tạo đúng 100% bản kê khai YAML nhưng lại apply nhầm vào Namespace `default`, script chấm điểm không tìm thấy đối tượng và cho 0 điểm câu đó.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng script tự động quét tìm đối tượng ở mọi Namespace.
-- 1đ: Nêu được mất điểm do sai Namespace nhưng chưa rõ cơ chế chấm điểm tự động.
-- 3đ: Phân tích thấu đáo cơ chế chấm điểm tự động theo Namespace và đưa ra giải pháp phòng ngừa.
-
-**Câu hỏi đào sâu:** (Cách phòng ngừa lỗi này tốt nhất ở đầu mỗi câu thi là gì? — Chạy lệnh `k config set-context --current --namespace=<required-ns>`).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Bộ 3 lệnh gỡ rối thần tốc cần gõ ngay khi một Pod trong bài thi bị kẹt trạng thái `CrashLoopBackOff` là gì?
-
-**Đáp án chuẩn:**
-1. `kubectl describe pod <pod-name> -n <ns>` (Xem sự kiện Events và lý do crash).
-2. `kubectl logs <pod-name> -n <ns>` (Xem nhật ký ghi log của ứng dụng).
-3. `kubectl get ep <service-name> -n <ns>` (Kiểm tra xem Service có đính kèm Pod không).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách chẩn đoán Pod crash.
-- 1đ: Nêu được 1-2 lệnh describe hoặc logs.
-- 3đ: Trình bày chính xác bộ 3 lệnh gỡ rối thần tốc và mục đích của từng lệnh.
-
-**Câu hỏi đào sâu:** (Nếu container trong Pod đã bị restart nhiều lần và muốn xem log của phiên chạy TRƯỚC ĐÓ thì dùng cờ gì? — Thêm cờ `kubectl logs <pod> -p` hoặc `--previous`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Sự khác biệt về mục đích cấu hình giữa `securityContext` cấp Pod và cấp Container khi làm câu hỏi Security trong CKAD là gì?
-
-**Đáp án chuẩn:** Cấp Pod định nghĩa các thuộc tính chung cho toàn bộ các container bên trong (như `runAsUser`, `runAsGroup`, `fsGroup`). Cấp Container định nghĩa các thuộc tính bảo mật riêng biệt (như `readOnlyRootFilesystem: true`, `allowPrivilegeEscalation: false`, `capabilities.drop: ["ALL"]`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn vị trí thuộc tính giữa Pod spec và Container spec.
-- 1đ: Nêu được Pod chung Container riêng nhưng chưa rõ danh sách thuộc tính hỗ trợ.
-- 3đ: Phân tích chuẩn xác các thuộc tính thuộc Pod-level vs Container-level.
-
-**Câu hỏi đào sâu:** (Nếu cờ `readOnlyRootFilesystem: true` bị gõ nhầm lên cấp Pod spec thì API Server báo lỗi gì? — Báo lỗi unknown field `readOnlyRootFilesystem` in PodSecurityContext).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Giải pháp chuẩn nhất để vượt qua câu hỏi thi yêu cầu triển khai Pod vào Namespace có bật `ResourceQuota` là gì?
-
-**Đáp án chuẩn:** Bắt buộc phải khai báo đầy đủ khối `resources.requests` (CPU, RAM) và `resources.limits` (CPU, RAM) trong container spec của Pod tệp YAML, nếu không API Server sẽ từ chối tạo Pod với lỗi `must specify cpu`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết nguyên nhân Pod bị từ chối khi Namespace có Quota.
-- 1đ: Nêu được thêm tài nguyên nhưng chưa làm rõ phải có đủ cả requests và limits.
-- 3đ: Trình bày chuẩn xác cơ chế bắt buộc có khối resources và cú pháp khai báo.
-
-**Câu hỏi đào sâu:** (Nếu đề bài đã cài sẵn `LimitRange` trong Namespace thì Pod thiếu resources có bị chặn không? — Không bị chặn, LimitRange tự động tiêm giá trị `default`/`defaultRequest`).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một Ingress rule định tuyến tên miền `app.com` đường dẫn `/api` tới Service `api-svc` cổng 8080 là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: app-ingress
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: app.com
-      http:
-        paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: api-svc
-                port:
-                  number: 8080
-```
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai cú pháp v1 Ingress.
-- 1đ: Nêu đúng rule nhưng gõ nhầm `servicePort` kiểu v1beta1 cũ.
-- 3đ: Viết chuẩn xác 100% bản kê khai Ingress v1.
-
-**Câu hỏi đào sâu:** (Trường thuộc tính nào bắt buộc phải có dưới `spec` để Nginx Ingress Controller tiếp nhận xử lý? — Trường `ingressClassName: nginx`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Kỹ thuật làm câu hỏi Sidecar Container trong bài thi CKAD yêu cầu 2 container chia sẻ dữ liệu qua đâu?
-
-**Đáp án chuẩn:** Hai container (Main App container và Sidecar Log Reader container) chia sẻ dữ liệu với nhau bằng cách cùng mount vào một `emptyDir` volume chung tại các đường dẫn thư mục log tương ứng.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách chia sẻ dữ liệu giữa 2 container trong Pod.
-- 1đ: Nêu được dùng volume nhưng chưa rõ kiểu `emptyDir`.
-- 3đ: Phân tích thấu đáo mô hình Sidecar dùng `emptyDir` volume mount chung.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để xem log của riêng container `sidecar` trong Pod chứa 2 container? — Lệnh `kubectl logs <pod-name> -c <sidecar-container-name>`).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Sự khác biệt giữa ngưỡng điểm đỗ chứng chỉ CKAD chính thức (66%) và ngưỡng an toàn thi thử (75%) thể hiện điều gì?
-
-**Đáp án chuẩn:** Ngưỡng 66% là điểm tối thiểu để được CNCF cấp chứng chỉ. Ngưỡng 75% trong thi thử là rào chắn an toàn giúp thí sinh làm chủ tâm lý, bù đắp các rủi ro phát sinh khi thi thật (như gõ nhầm Namespace, lỗi mạng kết nối hoặc câu hỏi lạ).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết điểm đỗ thi CKAD.
-- 1đ: Nêu được 66% nhưng chưa giải thích được vai trò của ngưỡng 75% thi thử.
-- 3đ: Phân tích chuẩn xác ý nghĩa của ngưỡng điểm an toàn 75% thi thử.
-
-**Câu hỏi đào sâu:** (Nếu bài thi thử đạt 78 điểm thì thí sinh đã sẵn sàng thi chứng chỉ quốc tế chưa? — Hoàn toàn sẵn sàng, đạt ngưỡng an toàn tuyệt đối).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Những vật dụng và điều kiện phòng thi nào thí sinh được phép chuẩn bị khi làm bài thi CKAD chính thức qua PSI Browser?
-
-**Đáp án chuẩn:** Thí sinh thi trong một phòng riêng yên tĩnh, bàn làm việc sạch sẽ không có tài liệu/thiết bị điện tử khác. Được phép có 1 chai nước trong suốt tháo nhãn. Được phép truy cập duy nhất 1 tab tài liệu chính thức `kubernetes.io/docs/` tích hợp trong giao diện thi.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết quy định phòng thi PSI.
-- 1đ: Nêu được phòng riêng nhưng chưa rõ quy định tài liệu K8s docs.
-- 3đ: Trình bày chính xác điều kiện phòng thi và quy định tài liệu K8s docs.
-
-**Câu hỏi đào sâu:** (Thí sinh có được phép mở bookmark trình duyệt cá nhân khi thi không? — Không, bắt buộc dùng trình duyệt PSI Secure Browser).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Cột mốc hoàn thành Buổi 45 tốt nghiệp Giai đoạn 2 CKAD mở ra lộ trình chinh phục Giai đoạn 3 tiếp theo là chứng chỉ gì?
-
-**Đáp án chuẩn:** Mở ra Giai đoạn 3 (từ Buổi 46 đến Buổi 65) chinh phục chứng chỉ cao cấp **CKS (Certified Kubernetes Security Specialist)** — chứng chỉ chuyên gia bảo mật hàng đầu của CNCF.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết chứng chỉ tiếp theo.
-- 1đ: Nêu được CKS nhưng chưa rõ tên đầy đủ.
-- 3đ: Trình bày tự tin, tự hào về cột mốc tốt nghiệp CKAD và mục tiêu chinh phục CKS Giai đoạn 3.
-
-**Câu hỏi đào sâu:** (Chủ đề mở đầu của Buổi 46 trong Giai đoạn 3 CKS là gì? — Chủ đề `CKS Network Security Policy: NetworkPolicy Ingress & Egress Hardening`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1230,28 +1319,6 @@ spec:
 2. **"Luôn làm câu dễ trước, cài đặt bộ alias gõ tắt thần tốc và kiểm tra cờ Namespace ở đầu mỗi câu để đạt điểm số tối đa."**
 3. **"Thành thạo bộ 3 lệnh gỡ rối `describe pod`, `logs -p`, và `get ep` để khắc phục sự cố ứng dụng trong vòng 30 giây."**
 4. **"Sẵn sàng bước tiếp sang Giai đoạn 3 để chinh phục đỉnh cao bảo mật Kubernetes với chứng chỉ CKS!"**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần rà soát lại các buổi 31 đến 44 |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc kiến thức tốt nghiệp Giai đoạn 2 CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục thực chiến 100% sẵn sàng thi chứng chỉ quốc tế |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Đăng ký lịch thi chứng chỉ CKAD chính thức trên Linux Foundation Portal.
-- **BTVN 2:** Thực hành lại đề thi thử CKAD lần 2 để tối ưu hóa thời gian gõ phím.
-- **BTVN 3:** Tổng hợp toàn bộ 8 quy tắc QT từ Buổi 31 đến Buổi 45 thành cuốn Sổ tay CKAD cá nhân.
-- **BTVN 4 (Mở đầu Giai đoạn 3 — Buổi 46: CKS Network Security Policy):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Chứng chỉ CKS (Certified Kubernetes Security Specialist) khác gì so với CKA và CKAD về mức độ bảo mật?
-  2. Khái niệm `NetworkPolicy` trong Kubernetes đóng vai trò gì trong việc kiểm soát luồng traffic `Ingress` và `Egress` giữa các Pod?
-  3. Lệnh CLI nào dùng để kiểm tra các NetworkPolicy đang hoạt động trong Namespace (`kubectl get netpol`)?
 
 ---
 
@@ -1527,14 +1594,15 @@ spec:
             backend: {service: {name: api-svc, port: {number: 80}}}
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 16] Tổng Ôn Tốc Độ CKAD: Giải Quyết 20 Bài Tập Thực Hành Ứng Dụng Trong 90 Phút](ckad-16-16-tong-on-ckad-toc-do.html).
+
 {% endraw %}

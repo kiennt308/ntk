@@ -273,7 +273,7 @@ publish_release:
 
 > **Bối Cảnh**: Một sàn thương mại điện tử chuẩn bị cho sự kiện siêu khuyến mãi Black Friday. Một kỹ sư đã merge tính năng gợi ý sản phẩm mới. Mặc dù Unit Test pass 100% và SAST không có lỗi bảo mật, nhưng hàm mới thực hiện N+1 Query vào database. Khi lượng truy cập đạt 10.000 users/giây, database bị quá tải 100% CPU và toàn bộ website bị sập trong suốt 4 giờ cao điểm.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -310,7 +310,7 @@ publish_release:
 - Thực hiện tình huống thử nghiệm: Cố tình làm giảm Coverage dưới 80% để quan sát Rào chắn chặn sập Pipeline.
 - Bổ sung kiểm thử để nâng Coverage và quan sát Rào chắn cấp quyền Release thành công.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB UNIFIED QUALITY GATE TRÊN GITLAB CI
 
      [ Mã Nguồn Go Microservice ]
@@ -657,7 +657,7 @@ func TestAllOperations(t *testing.T) {
 
 ### 7.2. Sơ Đồ Tư Duy Rào Chắn Chất Lượng & An Ninh (Mindmap)
 
-```
+```text
                      RÀO CHẮN CHẤT LƯỢNG & AN NINH TOÀN DIỆN
                                         │
         ┌───────────────────────────────┼───────────────────────────────┐

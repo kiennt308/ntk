@@ -425,24 +425,6 @@ graph TD
 | Official Docs: Version Skew Policy | Kubernetes v1.35 | Quy định độ lệch phiên bản giữa Kubelet và API Server |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Nguyên tắc nâng cấp cụm: Quy tắc 1 Minor Version và thứ tự nâng cấp | 12 phút |
-| §5 | Nâng cấp Control Plane (`kubeadm upgrade plan` và `apply`) | 12 phút |
-| §6 | Quản lý bảo trì Node: `cordon`, `drain` và `uncordon` | 10 phút |
-| §7 | Quy trình nâng cấp Worker Node không gián đoạn dịch vụ | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -809,24 +791,11 @@ rm -f /tmp/upgrade-plan.log /tmp/cp-upgrade.log /tmp/drain-err.log /tmp/cordon-c
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-08/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Chuẩn bị hạ tầng Linux: Swapoff, modprobe kernel modules và sysctl | 30 phút |
-| L4 | Bước 2 — Cài đặt containerd, `kubeadm`, `kubelet`, `kubectl` và sửa SystemdCgroup | 30 phút |
-| L5 | Bước 3 — Khởi tạo Control Plane với `kubeadm init` và trích xuất join command | 30 phút |
-| L6 | Bước 4 — Join 2 Worker Nodes, cài CNI Flannel và kiểm tra cụm 3 node Ready | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -840,256 +809,357 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày thứ tự nâng cấp chuẩn giữa Control Plane, CNI Addons và các Worker Node trong cụm.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mỗi minor version mới (ví dụ v1.34) có thể chính thức gỡ bỏ hoàn toàn các trường API đã bị đánh dấu <b style="color: var(--accent-primary);">deprecated</b> ở các phiên bản cũ.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nâng cấp nhảy cách 2 minor version (v1.33 -> v1.35) sẽ khiến các bản kê khai trong etcd bị gãy do thiếu tầng dịch chuyển tiếp (conversion webhooks).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đồng thời, Kubelet và các controller sẽ bị vỡ tương thích gRPC API. Quy tắc chuẩn bắt buộc phải nâng cấp từng nấc một: <code>v1.33 -> v1.34 -> v1.35</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thứ tự 3 chặng bắt buộc:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Control Plane (<code>cp-01</code>):</b> Nâng cấp API Server, etcd, controller-manager, scheduler trước.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CNI / Addons:</b> Nâng cấp CNI Plugin (Flannel/Calico) và CoreDNS để tương thích với API Server mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Worker Nodes (<code>worker-01</code>, <code>worker-02</code>):</b> Lần lượt nâng cấp từng Worker Node (rolling upgrade).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do:</b> API Server mới hỗ trợ các Kubelet cũ chậm hơn tối đa 2 minor version (Kubelet Version Skew Policy).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo nâng cấp Worker Node trước rồi nâng Control Plane sau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được Control Plane trước nhưng thiếu chặng nâng cấp CNI/Addons.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chuẩn xác thứ tự 3 chặng và lý do tương thích lùi của API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu cờ Kubelet Version Skew Policy (chậm tối đa 2 minor version).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu nâng cấp Kubelet trên Worker Node lên v1.35 trước khi API Server nâng cấp thì điều gì xảy ra? *(Đáp án: Kubelet bị từ chối kết nối gRPC tới API Server v1.34).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo do hệ thống không cho phép tải file.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do quy định của Kubernetes nhưng không giải thích được sự gỡ bỏ API deprecated và tầng chuyển tiếp etcd (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác rủi ro gỡ bỏ API deprecated và yêu cầu nâng cấp từng minor version.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu quy tắc Version Skew Policy của CNCF.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Đối với Patch Version (ví dụ v1.35.0 lên v1.35.3) thì có được nhảy cách không? *(Đáp án: Được phép nhảy cách trực tiếp từ v1.35.0 lên v1.35.3).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Kubelet trên Worker Node được phép chậm tối đa bao nhiêu minor version so với <code>kube-apiserver</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet được phép chậm <b style="color: var(--accent-primary);">tối đa 2 minor version</b> so với <code>kube-apiserver</code> (Kubelet Version Skew Policy).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ví dụ: Nếu <code>kube-apiserver</code> đang ở phiên bản <b style="color: var(--accent-primary);">v1.35</b>, Kubelet trên Worker Node có thể ở phiên bản <b style="color: var(--accent-primary);">v1.35</b>, <b style="color: var(--accent-primary);">v1.34</b>, hoặc <b style="color: var(--accent-primary);">v1.33</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tuy nhiên, Kubelet <b style="color: var(--accent-primary);">KHÔNG ĐƯỢC PHÉP nhanh hơn</b> <code>kube-apiserver</code> (Kubelet không thể ở v1.36 khi API Server ở v1.35).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Trả lời Kubelet phải luôn bằng phiên bản hoặc được chậm 10 phiên bản.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 minor version nhưng không chỉ ra Kubelet không được nhanh hơn API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác quy tắc chậm tối đa 2 minor version và cấm nhanh hơn API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng ví dụ v1.35 API vs v1.33 Kubelet.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> <code>kubectl</code> CLI được phép lệch bao nhiêu minor version so với <code>kube-apiserver</code>? *(Đáp án: kubectl được phép lệch +/- 1 minor version so với API Server).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Lệnh <code>kubeadm upgrade plan</code> đóng vai trò gì trước khi nâng cấp Control Plane?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubeadm upgrade plan</code> là câu lệnh <b style="color: var(--accent-primary);">quét và phân tích kế hoạch nâng cấp</b> chạy trên Control Plane node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Quét phiên bản hiện tại của các static pods (<code>apiserver</code>, <code>etcd</code>, <code>controller-manager</code>, <code>scheduler</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đối soát với Kubernetes release registry để tìm các phiên bản stable có thể nâng cấp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra hạn chứng chỉ và cảnh báo các API deprecated.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• In ra chính xác câu lệnh <code>kubeadm upgrade apply v1.35.x</code> chuẩn cú pháp để kỹ sư copy thi hành.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo lệnh này dùng để tự động cài đặt package mới.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời để xem phiên bản nhưng không nêu được tính năng đối soát registry và in câu lệnh apply.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò phân tích, kiểm tra tương thích và in câu lệnh apply chuẩn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chứng minh bằng kết quả bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh <code>kubeadm upgrade plan</code> có làm thay đổi bất kỳ tệp cấu hình nào trên đĩa cứng không? *(Đáp án: Không, nó chỉ là lệnh đọc/read-only không thay đổi hệ thống).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trình bày 5 bước trong quy trình nâng cấp Control Plane node <code>cp-01</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>apt-mark unhold kubeadm && apt-get install -y kubeadm=1.35.x && apt-mark hold kubeadm</code>: Upgrade gói <code>kubeadm</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>sudo kubeadm upgrade apply v1.35.x -y</code>: Áp dụng nâng cấp các tệp static pod manifests và etcd.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>apt-mark unhold kubelet kubectl && apt-get install -y kubelet=1.35.x kubectl=1.35.x && apt-mark hold ...</code>: Upgrade gói nhị phân <code>kubelet</code> và <code>kubectl</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>sudo systemctl daemon-reload && sudo systemctl restart kubelet</code>: Reload systemd và restart Kubelet service.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra <code>kubectl get nodes</code> xác nhận Control Plane node đạt phiên bản mới và ở trạng thái <code>Ready</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được các bước hoặc cho rằng chỉ cần chạy <code>apt upgrade</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>kubeadm upgrade apply</code> nhưng thiếu bước upgrade <code>kubeadm</code> package trước đó.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chuẩn xác 5 bước nâng cấp Control Plane node theo đúng tài liệu CNCF.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu chi tiết việc <code>apt-mark unhold</code> và <code>hold</code> lại 3 gói.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao <code>kubeadm</code> lại phải được nâng cấp trước khi chạy <code>kubeadm upgrade apply</code>? *(Đáp án: Vì tệp nhị phân kubeadm mới mới chứa mã logic để cập nhật static pod manifests v1.35).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Phân biệt sự khác nhau giữa hai lệnh <code>kubectl cordon <node></code> và <code>kubectl drain <node></code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl cordon <node></code>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ đánh dấu Node ở trạng thái <b style="color: var(--accent-primary);"><code>SchedulingDisabled</code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chặn không cho gán Pod mới</b> vào Node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0 Pod bị xoá hay di tản</b>; tất cả Pod đang chạy trên Node vẫn giữ nguyên hoạt động.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl drain <node></code>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tự động thực hiện <code>cordon</code> trước (đánh dấu <code>SchedulingDisabled</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sau đó tiến hành <b style="color: var(--accent-primary);">xoá và di tản (evict) 100% các Pod đang chạy</b> sang các Worker Node khác trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 lệnh này hoàn toàn giống nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được cordon khoá nút còn drain di tản nhưng không nhấn mạnh cordon giữ nguyên 100% Pod đang chạy (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác: cordon chỉ chặn gán Pod mới (0 Pod bị di tản) vs drain vừa chặn vừa di tản Pod đang chạy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu trường hợp sử dụng thực tế của từng lệnh.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi nào nên dùng <code>cordon</code> mà không dùng <code>drain</code>? *(Đáp án: Khi chỉ muốn kiểm tra phần cứng hoặc chuẩn bị bảo trì nhẹ mà không muốn làm xáo trộn Pod đang chạy).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Hai cờ <code>--ignore-daemonsets</code> và <code>--delete-emptydir-data</code> trong lệnh <code>kubectl drain</code> giải quyết vấn đề gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--ignore-daemonsets</code>: DaemonSet Pods (như Flannel/Calico CNI, kube-proxy) được thiết kế chạy trên 100% các Node. Nếu drain cố xoá DaemonSet, DaemonSet Controller sẽ tự tạo lại ngay, khiến lệnh drain bị kẹt vô hạn. Cờ này bảo drain <b style="color: var(--accent-primary);">bỏ qua không xoá DaemonSet Pods</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--delete-emptydir-data</code>: Mặc định, drain từ chối xoá các Pod có sử dụng volume đĩa tạm <code>emptyDir</code> để tránh làm mất dữ liệu đĩa tạm. Cờ này cho phép <b style="color: var(--accent-primary);">chấp nhận xoá dữ liệu đĩa tạm</b> để tiến trình drain tiếp tục.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết 2 cờ hoặc bảo cờ này dùng để tăng tốc độ drain.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời đúng cờ <code>--ignore-daemonsets</code> nhưng thiếu cờ <code>--delete-emptydir-data</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác tác dụng bỏ qua DaemonSet kẹt và chấp nhận xoá đĩa tạm emptyDir.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu thêm cờ <code>--force</code> cho Unmanaged Pods.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Cờ <code>--force</code> trong lệnh drain dùng để xử lý loại Pod nào? *(Đáp án: Dùng để cưỡng chế xoá Unmanaged Pods — Pod rác không thuộc Deployment hay ReplicaSet nào).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh <code>kubectl uncordon <node></code> đóng vai trò gì sau khi hoàn thành nâng cấp Node? Điều gì xảy ra nếu quản trị viên quên chạy lệnh này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>kubectl uncordon <node></code> chuyển trạng thái Node từ <code>SchedulingDisabled</code> trở lại <b style="color: var(--accent-primary);"><code>Ready</code></b> bình thường.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Mở khoá cho phép Kubernetes Scheduler tiếp tục phân bổ các Pod mới vào Node đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hậu quả khi quên:</b> Node bị kẹt ở trạng thái <code>SchedulingDisabled</code> vĩnh viễn, không chạy bất kỳ Pod mới nào, gây lãng phí tài nguyên RAM/CPU của Node và dồn tải làm sập các Node còn lại trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo uncordon dùng để di tản Pod về lại node cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời để mở khoá node nhưng không giải thích được hậu quả kẹt SchedulingDisabled làm dồn tải cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò mở khoá Scheduler và hậu quả lãng phí tài nguyên dồn tải.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chứng minh bằng lệnh <code>kubectl get nodes</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh <code>uncordon</code> có tự động chuyển các Pod cũ đã bị drain ở bước trước quay lại node vừa nâng cấp không? *(Đáp án: Không, Pod đã di tản sang node khác sẽ ở nguyên đó cho tới khi có đợt scale/restart mới).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Trình bày 6 bước trong quy trình nâng cấp một Worker Node (<code>worker-01</code>) không làm ngắt gián đoạn dịch vụ.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">[Trên Control Plane]:</b> <code>kubectl drain worker-01 --ignore-daemonsets --delete-emptydir-data --force</code> (Di tản Pod).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">[Trên worker-01]:</b> <code>apt-mark unhold kubeadm && apt-get install -y kubeadm=1.35.x && apt-mark hold kubeadm</code> (Upgrade kubeadm package).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">[Trên worker-01]:</b> <code>sudo kubeadm upgrade node</code> (Cập nhật tệp cấu hình Kubelet YAML).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">[Trên worker-01]:</b> <code>apt-mark unhold kubelet kubectl && apt-get install -y kubelet=1.35.x kubectl=1.35.x && apt-mark hold ...</code> (Upgrade kubelet/kubectl nhị phân).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">[Trên worker-01]:</b> <code>sudo systemctl daemon-reload && sudo systemctl restart kubelet</code> (Restart Kubelet).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">[Trên Control Plane]:</b> <code>kubectl uncordon worker-01</code> (Mở khoá cho Node phục vụ trở lại).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo chạy <code>kubeadm upgrade apply</code> trên Worker Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được drain và uncordon nhưng thiếu lệnh <code>kubeadm upgrade node</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chuẩn xác 6 bước nâng cấp Worker Node không gián đoạn dịch vụ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt rõ lệnh <code>kubeadm upgrade apply</code> (cp) vs <code>kubeadm upgrade node</code> (worker).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Sự khác nhau cốt lõi giữa <code>kubeadm upgrade apply</code> và <code>kubeadm upgrade node</code> là gì? *(Đáp án: apply cập nhật etcd & static pods manifests ở Control Plane; node chỉ cập nhật tệp cấu hình Kubelet ở Worker Node).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao sau khi chạy lệnh <code>kubeadm upgrade node</code> trên Worker Node, ta vẫn phải chạy lệnh <code>apt-get install -y kubelet</code> và restart Kubelet?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>kubeadm upgrade node</code> <b style="color: var(--accent-primary);">CHỈ làm nhiệm vụ cập nhật tệp cấu hình Kubelet YAML</b> (<code>/var/lib/kubelet/config.yaml</code>) tải từ Control Plane về.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nó <b style="color: var(--accent-primary);">KHÔNG tự nâng cấp tệp thực thi nhị phân (binary executable)</b> <code>kubelet</code> của hệ điều hành Linux (<code>/usr/bin/kubelet</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Do đó, bắt buộc phải dùng <code>apt-get install -y kubelet=1.35.x</code> để đè tệp nhị phân Kubelet mới, và <code>systemctl restart kubelet</code> để nạp tệp nhị phân mới vào RAM.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Cho rằng <code>kubeadm upgrade node</code> đã tự nâng cấp xong tất cả.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được cần cài apt nhưng không giải thích được sự khác biệt giữa tệp cấu hình YAML và tệp thực thi nhị phân binary.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc <code>kubeadm upgrade node</code> chỉ cập nhật config.yaml, còn <code>apt install</code> mới nâng cấp file nhị phân binary.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra kết quả <code>kubectl get nodes</code> hiển thị phiên bản Kubelet lấy từ binary <code>kubelet --version</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu chỉ chạy <code>kubeadm upgrade node</code> mà không <code>apt install kubelet</code> thì <code>kubectl get nodes</code> sẽ hiển thị phiên bản gì? *(Đáp án: Vẫn hiển thị phiên bản Kubelet cũ).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao chiến lược nâng cấp từng Node một (Rolling Upgrade) kết hợp Deployment replicas >= 2 lại đảm bảo <b>0ms downtime</b> cho người dùng end-user?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi Deployment có <code>replicas: 2</code>, 2 Pod ứng dụng được Scheduler xếp nằm trên 2 Worker Node khác nhau (<code>worker-01</code> và <code>worker-02</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Service và Ingress load balancer phân phối đều lượng truy cập tới cả 2 Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi ta <code>drain worker-01</code>, Pod trên <code>worker-01</code> bị xoá, nhưng Pod trên <code>worker-02</code> vẫn <b style="color: var(--accent-primary);">đang sống 100% và nhận toàn bộ truy cập</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đồng thời, Deployment Controller lập tức tạo Pod thay thế mới trên node khác. Nhờ đó, người dùng end-user hoàn toàn không nhận thấy bất kỳ sự gián đoạn nào (0ms downtime).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo di tản Pod vẫn gây sập trang web 5 phút.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được do có 2 Pod nhưng không giải thích được vai trò của Service Load Balancer và việc drain từng node một.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác cơ chế phân phối tải của Service, di tản từng node (rolling) và Pod thay thế.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu thêm vai trò của <code>PodDisruptionBudget</code> (PDB) bảo vệ số lượng Pod tối thiểu.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Đối tượng API nào trong Kubernetes giúp chặn không cho người quản trị <code>drain</code> quá nhiều Pod cùng lúc gây sập dịch vụ? *(Đáp án: PodDisruptionBudget - PDB).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 ồn ào do kẹt DaemonSet, 1 âm thầm do quên uncordon) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Ồn ào - Kẹt DaemonSet khi drain):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Lệnh <code>kubectl drain worker-01</code> bị ngắt ngay lập tức và in lỗi đỏ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Terminal báo <code>error: cannot delete DaemonSet-managed Pods...</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Thêm cờ <code>--ignore-daemonsets --delete-emptydir-data</code> vào lệnh drain.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Quên <code>uncordon</code> sau khi nâng cấp):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Nâng cấp Node xong xuôi, Node báo <code>Ready</code>, nhưng mãi mãi không nhận thêm Pod mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl get nodes</code> thấy trạng thái <code>Ready,SchedulingDisabled</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Chạy <code>kubectl uncordon worker-01</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra cờ <code>--ignore-daemonsets</code> và trạng thái <code>SchedulingDisabled</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu 1 Pod bị kẹt ở trạng thái <code>Terminating</code> trong khi drain thì dùng cờ gì để cưỡng chế? *(Đáp án: Thêm cờ --force hoặc --grace-period=0).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Trình bày thứ tự nâng cấp chuẩn giữa Control Plane, CNI Addons và các Worker Node trong cụm.
-
-**Đáp án chuẩn:**
-- Thứ tự 3 chặng bắt buộc:
-  1. **Control Plane (`cp-01`):** Nâng cấp API Server, etcd, controller-manager, scheduler trước.
-  2. **CNI / Addons:** Nâng cấp CNI Plugin (Flannel/Calico) và CoreDNS để tương thích với API Server mới.
-  3. **Worker Nodes (`worker-01`, `worker-02`):** Lần lượt nâng cấp từng Worker Node (rolling upgrade).
-- **Lý do:** API Server mới hỗ trợ các Kubelet cũ chậm hơn tối đa 2 minor version (Kubelet Version Skew Policy).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo nâng cấp Worker Node trước rồi nâng Control Plane sau.
-- **1đ:** Nêu được Control Plane trước nhưng thiếu chặng nâng cấp CNI/Addons.
-- **2đ:** Trình bày chuẩn xác thứ tự 3 chặng và lý do tương thích lùi của API Server.
-- **3đ:** Trả lời xuất sắc, nêu cờ Kubelet Version Skew Policy (chậm tối đa 2 minor version).
-
-**Câu hỏi đào sâu:** Nếu nâng cấp Kubelet trên Worker Node lên v1.35 trước khi API Server nâng cấp thì điều gì xảy ra? *(Đáp án: Kubelet bị từ chối kết nối gRPC tới API Server v1.34).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Kubelet trên Worker Node được phép chậm tối đa bao nhiêu minor version so với `kube-apiserver`?
-
-**Đáp án chuẩn:**
-- Kubelet được phép chậm **tối đa 2 minor version** so với `kube-apiserver` (Kubelet Version Skew Policy).
-- Ví dụ: Nếu `kube-apiserver` đang ở phiên bản **v1.35**, Kubelet trên Worker Node có thể ở phiên bản **v1.35**, **v1.34**, hoặc **v1.33**.
-- Tuy nhiên, Kubelet **KHÔNG ĐƯỢC PHÉP nhanh hơn** `kube-apiserver` (Kubelet không thể ở v1.36 khi API Server ở v1.35).
-
-**Tiêu chí chấm:**
-- **0đ:** Trả lời Kubelet phải luôn bằng phiên bản hoặc được chậm 10 phiên bản.
-- **1đ:** Nêu được 2 minor version nhưng không chỉ ra Kubelet không được nhanh hơn API Server.
-- **2đ:** Giải thích chuẩn xác quy tắc chậm tối đa 2 minor version và cấm nhanh hơn API Server.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng ví dụ v1.35 API vs v1.33 Kubelet.
-
-**Câu hỏi đào sâu:** `kubectl` CLI được phép lệch bao nhiêu minor version so với `kube-apiserver`? *(Đáp án: kubectl được phép lệch +/- 1 minor version so với API Server).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Lệnh `kubeadm upgrade plan` đóng vai trò gì trước khi nâng cấp Control Plane?
-
-**Đáp án chuẩn:**
-- `kubeadm upgrade plan` là câu lệnh **quét và phân tích kế hoạch nâng cấp** chạy trên Control Plane node.
-- **Tác dụng:**
-  1. Quét phiên bản hiện tại của các static pods (`apiserver`, `etcd`, `controller-manager`, `scheduler`).
-  2. Đối soát với Kubernetes release registry để tìm các phiên bản stable có thể nâng cấp.
-  3. Kiểm tra hạn chứng chỉ và cảnh báo các API deprecated.
-  4. In ra chính xác câu lệnh `kubeadm upgrade apply v1.35.x` chuẩn cú pháp để kỹ sư copy thi hành.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo lệnh này dùng để tự động cài đặt package mới.
-- **1đ:** Trả lời để xem phiên bản nhưng không nêu được tính năng đối soát registry và in câu lệnh apply.
-- **2đ:** Giải thích chuẩn xác vai trò phân tích, kiểm tra tương thích và in câu lệnh apply chuẩn.
-- **3đ:** Trả lời xuất sắc, chứng minh bằng kết quả bài lab.
-
-**Câu hỏi đào sâu:** Lệnh `kubeadm upgrade plan` có làm thay đổi bất kỳ tệp cấu hình nào trên đĩa cứng không? *(Đáp án: Không, nó chỉ là lệnh đọc/read-only không thay đổi hệ thống).*
-
----
-
-### Câu 5 — ★★
-
-**Hỏi:** Trình bày 5 bước trong quy trình nâng cấp Control Plane node `cp-01`.
-
-**Đáp án chuẩn:**
-1. `apt-mark unhold kubeadm && apt-get install -y kubeadm=1.35.x && apt-mark hold kubeadm`: Upgrade gói `kubeadm`.
-2. `sudo kubeadm upgrade apply v1.35.x -y`: Áp dụng nâng cấp các tệp static pod manifests và etcd.
-3. `apt-mark unhold kubelet kubectl && apt-get install -y kubelet=1.35.x kubectl=1.35.x && apt-mark hold ...`: Upgrade gói nhị phân `kubelet` và `kubectl`.
-4. `sudo systemctl daemon-reload && sudo systemctl restart kubelet`: Reload systemd và restart Kubelet service.
-5. Kiểm tra `kubectl get nodes` xác nhận Control Plane node đạt phiên bản mới và ở trạng thái `Ready`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được các bước hoặc cho rằng chỉ cần chạy `apt upgrade`.
-- **1đ:** Nêu được `kubeadm upgrade apply` nhưng thiếu bước upgrade `kubeadm` package trước đó.
-- **2đ:** Trình bày chuẩn xác 5 bước nâng cấp Control Plane node theo đúng tài liệu CNCF.
-- **3đ:** Trả lời xuất sắc, nêu chi tiết việc `apt-mark unhold` và `hold` lại 3 gói.
-
-**Câu hỏi đào sâu:** Tại sao `kubeadm` lại phải được nâng cấp trước khi chạy `kubeadm upgrade apply`? *(Đáp án: Vì tệp nhị phân kubeadm mới mới chứa mã logic để cập nhật static pod manifests v1.35).*
-
----
-
-### Câu 6 — 🔥
-
-**Hỏi:** Phân biệt sự khác nhau giữa hai lệnh `kubectl cordon <node>` và `kubectl drain <node>`.
-
-**Đáp án chuẩn:**
-- `kubectl cordon <node>`:
-  - Chỉ đánh dấu Node ở trạng thái **`SchedulingDisabled`**.
-  - **Chặn không cho gán Pod mới** vào Node.
-  - **0 Pod bị xoá hay di tản**; tất cả Pod đang chạy trên Node vẫn giữ nguyên hoạt động.
-- `kubectl drain <node>`:
-  - Tự động thực hiện `cordon` trước (đánh dấu `SchedulingDisabled`).
-  - Sau đó tiến hành **xoá và di tản (evict) 100% các Pod đang chạy** sang các Worker Node khác trong cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 lệnh này hoàn toàn giống nhau.
-- **1đ:** Nói được cordon khoá nút còn drain di tản nhưng không nhấn mạnh cordon giữ nguyên 100% Pod đang chạy (dính trần 1đ).
-- **2đ:** Phân biệt chuẩn xác: cordon chỉ chặn gán Pod mới (0 Pod bị di tản) vs drain vừa chặn vừa di tản Pod đang chạy.
-- **3đ:** Trả lời xuất sắc, nêu trường hợp sử dụng thực tế của từng lệnh.
-
-**Câu hỏi đào sâu:** Khi nào nên dùng `cordon` mà không dùng `drain`? *(Đáp án: Khi chỉ muốn kiểm tra phần cứng hoặc chuẩn bị bảo trì nhẹ mà không muốn làm xáo trộn Pod đang chạy).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Hai cờ `--ignore-daemonsets` và `--delete-emptydir-data` trong lệnh `kubectl drain` giải quyết vấn đề gì?
-
-**Đáp án chuẩn:**
-1. `--ignore-daemonsets`: DaemonSet Pods (như Flannel/Calico CNI, kube-proxy) được thiết kế chạy trên 100% các Node. Nếu drain cố xoá DaemonSet, DaemonSet Controller sẽ tự tạo lại ngay, khiến lệnh drain bị kẹt vô hạn. Cờ này bảo drain **bỏ qua không xoá DaemonSet Pods**.
-2. `--delete-emptydir-data`: Mặc định, drain từ chối xoá các Pod có sử dụng volume đĩa tạm `emptyDir` để tránh làm mất dữ liệu đĩa tạm. Cờ này cho phép **chấp nhận xoá dữ liệu đĩa tạm** để tiến trình drain tiếp tục.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết 2 cờ hoặc bảo cờ này dùng để tăng tốc độ drain.
-- **1đ:** Trả lời đúng cờ `--ignore-daemonsets` nhưng thiếu cờ `--delete-emptydir-data`.
-- **2đ:** Giải thích chuẩn xác tác dụng bỏ qua DaemonSet kẹt và chấp nhận xoá đĩa tạm emptyDir.
-- **3đ:** Trả lời xuất sắc, nêu thêm cờ `--force` cho Unmanaged Pods.
-
-**Câu hỏi đào sâu:** Cờ `--force` trong lệnh drain dùng để xử lý loại Pod nào? *(Đáp án: Dùng để cưỡng chế xoá Unmanaged Pods — Pod rác không thuộc Deployment hay ReplicaSet nào).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Lệnh `kubectl uncordon <node>` đóng vai trò gì sau khi hoàn thành nâng cấp Node? Điều gì xảy ra nếu quản trị viên quên chạy lệnh này?
-
-**Đáp án chuẩn:**
-- Lệnh `kubectl uncordon <node>` chuyển trạng thái Node từ `SchedulingDisabled` trở lại **`Ready`** bình thường.
-- **Tác dụng:** Mở khoá cho phép Kubernetes Scheduler tiếp tục phân bổ các Pod mới vào Node đó.
-- **Hậu quả khi quên:** Node bị kẹt ở trạng thái `SchedulingDisabled` vĩnh viễn, không chạy bất kỳ Pod mới nào, gây lãng phí tài nguyên RAM/CPU của Node và dồn tải làm sập các Node còn lại trong cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo uncordon dùng để di tản Pod về lại node cũ.
-- **1đ:** Trả lời để mở khoá node nhưng không giải thích được hậu quả kẹt SchedulingDisabled làm dồn tải cụm.
-- **2đ:** Giải thích chuẩn xác vai trò mở khoá Scheduler và hậu quả lãng phí tài nguyên dồn tải.
-- **3đ:** Trả lời xuất sắc, chứng minh bằng lệnh `kubectl get nodes`.
-
-**Câu hỏi đào sâu:** Lệnh `uncordon` có tự động chuyển các Pod cũ đã bị drain ở bước trước quay lại node vừa nâng cấp không? *(Đáp án: Không, Pod đã di tản sang node khác sẽ ở nguyên đó cho tới khi có đợt scale/restart mới).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Trình bày 6 bước trong quy trình nâng cấp một Worker Node (`worker-01`) không làm ngắt gián đoạn dịch vụ.
-
-**Đáp án chuẩn:**
-1. **[Trên Control Plane]:** `kubectl drain worker-01 --ignore-daemonsets --delete-emptydir-data --force` (Di tản Pod).
-2. **[Trên worker-01]:** `apt-mark unhold kubeadm && apt-get install -y kubeadm=1.35.x && apt-mark hold kubeadm` (Upgrade kubeadm package).
-3. **[Trên worker-01]:** `sudo kubeadm upgrade node` (Cập nhật tệp cấu hình Kubelet YAML).
-4. **[Trên worker-01]:** `apt-mark unhold kubelet kubectl && apt-get install -y kubelet=1.35.x kubectl=1.35.x && apt-mark hold ...` (Upgrade kubelet/kubectl nhị phân).
-5. **[Trên worker-01]:** `sudo systemctl daemon-reload && sudo systemctl restart kubelet` (Restart Kubelet).
-6. **[Trên Control Plane]:** `kubectl uncordon worker-01` (Mở khoá cho Node phục vụ trở lại).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo chạy `kubeadm upgrade apply` trên Worker Node.
-- **1đ:** Nêu được drain và uncordon nhưng thiếu lệnh `kubeadm upgrade node`.
-- **2đ:** Trình bày chuẩn xác 6 bước nâng cấp Worker Node không gián đoạn dịch vụ.
-- **3đ:** Trả lời xuất sắc, phân biệt rõ lệnh `kubeadm upgrade apply` (cp) vs `kubeadm upgrade node` (worker).
-
-**Câu hỏi đào sâu:** Sự khác nhau cốt lõi giữa `kubeadm upgrade apply` và `kubeadm upgrade node` là gì? *(Đáp án: apply cập nhật etcd & static pods manifests ở Control Plane; node chỉ cập nhật tệp cấu hình Kubelet ở Worker Node).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Tại sao sau khi chạy lệnh `kubeadm upgrade node` trên Worker Node, ta vẫn phải chạy lệnh `apt-get install -y kubelet` và restart Kubelet?
-
-**Đáp án chuẩn:**
-- Lệnh `kubeadm upgrade node` **CHỈ làm nhiệm vụ cập nhật tệp cấu hình Kubelet YAML** (`/var/lib/kubelet/config.yaml`) tải từ Control Plane về.
-- Nó **KHÔNG tự nâng cấp tệp thực thi nhị phân (binary executable)** `kubelet` của hệ điều hành Linux (`/usr/bin/kubelet`).
-- Do đó, bắt buộc phải dùng `apt-get install -y kubelet=1.35.x` để đè tệp nhị phân Kubelet mới, và `systemctl restart kubelet` để nạp tệp nhị phân mới vào RAM.
-
-**Tiêu chí chấm:**
-- **0đ:** Cho rằng `kubeadm upgrade node` đã tự nâng cấp xong tất cả.
-- **1đ:** Nói được cần cài apt nhưng không giải thích được sự khác biệt giữa tệp cấu hình YAML và tệp thực thi nhị phân binary.
-- **2đ:** Giải thích chuẩn xác việc `kubeadm upgrade node` chỉ cập nhật config.yaml, còn `apt install` mới nâng cấp file nhị phân binary.
-- **3đ:** Trả lời xuất sắc, chỉ ra kết quả `kubectl get nodes` hiển thị phiên bản Kubelet lấy từ binary `kubelet --version`.
-
-**Câu hỏi đào sâu:** Nếu chỉ chạy `kubeadm upgrade node` mà không `apt install kubelet` thì `kubectl get nodes` sẽ hiển thị phiên bản gì? *(Đáp án: Vẫn hiển thị phiên bản Kubelet cũ).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Tại sao chiến lược nâng cấp từng Node một (Rolling Upgrade) kết hợp Deployment replicas >= 2 lại đảm bảo **0ms downtime** cho người dùng end-user?
-
-**Đáp án chuẩn:**
-- Khi Deployment có `replicas: 2`, 2 Pod ứng dụng được Scheduler xếp nằm trên 2 Worker Node khác nhau (`worker-01` và `worker-02`).
-- Service và Ingress load balancer phân phối đều lượng truy cập tới cả 2 Pod.
-- Khi ta `drain worker-01`, Pod trên `worker-01` bị xoá, nhưng Pod trên `worker-02` vẫn **đang sống 100% và nhận toàn bộ truy cập**.
-- Đồng thời, Deployment Controller lập tức tạo Pod thay thế mới trên node khác. Nhờ đó, người dùng end-user hoàn toàn không nhận thấy bất kỳ sự gián đoạn nào (0ms downtime).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo di tản Pod vẫn gây sập trang web 5 phút.
-- **1đ:** Nêu được do có 2 Pod nhưng không giải thích được vai trò của Service Load Balancer và việc drain từng node một.
-- **2đ:** Phân tích chính xác cơ chế phân phối tải của Service, di tản từng node (rolling) và Pod thay thế.
-- **3đ:** Trả lời xuất sắc, nêu thêm vai trò của `PodDisruptionBudget` (PDB) bảo vệ số lượng Pod tối thiểu.
-
-**Câu hỏi đào sâu:** Đối tượng API nào trong Kubernetes giúp chặn không cho người quản trị `drain` quá nhiều Pod cùng lúc gây sập dịch vụ? *(Đáp án: PodDisruptionBudget - PDB).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 ồn ào do kẹt DaemonSet, 1 âm thầm do quên uncordon) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Ồn ào - Kẹt DaemonSet khi drain):**
-   - *Triệu chứng:* Lệnh `kubectl drain worker-01` bị ngắt ngay lập tức và in lỗi đỏ.
-   - *Phát hiện:* Terminal báo `error: cannot delete DaemonSet-managed Pods...`.
-   - *Khắc phục:* Thêm cờ `--ignore-daemonsets --delete-emptydir-data` vào lệnh drain.
-2. **Chế độ hỏng 2 (Âm thầm - Quên `uncordon` sau khi nâng cấp):**
-   - *Triệu chứng:* Nâng cấp Node xong xuôi, Node báo `Ready`, nhưng mãi mãi không nhận thêm Pod mới.
-   - *Phát hiện:* Gõ `kubectl get nodes` thấy trạng thái `Ready,SchedulingDisabled`.
-   - *Khắc phục:* Chạy `kubectl uncordon worker-01`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra cờ `--ignore-daemonsets` và trạng thái `SchedulingDisabled`.
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.
-
-**Câu hỏi đào sâu:** Nếu 1 Pod bị kẹt ở trạng thái `Terminating` trong khi drain thì dùng cờ gì để cưỡng chế? *(Đáp án: Thêm cờ --force hoặc --grace-period=0).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Nâng cấp cụm Kubernetes sản xuất bắt buộc tuân thủ quy tắc 1 Minor Version (v1.34 -> v1.35) và thứ tự: Control Plane (<code>cp-01</code>) trước -> CNI/Addons -> Worker Nodes."*
+2. *"<code>kubectl cordon</code> chỉ khoá nút không nhận Pod mới (0 Pod bị xoá); <code>kubectl drain</code> vừa khoá nút vừa di tản 100% Pod đang chạy sang nút khác."*
+3. *"Khi <code>drain</code> node sản xuất, bắt buộc phải truyền bộ 2 cờ <code>--ignore-daemonsets</code> và <code>--delete-emptydir-data</code> để tránh kẹt DaemonSet và volume đĩa tạm."*
+4. *"Trên Worker Node, lệnh <code>kubeadm upgrade node</code> chỉ cập nhật tệp config.yaml; bắt buộc phải chạy <code>apt install kubelet</code> và restart service thì Kubelet nhị phân mới lên phiên bản mới."*
+5. *"Ngay sau khi nâng cấp Worker Node xong, bắt buộc phải chạy <code>kubectl uncordon <node></code> để đưa Node từ <code>SchedulingDisabled</code> trở lại phục vụ Pod mới."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1100,40 +1170,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Khi `drain` node sản xuất, bắt buộc phải truyền bộ 2 cờ `--ignore-daemonsets` và `--delete-emptydir-data` để tránh kẹt DaemonSet và volume đĩa tạm."*
 4. *"Trên Worker Node, lệnh `kubeadm upgrade node` chỉ cập nhật tệp config.yaml; bắt buộc phải chạy `apt install kubelet` và restart service thì Kubelet nhị phân mới lên phiên bản mới."*
 5. *"Ngay sau khi nâng cấp Worker Node xong, bắt buộc phải chạy `kubectl uncordon <node>` để đưa Node từ `SchedulingDisabled` trở lại phục vụ Pod mới."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Cấm nâng cấp nhảy cách 2 minor version (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Thứ tự nâng cấp: Control Plane -> CNI -> Worker Nodes |
-| Câu 3 | ★★★ | 3 | | Kubelet Version Skew Policy (chậm max 2 minor version) |
-| Câu 4 | ★★★ | 3 | | Lệnh `kubeadm upgrade plan` quét tương thích & in lệnh |
-| Câu 5 | ★★ | 3 | | 5 bước nâng cấp Control Plane node |
-| Câu 6 | 🔥 | 3 | | Phân biệt cordon (0 Pod bị xoá) vs drain (di tản Pod) (trần 1đ nếu thiếu) |
-| Câu 7 | ★★★ | 3 | | 2 cờ bắt buộc `--ignore-daemonsets` & `--delete-emptydir-data` |
-| Câu 8 | ★★★ | 3 | | Lệnh `kubectl uncordon` và hậu quả kẹt SchedulingDisabled |
-| Câu 9 | ★★★ | 3 | | 6 bước nâng cấp Worker Node không gián đoạn |
-| Câu 10 | ★★★ | 3 | | Phân biệt `kubeadm upgrade node` (config) vs `apt install` (binary) |
-| Câu 11 | ★★★ | 3 | | Rolling upgrade kết hợp Deployment replicas >= 2 đạt 0ms downtime |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (kẹt DaemonSet & quên uncordon) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra xem có bất kỳ Worker Node nào đang bị kẹt ở trạng thái `SchedulingDisabled` không và tự động gửi thông báo.
-2. **BTVN 2:** Thực hành nâng cấp phiên bản vá lỗi Patch Version cho cụm từ v1.35.0 lên v1.35.1 và ghi lại nhật ký thực thi.
-3. **BTVN 3:** Tạo đối tượng `PodDisruptionBudget` (PDB) cho Deployment `web-app` với `minAvailable: 1` và thử chạy lệnh `kubectl drain` để quan sát cơ chế bảo vệ PDB.
-4. **BTVN 4 — Chuẩn bị cho Buổi 09 (`buoi-09-etcd-sao-luu-va-phuc-hoi`):**
-   - *Câu 1:* Công cụ `etcdctl` giao tiếp với etcd database qua cổng TLS nào trên Control Plane?
-   - *Câu 2:* Cần 3 tệp chứng chỉ/key nào (`--cacert`, `--cert`, `--key`) để xác thực quyền root khi chạy lệnh `etcdctl snapshot save`?
-   - *Câu 3:* Quy trình 3 bước khôi phục etcd database từ tệp snapshot ra thư mục dữ liệu mới (`/var/lib/etcd-backup/`) và cập nhật static pod manifest `etcd.yaml` như thế nào?
-
-> **Đoạn kết nối Buổi 09:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 09 — buổi học thực chiến tối quan trọng xử lý ca cấp cứu mất etcd database, sao lưu snapshot định kỳ và khôi phục toàn bộ cụm Kubernetes từ con số 0 khi etcd bị hỏng.
 
 ---
 
@@ -1382,15 +1418,15 @@ sudo systemctl daemon-reload && sudo systemctl restart kubelet
 kubectl uncordon <node-name>
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 09] Quản Trị etcd Chuyên Sâu: Sao Lưu Snapshot, Phục Hồi Thảm Họa & Cứu Hộ Cụm Khi Mất Quorum](cka-09-09-etcd-sao-luu-va-phuc-hoi.html).
+
 {% endraw %}

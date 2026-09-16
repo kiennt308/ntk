@@ -1,9 +1,32 @@
 ---
-title: "Bài 48: Đồ Án Tốt Nghiệp: Xây Dựng Hệ Thống CI/CD & DevSecOps Toàn Diện Cho Doanh Nghiệp (Capstone Enterprise Production Pipeline)"
+layout: post
+title: "[Bài 48] Đồ Án Tốt Nghiệp: Xây Dựng Hệ Thống CI/CD & DevSecOps Toàn Diện Cho Doanh Nghiệp (Capstone Enterprise Production Pipeline)"
 date: 2026-09-12 00:00:00 +0700
-categories: [GitLab, CI/CD, DevSecOps]
-tags: [GitLab-CI, Capstone-Project, DevSecOps, Monorepo, Kaniko, Cosign, ArgoCD, GitOps, OIDC, DORA]
-description: "Đồ án tốt nghiệp thực chiến: Tự tay thiết kế và triển khai toàn bộ Enterprise DevSecOps Pipeline cho hệ thống Monorepo Microservices tích hợp CI Components, Security Gates, Rootless Kaniko, Cosign Signing, ArgoCD GitOps và DORA Tracking."
+categories: [GitLab]
+tags:
+  - GitLab
+  - CICD
+  - Capstone-Project
+  - DevSecOps
+  - Monorepo
+  - Kaniko
+  - Cosign
+  - ArgoCD
+  - GitOps
+  - OIDC
+  - DORA
+  - Part-48
+series: "GitLab CI/CD & DevSecOps Platform Mastery"
+series_order: 48
+difficulty: Expert
+thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
+summary: "[GitLab CI/CD P.48] Đồ án tốt nghiệp thực chiến: Tự tay thiết kế và triển khai toàn bộ Enterprise DevSecOps Pipeline cho hệ thống Monorepo Microservices tích hợp CI Components, Security Gates, Rootless Kaniko, Cosign Signing, ArgoCD GitOps và DORA Tracking."
+tldr:
+  - "Tích hợp toàn diện kiến thức của 47 bài học vào một đồ án sản xuất đạt chuẩn Enterprise SLSA Level 3."
+  - "Thiết kế kiến trúc Monorepo Microservices với CI/CD Catalog Component tái sử dụng toàn tổ chức."
+  - "Triển khai Multi-Layer DevSecOps Security Gates: Secret Detection, SAST (Semgrep), SCA (Trivy), Container Scan."
+  - "Đóng gói container an toàn với Rootless Kaniko, ký số Cosign và triển khai Kubernetes qua ArgoCD GitOps."
+  - "Bảo vệ hạ tầng với Terraform CI/CD, OIDC AWS/GCP, đo lường DORA metrics và tự động rollback khi có sự cố."
 ---
 
 {% raw %}
@@ -66,7 +89,8 @@ Hệ thống CI/CD & DevSecOps hoàn chỉnh cho doanh nghiệp vận hành theo
 
 Để đảm bảo thời gian chạy toàn bộ pipeline của Monorepo dưới 8 phút, hệ thống sử dụng cơ chế `needs:` (DAG) kết hợp với `rules:changes`:
 
-$$	ext{Total Execution Time} = \max\left(T_{	ext{SecGates}}, T_{	ext{BuildBackend}}, T_{	ext{BuildFrontend}}ight) + T_{	ext{GitOpsSync}}$$
+$$	ext{Total Execution Time} = \max\left(T_{	ext{SecGates}}, T_{	ext{BuildBackend}}, T_{	ext{BuildFrontend}}
+ight) + T_{	ext{GitOpsSync}}$$
 
 - Pipeline của **Backend (Golang)** và **Frontend (React)** hoàn toàn độc lập.
 - Bước quét bảo mật chạy song song cùng lúc với unit test.
@@ -664,7 +688,7 @@ chmod +x verify-capstone.sh && ./verify-capstone.sh
 
 ## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-```
+```text
 +---------------------------------------------------------------------------------------------------+
 |                                      BÀI 48 - TỔNG KẾT KIẾN THỨC                                  |
 +---------------------------------------------------------------------------------------------------+

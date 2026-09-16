@@ -384,7 +384,7 @@ Cờ <b style="color: var(--accent-primary);"><code>validationFailureAction: Enf
        securityContext:
          seccompProfile:
            type: RuntimeDefault
-     ```
+```
 </div>
 </details>
 
@@ -446,7 +446,7 @@ Lệnh <code>kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key -
   
 ```bash
       test -f /tmp/capstone/results.log && grep -q "PASS" /tmp/capstone/results.log
-      ```
+```
 </div>
 </details>
 
@@ -459,24 +459,6 @@ Lệnh <code>kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key -
 | Enterprise Kubernetes Architecture | `https://kubernetes.io/docs/concepts/architecture/` | Hướng dẫn thiết kế kiến trúc K8s doanh nghiệp |
 | Production Best Practices | `https://kubernetes.io/docs/setup/best-practices/` | Bộ quy chuẩn sẵn sàng sản xuất K8s |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. 3-Tier Governance Architecture Design | 12 phút | 12 phút |
-| §5. End-to-End Integration of CKA, CKAD & CKS | 12 phút | 12 phút |
-| §6. Architecture Defense Framework & Defense Doc | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -950,26 +932,11 @@ test ! -f /tmp/capstone/quota.yaml && echo "CHECKPOINT 14 — ĐẠT" || echo "C
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Speed Directory | 15 phút | 15 phút |
-| L4. Bước 2: Layer 1 CKA Implementation | 25 phút | 25 phút |
-| L5. Bước 3: Layer 2 CKAD Implementation | 35 phút | 35 phút |
-| L6. Bước 4: Layer 3 CKS Implementation | 25 phút | 25 phút |
-| L7. Bước 5: Defense Doc & Auto-Grading | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -977,201 +944,319 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thành phần cốt lõi được triển khai trong Lớp Kiểm soát 1 (CKA Infrastructure Control) của dự án Capstone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Là <b style="color: var(--accent-primary);">dự án hợp nhất 100% tri thức và kỹ năng thực hành của 3 chứng chỉ CKA, CKAD, CKS</b> thành một nền tảng sản xuất hoàn chỉnh tích hợp đủ 3 lớp kiểm soát (Kiến trúc hạ tầng, Vận hành ứng dụng, và Gia cố an ninh), khẳng định năng lực thực chiến cấp Chuyên gia (Master Architect).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Sao lưu cơ sở dữ liệu</b>: Lập lịch sao lưu etcd snapshot định kỳ (<code>etcdctl snapshot save</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Phân quyền tối thiểu</b>: Thiết lập <code>Role</code> và <code>RoleBinding</code> cách ly phạm vi truy cập theo từng Namespace.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được các thành phần Lớp 1 CKA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được etcd backup nhưng thiếu RBAC isolation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác các thành phần Lớp Kiểm soát 1 CKA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ba cờ chứng thực TLS bắt buộc khi sao lưu etcd snapshot là gì? — <code>--cacert</code>, <code>--cert</code>, và <code>--key</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu vai trò của Capstone.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tổng hợp bài học nhưng thiếu 3 lớp kiểm soát CKA/CKAD/CKS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 100% vai trò và tầm vóc của dự án Capstone.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tỷ lệ phân bổ điểm số giữa 3 Lớp Kiểm soát Capstone được quy định thế nào? — Lớp 1 CKA <b style="color: var(--accent-primary);">25%</b>, Lớp 2 CKAD <b style="color: var(--accent-primary);">35%</b>, và Lớp 3 CKS <b style="color: var(--accent-primary);">40%</b>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Các thành phần vận hành ứng dụng được tích hợp trong Lớp Kiểm soát 2 (CKAD Application Control) của dự án Capstone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quản lý tài nguyên</b>: Cặp đối tượng <code>ResourceQuota</code> và <code>LimitRange</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quản lý cấu hình</b>: Nạp biến môi trường từ ConfigMap/Secret qua <code>envFrom</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Độ sẵn sàng cao</b>: Cấu hình <code>livenessProbe</code>, <code>readinessProbe</code> và định tuyến Ingress TLS termination.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ các thành phần Lớp 2 CKAD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 thành phần.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 3 nhóm thành phần chính của Lớp Kiểm soát 2 CKAD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích của Ingress TLS termination là gì? — Giúp <b style="color: var(--accent-primary);">mã hóa lưu lượng HTTPS từ bên ngoài</b> và giải mã TLS tập trung tại Ingress Controller trước khi chuyển vào Service).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Bốn rào chắn an ninh thắt chặt được kích hoạt trong Lớp Kiểm soát 3 (CKS Security Hardening) của dự án Capstone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Supply Chain</b>: Kyverno Allowed Registries policy (<code>harbor.internal/*</code> - Enforce).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Host Security</b>: Seccomp <code>RuntimeDefault</code> cách ly syscalls.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Audit Trail</b>: Audit Logging mức <code>RequestResponse</code> cho Secrets.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Runtime Defense</b>: Falco Custom Rules bắt hành vi exec shell trong container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 rào chắn CKS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 rào chắn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% 4 rào chắn an ninh thắt chặt Lớp 3 CKS Capstone.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khối <code>exclude</code> trong Kyverno policy có vai trò gì? — Loại trừ namespace <code>kube-system</code> để không làm sập các Pods hệ thống).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mục đích và nội dung tệp Giải trình Kiến trúc Capstone (/tmp/capstone-defense.md)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp kiến trúc sư <b style="color: var(--accent-primary);">giải trình lý do lựa chọn các quyết định thiết kế</b>, phân tích điểm sập đơn lẻ (SPOF), cơ chế khôi phục sự cố (DR) và bảo vệ luận điểm kiến trúc trước hội đồng đánh giá. Tệp gồm 5 phần: Overview, Tier 1, Tier 2, Tier 3, và Risk Analysis.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu mục đích tệp capstone-defense.md.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được giải thích kiến trúc nhưng thiếu phân tích rủi ro SPOF và 5 phần chuẩn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 100% mục đích và nội dung tệp Giải trình Kiến trúc Capstone.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao tệp giải trình kiến trúc lại là thành phần bắt buộc của dự án Capstone? — Vì chứng minh <b style="color: var(--accent-primary);">tư duy thiết kế hệ thống bài bản</b> của kiến trúc sư thay vì chỉ gõ lệnh cơ học).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cách thức kết hợp giữa Kyverno Allowed Registries policy và Image Digest Pinning để đảm bảo an toàn chuỗi cung ứng Capstone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kyverno policy chặn 100% các ảnh kéo từ domain ngoài <code>harbor.internal/*</code>, còn Image Digest Pinning (<code>@sha256:...</code>) đảm bảo 100% Pods chỉ sử dụng mã băm ảnh bất biến đã qua kiểm định an ninh static scan.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu sự kết hợp Kyverno và Image Digest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Kyverno chặn domain digest ghim hash nhưng thiếu tính bất biến immutable.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự phối hợp giữa Kyverno policy và Image Digest Pinning.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>validationFailureAction: Enforce</code> khác gì với <code>Audit</code>? — <code>Enforce</code> từ chối khởi tạo Pod ngay lập tức, còn <code>Audit</code> chỉ ghi log cảnh báo).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cơ chế phối hợp giữa <code>ResourceQuota</code> và <code>LimitRange</code> khi triển khai 3 replicas Deployment trong Lớp Kiểm soát 2 Capstone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>LimitRange</code> tự động gán trần RAM mặc định 256Mi cho mỗi Pod đơn lẻ, đảm bảo cả 3 Pods tiêu tốn tổng cộng 768Mi RAM - nằm an toàn bên trong định ngạch trần 8Gi RAM của <code>ResourceQuota</code> Namespace.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu sự phối hợp giữa ResourceQuota và LimitRange.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tính toán RAM nhưng thiếu con số cụ thể per Pod vs tổng Namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế tính toán dung lượng bộ nhớ giữa LimitRange và ResourceQuota.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu scale Deployment từ 3 replicas lên 50 replicas thì chuyện gì xảy ra? — Kubernetes sẽ chặn từ chối các Pods từ 32 trở đi do <b style="color: var(--accent-primary);">vượt quá tổng định ngạch ResourceQuota 8Gi</b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Kỹ thuật thắt chặt <code>securityContext</code> dưới spec của container trong dự án Capstone để đạt điểm tối đa an toàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>runAsNonRoot: true</code> (Không chạy quyền root).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>readOnlyRootFilesystem: true</code> (Ghi đĩa dạng Read-Only).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>allowPrivilegeEscalation: false</code> (Cấm leo thang đặc quyền).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>capabilities.drop: ["ALL"]</code> (Gỡ bỏ toàn bộ quyền Linux capabilities).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được các thuộc tính securityContext.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được runAsNonRoot nhưng thiếu readOnlyRootFilesystem và drop ALL.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 4 thuộc tính SecurityContext thắt chặt cao nhất Capstone.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khi bật <code>readOnlyRootFilesystem: true</code>, làm sao để container ghi được tệp log tạm? — Mount một volume loại <b style="color: var(--accent-primary);"><code>emptyDir: {}</code></b> vào thư mục <code>/tmp</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Ý nghĩa của việc lưu trữ 100% tệp manifest triển khai Capstone trong thư mục duy nhất <code>/tmp/capstone/</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp đảm bảo <b style="color: var(--accent-primary);">tính tái tạo lại được 100% (Reproducibility)</b> của hạ tầng dạng mã (IaC). Bất kỳ quản trị viên nào cũng có thể dựng lại trọn vẹn cụm Capstone 3 lớp kiểm soát chỉ bằng câu lệnh <code>kubectl apply -f /tmp/capstone/</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu ý nghĩa việc đóng gói tệp YAML.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tiện quản lý nhưng thiếu khái niệm IaC và Reproducibility.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ý nghĩa của việc đóng gói tệp manifest Capstone.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào được dùng để kiểm tra tính hợp lệ của toàn bộ tệp YAML trong thư mục <code>/tmp/capstone/</code> trước khi apply? — Lệnh <code>kubectl apply -f /tmp/capstone/ --dry-run=client</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác biệt về vai trò giữa Audit Logging (CKS) và Falco Rules (CKS) trong Lớp Kiểm soát 3 Capstone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Audit Logging</b>: Ghi vết nhật ký truy cập API Server (xem ai đã gọi API gì vào lúc nào - Retrospective Audit).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Falco Rules</b>: Lắng nghe syscalls tại Linux Kernel thời gian thực để <b style="color: var(--accent-primary);">phát hiện và cảnh báo ngay lập tức hành vi bất thường</b> trong container (Real-time Detection).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa Audit Logging và Falco.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Audit ghi log Falco cảnh báo nhưng chưa rõ API Server vs Linux Syscalls.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt về mặt bản chất và vai trò giữa Audit Logging và Falco Rules.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Falco bắt hành vi vi phạm dựa trên thành phần nào của hệ thống? — Dựa trên <b style="color: var(--accent-primary);">Linux Kernel Syscalls (Kernel System Calls)</b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp bash script chuẩn để kiểm tra kết quả đánh giá dự án Capstone từ script tự động chấm điểm là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```bash</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">test -f /tmp/capstone/results.log && grep -q "PASS" /tmp/capstone/results.log</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai câu lệnh test results.log.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được grep PASS nhưng thiếu test -f.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% câu lệnh bash script kiểm tra kết quả Capstone.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điểm số tối thiểu để bài Capstone được công nhận đạt mức PASS là bao nhiêu? — Điểm số tối thiểu là <b style="color: var(--accent-primary);"><code>80 / 100 điểm</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Dự án Capstone Hạ tầng Kubernetes Doanh nghiệp là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tích hợp đồng thời trọn vẹn 3 lớp kiểm soát CKA, CKAD và CKS trên cùng một cụm sản xuất.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đóng gói 100% tệp manifest dạng IaC trong thư mục duy nhất <code>/tmp/capstone/</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Biên soạn tệp giải trình kiến trúc <code>/tmp/capstone-defense.md</code> giải thích rõ lý do thiết kế và cơ chế DR.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chạy script tự động chấm điểm xác minh dự án đạt tổng điểm PASS (>= 80/100đ).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Enterprise Capstone Platform.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 72 là gì? — Học về <code>Tốt nghiệp: Bảo vệ dự án Capstone thành công trước hội đồng và hoàn thành phỏng vấn tổng hợp 3 chứng chỉ</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Thành phần cốt lõi được triển khai trong Lớp Kiểm soát 1 (CKA Infrastructure Control) của dự án Capstone?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:**
-1. **Sao lưu cơ sở dữ liệu**: Lập lịch sao lưu etcd snapshot định kỳ (`etcdctl snapshot save`).
-2. **Phân quyền tối thiểu**: Thiết lập `Role` và `RoleBinding` cách ly phạm vi truy cập theo từng Namespace.
+1. <b style="color: var(--accent-primary);">"Xây dựng thành công nền tảng Kubernetes Doanh nghiệp tích hợp đủ 3 lớp kiểm soát CKA, CKAD, CKS."</b>
+2. <b style="color: var(--accent-primary);">"Đảm bảo an toàn hạ tầng bằng etcd backup, RBAC isolation, Kyverno policy và Falco Rules."</b>
+3. <b style="color: var(--accent-primary);">"Vận hành ứng dụng hiệu quả với ResourceQuota, LimitRange, Probes và Ingress TLS termination."</b>
+4. <b style="color: var(--accent-primary);">"Tự tin bảo vệ luận điểm thiết kế kiến trúc Capstone trước hội đồng đánh giá chuyên môn."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không nêu được các thành phần Lớp 1 CKA.
-- 1đ: Nêu được etcd backup nhưng thiếu RBAC isolation.
-- 3đ: Phân tích chuẩn xác các thành phần Lớp Kiểm soát 1 CKA.
-
-**Câu hỏi đào sâu:** (Ba cờ chứng thực TLS bắt buộc khi sao lưu etcd snapshot là gì? — `--cacert`, `--cert`, và `--key`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Các thành phần vận hành ứng dụng được tích hợp trong Lớp Kiểm soát 2 (CKAD Application Control) của dự án Capstone?
-
-**Đáp án chuẩn:**
-1. **Quản lý tài nguyên**: Cặp đối tượng `ResourceQuota` và `LimitRange`.
-2. **Quản lý cấu hình**: Nạp biến môi trường từ ConfigMap/Secret qua `envFrom`.
-3. **Độ sẵn sàng cao**: Cấu hình `livenessProbe`, `readinessProbe` và định tuyến Ingress TLS termination.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ các thành phần Lớp 2 CKAD.
-- 1đ: Nêu được 2 thành phần.
-- 3đ: Kể tên chuẩn xác 3 nhóm thành phần chính của Lớp Kiểm soát 2 CKAD.
-
-**Câu hỏi đào sâu:** (Lợi ích của Ingress TLS termination là gì? — Giúp **mã hóa lưu lượng HTTPS từ bên ngoài** và giải mã TLS tập trung tại Ingress Controller trước khi chuyển vào Service).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Bốn rào chắn an ninh thắt chặt được kích hoạt trong Lớp Kiểm soát 3 (CKS Security Hardening) của dự án Capstone?
-
-**Đáp án chuẩn:**
-1. **Supply Chain**: Kyverno Allowed Registries policy (`harbor.internal/*` - Enforce).
-2. **Host Security**: Seccomp `RuntimeDefault` cách ly syscalls.
-3. **Audit Trail**: Audit Logging mức `RequestResponse` cho Secrets.
-4. **Runtime Defense**: Falco Custom Rules bắt hành vi exec shell trong container.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 rào chắn CKS.
-- 1đ: Nêu được 2 rào chắn.
-- 3đ: Trình bày chuẩn xác 100% 4 rào chắn an ninh thắt chặt Lớp 3 CKS Capstone.
-
-**Câu hỏi đào sâu:** (Khối `exclude` trong Kyverno policy có vai trò gì? — Loại trừ namespace `kube-system` để không làm sập các Pods hệ thống).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Mục đích và nội dung tệp Giải trình Kiến trúc Capstone (/tmp/capstone-defense.md)?
-
-**Đáp án chuẩn:** Giúp kiến trúc sư **giải trình lý do lựa chọn các quyết định thiết kế**, phân tích điểm sập đơn lẻ (SPOF), cơ chế khôi phục sự cố (DR) và bảo vệ luận điểm kiến trúc trước hội đồng đánh giá. Tệp gồm 5 phần: Overview, Tier 1, Tier 2, Tier 3, và Risk Analysis.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu mục đích tệp capstone-defense.md.
-- 1đ: Nêu được giải thích kiến trúc nhưng thiếu phân tích rủi ro SPOF và 5 phần chuẩn.
-- 3đ: Phân tích chuẩn xác 100% mục đích và nội dung tệp Giải trình Kiến trúc Capstone.
-
-**Câu hỏi đào sâu:** (Tại sao tệp giải trình kiến trúc lại là thành phần bắt buộc của dự án Capstone? — Vì chứng minh **tư duy thiết kế hệ thống bài bản** của kiến trúc sư thay vì chỉ gõ lệnh cơ học).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Cách thức kết hợp giữa Kyverno Allowed Registries policy và Image Digest Pinning để đảm bảo an toàn chuỗi cung ứng Capstone?
-
-**Đáp án chuẩn:** Kyverno policy chặn 100% các ảnh kéo từ domain ngoài `harbor.internal/*`, còn Image Digest Pinning (`@sha256:...`) đảm bảo 100% Pods chỉ sử dụng mã băm ảnh bất biến đã qua kiểm định an ninh static scan.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu sự kết hợp Kyverno và Image Digest.
-- 1đ: Nêu được Kyverno chặn domain digest ghim hash nhưng thiếu tính bất biến immutable.
-- 3đ: Phân tích thấu đáo sự phối hợp giữa Kyverno policy và Image Digest Pinning.
-
-**Câu hỏi đào sâu:** (Cờ `validationFailureAction: Enforce` khác gì với `Audit`? — `Enforce` từ chối khởi tạo Pod ngay lập tức, còn `Audit` chỉ ghi log cảnh báo).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cơ chế phối hợp giữa `ResourceQuota` và `LimitRange` khi triển khai 3 replicas Deployment trong Lớp Kiểm soát 2 Capstone?
-
-**Đáp án chuẩn:** `LimitRange` tự động gán trần RAM mặc định 256Mi cho mỗi Pod đơn lẻ, đảm bảo cả 3 Pods tiêu tốn tổng cộng 768Mi RAM - nằm an toàn bên trong định ngạch trần 8Gi RAM của `ResourceQuota` Namespace.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu sự phối hợp giữa ResourceQuota và LimitRange.
-- 1đ: Nêu được tính toán RAM nhưng thiếu con số cụ thể per Pod vs tổng Namespace.
-- 3đ: Phân tích chuẩn xác cơ chế tính toán dung lượng bộ nhớ giữa LimitRange và ResourceQuota.
-
-**Câu hỏi đào sâu:** (Nếu scale Deployment từ 3 replicas lên 50 replicas thì chuyện gì xảy ra? — Kubernetes sẽ chặn từ chối các Pods từ 32 trở đi do **vượt quá tổng định ngạch ResourceQuota 8Gi**).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Kỹ thuật thắt chặt `securityContext` dưới spec của container trong dự án Capstone để đạt điểm tối đa an toàn?
-
-**Đáp án chuẩn:**
-1. `runAsNonRoot: true` (Không chạy quyền root).
-2. `readOnlyRootFilesystem: true` (Ghi đĩa dạng Read-Only).
-3. `allowPrivilegeEscalation: false` (Cấm leo thang đặc quyền).
-4. `capabilities.drop: ["ALL"]` (Gỡ bỏ toàn bộ quyền Linux capabilities).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được các thuộc tính securityContext.
-- 1đ: Nêu được runAsNonRoot nhưng thiếu readOnlyRootFilesystem và drop ALL.
-- 3đ: Trình bày chuẩn xác 4 thuộc tính SecurityContext thắt chặt cao nhất Capstone.
-
-**Câu hỏi đào sâu:** (Khi bật `readOnlyRootFilesystem: true`, làm sao để container ghi được tệp log tạm? — Mount một volume loại **`emptyDir: {}`** vào thư mục `/tmp`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Ý nghĩa của việc lưu trữ 100% tệp manifest triển khai Capstone trong thư mục duy nhất `/tmp/capstone/`?
-
-**Đáp án chuẩn:** Giúp đảm bảo **tính tái tạo lại được 100% (Reproducibility)** của hạ tầng dạng mã (IaC). Bất kỳ quản trị viên nào cũng có thể dựng lại trọn vẹn cụm Capstone 3 lớp kiểm soát chỉ bằng câu lệnh `kubectl apply -f /tmp/capstone/`.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu ý nghĩa việc đóng gói tệp YAML.
-- 1đ: Nêu được tiện quản lý nhưng thiếu khái niệm IaC và Reproducibility.
-- 3đ: Phân tích chuẩn xác ý nghĩa của việc đóng gói tệp manifest Capstone.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào được dùng để kiểm tra tính hợp lệ của toàn bộ tệp YAML trong thư mục `/tmp/capstone/` trước khi apply? — Lệnh `kubectl apply -f /tmp/capstone/ --dry-run=client`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Sự khác biệt về vai trò giữa Audit Logging (CKS) và Falco Rules (CKS) trong Lớp Kiểm soát 3 Capstone?
-
-**Đáp án chuẩn:**
-- **Audit Logging**: Ghi vết nhật ký truy cập API Server (xem ai đã gọi API gì vào lúc nào - Retrospective Audit).
-- **Falco Rules**: Lắng nghe syscalls tại Linux Kernel thời gian thực để **phát hiện và cảnh báo ngay lập tức hành vi bất thường** trong container (Real-time Detection).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa Audit Logging và Falco.
-- 1đ: Nêu được Audit ghi log Falco cảnh báo nhưng chưa rõ API Server vs Linux Syscalls.
-- 3đ: Phân tích chuẩn xác sự khác biệt về mặt bản chất và vai trò giữa Audit Logging và Falco Rules.
-
-**Câu hỏi đào sâu:** (Falco bắt hành vi vi phạm dựa trên thành phần nào của hệ thống? — Dựa trên **Linux Kernel Syscalls (Kernel System Calls)**).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp bash script chuẩn để kiểm tra kết quả đánh giá dự án Capstone từ script tự động chấm điểm là gì?
-
-**Đáp án chuẩn:**
-```bash
-test -f /tmp/capstone/results.log && grep -q "PASS" /tmp/capstone/results.log
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai câu lệnh test results.log.
-- 1đ: Nêu được grep PASS nhưng thiếu test -f.
-- 3đ: Viết chuẩn xác 100% câu lệnh bash script kiểm tra kết quả Capstone.
-
-**Câu hỏi đào sâu:** (Điểm số tối thiểu để bài Capstone được công nhận đạt mức PASS là bao nhiêu? — Điểm số tối thiểu là **`80 / 100 điểm`**).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Dự án Capstone Hạ tầng Kubernetes Doanh nghiệp là gì?
-
-**Đáp án chuẩn:**
-1. Tích hợp đồng thời trọn vẹn 3 lớp kiểm soát CKA, CKAD và CKS trên cùng một cụm sản xuất.
-2. Đóng gói 100% tệp manifest dạng IaC trong thư mục duy nhất `/tmp/capstone/`.
-3. Biên soạn tệp giải trình kiến trúc `/tmp/capstone-defense.md` giải thích rõ lý do thiết kế và cơ chế DR.
-4. Chạy script tự động chấm điểm xác minh dự án đạt tổng điểm PASS (>= 80/100đ).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Enterprise Capstone Platform.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 72 là gì? — Học về `Tốt nghiệp: Bảo vệ dự án Capstone thành công trước hội đồng và hoàn thành phỏng vấn tổng hợp 3 chứng chỉ`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1181,28 +1266,6 @@ test -f /tmp/capstone/results.log && grep -q "PASS" /tmp/capstone/results.log
 2. **"Đảm bảo an toàn hạ tầng bằng etcd backup, RBAC isolation, Kyverno policy và Falco Rules."**
 3. **"Vận hành ứng dụng hiệu quả với ResourceQuota, LimitRange, Probes và Ingress TLS termination."**
 4. **"Tự tin bảo vệ luận điểm thiết kế kiến trúc Capstone trước hội đồng đánh giá chuyên môn."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ năng dựng nền tảng Capstone |
-| **29 – 36 điểm** | Xuất sắc | Thành thục 100% 3 lớp kiểm soát Capstone, đóng gói IaC và bảo vệ thiết kế kiến trúc |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành lại bài Capstone dựng 3 lớp kiểm soát với đồng hồ bấm giờ rút ngắn 90 phút.
-- **BTVN 2:** Chuẩn bị bài trình bày thuyết minh tệp `/tmp/capstone-defense.md` trong 5 phút.
-- **BTVN 3:** Rà soát lại 100% các câu hỏi vấn đáp của 70 buổi học trước đó.
-- **BTVN 4 (Chuẩn bị cho Buổi 72 — Bảo vệ Capstone và Phỏng vấn Tổng hợp):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Buổi 72 (Buổi Tốt nghiệp cuối cùng) yêu cầu học viên bảo vệ thiết kế Capstone và trả lời phỏng vấn tổng hợp 3 chứng chỉ ra sao?
-  2. Bố cục bài thuyết trình 10 phút bảo vệ dự án Capstone trước hội đồng đánh giá được trình bày thế nào?
-  3. Bộ câu hỏi phỏng vấn tích hợp 3 chứng chỉ CKA + CKAD + CKS đòi hỏi sự chuẩn bị phản xạ ra sao?
 
 ---
 
@@ -1460,14 +1523,15 @@ ETCDCTL_API=3 etcdctl snapshot save /tmp/capstone/etcd-capstone.db \
 test -f /tmp/capstone/results.log && grep -q "PASS" /tmp/capstone/results.log
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 35] Bảo Vệ Đồ Án Tốt Nghiệp & Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn CKA Chuyên Sâu](cka-35-35-bao-ve-va-phong-van-tong-hop.html).
+
 {% endraw %}

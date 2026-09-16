@@ -481,24 +481,6 @@ Lệnh <code>kubectl describe pod <pod-name></code>.
 | Kubernetes Probes Documentation | `https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/` | Tài liệu chuẩn K8s Health Check Probes |
 | K8s Pod Lifecycle and Probes | `https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes` | Tài liệu vòng đời Pod và Probes |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Phân biệt 3 loại Probe | 12 phút | 12 phút |
-| §5. Ba phương thức và tham số thời gian | 12 phút | 12 phút |
-| §6. Ba ca hỏng kinh điển và cách khắc phục | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -864,26 +846,11 @@ test ! -f /tmp/lab37-probe.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHEC
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace | 10 phút | 10 phút |
-| L4. Bước 2: HTTP Probes & Liveness Fail | 25 phút | 25 phút |
-| L5. Bước 3: Exec Probes | 25 phút | 25 phút |
-| L6. Bước 4: TCPSocket & StartupProbes | 25 phút | 25 phút |
-| L7. Bước 5: Thử nghiệm Service Endpoints | 15 phút | 15 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -891,190 +858,313 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt về hành vi xử lý của Kubelet khi <code>readinessProbe</code> bị thất bại so với khi <code>livenessProbe</code> bị thất bại là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>startupProbe</code> kiểm tra xem container đã boot xong chưa (che chắn cho liveness/readiness). <code>readinessProbe</code> quyết định xem Pod có sẵn sàng nhận traffic từ Service hay không. <code>livenessProbe</code> quyết định xem Kubelet có tiêu diệt và restart lại container hay không.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi <code>readinessProbe</code> fail, Kubelet KHÔNG diệt container mà chỉ gỡ IP của Pod ra khỏi danh sách Service Endpoints để dừng nhận traffic. Khi <code>livenessProbe</code> fail, Kubelet sẽ gửi <code>SIGKILL</code> tiêu diệt và khởi động lại container theo <code>restartPolicy</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng cả 2 probe fail đều bị diệt container.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được liveness fail bị restart nhưng không giải thích được việc readiness fail gỡ IP khỏi Endpoints.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác hành vi êm dịu (gỡ Endpoints) vs hành vi mạnh tay (diệt container).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Pod không có <code>readinessProbe</code> mà chỉ có <code>livenessProbe</code> thì khi container chưa sẵn sàng, Kubelet sẽ làm gì? — Kubelet vẫn coi Pod sẵn sàng và Service vẫn đẩy traffic vào gây lỗi 502).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 3 loại Probe.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được liveness và readiness nhưng thiếu startupProbe.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo công dụng và thời điểm tác động của cả 3 loại Probe.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Khi <code>startupProbe</code> đang chạy thì <code>livenessProbe</code> có được chạy không? — Không được chạy, livenessProbe bị vô hiệu hóa cho tới khi startupProbe thành công).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao các ứng dụng khởi động chậm (như Java Spring Boot) bắt buộc phải cấu hình <code>startupProbe</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì nếu không có <code>startupProbe</code>, Kubelet sẽ kích hoạt <code>livenessProbe</code> ngay từ đầu. Do ứng dụng mất 3 phút mới boot xong nên <code>livenessProbe</code> sẽ báo fail và Kubelet lại kill container, tạo ra vòng lặp diệt nhầm vĩnh viễn (<code>CrashLoopBackOff</code>). <code>startupProbe</code> cho phép ứng dụng mở rộng hạn ngạch thời gian boot an toàn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được lý do diệt nhầm của livenessProbe.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cho ứng dụng boot chậm nhưng không rõ cơ chế vô hiệu hóa livenessProbe của startupProbe.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác bài toán diệt nhầm và cách giải quyết bằng <code>startupProbe</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có nên giải quyết bài toán app boot chậm bằng cách tăng <code>initialDelaySeconds</code> của <code>livenessProbe</code> lên 300s không? — KHÔNG nên, vì sẽ làm mất khả năng phát hiện app bị crash trong 5 phút đầu tiên sau khi đã boot xong).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ba phương thức hành động (Actions) được dùng để cấu hình Probe là gì và ứng dụng trong những trường hợp nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3 phương thức gồm: <code>httpGet</code> (gửi request HTTP GET tới path/port, dùng cho Web API), <code>exec</code> (chạy câu lệnh shell trong container exit code 0, dùng cho Batch Worker/Script), và <code>tcpSocket</code> (thử mở kết nối cổng TCP, dùng cho Database/Cache daemon).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đúng 3 phương thức.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tên nhưng không làm rõ bối cảnh ứng dụng thực tế của từng loại.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cả 3 phương thức và trường hợp ứng dụng thực tiễn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Phương thức <code>httpGet</code> đánh giá Probe thành công khi mã HTTP trả về nằm trong khoảng nào? — Trong dải từ 200 đến 399).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tại sao KHÔNG nên cấu hình <code>livenessProbe</code> trỏ vào đường dẫn endpoint có thực hiện query kiểm tra cơ sở dữ liệu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì nếu DB bị gián đoạn mạng hoặc quá tải tạm thời 10 giây, endpoint đó sẽ trả về fail. Nếu <code>livenessProbe</code> check endpoint này, Kubelet sẽ tiêu diệt và restart ĐỒNG LOẠT tất cả các Pod trên cụm, gây thảm họa sập hệ thống dây chuyền (Cascading Failure).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng liveness check DB là tốt.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không nên check DB nhưng không giải thích được thảm họa diệt đồng loạt các Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo lý do phân tách <code>/healthz</code> (liveness nội bộ) và <code>/ready</code> (readiness phụ thuộc DB).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Đường dẫn <code>/ready</code> của <code>readinessProbe</code> có được phép check DB không? — ĐƯỢC phép, vì readiness fail chỉ gỡ IP khỏi Endpoints chứ không làm diệt Pod).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Ý nghĩa của các tham số <code>initialDelaySeconds</code>, <code>periodSeconds</code>, <code>timeoutSeconds</code> và <code>failureThreshold</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>initialDelaySeconds</code>: số giây chờ trước khi probe lần đầu; <code>periodSeconds</code>: khoảng thời gian giữa các lần probe định kỳ; <code>timeoutSeconds</code>: thời gian chờ phản hồi tối đa của 1 lượt probe; <code>failureThreshold</code>: số lần fail liên tiếp tối đa trước khi công nhận fail toàn bộ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được các tham số.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Giải thích được 2-3 tham số.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác tuyệt đối định nghĩa và vai trò của cả 4 tham số mốc thời gian.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu <code>periodSeconds: 10</code> và <code>failureThreshold: 3</code> thì Probe sẽ mất bao nhiêu giây fail liên tiếp để bị tính là thất bại? — Mất khoảng 30 giây).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Ca hỏng "Ứng dụng dính Deadlock treo luồng không tự thoát" được phát hiện và xử lý thế nào bởi Probe?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi app dính Deadlock, tiến trình container vẫn chạy (<code>Running</code>) nhưng không trả lời bất kỳ request nào. <code>livenessProbe</code> gửi request HTTP/TCP nhưng bị <code>timeoutSeconds</code> quá hạn ngạch liên tiếp 3 lần (<code>failureThreshold: 3</code>), Kubelet lập tức phát hiện liveness fail và gửi <code>SIGKILL</code> để diệt và khởi động lại container hồi sinh ứng dụng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được cơ chế phát hiện Deadlock.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được diệt container nhưng chưa làm rõ cơ chế timeout và failureThreshold liên tiếp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo luồng xử lý từ timeout đến <code>SIGKILL</code> của Kubelet.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu không có <code>livenessProbe</code> thì Pod dính Deadlock sẽ hiển thị trạng thái gì trên <code>kubectl get pods</code>? — Vẫn hiển thị <code>Running 1/1</code> giả tạo dù app đã chết hoàn toàn).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu lệnh CLI nào dùng để xem nhật ký các sự kiện cảnh báo Probe fail của một Pod từ terminal?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl describe pod <pod-name> -n <namespace></code>. Sự kiện Probe fail sẽ được ghi lại trong mục <code>Events</code> ở dưới cùng (ví dụ: <code>Liveness probe failed: HTTP probe failed with statuscode 500</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm với lệnh <code>kubectl logs</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng describe pod nhưng không rõ vị trí xem mục Events.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác câu lệnh CLI và thông điệp event mẫu của Probe fail.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Xem thông tin số lần Pod đã bị Kubelet restart do liveness fail ở cột nào trong <code>kubectl get pods</code>? — Ở cột <code>RESTARTS</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao cờ <code>successThreshold</code> trong khối <code>livenessProbe</code> lại BẮT BUỘC phải luôn bằng 1?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì đối với <code>livenessProbe</code>, chỉ cần 1 lần kiểm tra thành công là container được tính là đang sống bình thường. Kubernetes API Server quy định cứng <code>successThreshold: 1</code> cho livenessProbe và sẽ trả về lỗi validation nếu đặt con số khác 1.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy định này.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được bằng 1 nhưng không rõ lỗi validation của API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác quy tắc validation cứng của Kubernetes API Server đối với livenessProbe.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trường <code>successThreshold</code> trong <code>readinessProbe</code> có được phép đặt lớn hơn 1 không? — ĐƯỢC phép, ví dụ đặt bằng 2 để yêu cầu 2 lần tháo gỡ lỗi liên tiếp mới cho Pod nhận traffic trở lại).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp YAML chuẩn để định nghĩa một <code>readinessProbe</code> loại <code>httpGet</code> cổng 8080 đường dẫn <code>/ready</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">readinessProbe:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">httpGet:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">path: /ready</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">port: 8080</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">initialDelaySeconds: 5</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">periodSeconds: 10</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai thụt lề hoặc sai từ khóa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được httpGet nhưng thiếu mốc thời gian.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác tuyệt đối cú pháp YAML spec của readinessProbe.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cổng container lắng nghe được đặt tên nhãn là <code>http-web</code> thì có thể điền <code>port: http-web</code> thay vì số 8080 được không? — ĐƯỢC phép, Kubelet tự động ánh xạ tên cổng).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Điểm khác biệt khi sử dụng <code>exec</code> probe với câu lệnh chứa cờ pipe <code>|</code> cần lưu ý điều gì về cú pháp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>exec</code> mặc định không chạy qua shell interpreter. Nếu câu lệnh chứa cờ pipe <code>|</code> hoặc redirect <code>></code>, bắt buộc phải khai báo dạng: <code>command: ["sh", "-c", "lệnh 1 | lệnh 2"]</code> để shell tự phân tích cú pháp pipe.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lưu ý về sh -c.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng sh -c nhưng không giải thích được lý do thiếu shell interpreter.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cú pháp bọc <code>sh -c</code> cho các câu lệnh shell phức tạp trong <code>exec</code> probe.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu gõ <code>command: ["cat", "/tmp/a", "|", "grep", "ok"]</code> mà không có <code>sh -c</code> thì chuyện gì xảy ra? — Lệnh <code>cat</code> sẽ tìm tệp tên là <code>|</code> và báo lỗi exit code 1 làm Probe fail).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tổng kết quy trình 3 bước vàng để thiết kế Health Check Probes chuẩn Production cho một Microservice là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm <code>startupProbe</code> nếu app boot lâu hơn 15s.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm <code>livenessProbe</code> trỏ vào <code>/healthz</code> (chỉ check nội bộ container) để hồi sinh khi deadlock.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm <code>readinessProbe</code> trỏ vào <code>/ready</code> (check kết nối DB/dịch vụ ngoài) để tạm ngắt traffic khi bận.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đúng quy trình.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2/3 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc, tự tin bộ 3 bước vàng thiết kế Probes Production.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 38 là gì? — Học về Log, sự kiện và debug container với <code>kubectl logs</code>, <code>events</code>, <code>describe</code>, <code>exec</code> và <code>ephemeral containers</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Sự khác biệt về hành vi xử lý của Kubelet khi `readinessProbe` bị thất bại so với khi `livenessProbe` bị thất bại là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Khi `readinessProbe` fail, Kubelet KHÔNG diệt container mà chỉ gỡ IP của Pod ra khỏi danh sách Service Endpoints để dừng nhận traffic. Khi `livenessProbe` fail, Kubelet sẽ gửi `SIGKILL` tiêu diệt và khởi động lại container theo `restartPolicy`.
+1. <b style="color: var(--accent-primary);">"Phân biệt đúng mục đích của 3 loại Probe là chìa khóa xây dựng hệ thống tự chữa lành (Self-healing) trên Kubernetes."</b>
+2. <b style="color: var(--accent-primary);">"Luôn nhớ: Readiness fail chỉ gỡ IP khỏi Service Endpoints để ngừng nhận traffic; Liveness fail mới làm Kubelet diệt và restart container."</b>
+3. <b style="color: var(--accent-primary);">"Áp dụng <code>startupProbe</code> là giải pháp chuẩn nhất để che chắn cho các ứng dụng khởi động chậm mà không làm mất khả năng phát hiện lỗi của <code>livenessProbe</code>."</b>
+4. <b style="color: var(--accent-primary);">"Tuyệt đối phân tách hai endpoint <code>/healthz</code> (liveness nội bộ) và <code>/ready</code> (readiness phụ thuộc DB) để tránh thảm họa sập cụm dây chuyền."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Cho rằng cả 2 probe fail đều bị diệt container.
-- 1đ: Nêu được liveness fail bị restart nhưng không giải thích được việc readiness fail gỡ IP khỏi Endpoints.
-- 3đ: Phân tích chuẩn xác hành vi êm dịu (gỡ Endpoints) vs hành vi mạnh tay (diệt container).
-
-**Câu hỏi đào sâu:** (Nếu Pod không có `readinessProbe` mà chỉ có `livenessProbe` thì khi container chưa sẵn sàng, Kubelet sẽ làm gì? — Kubelet vẫn coi Pod sẵn sàng và Service vẫn đẩy traffic vào gây lỗi 502).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Tại sao các ứng dụng khởi động chậm (như Java Spring Boot) bắt buộc phải cấu hình `startupProbe`?
-
-**Đáp án chuẩn:** Vì nếu không có `startupProbe`, Kubelet sẽ kích hoạt `livenessProbe` ngay từ đầu. Do ứng dụng mất 3 phút mới boot xong nên `livenessProbe` sẽ báo fail và Kubelet lại kill container, tạo ra vòng lặp diệt nhầm vĩnh viễn (`CrashLoopBackOff`). `startupProbe` cho phép ứng dụng mở rộng hạn ngạch thời gian boot an toàn.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được lý do diệt nhầm của livenessProbe.
-- 1đ: Nêu được cho ứng dụng boot chậm nhưng không rõ cơ chế vô hiệu hóa livenessProbe của startupProbe.
-- 3đ: Phân tích chính xác bài toán diệt nhầm và cách giải quyết bằng `startupProbe`.
-
-**Câu hỏi đào sâu:** (Có nên giải quyết bài toán app boot chậm bằng cách tăng `initialDelaySeconds` của `livenessProbe` lên 300s không? — KHÔNG nên, vì sẽ làm mất khả năng phát hiện app bị crash trong 5 phút đầu tiên sau khi đã boot xong).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Ba phương thức hành động (Actions) được dùng để cấu hình Probe là gì và ứng dụng trong những trường hợp nào?
-
-**Đáp án chuẩn:** 3 phương thức gồm: `httpGet` (gửi request HTTP GET tới path/port, dùng cho Web API), `exec` (chạy câu lệnh shell trong container exit code 0, dùng cho Batch Worker/Script), và `tcpSocket` (thử mở kết nối cổng TCP, dùng cho Database/Cache daemon).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đúng 3 phương thức.
-- 1đ: Nêu được tên nhưng không làm rõ bối cảnh ứng dụng thực tế của từng loại.
-- 3đ: Trình bày chính xác cả 3 phương thức và trường hợp ứng dụng thực tiễn.
-
-**Câu hỏi đào sâu:** (Phương thức `httpGet` đánh giá Probe thành công khi mã HTTP trả về nằm trong khoảng nào? — Trong dải từ 200 đến 399).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Tại sao KHÔNG nên cấu hình `livenessProbe` trỏ vào đường dẫn endpoint có thực hiện query kiểm tra cơ sở dữ liệu?
-
-**Đáp án chuẩn:** Vì nếu DB bị gián đoạn mạng hoặc quá tải tạm thời 10 giây, endpoint đó sẽ trả về fail. Nếu `livenessProbe` check endpoint này, Kubelet sẽ tiêu diệt và restart ĐỒNG LOẠT tất cả các Pod trên cụm, gây thảm họa sập hệ thống dây chuyền (Cascading Failure).
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng liveness check DB là tốt.
-- 1đ: Nêu được không nên check DB nhưng không giải thích được thảm họa diệt đồng loạt các Pod.
-- 3đ: Phân tích thấu đáo lý do phân tách `/healthz` (liveness nội bộ) và `/ready` (readiness phụ thuộc DB).
-
-**Câu hỏi đào sâu:** (Đường dẫn `/ready` của `readinessProbe` có được phép check DB không? — ĐƯỢC phép, vì readiness fail chỉ gỡ IP khỏi Endpoints chứ không làm diệt Pod).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Ý nghĩa của các tham số `initialDelaySeconds`, `periodSeconds`, `timeoutSeconds` và `failureThreshold` là gì?
-
-**Đáp án chuẩn:** `initialDelaySeconds`: số giây chờ trước khi probe lần đầu; `periodSeconds`: khoảng thời gian giữa các lần probe định kỳ; `timeoutSeconds`: thời gian chờ phản hồi tối đa của 1 lượt probe; `failureThreshold`: số lần fail liên tiếp tối đa trước khi công nhận fail toàn bộ.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được các tham số.
-- 1đ: Giải thích được 2-3 tham số.
-- 3đ: Trình bày chính xác tuyệt đối định nghĩa và vai trò của cả 4 tham số mốc thời gian.
-
-**Câu hỏi đào sâu:** (Nếu `periodSeconds: 10` và `failureThreshold: 3` thì Probe sẽ mất bao nhiêu giây fail liên tiếp để bị tính là thất bại? — Mất khoảng 30 giây).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Ca hỏng "Ứng dụng dính Deadlock treo luồng không tự thoát" được phát hiện và xử lý thế nào bởi Probe?
-
-**Đáp án chuẩn:** Khi app dính Deadlock, tiến trình container vẫn chạy (`Running`) nhưng không trả lời bất kỳ request nào. `livenessProbe` gửi request HTTP/TCP nhưng bị `timeoutSeconds` quá hạn ngạch liên tiếp 3 lần (`failureThreshold: 3`), Kubelet lập tức phát hiện liveness fail và gửi `SIGKILL` để diệt và khởi động lại container hồi sinh ứng dụng.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được cơ chế phát hiện Deadlock.
-- 1đ: Nêu được diệt container nhưng chưa làm rõ cơ chế timeout và failureThreshold liên tiếp.
-- 3đ: Phân tích thấu đáo luồng xử lý từ timeout đến `SIGKILL` của Kubelet.
-
-**Câu hỏi đào sâu:** (Nếu không có `livenessProbe` thì Pod dính Deadlock sẽ hiển thị trạng thái gì trên `kubectl get pods`? — Vẫn hiển thị `Running 1/1` giả tạo dù app đã chết hoàn toàn).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Câu lệnh CLI nào dùng để xem nhật ký các sự kiện cảnh báo Probe fail của một Pod từ terminal?
-
-**Đáp án chuẩn:** `kubectl describe pod <pod-name> -n <namespace>`. Sự kiện Probe fail sẽ được ghi lại trong mục `Events` ở dưới cùng (ví dụ: `Liveness probe failed: HTTP probe failed with statuscode 500`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm với lệnh `kubectl logs`.
-- 1đ: Nêu đúng describe pod nhưng không rõ vị trí xem mục Events.
-- 3đ: Trình bày chuẩn xác câu lệnh CLI và thông điệp event mẫu của Probe fail.
-
-**Câu hỏi đào sâu:** (Xem thông tin số lần Pod đã bị Kubelet restart do liveness fail ở cột nào trong `kubectl get pods`? — Ở cột `RESTARTS`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao cờ `successThreshold` trong khối `livenessProbe` lại BẮT BUỘC phải luôn bằng 1?
-
-**Đáp án chuẩn:** Vì đối với `livenessProbe`, chỉ cần 1 lần kiểm tra thành công là container được tính là đang sống bình thường. Kubernetes API Server quy định cứng `successThreshold: 1` cho livenessProbe và sẽ trả về lỗi validation nếu đặt con số khác 1.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết quy định này.
-- 1đ: Nêu được bằng 1 nhưng không rõ lỗi validation của API Server.
-- 3đ: Trình bày chính xác quy tắc validation cứng của Kubernetes API Server đối với livenessProbe.
-
-**Câu hỏi đào sâu:** (Trường `successThreshold` trong `readinessProbe` có được phép đặt lớn hơn 1 không? — ĐƯỢC phép, ví dụ đặt bằng 2 để yêu cầu 2 lần tháo gỡ lỗi liên tiếp mới cho Pod nhận traffic trở lại).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn để định nghĩa một `readinessProbe` loại `httpGet` cổng 8080 đường dẫn `/ready` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-readinessProbe:
-  httpGet:
-    path: /ready
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 10
-```
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai thụt lề hoặc sai từ khóa.
-- 1đ: Nêu được httpGet nhưng thiếu mốc thời gian.
-- 3đ: Viết chuẩn xác tuyệt đối cú pháp YAML spec của readinessProbe.
-
-**Câu hỏi đào sâu:** (Nếu cổng container lắng nghe được đặt tên nhãn là `http-web` thì có thể điền `port: http-web` thay vì số 8080 được không? — ĐƯỢC phép, Kubelet tự động ánh xạ tên cổng).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Điểm khác biệt khi sử dụng `exec` probe với câu lệnh chứa cờ pipe `|` cần lưu ý điều gì về cú pháp?
-
-**Đáp án chuẩn:** Lệnh `exec` mặc định không chạy qua shell interpreter. Nếu câu lệnh chứa cờ pipe `|` hoặc redirect `>`, bắt buộc phải khai báo dạng: `command: ["sh", "-c", "lệnh 1 | lệnh 2"]` để shell tự phân tích cú pháp pipe.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lưu ý về sh -c.
-- 1đ: Nêu được dùng sh -c nhưng không giải thích được lý do thiếu shell interpreter.
-- 3đ: Phân tích thấu đáo cú pháp bọc `sh -c` cho các câu lệnh shell phức tạp trong `exec` probe.
-
-**Câu hỏi đào sâu:** (Nếu gõ `command: ["cat", "/tmp/a", "|", "grep", "ok"]` mà không có `sh -c` thì chuyện gì xảy ra? — Lệnh `cat` sẽ tìm tệp tên là `|` và báo lỗi exit code 1 làm Probe fail).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Tổng kết quy trình 3 bước vàng để thiết kế Health Check Probes chuẩn Production cho một Microservice là gì?
-
-**Đáp án chuẩn:** 
-1. Thêm `startupProbe` nếu app boot lâu hơn 15s.
-2. Thêm `livenessProbe` trỏ vào `/healthz` (chỉ check nội bộ container) để hồi sinh khi deadlock.
-3. Thêm `readinessProbe` trỏ vào `/ready` (check kết nối DB/dịch vụ ngoài) để tạm ngắt traffic khi bận.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đúng quy trình.
-- 1đ: Nêu được 2/3 bước.
-- 3đ: Trình bày mạch lạc, tự tin bộ 3 bước vàng thiết kế Probes Production.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 38 là gì? — Học về Log, sự kiện và debug container với `kubectl logs`, `events`, `describe`, `exec` và `ephemeral containers`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1084,28 +1174,6 @@ readinessProbe:
 2. **"Luôn nhớ: Readiness fail chỉ gỡ IP khỏi Service Endpoints để ngừng nhận traffic; Liveness fail mới làm Kubelet diệt và restart container."**
 3. **"Áp dụng `startupProbe` là giải pháp chuẩn nhất để che chắn cho các ứng dụng khởi động chậm mà không làm mất khả năng phát hiện lỗi của `livenessProbe`."**
 4. **"Tuyệt đối phân tách hai endpoint `/healthz` (liveness nội bộ) và `/ready` (readiness phụ thuộc DB) để tránh thảm họa sập cụm dây chuyền."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc cơ chế và cú pháp Probes CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kỹ năng chẩn đoán và khắc phục 3 ca hỏng Probes Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết bản kê khai Pod YAML tích hợp đủ cả 3 loại Probe (`startupProbe`, `readinessProbe`, `livenessProbe`).
-- **BTVN 2:** Thực hành giả lập lỗi liveness fail bằng lệnh `exec` và quan sát số lần Restarts tăng trong `kubectl get pods`.
-- **BTVN 3:** So sánh sự khác nhau về danh sách Service Endpoints khi Pod ở trạng thái `READY 0/1` so với `READY 1/1`.
-- **BTVN 4 (Chuẩn bị cho Buổi 38 — Log, sự kiện và debug container):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Các lệnh CLI chính để xem log và sự kiện của Pod trong Kubernetes là gì (`kubectl logs`, `kubectl get events`)?
-  2. Kỹ thuật xem log của container đã bị crash ở lần chạy trước đó bằng cờ `--previous`?
-  3. Tính năng Ephemeral Containers (`kubectl debug`) giúp ích gì cho việc debug các container không có sẵn công cụ shell?
 
 ---
 
@@ -1394,14 +1462,15 @@ readinessProbe:
   periodSeconds: 5
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 08] Giám Sát Log, Truy Vết Sự Kiện & Debug Container: Logs, Events, Describe, Exec & Ephemeral Debug Container](ckad-08-08-log-su-kien-va-debug-container.html).
+
 {% endraw %}

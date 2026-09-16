@@ -485,24 +485,6 @@ Kubelet chỉ kéo ảnh từ registry về nếu ổ đĩa cục bộ trên Wor
 | Kubernetes Pod Spec Command & Args | `https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/` | Tài liệu chuẩn K8s command/args |
 | Docker Multi-stage Builds Guide | `https://docs.docker.com/build/building/multi-stage/` | Hướng dẫn Multi-stage build |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Ma trận ghi đè lệnh thực thi | 12 phút | 12 phút |
-| §5. Multi-stage build & Ảnh mỏng | 12 phút | 12 phút |
-| §6. Đóng gói chuẩn Cloud Native | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -816,26 +798,11 @@ test ! -f /tmp/lab32-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKP
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace | 10 phút | 10 phút |
-| L4. Bước 2: Pod Lệnh mặc định | 25 phút | 25 phút |
-| L5. Bước 3: Ghi đè Command | 25 phút | 25 phút |
-| L6. Bước 4: Ghi đè Args | 25 phút | 25 phút |
-| L7. Bước 5: Ghi đè cả Command & Args | 25 phút | 25 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -843,179 +810,304 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Kỹ thuật Multi-stage build trong Dockerfile giúp tối ưu kích thước ảnh container như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Trường <code>command</code> trong Kubernetes Manifest ghi đè chỉ thị <code>ENTRYPOINT</code> của Dockerfile. Trường <code>args</code> trong Kubernetes Manifest ghi đè chỉ thị <code>CMD</code> của Dockerfile.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Multi-stage build chia Dockerfile làm nhiều giai đoạn. Giai đoạn 1 (Build Stage) dùng các ảnh chứa đầy đủ bộ SDK/Compiler nặng để biên dịch code ra file binary. Giai đoạn 2 (Runtime Stage) dùng ảnh cơ sở siêu mỏng (Alpine/Distroless) và chỉ copy duy nhất file binary từ Stage 1 sang, giúp loại bỏ toàn bộ dung lượng rác của bộ compiler.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được cơ chế Multi-stage build.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được làm ảnh nhỏ hơn nhưng không rõ cơ chế copy artifact từ Stage 1 sang Stage 2.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo việc tách biệt môi trường Build và Runtime giúp giảm dung lượng từ hàng trăm MB xuống vài MB.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp lệnh Dockerfile nào được dùng để copy file từ stage trước sang stage sau? — Lệnh <code>COPY --from=<stage-name> <src> <dest></code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời nhầm lẫn giữa command và args.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng 1 vế (command -> ENTRYPOINT hoặc args -> CMD).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trả lời chính xác tuyệt đối cả 2 vế tương quan.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu Dockerfile có cả ENTRYPOINT và CMD mà trên K8s chỉ khai báo <code>command</code> thì điều gì sẽ xảy ra? — Toàn bộ ENTRYPOINT và CMD của Dockerfile đều bị xóa bỏ, container chỉ chạy duy nhất lệnh trong <code>command</code>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt giữa ảnh cơ sở <code>alpine</code> và ảnh <code>distroless</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ảnh <code>alpine</code> là hệ điều hành Linux siêu mỏng (dung lượng ~5MB) có sẵn vỏ lệnh <code>sh</code> và trình quản lý gói <code>apk</code>. Ảnh <code>distroless</code> của Google chỉ chứa đúng thư viện ứng dụng và file thực thi binary, hoàn toàn không có vỏ lệnh <code>sh</code>/<code>bash</code> hay bất kỳ tiện ích OS nào, giúp loại bỏ tối đa bề mặt tấn công.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết ảnh distroless.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả 2 đều nhỏ nhưng không chỉ ra điểm mấu chốt distroless không có shell.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác điểm khác biệt về shell, dung lượng và mức độ bảo mật.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn exec vào một container chạy ảnh distroless để debug thì phải làm thế nào? — Sử dụng tính năng <code>kubectl debug</code> tạo Ephemeral Container gắn vào Pod).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao tiến trình ứng dụng chính nên được chạy ở vị trí PID 1 bên trong container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Kubelet gửi tín hiệu ngắt <code>SIGTERM</code> trực tiếp tới tiến trình PID 1 để yêu cầu dừng Pod. Nếu tiến trình chính chạy ở PID 1, nó sẽ nhận được ngắt và thực hiện dọn dẹp tài nguyên êm ái (Graceful Shutdown). Nếu PID 1 là một shell nuốt mất tín hiệu, Pod sẽ bị kill đột ngột gây mất dữ liệu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm PID 1.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được PID 1 là tiến trình chính nhưng không giải thích cơ chế nhận ngắt SIGTERM từ Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế chuyển tiếp tín hiệu ngắt của Linux và tầm quan trọng của Graceful Shutdown.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để đảm bảo tiến trình node.js chạy trực tiếp ở PID 1 trong Dockerfile? — Sử dụng Exec Form <code>CMD ["node", "app.js"]</code> thay vì Shell Form).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Phân biệt cú pháp Exec Form (<code>CMD ["node", "app.js"]</code>) và Shell Form (<code>CMD node app.js</code>) trong Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Exec Form chạy thẳng câu lệnh dưới dạng mảng tham số mà không thông qua vỏ lệnh shell, giúp tiến trình <code>node</code> chạy trực tiếp ở PID 1. Shell Form tự động bọc câu lệnh qua <code>/bin/sh -c "node app.js"</code>, làm cho <code>/bin/sh</code> chiếm PID 1 và nuốt mất tín hiệu ngắt <code>SIGTERM</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 dạng cú pháp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dạng mảng và dạng chuỗi nhưng không giải thích ảnh hưởng tới PID 1.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc sự khác biệt về cú pháp và tác động trực tiếp tới PID 1 và ngắt SIGTERM.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khuyến nghị chuẩn của Dockerfile Best Practices khuyên dùng dạng cú pháp nào? — Khuyên dùng Exec Form cho mọi chỉ thị ENTRYPOINT và CMD).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tệp <code>.dockerignore</code> đóng vai trò gì trong việc tối ưu hóa tốc độ build ảnh container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tệp <code>.dockerignore</code> giúp ngăn chặn việc gửi các tệp và thư mục rác (như <code>.git</code>, <code>node_modules</code>, <code>tmp</code>, documentation) từ máy host vào Build Context của Docker daemon, giúp giảm dung lượng dữ liệu truyền qua socket và tăng tốc độ build ảnh.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tệp .dockerignore.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được bỏ qua file nhưng không rõ khái niệm Build Context gửi cho Docker daemon.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác tác dụng giảm dung lượng Build Context và ngăn ngừa copy file thừa vào ảnh.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu không có <code>.dockerignore</code> mà trong thư mục có <code>node_modules</code> nặng 500MB thì chuyện gì xảy ra? — Docker daemon tốn hàng chục giây chỉ để copy 500MB dữ liệu rác vào context trước khi bắt đầu build).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao câu lệnh dọn dẹp cache gói (như <code>rm -rf /var/lib/apt/lists/*</code>) phải nằm trong CÙNG MỘT chỉ thị <code>RUN</code> với lệnh cài đặt gói?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì mỗi chỉ thị <code>RUN</code> tạo ra một lớp ảnh đệm (image layer) bất biến. Nếu dọn dẹp cache ở chỉ thị <code>RUN</code> riêng tiếp theo, dung lượng cache bị tạo ra ở layer trước vẫn bị lưu trữ vĩnh viễn trong ảnh gốc và không bao giờ bị xóa đi.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được cơ chế layer của Docker.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được phải gõ chung 1 dòng nhưng không giải thích tính bất biến (Immutability) của Image Layer.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế layer bất biến và lý do phải nối câu lệnh bằng toán tử <code>&&</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Toán tử <code>&&</code> trong câu lệnh Linux RUN có ý nghĩa gì? — Thực hiện lệnh thứ hai chỉ khi lệnh thứ nhất chạy thành công không có lỗi).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp cờ <code>kubectl run</code> nào giúp thiết lập trường <code>command</code> và <code>args</code> trực tiếp từ CLI mà không cần sửa tệp YAML?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Sử dụng cờ <code>--command -- <cmd> <args></code> (ví dụ: <code>kubectl run app --image=busybox --command -- sh -c "echo Hello && sleep 3600"</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ cờ --command.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ --command nhưng đặt sai vị trí dấu <code>--</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cú pháp cờ <code>--command --</code> trên CLI.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Dấu <code>--</code> phân cách trong câu lệnh CLI có ý nghĩa gì? — Báo hiệu kết thúc các cờ tùy chọn của kubectl và bắt đầu danh sách lệnh/đối số truyền cho container).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao việc sử dụng ảnh container có dung lượng mỏng (như Alpine 5MB) lại làm giảm 90 % lỗ hổng bảo mật CVE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì các ảnh hệ điều hành đầy đủ (như Ubuntu/Debian) chứa hàng nghìn gói phần mềm và thư viện OS thừa. Mỗi gói phần mềm thừa là một nguy cơ chứa lỗ hổng bảo mật CVE. Ảnh mỏng loại bỏ toàn bộ các gói thừa đó, chỉ giữ lại những gì tối thiểu ứng dụng cần.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được mối liên hệ giữa tệp thừa và lỗ hổng CVE.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được ảnh mỏng bảo mật hơn nhưng không rõ khái niệm bề mặt tấn công (Attack Surface).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày thuyết phục về khái niệm giảm thiểu bề mặt tấn công bằng cách loại bỏ phần mềm thừa.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ CLI nào phổ biến dùng để quét lỗ hổng CVE của một ảnh container? — Công cụ <code>trivy</code> hoặc <code>grype</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác biệt giữa <code>imagePullPolicy: Always</code> và <code>IfNotPresent</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>Always</code> bắt Kubelet luôn gửi yêu cầu truy vấn đến Image Registry để kiểm tra và kéo bản mới nhất mỗi khi tạo Pod. <code>IfNotPresent</code> ra lệnh cho Kubelet chỉ kéo ảnh nếu đĩa cục bộ trên Worker Node chưa có sẵn bản ảnh đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 policy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được luôn kéo và không kéo nhưng chưa rõ điều kiện đĩa cục bộ của Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác tác động đến tốc độ khởi tạo Pod và lưu lượng mạng của cả 2 policy.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trong bài thi CKAD nên dùng policy nào cho các image tag cố định để tối ưu tốc độ? — Nên dùng <code>IfNotPresent</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Nếu trong Dockerfile có <code>ENTRYPOINT ["python"]</code> và <code>CMD ["app.py"]</code>, còn trong Kubernetes YAML bạn chỉ khai báo <code>args: ["test.py"]</code> thì container sẽ chạy lệnh nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Container sẽ chạy lệnh <code>python test.py</code> (vì <code>args</code> trong YAML chỉ ghi đè <code>CMD</code> của Dockerfile và giữ nguyên <code>ENTRYPOINT</code> cũ).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời sai câu lệnh thực thi.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Trả lời đúng lệnh nhưng không giải thích được cơ chế giữ lại ENTRYPOINT cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác ma trận ghi đè theo quy tắc QT 4.1.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu khai báo thêm <code>command: ["python3"]</code> thì kết quả ra sao? — Lệnh chạy sẽ là <code>python3 test.py</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên dùng tag <code>:latest</code> cho ảnh container trong môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì tag <code>:latest</code> không đảm bảo tính nhất quán (Non-deterministic). Hai Pod khởi chạy ở hai thời điểm khác nhau có thể kéo về hai bản ảnh khác nhau dù cùng mang tag <code>:latest</code>, gây ra lỗi không nhất quán phiên bản code giữa các Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tác hại của tag latest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không biết phiên bản nào nhưng chưa giải thích được sự bất nhất quán giữa các Pod trong cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo nguyên tắc Immutable Infrastructure và quy tắc đặt tag phiên bản cố định (như <code>:v1.2.3</code>).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mặc định khi dùng tag <code>:latest</code> thì <code>imagePullPolicy</code> sẽ tự động chuyển thành gì? — Tự động chuyển thành <code>Always</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Kỹ thuật Multi-stage build trong Dockerfile giúp tối ưu kích thước ảnh container như thế nào?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Multi-stage build chia Dockerfile làm nhiều giai đoạn. Giai đoạn 1 (Build Stage) dùng các ảnh chứa đầy đủ bộ SDK/Compiler nặng để biên dịch code ra file binary. Giai đoạn 2 (Runtime Stage) dùng ảnh cơ sở siêu mỏng (Alpine/Distroless) và chỉ copy duy nhất file binary từ Stage 1 sang, giúp loại bỏ toàn bộ dung lượng rác của bộ compiler.
+1. <b style="color: var(--accent-primary);">"Quy tắc vàng ghi đè lệnh: <code>command</code> trong Kubernetes YAML ghi đè <code>ENTRYPOINT</code>, còn <code>args</code> ghi đè <code>CMD</code> của Dockerfile."</b>
+2. <b style="color: var(--accent-primary);">"Kỹ thuật Multi-stage build và ảnh nền Alpine/Distroless là bộ đôi vũ khí giúp giảm 95 % dung lượng ảnh container và triệt tiêu bề mặt tấn công lỗ hổng bảo mật CVE."</b>
+3. <b style="color: var(--accent-primary);">"Đảm bảo tiến trình ứng dụng chạy ở PID 1 bằng Exec Form <code>["cmd", "arg"]</code> là điều kiện bắt buộc để Pod thực hiện Graceful Shutdown khi nhận ngắt <code>SIGTERM</code> từ Kubelet."</b>
+4. <b style="color: var(--accent-primary);">"Tổ chức Dockerfile chuẩn Cloud Native đòi hỏi phải dọn dẹp cache quản lý gói ngay trong cùng 1 chỉ thị <code>RUN</code> và luôn sử dụng tệp <code>.dockerignore</code>."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được cơ chế Multi-stage build.
-- 1đ: Nêu được làm ảnh nhỏ hơn nhưng không rõ cơ chế copy artifact từ Stage 1 sang Stage 2.
-- 3đ: Phân tích thấu đáo việc tách biệt môi trường Build và Runtime giúp giảm dung lượng từ hàng trăm MB xuống vài MB.
-
-**Câu hỏi đào sâu:** (Cú pháp lệnh Dockerfile nào được dùng để copy file từ stage trước sang stage sau? — Lệnh `COPY --from=<stage-name> <src> <dest>`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Sự khác biệt giữa ảnh cơ sở `alpine` và ảnh `distroless` là gì?
-
-**Đáp án chuẩn:** Ảnh `alpine` là hệ điều hành Linux siêu mỏng (dung lượng ~5MB) có sẵn vỏ lệnh `sh` và trình quản lý gói `apk`. Ảnh `distroless` của Google chỉ chứa đúng thư viện ứng dụng và file thực thi binary, hoàn toàn không có vỏ lệnh `sh`/`bash` hay bất kỳ tiện ích OS nào, giúp loại bỏ tối đa bề mặt tấn công.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết ảnh distroless.
-- 1đ: Nêu được cả 2 đều nhỏ nhưng không chỉ ra điểm mấu chốt distroless không có shell.
-- 3đ: Trình bày chính xác điểm khác biệt về shell, dung lượng và mức độ bảo mật.
-
-**Câu hỏi đào sâu:** (Nếu muốn exec vào một container chạy ảnh distroless để debug thì phải làm thế nào? — Sử dụng tính năng `kubectl debug` tạo Ephemeral Container gắn vào Pod).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Tại sao tiến trình ứng dụng chính nên được chạy ở vị trí PID 1 bên trong container?
-
-**Đáp án chuẩn:** Vì Kubelet gửi tín hiệu ngắt `SIGTERM` trực tiếp tới tiến trình PID 1 để yêu cầu dừng Pod. Nếu tiến trình chính chạy ở PID 1, nó sẽ nhận được ngắt và thực hiện dọn dẹp tài nguyên êm ái (Graceful Shutdown). Nếu PID 1 là một shell nuốt mất tín hiệu, Pod sẽ bị kill đột ngột gây mất dữ liệu.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết khái niệm PID 1.
-- 1đ: Nêu được PID 1 là tiến trình chính nhưng không giải thích cơ chế nhận ngắt SIGTERM từ Kubelet.
-- 3đ: Phân tích chuẩn xác cơ chế chuyển tiếp tín hiệu ngắt của Linux và tầm quan trọng của Graceful Shutdown.
-
-**Câu hỏi đào sâu:** (Làm thế nào để đảm bảo tiến trình node.js chạy trực tiếp ở PID 1 trong Dockerfile? — Sử dụng Exec Form `CMD ["node", "app.js"]` thay vì Shell Form).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Phân biệt cú pháp Exec Form (`CMD ["node", "app.js"]`) và Shell Form (`CMD node app.js`) trong Dockerfile?
-
-**Đáp án chuẩn:** Exec Form chạy thẳng câu lệnh dưới dạng mảng tham số mà không thông qua vỏ lệnh shell, giúp tiến trình `node` chạy trực tiếp ở PID 1. Shell Form tự động bọc câu lệnh qua `/bin/sh -c "node app.js"`, làm cho `/bin/sh` chiếm PID 1 và nuốt mất tín hiệu ngắt `SIGTERM`.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 2 dạng cú pháp.
-- 1đ: Nêu được dạng mảng và dạng chuỗi nhưng không giải thích ảnh hưởng tới PID 1.
-- 3đ: Trình bày mạch lạc sự khác biệt về cú pháp và tác động trực tiếp tới PID 1 và ngắt SIGTERM.
-
-**Câu hỏi đào sâu:** (Khuyến nghị chuẩn của Dockerfile Best Practices khuyên dùng dạng cú pháp nào? — Khuyên dùng Exec Form cho mọi chỉ thị ENTRYPOINT và CMD).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Tệp `.dockerignore` đóng vai trò gì trong việc tối ưu hóa tốc độ build ảnh container?
-
-**Đáp án chuẩn:** Tệp `.dockerignore` giúp ngăn chặn việc gửi các tệp và thư mục rác (như `.git`, `node_modules`, `tmp`, documentation) từ máy host vào Build Context của Docker daemon, giúp giảm dung lượng dữ liệu truyền qua socket và tăng tốc độ build ảnh.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tệp .dockerignore.
-- 1đ: Nêu được bỏ qua file nhưng không rõ khái niệm Build Context gửi cho Docker daemon.
-- 3đ: Trình bày chính xác tác dụng giảm dung lượng Build Context và ngăn ngừa copy file thừa vào ảnh.
-
-**Câu hỏi đào sâu:** (Nếu không có `.dockerignore` mà trong thư mục có `node_modules` nặng 500MB thì chuyện gì xảy ra? — Docker daemon tốn hàng chục giây chỉ để copy 500MB dữ liệu rác vào context trước khi bắt đầu build).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Tại sao câu lệnh dọn dẹp cache gói (như `rm -rf /var/lib/apt/lists/*`) phải nằm trong CÙNG MỘT chỉ thị `RUN` với lệnh cài đặt gói?
-
-**Đáp án chuẩn:** Vì mỗi chỉ thị `RUN` tạo ra một lớp ảnh đệm (image layer) bất biến. Nếu dọn dẹp cache ở chỉ thị `RUN` riêng tiếp theo, dung lượng cache bị tạo ra ở layer trước vẫn bị lưu trữ vĩnh viễn trong ảnh gốc và không bao giờ bị xóa đi.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được cơ chế layer của Docker.
-- 1đ: Nêu được phải gõ chung 1 dòng nhưng không giải thích tính bất biến (Immutability) của Image Layer.
-- 3đ: Phân tích thấu đáo cơ chế layer bất biến và lý do phải nối câu lệnh bằng toán tử `&&`.
-
-**Câu hỏi đào sâu:** (Toán tử `&&` trong câu lệnh Linux RUN có ý nghĩa gì? — Thực hiện lệnh thứ hai chỉ khi lệnh thứ nhất chạy thành công không có lỗi).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp cờ `kubectl run` nào giúp thiết lập trường `command` và `args` trực tiếp từ CLI mà không cần sửa tệp YAML?
-
-**Đáp án chuẩn:** Sử dụng cờ `--command -- <cmd> <args>` (ví dụ: `kubectl run app --image=busybox --command -- sh -c "echo Hello && sleep 3600"`).
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ cờ --command.
-- 1đ: Nêu được cờ --command nhưng đặt sai vị trí dấu `--`.
-- 3đ: Trình bày chuẩn xác cú pháp cờ `--command --` trên CLI.
-
-**Câu hỏi đào sâu:** (Dấu `--` phân cách trong câu lệnh CLI có ý nghĩa gì? — Báo hiệu kết thúc các cờ tùy chọn của kubectl và bắt đầu danh sách lệnh/đối số truyền cho container).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao việc sử dụng ảnh container có dung lượng mỏng (như Alpine 5MB) lại làm giảm 90 % lỗ hổng bảo mật CVE?
-
-**Đáp án chuẩn:** Vì các ảnh hệ điều hành đầy đủ (như Ubuntu/Debian) chứa hàng nghìn gói phần mềm và thư viện OS thừa. Mỗi gói phần mềm thừa là một nguy cơ chứa lỗ hổng bảo mật CVE. Ảnh mỏng loại bỏ toàn bộ các gói thừa đó, chỉ giữ lại những gì tối thiểu ứng dụng cần.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được mối liên hệ giữa tệp thừa và lỗ hổng CVE.
-- 1đ: Nêu được ảnh mỏng bảo mật hơn nhưng không rõ khái niệm bề mặt tấn công (Attack Surface).
-- 3đ: Trình bày thuyết phục về khái niệm giảm thiểu bề mặt tấn công bằng cách loại bỏ phần mềm thừa.
-
-**Câu hỏi đào sâu:** (Công cụ CLI nào phổ biến dùng để quét lỗ hổng CVE của một ảnh container? — Công cụ `trivy` hoặc `grype`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Sự khác biệt giữa `imagePullPolicy: Always` và `IfNotPresent` là gì?
-
-**Đáp án chuẩn:** `Always` bắt Kubelet luôn gửi yêu cầu truy vấn đến Image Registry để kiểm tra và kéo bản mới nhất mỗi khi tạo Pod. `IfNotPresent` ra lệnh cho Kubelet chỉ kéo ảnh nếu đĩa cục bộ trên Worker Node chưa có sẵn bản ảnh đó.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 2 policy.
-- 1đ: Nêu được luôn kéo và không kéo nhưng chưa rõ điều kiện đĩa cục bộ của Node.
-- 3đ: Phân tích chính xác tác động đến tốc độ khởi tạo Pod và lưu lượng mạng của cả 2 policy.
-
-**Câu hỏi đào sâu:** (Trong bài thi CKAD nên dùng policy nào cho các image tag cố định để tối ưu tốc độ? — Nên dùng `IfNotPresent`).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Nếu trong Dockerfile có `ENTRYPOINT ["python"]` và `CMD ["app.py"]`, còn trong Kubernetes YAML bạn chỉ khai báo `args: ["test.py"]` thì container sẽ chạy lệnh nào?
-
-**Đáp án chuẩn:** Container sẽ chạy lệnh `python test.py` (vì `args` trong YAML chỉ ghi đè `CMD` của Dockerfile và giữ nguyên `ENTRYPOINT` cũ).
-
-**Tiêu chí chấm:**
-- 0đ: Trả lời sai câu lệnh thực thi.
-- 1đ: Trả lời đúng lệnh nhưng không giải thích được cơ chế giữ lại ENTRYPOINT cũ.
-- 3đ: Phân tích chính xác ma trận ghi đè theo quy tắc QT 4.1.
-
-**Câu hỏi đào sâu:** (Nếu khai báo thêm `command: ["python3"]` thì kết quả ra sao? — Lệnh chạy sẽ là `python3 test.py`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Tại sao không nên dùng tag `:latest` cho ảnh container trong môi trường Production?
-
-**Đáp án chuẩn:** Vì tag `:latest` không đảm bảo tính nhất quán (Non-deterministic). Hai Pod khởi chạy ở hai thời điểm khác nhau có thể kéo về hai bản ảnh khác nhau dù cùng mang tag `:latest`, gây ra lỗi không nhất quán phiên bản code giữa các Pod.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tác hại của tag latest.
-- 1đ: Nêu được không biết phiên bản nào nhưng chưa giải thích được sự bất nhất quán giữa các Pod trong cụm.
-- 3đ: Phân tích thấu đáo nguyên tắc Immutable Infrastructure và quy tắc đặt tag phiên bản cố định (như `:v1.2.3`).
-
-**Câu hỏi đào sâu:** (Mặc định khi dùng tag `:latest` thì `imagePullPolicy` sẽ tự động chuyển thành gì? — Tự động chuyển thành `Always`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1025,28 +1117,6 @@ Trường <code>command</code> trong Kubernetes Manifest ghi đè chỉ thị <c
 2. **"Kỹ thuật Multi-stage build và ảnh nền Alpine/Distroless là bộ đôi vũ khí giúp giảm 95 % dung lượng ảnh container và triệt tiêu bề mặt tấn công lỗ hổng bảo mật CVE."**
 3. **"Đảm bảo tiến trình ứng dụng chạy ở PID 1 bằng Exec Form `["cmd", "arg"]` là điều kiện bắt buộc để Pod thực hiện Graceful Shutdown khi nhận ngắt `SIGTERM` từ Kubelet."**
 4. **"Tổ chức Dockerfile chuẩn Cloud Native đòi hỏi phải dọn dẹp cache quản lý gói ngay trong cùng 1 chỉ thị `RUN` và luôn sử dụng tệp `.dockerignore`."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc ma trận ghi đè và kỹ thuật đóng gói container |
-| **29 – 36 điểm** | Xuất sắc | Thành thục tư duy đóng gói ứng dụng chuẩn Cloud Native |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp Dockerfile Multi-stage build cho ứng dụng Node.js/TypeScript tối ưu dung lượng ảnh dưới 40MB.
-- **BTVN 2:** Biên soạn bản kê khai Pod YAML ghi đè cả `command` và `args` chạy script kiểm tra đĩa.
-- **BTVN 3:** Thử nghiệm build 2 ảnh (một ảnh dùng Exec Form, một ảnh dùng Shell Form) và dùng `kubectl delete pod` kiểm tra thời gian dừng Pod.
-- **BTVN 4 (Chuẩn bị cho Buổi 33 — Multi-container Pod Patterns):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Ba mẫu thiết kế Pod đa container kinh điển trong CKAD là gì (Sidecar, Adapter, Ambassador)?
-  2. Sự khác nhau về mục đích sử dụng giữa mẫu Sidecar và mẫu Adapter là gì?
-  3. Tính năng `restartPolicy: Always` trong Sidecar container của Kubernetes v1.28+ giải quyết vấn đề gì?
 
 ---
 
@@ -1262,14 +1332,15 @@ kubectl get pod <name> -n <ns> -o jsonpath='{.spec.containers[0].command}'
 kubectl get pod <name> -n <ns> -o jsonpath='{.spec.containers[0].args}'
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 03] Multi-Container Design Patterns: Làm Chủ Sidecar, Adapter, Ambassador & Restartable InitContainers](ckad-03-03-multi-container-pattern.html).
+
 {% endraw %}

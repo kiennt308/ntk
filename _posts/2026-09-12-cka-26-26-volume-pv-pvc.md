@@ -533,24 +533,6 @@ Chúng bắt buộc phải khớp tên chuỗi với nhau. Nếu một bên có 
 | Trang chủ Kubernetes Storage | `https://kubernetes.io/docs/concepts/storage/persistent-volumes/` | Phiên bản Kubernetes v1.35 |
 | Kubernetes Volumes Overview | `https://kubernetes.io/docs/concepts/storage/volumes/` | Chi tiết về emptyDir & hostPath |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Phân loại Volume tạm & bền vững | 12 phút | 12 phút |
-| §5. Cơ chế Binding PV & PVC | 12 phút | 12 phút |
-| §6. Ba chính sách thu hồi | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -960,25 +942,11 @@ kubectl get namespace lab26 2>&1 | grep -q "NotFound" && echo "CHECKPOINT 13 —
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ yêu cầu của bài tập BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo PV và PVC | 30 phút | 30 phút |
-| L4. Bước 2: Mount PVC vào Pod | 30 phút | 30 phút |
-| L5. Bước 3: Tái hiện sự cố PVC Pending | 30 phút | 30 phút |
-| L6. Bước 4: Kiểm chứng ReclaimPolicy & claimRef | 20 phút | 20 phút |
-| L7 & L8. Dọn dẹp và sự cố | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -986,187 +954,311 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác nhau giữa 3 chế độ <code>reclaimPolicy</code>: <code>Retain</code>, <code>Delete</code> và <code>Recycle</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-PV là tài nguyên lưu trữ cấp cụm (<code>Cluster-scoped</code>) do Quản trị viên (Admin) khởi tạo để đại diện cho hạ tầng đĩa vật lý. PVC là yêu cầu xin dung lượng đĩa cấp Namespace (<code>Namespace-scoped</code>) do Lập trình viên (Developer) khai báo. Hai thành phần này gắn kết với nhau qua cơ chế Binding.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi PVC bị xóa: <code>Retain</code> giữ nguyên dữ liệu và đĩa vật lý, chuyển PV sang trạng thái <code>Released</code> (cần gỡ <code>claimRef</code> mới dùng lại được). <code>Delete</code> tự động xóa sạch PV và ổ đĩa bên dưới (thường dùng cho cloud storage). <code>Recycle</code> thực hiện <code>rm -rf</code> dữ liệu trong ổ đĩa và trả PV về trạng thái <code>Available</code> (đã bị gắn cờ ngưng hỗ trợ trong các bản K8s mới).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời sai hoặc nhầm lẫn giữa Retain và Delete.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Retain giữ dữ liệu, Delete xóa dữ liệu.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được 3 chế độ nhưng chưa giải thích được trạng thái <code>Released</code> của Retain.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 3 chế độ, cơ chế <code>claimRef</code> của Retain và lưu ý về Recycle.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trong môi trường sản xuất Production nên chọn chính sách nào? — Bắt buộc dùng <code>Retain</code> cho dữ liệu quan trọng để tránh thảm họa mất dữ liệu khi trỡ tay xóa PVC).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được PV và PVC.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được PV là đĩa, PVC là yêu cầu dùng đĩa nhưng không nói được vai trò Admin/Dev.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng vai trò Admin/Dev nhưng thiếu thông tin về phạm vi <code>Cluster-scoped</code> vs <code>Namespace-scoped</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày đầy đủ scope, vai trò quản trị và cơ chế Binding giữa PV và PVC.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu khai báo namespace vào YAML của PV thì điều gì xảy ra? — Kubernetes sẽ bỏ qua hoặc báo lỗi vì PV là đối tượng toàn cụm, không thuộc Namespace nào).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Điều kiện để một PVC có thể bind thành công vào một PV tĩnh (Static Provisioning) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Đòi hỏi 4 yếu tố: Dung lượng PV phải lớn hơn hoặc bằng PVC (<code>capacity >= request</code>), <code>accessModes</code> của PVC phải là tập con hoặc bằng PV, <code>storageClassName</code> phải giống hệt nhau (hoặc cùng rỗng), và PV phải đang ở trạng thái <code>Available</code> (chưa bị khóa bởi <code>claimRef</code> khác).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Chỉ nêu được dung lượng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dung lượng và accessModes.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đủ 3 yếu tố đầu nhưng quên trạng thái <code>Available</code> / <code>claimRef</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác và đầy đủ cả 4 điều kiện.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu PV có 10Gi mà PVC xin 2Gi thì sau khi Bind dung lượng 8Gi còn lại có dùng cho PVC khác được không? — Không được, mối quan hệ bind là 1-1 độc quyền).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khi một PV có <code>reclaimPolicy: Retain</code> bị chuyển sang trạng thái <code>Released</code>, tại sao một PVC mới khớp thông số vẫn bị kẹt <code>Pending</code> và cách xử lý thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì PV ở trạng thái <code>Released</code> vẫn còn lưu vết <code>spec.claimRef</code> chỉ định tên PVC cũ. Để tái sử dụng, ta phải dùng lệnh <code>kubectl patch pv <pv-name> -p '{"spec":{"claimRef":null}}'</code> để gỡ <code>claimRef</code>, đưa PV về <code>Available</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết nguyên nhân tại sao kẹt.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Biết tại sao kẹt do dữ liệu cũ nhưng không nêu được trường <code>claimRef</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được <code>claimRef</code> nhưng không nhớ câu lệnh patch gỡ bỏ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác bản chất <code>claimRef</code> và lệnh <code>kubectl patch</code> gỡ bỏ.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sau khi patch claimRef xong dữ liệu cũ trên đĩa có bị mất không? — Không mất, dữ liệu cũ vẫn nằm trên đĩa vật lý).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Ba chế độ <code>accessModes</code>: <code>ReadWriteOnce</code> (RWO), <code>ReadOnlyMany</code> (ROX), <code>ReadWriteMany</code> (RWX) thể hiện hạn chế kỹ thuật hay chỉ là nhãn khai báo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chúng trước hết là <b style="color: var(--accent-primary);">nhãn khai báo</b> để Kubernetes match PVC với PV. Tuy nhiên, nó bắt buộc phải phản ánh đúng <b style="color: var(--accent-primary);">khả năng kỹ thuật của hạ tầng lưu trữ bên dưới</b> (ví dụ AWS EBS chỉ hỗ trợ RWO, NFS hỗ trợ RWX). Khai báo sai so với hạ tầng sẽ dẫn đến lỗi mount đĩa ở tầng OS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời nhầm là Kubernetes tự chuyển đổi đĩa RWO thành RWX.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Trả lời đúng là nhãn khai báo nhưng không giải thích được hạ tầng bên dưới.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được ý nghĩa RWO/ROX/RWX nhưng chưa làm rõ hậu quả khi khai báo sai so với đĩa thật.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích sâu sắc cả hai khía cạnh khai báo đối sánh và hạn chế hạ tầng đĩa thật.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chữ "Once" trong ReadWriteOnce nghĩa là 1 Pod hay 1 Node? — Là 1 Node! Nhiều Pod chạy trên CÙNG 1 Node vẫn có thể mount chung đĩa RWO).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác nhau giữa Volume <code>emptyDir</code> và <code>hostPath</code> là gì? Khi nào nên và không nên dùng chúng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>emptyDir</code> tạo ra thư mục tạm trên Node gắn với vòng đời Pod (chết Pod là mất). <code>hostPath</code> trỏ tới thư mục có sẵn trên đĩa Node (chết Pod dữ liệu vẫn còn trên Node đó). <code>emptyDir</code> dùng cho cache tạm; <code>hostPath</code> dùng cho Pod hệ thống cần can thiệp Node (DaemonSet như Fluentd, Calico). Không dùng <code>hostPath</code> cho ứng dụng HA multi-node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 loại volume.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được khái niệm nhưng không chỉ ra được trường hợp dùng thực tế.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Phân biệt đúng nhưng chưa giải thích được tại sao cấm dùng <code>hostPath</code> cho app HA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích rõ ràng vòng đời, trường hợp sử dụng và các lưu ý bảo mật/HA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khi Pod dùng <code>emptyDir</code> bị restart container do CrashLoopBackOff thì dữ liệu trong <code>emptyDir</code> có mất không? — Không mất, trừ khi chính Pod bị xoá hoàn toàn).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao Pod lại rơi vào trạng thái <code>ContainerCreating</code> khi PVC chưa ở trạng thái <code>Bound</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Kubelet trên Worker Node chỉ có thể thực hiện thao tác mount đĩa vào container khi Control Plane đã hoàn tất việc kết nối PVC với PV. Khi PVC chưa <code>Bound</code>, Kubelet không nhận được thông số đường dẫn đĩa nên phải tạm dừng quá trình khởi tạo container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được liên hệ giữa Pod và PVC.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được vì PVC chưa xong nhưng không nói được vai trò của Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng vai trò Kubelet nhưng chưa nêu câu lệnh chẩn đoán (<code>kubectl describe pod</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác luồng điều phối của Kubelet và cách chẩn đoán sự cố.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh nào để xem nguyên nhân Pod bị kẹt Mount volume? — <code>kubectl describe pod <pod-name></code> trong mục Events).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Giả sử có 2 PVC cùng trỏ vào 1 PV bằng cách ghi cứng <code>volumeName</code> trong PVC spec, Kubernetes xử lý thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">PVC nào gửi câu lệnh tạo trước sẽ bind thành công với PV đó. PVC thứ hai gửi sau sẽ bị kẹt ở trạng thái <code>Pending</code> với thông báo lỗi PV đã bị <code>Claimed</code> bởi PVC thứ nhất (do mối quan hệ 1-1).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời sai rằng cả 2 PVC đều bind được.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chỉ 1 PVC bind được nhưng không giải thích được lý tự.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Giải thích được nhưng không nhớ rõ trạng thái PVC thứ hai.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế race-condition và quan hệ bind 1-1.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cách nào để 2 Pod ở 2 Namespace khác nhau chia sẻ cùng dữ liệu? — Dùng đĩa hỗ trợ ReadWriteMany và tạo 2 PVC bind vào 2 PV cùng trỏ chung 1 thư mục đĩa mạng NFS bên dưới).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Thuộc tính <code>persistentVolumeReclaimPolicy</code> nằm trong file spec của PV hay PVC?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>persistentVolumeReclaimPolicy</code> nằm trong <code>spec</code> của <b style="color: var(--accent-primary);">PV</b> (PersistentVolume), vì chính sách thu hồi đĩa vật lý thuộc quyền quyết định của Quản trị viên hạ tầng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời sai là PVC.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Trả lời đúng là PV nhưng không giải thích được lý do.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trả lời đúng PV và phân tích đúng phân quyền trách nhiệm giữa Admin và Dev.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có thể sửa <code>reclaimPolicy</code> của một PV đang ở trạng thái <code>Bound</code> không? — Có thể sửa trực tiếp bằng lệnh <code>kubectl patch pv <pv-name> -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Nếu ta xóa một PVC đang được đính kèm (mount) bởi một Pod đang chạy (<code>Running</code>), chuyện gì sẽ xảy ra?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">PVC sẽ rơi vào trạng thái chờ xóa (<code>Terminating</code>) nhưng <b style="color: var(--accent-primary);">chưa bị xóa hẳn</b> nhờ cơ chế <code>Storage Object in Use Protection</code> (Finalizer: <code>kubernetes.io/pvc-protection</code>). Chỉ khi Pod dừng hẳn và nhả volume, PVC mới thực sự bị xóa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời sai là PVC bị xóa ngay và Pod bị sập.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được PVC không bị xóa ngay nhưng không biết tên cơ chế.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Giải thích chính xác cơ chế Finalizer <code>pvc-protection</code> bảo vệ tài nguyên.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm sao để giải phóng PVC đang kẹt Terminating? — Xóa Pod đang sử dụng PVC đó).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Trường <code>storageClassName: ""</code> (xâu rỗng) trong PVC có ý nghĩa kỹ thuật gì đặc biệt?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>storageClassName: ""</code> ép buộc PVC <b style="color: var(--accent-primary);">chỉ được bind với các PV tĩnh không có storageClassName hoặc storageClassName rỗng</b>, đồng thời vô hiệu hóa cơ chế cấp phát động (Dynamic Provisioning) tự tạo PV từ StorageClass mặc định.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng xâu rỗng giống như không khai báo trường.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không dùng StorageClass nhưng không giải thích được việc chặn Dynamic Provisioning.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích đầy đủ ảnh hưởng đến Static Bind và Dynamic Provisioning.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu không khai báo trường <code>storageClassName</code> trong PVC thì sao? — Kubernetes sẽ tự động gán StorageClass mặc định của cụm nếu có).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Khi ứng dụng bị lỗi <code>Permission denied</code> không thể ghi dữ liệu vào PVC đã mount, cách xử lý chuẩn trên Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cấu hình <code>securityContext.fsGroup: <gid></code> trong Pod spec để Kubelet tự động thay đổi quyền sở hữu (ownership) của thư mục mount cho nhóm GID tương ứng, cho phép container non-root ghi được dữ liệu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Bảo SSH vào Node bấm <code>chmod 777</code> (không phải cách chuẩn trên K8s).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sửa quyền nhưng không biết thuộc tính <code>fsGroup</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Nêu đúng <code>securityContext.fsGroup</code> và cơ chế Kubelet tự điều chỉnh permission.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh <code>fsGroup</code> hoạt động với loại volume nào? — Với các volume hỗ trợ quản lý POSIX file permission).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Sự khác nhau giữa 3 chế độ `reclaimPolicy`: `Retain`, `Delete` và `Recycle` là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Khi PVC bị xóa: `Retain` giữ nguyên dữ liệu và đĩa vật lý, chuyển PV sang trạng thái `Released` (cần gỡ `claimRef` mới dùng lại được). `Delete` tự động xóa sạch PV và ổ đĩa bên dưới (thường dùng cho cloud storage). `Recycle` thực hiện `rm -rf` dữ liệu trong ổ đĩa và trả PV về trạng thái `Available` (đã bị gắn cờ ngưng hỗ trợ trong các bản K8s mới).
+1. <b style="color: var(--accent-primary);">"PV là tài nguyên Cluster-scope đại diện đĩa thật, PVC là Namespace-scope đại diện yêu cầu dùng đĩa; sự kết nối giữa chúng là quan hệ 1-1 độc quyền dựa trên sự phù hợp về dung lượng và accessModes."</b>
+2. <b style="color: var(--accent-primary);">"Chính sách <code>reclaimPolicy: Retain</code> bảo vệ an toàn dữ liệu Production khi xóa PVC bằng cách giữ nguyên ổ đĩa và khóa PV ở trạng thái <code>Released</code> qua trường <code>claimRef</code>."</b>
+3. <b style="color: var(--accent-primary);">"Thuộc tính <code>accessModes</code> như ReadWriteOnce hay ReadWriteMany trước hết là nhãn đối sánh của Kubernetes, và bắt buộc phải phản ánh đúng khả năng kỹ thuật của hệ thống lưu trữ bên dưới."</b>
+4. <b style="color: var(--accent-primary);">"Cơ chế Finalizer <code>pvc-protection</code> ngăn chặn việc xóa PVC khi vẫn còn Pod đang mount, bảo vệ hệ thống khỏi hiện tượng hỏng hệ tập tin đột ngột."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Trả lời sai hoặc nhầm lẫn giữa Retain và Delete.
-- 1đ: Nêu được Retain giữ dữ liệu, Delete xóa dữ liệu.
-- 2đ: Nêu được 3 chế độ nhưng chưa giải thích được trạng thái `Released` của Retain.
-- 3đ: Trình bày chính xác 3 chế độ, cơ chế `claimRef` của Retain và lưu ý về Recycle.
-
-**Câu hỏi đào sâu:** (Trong môi trường sản xuất Production nên chọn chính sách nào? — Bắt buộc dùng `Retain` cho dữ liệu quan trọng để tránh thảm họa mất dữ liệu khi trỡ tay xóa PVC).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Điều kiện để một PVC có thể bind thành công vào một PV tĩnh (Static Provisioning) là gì?
-
-**Đáp án chuẩn:** Đòi hỏi 4 yếu tố: Dung lượng PV phải lớn hơn hoặc bằng PVC (`capacity >= request`), `accessModes` của PVC phải là tập con hoặc bằng PV, `storageClassName` phải giống hệt nhau (hoặc cùng rỗng), và PV phải đang ở trạng thái `Available` (chưa bị khóa bởi `claimRef` khác).
-
-**Tiêu chí chấm:**
-- 0đ: Chỉ nêu được dung lượng.
-- 1đ: Nêu được dung lượng và accessModes.
-- 2đ: Nêu đủ 3 yếu tố đầu nhưng quên trạng thái `Available` / `claimRef`.
-- 3đ: Trình bày chính xác và đầy đủ cả 4 điều kiện.
-
-**Câu hỏi đào sâu:** (Nếu PV có 10Gi mà PVC xin 2Gi thì sau khi Bind dung lượng 8Gi còn lại có dùng cho PVC khác được không? — Không được, mối quan hệ bind là 1-1 độc quyền).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Khi một PV có `reclaimPolicy: Retain` bị chuyển sang trạng thái `Released`, tại sao một PVC mới khớp thông số vẫn bị kẹt `Pending` và cách xử lý thế nào?
-
-**Đáp án chuẩn:** Vì PV ở trạng thái `Released` vẫn còn lưu vết `spec.claimRef` chỉ định tên PVC cũ. Để tái sử dụng, ta phải dùng lệnh `kubectl patch pv <pv-name> -p '{"spec":{"claimRef":null}}'` để gỡ `claimRef`, đưa PV về `Available`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết nguyên nhân tại sao kẹt.
-- 1đ: Biết tại sao kẹt do dữ liệu cũ nhưng không nêu được trường `claimRef`.
-- 2đ: Nêu được `claimRef` nhưng không nhớ câu lệnh patch gỡ bỏ.
-- 3đ: Trình bày chính xác bản chất `claimRef` và lệnh `kubectl patch` gỡ bỏ.
-
-**Câu hỏi đào sâu:** (Sau khi patch claimRef xong dữ liệu cũ trên đĩa có bị mất không? — Không mất, dữ liệu cũ vẫn nằm trên đĩa vật lý).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Ba chế độ `accessModes`: `ReadWriteOnce` (RWO), `ReadOnlyMany` (ROX), `ReadWriteMany` (RWX) thể hiện hạn chế kỹ thuật hay chỉ là nhãn khai báo?
-
-**Đáp án chuẩn:** Chúng trước hết là **nhãn khai báo** để Kubernetes match PVC với PV. Tuy nhiên, nó bắt buộc phải phản ánh đúng **khả năng kỹ thuật của hạ tầng lưu trữ bên dưới** (ví dụ AWS EBS chỉ hỗ trợ RWO, NFS hỗ trợ RWX). Khai báo sai so với hạ tầng sẽ dẫn đến lỗi mount đĩa ở tầng OS.
-
-**Tiêu chí chấm:**
-- 0đ: Trả lời nhầm là Kubernetes tự chuyển đổi đĩa RWO thành RWX.
-- 1đ: Trả lời đúng là nhãn khai báo nhưng không giải thích được hạ tầng bên dưới.
-- 2đ: Nêu được ý nghĩa RWO/ROX/RWX nhưng chưa làm rõ hậu quả khi khai báo sai so với đĩa thật.
-- 3đ: Phân tích sâu sắc cả hai khía cạnh khai báo đối sánh và hạn chế hạ tầng đĩa thật.
-
-**Câu hỏi đào sâu:** (Chữ "Once" trong ReadWriteOnce nghĩa là 1 Pod hay 1 Node? — Là 1 Node! Nhiều Pod chạy trên CÙNG 1 Node vẫn có thể mount chung đĩa RWO).
-
----
-
-### Câu 6 — 🔥
-**Hỏi:** Sự khác nhau giữa Volume `emptyDir` và `hostPath` là gì? Khi nào nên và không nên dùng chúng?
-
-**Đáp án chuẩn:** `emptyDir` tạo ra thư mục tạm trên Node gắn với vòng đời Pod (chết Pod là mất). `hostPath` trỏ tới thư mục có sẵn trên đĩa Node (chết Pod dữ liệu vẫn còn trên Node đó). `emptyDir` dùng cho cache tạm; `hostPath` dùng cho Pod hệ thống cần can thiệp Node (DaemonSet như Fluentd, Calico). Không dùng `hostPath` cho ứng dụng HA multi-node.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 2 loại volume.
-- 1đ: Nêu được khái niệm nhưng không chỉ ra được trường hợp dùng thực tế.
-- 2đ: Phân biệt đúng nhưng chưa giải thích được tại sao cấm dùng `hostPath` cho app HA.
-- 3đ: Phân tích rõ ràng vòng đời, trường hợp sử dụng và các lưu ý bảo mật/HA.
-
-**Câu hỏi đào sâu:** (Khi Pod dùng `emptyDir` bị restart container do CrashLoopBackOff thì dữ liệu trong `emptyDir` có mất không? — Không mất, trừ khi chính Pod bị xoá hoàn toàn).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Tại sao Pod lại rơi vào trạng thái `ContainerCreating` khi PVC chưa ở trạng thái `Bound`?
-
-**Đáp án chuẩn:** Vì Kubelet trên Worker Node chỉ có thể thực hiện thao tác mount đĩa vào container khi Control Plane đã hoàn tất việc kết nối PVC với PV. Khi PVC chưa `Bound`, Kubelet không nhận được thông số đường dẫn đĩa nên phải tạm dừng quá trình khởi tạo container.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được liên hệ giữa Pod và PVC.
-- 1đ: Nêu được vì PVC chưa xong nhưng không nói được vai trò của Kubelet.
-- 2đ: Nêu đúng vai trò Kubelet nhưng chưa nêu câu lệnh chẩn đoán (`kubectl describe pod`).
-- 3đ: Phân tích chính xác luồng điều phối của Kubelet và cách chẩn đoán sự cố.
-
-**Câu hỏi đào sâu:** (Lệnh nào để xem nguyên nhân Pod bị kẹt Mount volume? — `kubectl describe pod <pod-name>` trong mục Events).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Giả sử có 2 PVC cùng trỏ vào 1 PV bằng cách ghi cứng `volumeName` trong PVC spec, Kubernetes xử lý thế nào?
-
-**Đáp án chuẩn:** PVC nào gửi câu lệnh tạo trước sẽ bind thành công với PV đó. PVC thứ hai gửi sau sẽ bị kẹt ở trạng thái `Pending` với thông báo lỗi PV đã bị `Claimed` bởi PVC thứ nhất (do mối quan hệ 1-1).
-
-**Tiêu chí chấm:**
-- 0đ: Trả lời sai rằng cả 2 PVC đều bind được.
-- 1đ: Nêu được chỉ 1 PVC bind được nhưng không giải thích được lý tự.
-- 2đ: Giải thích được nhưng không nhớ rõ trạng thái PVC thứ hai.
-- 3đ: Trình bày chuẩn xác cơ chế race-condition và quan hệ bind 1-1.
-
-**Câu hỏi đào sâu:** (Cách nào để 2 Pod ở 2 Namespace khác nhau chia sẻ cùng dữ liệu? — Dùng đĩa hỗ trợ ReadWriteMany và tạo 2 PVC bind vào 2 PV cùng trỏ chung 1 thư mục đĩa mạng NFS bên dưới).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Thuộc tính `persistentVolumeReclaimPolicy` nằm trong file spec của PV hay PVC?
-
-**Đáp án chuẩn:** `persistentVolumeReclaimPolicy` nằm trong `spec` của **PV** (PersistentVolume), vì chính sách thu hồi đĩa vật lý thuộc quyền quyết định của Quản trị viên hạ tầng.
-
-**Tiêu chí chấm:**
-- 0đ: Trả lời sai là PVC.
-- 1đ: Trả lời đúng là PV nhưng không giải thích được lý do.
-- 3đ: Trả lời đúng PV và phân tích đúng phân quyền trách nhiệm giữa Admin và Dev.
-
-**Câu hỏi đào sâu:** (Có thể sửa `reclaimPolicy` của một PV đang ở trạng thái `Bound` không? — Có thể sửa trực tiếp bằng lệnh `kubectl patch pv <pv-name> -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Nếu ta xóa một PVC đang được đính kèm (mount) bởi một Pod đang chạy (`Running`), chuyện gì sẽ xảy ra?
-
-**Đáp án chuẩn:** PVC sẽ rơi vào trạng thái chờ xóa (`Terminating`) nhưng **chưa bị xóa hẳn** nhờ cơ chế `Storage Object in Use Protection` (Finalizer: `kubernetes.io/pvc-protection`). Chỉ khi Pod dừng hẳn và nhả volume, PVC mới thực sự bị xóa.
-
-**Tiêu chí chấm:**
-- 0đ: Trả lời sai là PVC bị xóa ngay và Pod bị sập.
-- 1đ: Nêu được PVC không bị xóa ngay nhưng không biết tên cơ chế.
-- 3đ: Giải thích chính xác cơ chế Finalizer `pvc-protection` bảo vệ tài nguyên.
-
-**Câu hỏi đào sâu:** (Làm sao để giải phóng PVC đang kẹt Terminating? — Xóa Pod đang sử dụng PVC đó).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Trường `storageClassName: ""` (xâu rỗng) trong PVC có ý nghĩa kỹ thuật gì đặc biệt?
-
-**Đáp án chuẩn:** `storageClassName: ""` ép buộc PVC **chỉ được bind với các PV tĩnh không có storageClassName hoặc storageClassName rỗng**, đồng thời vô hiệu hóa cơ chế cấp phát động (Dynamic Provisioning) tự tạo PV từ StorageClass mặc định.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng xâu rỗng giống như không khai báo trường.
-- 1đ: Nêu được không dùng StorageClass nhưng không giải thích được việc chặn Dynamic Provisioning.
-- 3đ: Phân tích đầy đủ ảnh hưởng đến Static Bind và Dynamic Provisioning.
-
-**Câu hỏi đào sâu:** (Nếu không khai báo trường `storageClassName` trong PVC thì sao? — Kubernetes sẽ tự động gán StorageClass mặc định của cụm nếu có).
-
----
-
-### Câu 12 — ★★★
-**Hỏi:** Khi ứng dụng bị lỗi `Permission denied` không thể ghi dữ liệu vào PVC đã mount, cách xử lý chuẩn trên Kubernetes là gì?
-
-**Đáp án chuẩn:** Cấu hình `securityContext.fsGroup: <gid>` trong Pod spec để Kubelet tự động thay đổi quyền sở hữu (ownership) của thư mục mount cho nhóm GID tương ứng, cho phép container non-root ghi được dữ liệu.
-
-**Tiêu chí chấm:**
-- 0đ: Bảo SSH vào Node bấm `chmod 777` (không phải cách chuẩn trên K8s).
-- 1đ: Nêu được sửa quyền nhưng không biết thuộc tính `fsGroup`.
-- 3đ: Nêu đúng `securityContext.fsGroup` và cơ chế Kubelet tự điều chỉnh permission.
-
-**Câu hỏi đào sâu:** (Lệnh `fsGroup` hoạt động với loại volume nào? — Với các volume hỗ trợ quản lý POSIX file permission).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1176,28 +1268,6 @@ PV là tài nguyên lưu trữ cấp cụm (<code>Cluster-scoped</code>) do Qu�
 2. **"Chính sách `reclaimPolicy: Retain` bảo vệ an toàn dữ liệu Production khi xóa PVC bằng cách giữ nguyên ổ đĩa và khóa PV ở trạng thái `Released` qua trường `claimRef`."**
 3. **"Thuộc tính `accessModes` như ReadWriteOnce hay ReadWriteMany trước hết là nhãn đối sánh của Kubernetes, và bắt buộc phải phản ánh đúng khả năng kỹ thuật của hệ thống lưu trữ bên dưới."**
 4. **"Cơ chế Finalizer `pvc-protection` ngăn chặn việc xóa PVC khi vẫn còn Pod đang mount, bảo vệ hệ thống khỏi hiện tượng hỏng hệ tập tin đột ngột."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Thiếu hụt kiến thức cốt lõi về PV/PVC, chưa nắm rõ cơ chế binding |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm vững lý thuyết, phân biệt tốt các thuộc tính nhưng cần rèn luyện phản xạ CLI |
-| **29 – 36 điểm** | Xuất sắc | Hiểu sâu sắc bản chất hệ thống lưu trữ, làm chủ kỹ năng chẩn đoán sự cố cho CKA/CKAD |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết bộ bản kê khai YAML tạo PV 5Gi RWO `hostPath` và PVC tương ứng, mount vào Pod Nginx test khả năng giữ dữ liệu sau khi xóa Pod.
-- **BTVN 2:** Thực hiện bài lab gỡ khóa `claimRef` của một PV ở trạng thái `Released` để bind lại vào PVC mới.
-- **BTVN 3:** So sánh và tổng hợp bảng khác biệt giữa 3 loại volume: `emptyDir`, `hostPath` và `persistentVolumeClaim`.
-- **BTVN 4 (Chuẩn bị cho Buổi 27 — StorageClass & CSI):** Trả lời ngắn gọn 3 câu hỏi:
-  1. StorageClass giải quyết bài toán cấp phát tự động (Dynamic Provisioning) PV thế nào so với tạo PV bằng tay?
-  2. Khác biệt giữa hai chế độ `volumeBindingMode: Immediate` và `WaitForFirstConsumer` trong StorageClass là gì?
-  3. Kiến trúc CSI (Container Storage Interface) gồm những thành phần plugin nào trên Control Plane và Worker Node?
 
 ---
 
@@ -1458,14 +1528,15 @@ kubectl get pv pv-analytics -o jsonpath='{.spec.persistentVolumeReclaimPolicy}'
 kubectl patch pv <pv-name> -p '{"spec":{"claimRef":null}}'
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 27] Container Storage Interface (CSI) & StorageClass: Cấp Phát Động (Dynamic Provisioning) & Mở Rộng Dung Lượng](cka-27-27-storageclass-csi-va-mo-rong.html).
+
 {% endraw %}

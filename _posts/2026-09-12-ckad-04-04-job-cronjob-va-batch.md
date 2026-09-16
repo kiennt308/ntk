@@ -470,24 +470,6 @@ Cờ <code>successfulJobsHistoryLimit</code>.
 | Kubernetes Jobs Documentation | `https://kubernetes.io/docs/concepts/workloads/controllers/job/` | Tài liệu chuẩn K8s Job Controller |
 | Kubernetes CronJobs Documentation | `https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/` | Tài liệu chuẩn K8s CronJob Controller |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Kubernetes Job Controller | 12 phút | 12 phút |
-| §5. Kubernetes CronJob Controller | 12 phút | 12 phút |
-| §6. Xử lý sự cố Batch Workloads | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -820,26 +802,11 @@ test ! -f /tmp/lab34-job.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKP
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace | 10 phút | 10 phút |
-| L4. Bước 2: Job song song Batch | 25 phút | 25 phút |
-| L5. Bước 3: Deadline & BackoffLimit | 25 phút | 25 phút |
-| L6. Bước 4: CronJob ConcurrencyPolicy | 25 phút | 25 phút |
-| L7. Bước 5: Kiểm tra dọn dẹp lịch sử | 15 phút | 15 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -847,179 +814,304 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao trường <code>restartPolicy</code> trong bản kê khai Kubernetes Job tuyệt đối không được đặt là <code>Always</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Deployment được thiết kế cho các ứng dụng chạy liên tục vĩnh viễn (Long-running Services như Web Server, API), nếu Pod dừng sẽ tự bật lại. Job và CronJob được thiết kế cho các tác vụ xử lý theo lô (Batch Workloads) có điểm dừng; khi tiến trình chạy xong và thoát với exit code 0 (<code>Completed</code>), Pod sẽ dừng lại và không bị Kubelet bật lại vĩnh viễn nữa.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì nếu đặt <code>restartPolicy: Always</code>, khi tiến trình trong Job chạy xong nhiệm vụ và thoát với exit code 0, Kubelet sẽ lại khởi động lại container vĩnh viễn theo chính sách Always. Điều này khiến Job không bao giờ có thể về trạng thái thành công (<code>Completed</code>) và làm vi phạm thiết kế của Job Controller.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được lý do cấm Always.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không cho Always nhưng không giải thích được cơ chế Kubelet restart lại container khi exit 0.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác lý do vấp lỗi validation API Server và mục đích của trạng thái Completed.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hai giá trị hợp lệ bắt buộc của <code>restartPolicy</code> trong Job là gì? — <code>Never</code> hoặc <code>OnFailure</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 nhóm Workload.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Job chạy xong dừng nhưng không rõ khái niệm exit code 0 và đặc tính Long-running của Deployment.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự khác biệt giữa Long-running Workloads (Deployment) và Batch Workloads (Job/CronJob).</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu một container trong Job bị thoát với exit code 1 thì Kubelet sẽ làm gì? — Kubelet sẽ thử lại tùy theo <code>restartPolicy</code> và giới hạn <code>backoffLimit</code>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt về cơ chế thử lại giữa <code>restartPolicy: Never</code> và <code>restartPolicy: OnFailure</code> khi Job bị lỗi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi đặt <code>restartPolicy: Never</code>, nếu Pod bị lỗi, Kubelet giữ nguyên Pod lỗi đó ở trạng thái <code>Error</code> và Job Controller sẽ tạo một Pod MỚI hoàn toàn để thử lại. Khi đặt <code>restartPolicy: OnFailure</code>, Kubelet sẽ khởi động lại container NGAY TRONG Pod cũ đó mà không tạo Pod mới.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được Never và OnFailure.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Never tạo mới nhưng không rõ OnFailure restart container trong Pod cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác sự khác biệt về số lượng Pod sinh ra và vị trí restart container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khi nào nên ưu tiên chọn <code>restartPolicy: Never</code>? — Khi cần giữ lại các Pod lỗi để kiểm tra <code>kubectl logs</code> tìm nguyên nhân sập).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ý nghĩa của hai trường <code>completions</code> và <code>parallelism</code> trong bản kê khai Kubernetes Job là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Trường <code>completions</code> định nghĩa tổng số lượng Pod phải chạy thành công (exit 0) để Job được đánh giá là thành công toàn bộ. Trường <code>parallelism</code> định nghĩa số lượng Pod tối đa được phép chạy song song đồng thời tại một thời điểm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa completions và parallelism.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 trong 2 trường.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ý nghĩa điều phối tải batch processing của cả 2 trường.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu <code>completions: 10</code> và <code>parallelism: 2</code> thì Job sẽ mất bao nhiêu đợt chạy để hoàn thành? — Mất 5 đợt chạy nối tiếp nhau, mỗi đợt 2 Pod).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trường <code>backoffLimit</code> trong Job Controller có vai trò gì và giá trị mặc định của nó là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Trường <code>backoffLimit</code> định nghĩa số lần tối đa Job Controller được phép thử lại khi Pod bị lỗi. Giá trị mặc định là 6. Nếu số lần thử lại vượt quá <code>backoffLimit</code>, Job sẽ dừng thử và chuyển sang trạng thái thất bại <code>BackoffLimitExceeded</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết backoffLimit.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được giới hạn thử lại nhưng nhầm số mặc định (không nhớ 6).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác mục đích ngăn ngừa thử lại vĩnh viễn khi bug code và số mặc định bằng 6.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thời gian chờ giữa các lần thử lại của backoffLimit tăng lên theo quy luật nào? — Tăng theo cấp số nhân: 10s, 20s, 40s, 80s...).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Trường <code>activeDeadlineSeconds</code> có tác dụng gì và điều gì xảy ra khi Job vượt quá mốc thời gian này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Trường <code>activeDeadlineSeconds</code> thiết lập hạn ngạch thời gian sống tối đa cho phép của Job. Nếu Job chạy vượt quá số giây này, Kubernetes sẽ chủ động tiêu diệt toàn bộ các Pod thuộc Job và chuyển Job sang trạng thái thất bại <code>DeadlineExceeded</code> bất kể đã đạt <code>completions</code> hay chưa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết activeDeadlineSeconds.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được giới hạn thời gian nhưng chưa giải thích việc tiêu diệt toàn bộ Pod thuộc Job.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày thấu đáo mục đích phòng chống Job bị deadlock treo vô hạn trên cụm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu <code>activeDeadlineSeconds</code> và <code>backoffLimit</code> cùng xảy ra thì cờ nào sẽ ưu tiên làm Job dừng trước? — Cờ nào chạm ngưỡng trước sẽ làm Job dừng trước).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp biểu thức Cron 5 sao trong CronJob quy định 5 mốc thời gian theo thứ tự nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5 mốc thời gian theo thứ tự từ trái sang phải gồm: Phút (0-59), Giờ (0-23), Ngày trong tháng (1-31), Tháng (1-12), và Ngày trong tuần (0-6 với 0 là Chủ Nhật).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ 5 mốc thời gian.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nhầm thứ tự mốc Phút và Giờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Nêu chuẩn xác tuyệt đối 5 mốc thời gian theo dải giá trị chuẩn POSIX Cron.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Biểu thức <code>"*/15 * * * *"</code> có ý nghĩa là gì? — Kích hoạt tác vụ mỗi 15 phút một lần).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Ba chính sách hợp lệ của trường <code>concurrencyPolicy</code> trong CronJob là gì và khác nhau thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ba chính sách gồm: <code>Allow</code> (mặc định - cho phép các tác vụ cũ và mới chạy chồng lên nhau), <code>Forbid</code> (bỏ qua lần kích hoạt mới nếu tác vụ cũ chưa xong), và <code>Replace</code> (tiêu diệt tác vụ cũ đang chạy dở và bật ngay tác vụ mới vừa tới lịch).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ tên 3 chính sách.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tên nhưng nhầm lẫn ý nghĩa của Forbid và Replace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo hành vi của CronJob Controller với cả 3 chính sách.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trong hệ thống xử lý tài chính Production thì nên chọn chính sách nào? — Nên chọn <code>concurrencyPolicy: Forbid</code> để tránh dữ liệu bị ghi đè).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Trường <code>successfulJobsHistoryLimit</code> trong CronJob đóng vai trò gì trong việc dọn dẹp cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Trường <code>successfulJobsHistoryLimit</code> (mặc định bằng 3) giới hạn số lượng Pod Job đã chạy thành công được phép giữ lại trong namespace. Giúp tự động dọn dẹp các Pod rác cũ, tránh việc làm phồng etcd và gây chậm lệnh <code>kubectl get pods</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ history limit.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dọn dẹp Pod nhưng nhầm con số mặc định bằng 3.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác lợi ích bảo vệ bộ nhớ etcd và hiệu năng quản lý cụm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn xóa sạch ngay Pod thành công sau khi chạy xong thì đặt cờ này bằng bao nhiêu? — Đặt <code>successfulJobsHistoryLimit: 0</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Trường <code>startingDeadlineSeconds</code> trong CronJob giải quyết vấn đề gì khi cụm Kubelet bị quá tải?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nếu Kubelet quá tải hoặc bị rớt mạng khiến CronJob không thể kích hoạt đúng mốc thời gian lịch. Trường <code>startingDeadlineSeconds</code> định nghĩa khoảng thời gian trễ cho phép; nếu quá mốc thời gian trễ này mà Job vẫn chưa kích hoạt được thì Kubelet sẽ bỏ qua đợt chạy đó và đợi đợt tiếp theo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ startingDeadlineSeconds.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kích hoạt trễ nhưng không rõ cơ chế bỏ qua đợt chạy khi quá hạn ngạch trễ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cơ chế bảo vệ cụm khỏi việc dồn đống các Job lỡ nhịp khi Kubelet phục hồi.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu bỏ trống cờ này mà CronJob lỡ nhịp hơn 100 lần thì chuyện gì xảy ra? — CronJob Controller sẽ ngừng kích hoạt CronJob đó và báo lỗi trong event).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp CLI gõ nhanh để tạo một Job và một CronJob từ terminal trong bài thi CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tạo Job: <code>kubectl create job <name> --image=<image></code>. Tạo CronJob: <code>kubectl create cronjob <name> --image=<image> --schedule="<cron-expr>" -- <command></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ câu lệnh CLI create job/cronjob.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được create job nhưng quên cú pháp truyền schedule cho cronjob.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cả 2 câu lệnh CLI kèm các cờ bắt buộc.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có thể dùng cờ <code>--dry-run=client -o yaml</code> với lệnh <code>kubectl create cronjob</code> được không? — Có, dùng để xuất khung tệp YAML mẫu trong 3 giây).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Cảm nhận và kinh nghiệm thực chiến của bạn khi áp dụng Job và CronJob vào các dự án Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kinh nghiệm lớn nhất là luôn khai báo <code>concurrencyPolicy: Forbid</code> cho mọi CronJob định kỳ, đặt <code>activeDeadlineSeconds</code> để chống treo Job, và giới hạn <code>successfulJobsHistoryLimit: 3</code> để giữ cho namespace luôn sạch sẽ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời chung chung.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng Job cho backup database.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 3 cờ quy tắc an toàn Production cho Batch Workloads.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 35 là gì? — Học về Deployment Strategies: RollingUpdate so với Recreate và cách rollback phiên bản).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Tại sao trường `restartPolicy` trong bản kê khai Kubernetes Job tuyệt đối không được đặt là `Always`?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Vì nếu đặt `restartPolicy: Always`, khi tiến trình trong Job chạy xong nhiệm vụ và thoát với exit code 0, Kubelet sẽ lại khởi động lại container vĩnh viễn theo chính sách Always. Điều này khiến Job không bao giờ có thể về trạng thái thành công (`Completed`) và làm vi phạm thiết kế của Job Controller.
+1. <b style="color: var(--accent-primary);">"Bộ đôi Job và CronJob là giải pháp chuẩn Cloud Native cho các tác vụ xử lý theo lô (Batch Workloads) có điểm kết thúc rõ ràng."</b>
+2. <b style="color: var(--accent-primary);">"Luôn ghi nhớ quy tắc vàng: Trường <code>restartPolicy</code> trong Job bắt buộc phải là <code>Never</code> hoặc <code>OnFailure</code>, tuyệt đối không để <code>Always</code>."</b>
+3. <b style="color: var(--accent-primary);">"Áp dụng cờ <code>concurrencyPolicy: Forbid</code> cho CronJob Production là lá chắn an toàn nhất để ngăn ngừa việc các tác vụ đụng độ và ghi đè dữ liệu lẫn nhau."</b>
+4. <b style="color: var(--accent-primary);">"Quản lý tài nguyên Batch hiệu quả thông qua bộ cờ <code>completions</code>, <code>parallelism</code>, <code>activeDeadlineSeconds</code> và <code>successfulJobsHistoryLimit</code> giúp cụm luôn hoạt động tối ưu."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được lý do cấm Always.
-- 1đ: Nêu được không cho Always nhưng không giải thích được cơ chế Kubelet restart lại container khi exit 0.
-- 3đ: Phân tích chính xác lý do vấp lỗi validation API Server và mục đích của trạng thái Completed.
-
-**Câu hỏi đào sâu:** (Hai giá trị hợp lệ bắt buộc của `restartPolicy` trong Job là gì? — `Never` hoặc `OnFailure`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Sự khác biệt về cơ chế thử lại giữa `restartPolicy: Never` và `restartPolicy: OnFailure` khi Job bị lỗi là gì?
-
-**Đáp án chuẩn:** Khi đặt `restartPolicy: Never`, nếu Pod bị lỗi, Kubelet giữ nguyên Pod lỗi đó ở trạng thái `Error` và Job Controller sẽ tạo một Pod MỚI hoàn toàn để thử lại. Khi đặt `restartPolicy: OnFailure`, Kubelet sẽ khởi động lại container NGAY TRONG Pod cũ đó mà không tạo Pod mới.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được Never và OnFailure.
-- 1đ: Nêu được Never tạo mới nhưng không rõ OnFailure restart container trong Pod cũ.
-- 3đ: Trình bày chính xác sự khác biệt về số lượng Pod sinh ra và vị trí restart container.
-
-**Câu hỏi đào sâu:** (Khi nào nên ưu tiên chọn `restartPolicy: Never`? — Khi cần giữ lại các Pod lỗi để kiểm tra `kubectl logs` tìm nguyên nhân sập).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Ý nghĩa của hai trường `completions` và `parallelism` trong bản kê khai Kubernetes Job là gì?
-
-**Đáp án chuẩn:** Trường `completions` định nghĩa tổng số lượng Pod phải chạy thành công (exit 0) để Job được đánh giá là thành công toàn bộ. Trường `parallelism` định nghĩa số lượng Pod tối đa được phép chạy song song đồng thời tại một thời điểm.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa completions và parallelism.
-- 1đ: Nêu được 1 trong 2 trường.
-- 3đ: Phân tích chuẩn xác ý nghĩa điều phối tải batch processing của cả 2 trường.
-
-**Câu hỏi đào sâu:** (Nếu `completions: 10` và `parallelism: 2` thì Job sẽ mất bao nhiêu đợt chạy để hoàn thành? — Mất 5 đợt chạy nối tiếp nhau, mỗi đợt 2 Pod).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Trường `backoffLimit` trong Job Controller có vai trò gì và giá trị mặc định của nó là bao nhiêu?
-
-**Đáp án chuẩn:** Trường `backoffLimit` định nghĩa số lần tối đa Job Controller được phép thử lại khi Pod bị lỗi. Giá trị mặc định là 6. Nếu số lần thử lại vượt quá `backoffLimit`, Job sẽ dừng thử và chuyển sang trạng thái thất bại `BackoffLimitExceeded`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết backoffLimit.
-- 1đ: Nêu được giới hạn thử lại nhưng nhầm số mặc định (không nhớ 6).
-- 3đ: Trình bày chính xác mục đích ngăn ngừa thử lại vĩnh viễn khi bug code và số mặc định bằng 6.
-
-**Câu hỏi đào sâu:** (Thời gian chờ giữa các lần thử lại của backoffLimit tăng lên theo quy luật nào? — Tăng theo cấp số nhân: 10s, 20s, 40s, 80s...).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Trường `activeDeadlineSeconds` có tác dụng gì và điều gì xảy ra khi Job vượt quá mốc thời gian này?
-
-**Đáp án chuẩn:** Trường `activeDeadlineSeconds` thiết lập hạn ngạch thời gian sống tối đa cho phép của Job. Nếu Job chạy vượt quá số giây này, Kubernetes sẽ chủ động tiêu diệt toàn bộ các Pod thuộc Job và chuyển Job sang trạng thái thất bại `DeadlineExceeded` bất kể đã đạt `completions` hay chưa.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết activeDeadlineSeconds.
-- 1đ: Nêu được giới hạn thời gian nhưng chưa giải thích việc tiêu diệt toàn bộ Pod thuộc Job.
-- 3đ: Trình bày thấu đáo mục đích phòng chống Job bị deadlock treo vô hạn trên cụm.
-
-**Câu hỏi đào sâu:** (Nếu `activeDeadlineSeconds` và `backoffLimit` cùng xảy ra thì cờ nào sẽ ưu tiên làm Job dừng trước? — Cờ nào chạm ngưỡng trước sẽ làm Job dừng trước).
-
----
-
-### Câu 7 — 🔥
-**Hỏi:** Cú pháp biểu thức Cron 5 sao trong CronJob quy định 5 mốc thời gian theo thứ tự nào?
-
-**Đáp án chuẩn:** 5 mốc thời gian theo thứ tự từ trái sang phải gồm: Phút (0-59), Giờ (0-23), Ngày trong tháng (1-31), Tháng (1-12), và Ngày trong tuần (0-6 với 0 là Chủ Nhật).
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ 5 mốc thời gian.
-- 1đ: Nhầm thứ tự mốc Phút và Giờ.
-- 3đ: Nêu chuẩn xác tuyệt đối 5 mốc thời gian theo dải giá trị chuẩn POSIX Cron.
-
-**Câu hỏi đào sâu:** (Biểu thức `"*/15 * * * *"` có ý nghĩa là gì? — Kích hoạt tác vụ mỗi 15 phút một lần).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Ba chính sách hợp lệ của trường `concurrencyPolicy` trong CronJob là gì và khác nhau thế nào?
-
-**Đáp án chuẩn:** Ba chính sách gồm: `Allow` (mặc định - cho phép các tác vụ cũ và mới chạy chồng lên nhau), `Forbid` (bỏ qua lần kích hoạt mới nếu tác vụ cũ chưa xong), và `Replace` (tiêu diệt tác vụ cũ đang chạy dở và bật ngay tác vụ mới vừa tới lịch).
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ tên 3 chính sách.
-- 1đ: Nêu được tên nhưng nhầm lẫn ý nghĩa của Forbid và Replace.
-- 3đ: Phân tích thấu đáo hành vi của CronJob Controller với cả 3 chính sách.
-
-**Câu hỏi đào sâu:** (Trong hệ thống xử lý tài chính Production thì nên chọn chính sách nào? — Nên chọn `concurrencyPolicy: Forbid` để tránh dữ liệu bị ghi đè).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Trường `successfulJobsHistoryLimit` trong CronJob đóng vai trò gì trong việc dọn dẹp cụm?
-
-**Đáp án chuẩn:** Trường `successfulJobsHistoryLimit` (mặc định bằng 3) giới hạn số lượng Pod Job đã chạy thành công được phép giữ lại trong namespace. Giúp tự động dọn dẹp các Pod rác cũ, tránh việc làm phồng etcd và gây chậm lệnh `kubectl get pods`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ history limit.
-- 1đ: Nêu được dọn dẹp Pod nhưng nhầm con số mặc định bằng 3.
-- 3đ: Phân tích chính xác lợi ích bảo vệ bộ nhớ etcd và hiệu năng quản lý cụm.
-
-**Câu hỏi đào sâu:** (Nếu muốn xóa sạch ngay Pod thành công sau khi chạy xong thì đặt cờ này bằng bao nhiêu? — Đặt `successfulJobsHistoryLimit: 0`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Trường `startingDeadlineSeconds` trong CronJob giải quyết vấn đề gì khi cụm Kubelet bị quá tải?
-
-**Đáp án chuẩn:** Nếu Kubelet quá tải hoặc bị rớt mạng khiến CronJob không thể kích hoạt đúng mốc thời gian lịch. Trường `startingDeadlineSeconds` định nghĩa khoảng thời gian trễ cho phép; nếu quá mốc thời gian trễ này mà Job vẫn chưa kích hoạt được thì Kubelet sẽ bỏ qua đợt chạy đó và đợi đợt tiếp theo.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ startingDeadlineSeconds.
-- 1đ: Nêu được kích hoạt trễ nhưng không rõ cơ chế bỏ qua đợt chạy khi quá hạn ngạch trễ.
-- 3đ: Trình bày chính xác cơ chế bảo vệ cụm khỏi việc dồn đống các Job lỡ nhịp khi Kubelet phục hồi.
-
-**Câu hỏi đào sâu:** (Nếu bỏ trống cờ này mà CronJob lỡ nhịp hơn 100 lần thì chuyện gì xảy ra? — CronJob Controller sẽ ngừng kích hoạt CronJob đó và báo lỗi trong event).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp CLI gõ nhanh để tạo một Job và một CronJob từ terminal trong bài thi CKAD là gì?
-
-**Đáp án chuẩn:** Tạo Job: `kubectl create job <name> --image=<image>`. Tạo CronJob: `kubectl create cronjob <name> --image=<image> --schedule="<cron-expr>" -- <command>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ câu lệnh CLI create job/cronjob.
-- 1đ: Nêu được create job nhưng quên cú pháp truyền schedule cho cronjob.
-- 3đ: Trình bày chuẩn xác cả 2 câu lệnh CLI kèm các cờ bắt buộc.
-
-**Câu hỏi đào sâu:** (Có thể dùng cờ `--dry-run=client -o yaml` với lệnh `kubectl create cronjob` được không? — Có, dùng để xuất khung tệp YAML mẫu trong 3 giây).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Cảm nhận và kinh nghiệm thực chiến của bạn khi áp dụng Job và CronJob vào các dự án Production?
-
-**Đáp án chuẩn:** Kinh nghiệm lớn nhất là luôn khai báo `concurrencyPolicy: Forbid` cho mọi CronJob định kỳ, đặt `activeDeadlineSeconds` để chống treo Job, và giới hạn `successfulJobsHistoryLimit: 3` để giữ cho namespace luôn sạch sẽ.
-
-**Tiêu chí chấm:**
-- 0đ: Trả lời chung chung.
-- 1đ: Nêu được dùng Job cho backup database.
-- 3đ: Trình bày tự tin, mạch lạc bộ 3 cờ quy tắc an toàn Production cho Batch Workloads.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 35 là gì? — Học về Deployment Strategies: RollingUpdate so với Recreate và cách rollback phiên bản).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1029,28 +1121,6 @@ Deployment được thiết kế cho các ứng dụng chạy liên tục vĩnh 
 2. **"Luôn ghi nhớ quy tắc vàng: Trường `restartPolicy` trong Job bắt buộc phải là `Never` hoặc `OnFailure`, tuyệt đối không để `Always`."**
 3. **"Áp dụng cờ `concurrencyPolicy: Forbid` cho CronJob Production là lá chắn an toàn nhất để ngăn ngừa việc các tác vụ đụng độ và ghi đè dữ liệu lẫn nhau."**
 4. **"Quản lý tài nguyên Batch hiệu quả thông qua bộ cờ `completions`, `parallelism`, `activeDeadlineSeconds` và `successfulJobsHistoryLimit` giúp cụm luôn hoạt động tối ưu."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc cơ chế điều phối Job và CronJob CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến thức Batch Workloads chuẩn Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết bản kê khai Job YAML xử lý nén file log với `completions: 6`, `parallelism: 3`, `backoffLimit: 2`.
-- **BTVN 2:** Thực hành biên soạn CronJob backup dữ liệu chạy lúc 1 giờ sáng với `concurrencyPolicy: Forbid` và `successfulJobsHistoryLimit: 2`.
-- **BTVN 3:** So sánh sự khác nhau về hành vi của Pod khi Job dính lỗi với `restartPolicy: Never` so với `restartPolicy: OnFailure`.
-- **BTVN 4 (Chuẩn bị cho Buổi 35 — Triển khai và chiến lược cập nhật ứng dụng):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Sự khác nhau giữa hai chiến lược triển khai `RollingUpdate` và `Recreate` trong Kubernetes Deployment là gì?
-  2. Ý nghĩa của cờ `maxSurge` và `maxUnavailable` trong chiến lược `RollingUpdate`?
-  3. Làm thế nào để thực hiện rollback quay lui lại phiên bản Deployment cũ bằng lệnh `kubectl rollout undo`?
 
 ---
 
@@ -1297,14 +1367,15 @@ kubectl get job <name> -n <ns> -o jsonpath='{.spec.completions}'
 kubectl get cronjob <name> -n <ns> -o jsonpath='{.spec.concurrencyPolicy}'
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 05] Chiến Lược Triển Khai Ứng Dụng: RollingUpdate, Recreate, Blue-Green Deployment & Canary Releases](ckad-05-05-trien-khai-va-chien-luoc-cap-nhat.html).
+
 {% endraw %}

@@ -179,9 +179,11 @@ trivy_dependency_scan:
 <span class="badge badge--rose">🕒 09:20 AM</span> Một ngân hàng tích hợp công cụ SAST quét toàn bộ 50 microservices với bộ quy tắc mặc định cực kỳ nghiêm ngặt. Hàng ngày có hơn 400 cảnh báo bảo mật được sinh ra, nhưng hơn 90% là cảnh báo giả (ví dụ: cảnh báo SQL injection trong các tệp test mock hoặc chuỗi regex cố định). Lập trình viên bị quá tải, bắt đầu nhấn nút "Bỏ qua" (Dismiss) hàng loạt, dẫn đến việc lọt một lỗ hổng RCE thực sự lên môi trường Production.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Hệ thống ngập trong cảnh báo giả khiến đội ngũ kỹ sư mất khả năng nhận biết rủi ro thực tế, lọt lỗ hổng nghiêm trọng vào nhánh production:
 
 ```text
+
+Hệ thống ngập trong cảnh báo giả khiến đội ngũ kỹ sư mất khả năng nhận biết rủi ro thực tế, lọt lỗ hổng nghiêm trọng vào nhánh production:
+
 [semgrep-sast] › ⚠  WARNING: 428 findings identified across 50 repositories.
 [semgrep-sast] › ℹ  Rule 'detect-sql-concat' triggered in /tests/mocks/user_mock.go:142
 [semgrep-sast] › ℹ  Rule 'hardcoded-credentials' triggered in /docs/samples/auth_example.py:18

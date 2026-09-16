@@ -526,24 +526,6 @@ Khai báo cụ thể <code>storageClassName: ""</code> (xâu rỗng) trong spec 
 | Trang chủ StorageClasses | `https://kubernetes.io/docs/concepts/storage/storage-classes/` | Phiên bản Kubernetes v1.35 |
 | Kubernetes CSI Specification | `https://kubernetes-csi.github.io/docs/` | Chuẩn giao diện Container Storage Interface |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. StorageClass & Dynamic Provisioning | 12 phút | 12 phút |
-| §5. Kiến trúc CSI & Sidecar | 12 phút | 12 phút |
-| §6. volumeBindingMode & Volume Expansion | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -910,25 +892,11 @@ Thu thập các tệp YAML StorageClass và ảnh chụp kết quả kiểm tra 
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi bài tập BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Cài Provisioner & SC Default | 30 phút | 30 phút |
-| L4. Bước 2: WaitForFirstConsumer | 30 phút | 30 phút |
-| L5. Bước 3: Online Volume Expansion | 30 phút | 30 phút |
-| L6. Bước 4: Chẩn đoán & Dọn dẹp | 20 phút | 20 phút |
-| L7 & L8. Nộp hiện vật & Sự cố | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -936,186 +904,310 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ý nghĩa và sự khác biệt giữa hai chế độ <code>volumeBindingMode: Immediate</code> và <code>WaitForFirstConsumer</code> trong StorageClass là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Static Provisioning đòi hỏi Quản trị viên phải tạo thủ công từng PV đĩa trước khi Lập trình viên xin PVC. Dynamic Provisioning tự động khởi tạo PV và đĩa vật lý ở hạ tầng bên dưới thông qua <code>StorageClass</code> ngay khi có PVC xuất hiện.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>Immediate</code> tự động tạo PV và bind với PVC ngay khi PVC được khởi tạo (không quan tâm Pod). <code>WaitForFirstConsumer</code> hoãn việc tạo PV cho tới khi có Pod mount PVC đó và được Scheduler chọn xong Node, giúp tránh lỗi đĩa bị tạo ở sai Zone/Node so với vị trí xếp lịch của Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời sai hoặc không hiểu từ tiếng Anh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Immediate làm ngay, WaitForFirstConsumer chờ Pod nhưng không giải thích được lý do.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được lý do hoãn bind nhưng không đề cập tới vấn đề Topology / Zone / Local Storage.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Giải thích chính xác cơ chế của 2 chế độ và bài toán rủi ro lệch Topology mà <code>WaitForFirstConsumer</code> giải quyết.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khi dùng <code>WaitForFirstConsumer</code>, trước khi có Pod thì PVC ở trạng thái gì? — Ở trạng thái <code>Pending</code> có chủ đích).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 cơ chế.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được một bên bằng tay, một bên tự động nhưng thiếu tên StorageClass.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng tên StorageClass nhưng chưa giải thích được việc tự động gọi Provisioner tạo đĩa thật.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích mạch lạc bản chất, vai trò của StorageClass và tự động hóa hạ tầng.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu PVC xin 10Gi qua Dynamic Provisioning thì dung lượng của PV sinh ra là bao nhiêu? — Thường đúng bằng 10Gi hoặc lớn hơn tùy bước nhảy dung lượng tối thiểu của nhà cung cấp đĩa).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Làm thế nào để cấu hình một StorageClass làm mặc định (Default StorageClass) cho toàn bộ cụm Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Gán annotation <code>storageclass.kubernetes.io/is-default-class: "true"</code> vào đối tượng StorageClass đó bằng lệnh <code>kubectl annotate storageclass <sc-name> storageclass.kubernetes.io/is-default-class="true"</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ tên annotation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gán nhãn label thay vì annotation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng cờ annotation nhưng không nhớ lệnh kubectl chính xác.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác tên annotation và câu lệnh CLI hoàn chỉnh.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cụm có 2 StorageClass cùng mang cờ default thì chuyện gì xảy ra? — PVC không chỉ định storageClassName sẽ bị lỗi không biết chọn cái nào hoặc chọn ngẫu nhiên, cần gỡ cờ 1 bên).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Kiến trúc CSI (Container Storage Interface) gồm những thành phần plugin chính nào và chúng chạy ở đâu trong cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Gồm 2 thành phần chính: <b style="color: var(--accent-primary);">CSI Controller Plugin</b> chạy dưới dạng Deployment ở Control Plane (lắng nghe K8s API để tạo/xóa đĩa ở hạ tầng cloud) và <b style="color: var(--accent-primary);">CSI Node Plugin</b> chạy dưới dạng DaemonSet trên mọi Worker Node (thực hiện mount/format đĩa ở tầng OS).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được tên các thành phần CSI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được CSI Controller và Node Plugin nhưng không chỉ ra loại workload (Deployment vs DaemonSet).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng loại workload nhưng chưa giải thích rõ chức năng từng bên.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích đầy đủ vị trí triển khai, loại workload và chức năng của từng thành phần CSI.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Các sidecar container như csi-provisioner hay csi-attacher làm nhiệm vụ gì? — Chúng lắng nghe sự kiện K8s API và dịch thành các cuộc gọi gRPC tiêu chuẩn tới CSI driver).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Điều kiện gì ở tầng StorageClass và PVC để có thể mở rộng dung lượng ổ đĩa trực tuyến (Online Volume Expansion)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">StorageClass phải khai báo thuộc tính <code>allowVolumeExpansion: true</code>. Sau đó, ta chỉ cần chỉnh sửa trường <code>spec.resources.requests.storage</code> của PVC lên dung lượng lớn hơn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ allowVolumeExpansion.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ allowVolumeExpansion nhưng không biết cách sửa PVC.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng cờ và cách sửa PVC nhưng không nhấn mạnh là chỉ được TĂNG dung lượng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày đầy đủ cờ SC, cách patch PVC và nguyên tắc bất biến chỉ được tăng không được giảm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cố tình sửa giảm dung lượng PVC thì K8s phản hồi thế nào? — Báo lỗi immutable field, API từ chối cập nhật).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Hai chặng kỹ thuật của quá trình mở rộng dung lượng PVC (Volume Expansion) diễn ra như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chặng 1 là <b style="color: var(--accent-primary);">Mở rộng đĩa vật lý</b> (CSI Controller gọi Storage Provider nới rộng khối đĩa). Chặng 2 là <b style="color: var(--accent-primary);">Mở rộng hệ tập tin</b> (Kubelet chạy <code>resize2fs</code> hoặc <code>xfs_growfs</code> trên Node để nới rộng partition bên trong OS).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng sửa PVC là đĩa tự to ra ngay lập tức.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được có 2 chặng nhưng không phân biệt được đĩa vật lý vs hệ tập tin.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Phân biệt được 2 chặng nhưng không nêu được vai trò của Kubelet ở chặng 2.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chi tiết luồng xử lý từ CSI Controller chặng 1 đến Kubelet chặng 2.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu chặng 1 xong mà chặng 2 chưa xong thì trạng thái PVC xuất hiện condition gì? — Condition <code>FileSystemResizePending</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao CSI Node Plugin lại bắt buộc phải cấu hình <code>securityContext.privileged: true</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì CSI Node Plugin chạy trong container nhưng phải thực thi các câu lệnh Linux trực tiếp thao tác trên các thiết bị khối (Block Devices) thuộc thư mục <code>/dev</code> của Node mẹ để thực hiện <code>mount</code> và <code>format</code> đĩa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được lý do privileged.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được để có quyền root nhưng chưa gắn với thao tác mount đĩa Node mẹ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác quyền truy cập thiết bị khối <code>/dev</code> và lệnh mount ở tầng OS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu không bật privileged thì Pod ứng dụng có mount được đĩa không? — Không, CSI Node Plugin sẽ crash hoặc báo lỗi permission denied khi nhận lệnh mount).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trường <code>parameters</code> trong định nghĩa StorageClass dùng để làm gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chứa các tham số cấu hình riêng biệt do nhà cung cấp lưu trữ (Provisioner) quy định, ví dụ: loại đĩa (<code>type: gp3</code>), số IOPS (<code>iops: "3000"</code>), hay mã hóa đĩa (<code>encrypted: "true"</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được mục đích trường parameters.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được là cấu hình đĩa nhưng không đưa được ví dụ cụ thể.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Giải thích đúng ý nghĩa tuỳ biến theo từng provider và nêu các ví dụ thông số đĩa thực tế.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Kubernetes Core có kiểm tra cú pháp bên trong trường parameters không? — Không, Kubernetes chỉ chuyển tiếp toàn bộ dictionary này cho CSI driver xử lý).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Làm thế nào để ép một PVC không dùng StorageClass mặc định mà buộc phải bind vào một PV được tạo thủ công (Static PV)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khai báo trường <code>storageClassName: ""</code> (xâu rỗng) trong tệp YAML định nghĩa PVC. Điều này vô hiệu hóa hoàn toàn cơ chế gán StorageClass mặc định và ngăn chặn Dynamic Provisioning.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng chỉ cần bỏ trống trường <code>storageClassName</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được điền xâu rỗng <code>""</code> nhưng không giải thích được sự khác biệt với việc bỏ quên không khai báo.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích rõ ràng sự khác biệt giữa bỏ quên (dẫn tới nhận SC default) và điền xâu rỗng (tắt SC default).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu PV tĩnh có <code>storageClassName: manual</code> thì PVC cần khai báo thế nào? — Khai báo <code>storageClassName: manual</code> cho khớp tên).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao không nên dùng <code>volumeBindingMode: Immediate</code> cho các loại ổ đĩa gắn cục bộ (Local Storage)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì <code>Immediate</code> sẽ ép tạo PV ngay lập tức trên một Node ngẫu nhiên khi PVC xuất hiện. Nếu sau đó Pod được Scheduler xếp chạy sang Node khác do thiếu CPU/RAM, Pod sẽ bị kẹt vĩnh viễn vì không thể mount đĩa từ xa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được nguy cơ kẹt Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Pod không chạy được nhưng không giải thích được cơ chế Scheduler.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích sâu sắc sự lệch pha giữa quyết định tạo đĩa của SC và quyết định xếp lịch Pod của Scheduler.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lỗi hiển thị khi xảy ra sự cố này là gì? — Lỗi <code>node(s) had volume node affinity conflict</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Sự khác nhau giữa <code>reclaimPolicy</code> được khai báo trong StorageClass và <code>reclaimPolicy</code> nằm trong PV là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>reclaimPolicy</code> trong StorageClass là cấu hình mẫu để áp dụng tự động cho các PV <b style="color: var(--accent-primary);">được sinh ra từ SC đó</b>. <code>reclaimPolicy</code> trong PV là thuộc tính thực tế điều khiển hành vi của ổ đĩa cụ thể đó khi PVC bị xóa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm tưởng hai cái là một.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được SC là mẫu, PV là thật nhưng chưa rõ thời điểm áp dụng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích mạch lạc cơ chế kế thừa thuộc tính từ StorageClass sang PV tự động sinh ra.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sau khi PV được sinh ra từ SC, ta có thể patch đổi reclaimPolicy của riêng PV đó không? — Hoàn toàn được).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Cách nhanh nhất để chẩn đoán nguyên nhân khi một PVC dùng StorageClass bị kẹt ở trạng thái <code>Pending</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bước 1: <code>kubectl describe pvc <pvc-name></code> xem mục Events. Bước 2: Kiểm tra trạng thái StorageClass và Provisioner pod. Bước 3: Xem log của CSI Provisioner sidecar pod bằng lệnh <code>kubectl logs -n <csi-namespace> -l app=<provisioner-label></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Chỉ biết trả lời chung chung xem log.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lệnh <code>kubectl describe pvc</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được describe pvc và xem log pod ứng dụng (sai pod log).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Nêu chuẩn xác luồng 3 bước chẩn đoán từ PVC Events tới log của CSI Provisioner container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu describe pvc báo <code>storageclass.storage.k8s.io "fast" not found</code> thì sửa thế nào? — Tạo StorageClass tên <code>fast</code> hoặc sửa tên storageClassName trong PVC).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Ý nghĩa và sự khác biệt giữa hai chế độ `volumeBindingMode: Immediate` và `WaitForFirstConsumer` trong StorageClass là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `Immediate` tự động tạo PV và bind với PVC ngay khi PVC được khởi tạo (không quan tâm Pod). `WaitForFirstConsumer` hoãn việc tạo PV cho tới khi có Pod mount PVC đó và được Scheduler chọn xong Node, giúp tránh lỗi đĩa bị tạo ở sai Zone/Node so với vị trí xếp lịch của Pod.
+1. <b style="color: var(--accent-primary);">"Dynamic Provisioning thông qua StorageClass giúp tự động hóa 100 % vòng đời ổ đĩa vật lý, giải phóng quản trị viên khỏi các thao tác thủ công cấp đĩa."</b>
+2. <b style="color: var(--accent-primary);">"Kiến trúc chuẩn CSI tách biệt hoàn toàn Storage Driver khỏi nhân Kubernetes, cho phép tích hợp linh hoạt mọi giải pháp lưu trữ qua giao diện gRPC tiêu chuẩn."</b>
+3. <b style="color: var(--accent-primary);">"Chế độ <code>volumeBindingMode: WaitForFirstConsumer</code> là bắt buộc đối với đĩa cục bộ hoặc đĩa Cloud theo vùng để đảm bảo đĩa được tạo đúng ở Node mà Pod được xếp lịch."</b>
+4. <b style="color: var(--accent-primary);">"Mở rộng dung lượng đĩa PVC trực tuyến đòi hỏi cờ <code>allowVolumeExpansion: true</code> và gồm 2 chặng: nới rộng đĩa ở hạ tầng cloud và nới rộng hệ tập tin ở Kubelet."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Trả lời sai hoặc không hiểu từ tiếng Anh.
-- 1đ: Nêu được Immediate làm ngay, WaitForFirstConsumer chờ Pod nhưng không giải thích được lý do.
-- 2đ: Nêu được lý do hoãn bind nhưng không đề cập tới vấn đề Topology / Zone / Local Storage.
-- 3đ: Giải thích chính xác cơ chế của 2 chế độ và bài toán rủi ro lệch Topology mà `WaitForFirstConsumer` giải quyết.
-
-**Câu hỏi đào sâu:** (Khi dùng `WaitForFirstConsumer`, trước khi có Pod thì PVC ở trạng thái gì? — Ở trạng thái `Pending` có chủ đích).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Làm thế nào để cấu hình một StorageClass làm mặc định (Default StorageClass) cho toàn bộ cụm Kubernetes?
-
-**Đáp án chuẩn:** Gán annotation `storageclass.kubernetes.io/is-default-class: "true"` vào đối tượng StorageClass đó bằng lệnh `kubectl annotate storageclass <sc-name> storageclass.kubernetes.io/is-default-class="true"`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ tên annotation.
-- 1đ: Nêu được gán nhãn label thay vì annotation.
-- 2đ: Nêu đúng cờ annotation nhưng không nhớ lệnh kubectl chính xác.
-- 3đ: Trình bày chính xác tên annotation và câu lệnh CLI hoàn chỉnh.
-
-**Câu hỏi đào sâu:** (Nếu cụm có 2 StorageClass cùng mang cờ default thì chuyện gì xảy ra? — PVC không chỉ định storageClassName sẽ bị lỗi không biết chọn cái nào hoặc chọn ngẫu nhiên, cần gỡ cờ 1 bên).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Kiến trúc CSI (Container Storage Interface) gồm những thành phần plugin chính nào và chúng chạy ở đâu trong cụm?
-
-**Đáp án chuẩn:** Gồm 2 thành phần chính: **CSI Controller Plugin** chạy dưới dạng Deployment ở Control Plane (lắng nghe K8s API để tạo/xóa đĩa ở hạ tầng cloud) và **CSI Node Plugin** chạy dưới dạng DaemonSet trên mọi Worker Node (thực hiện mount/format đĩa ở tầng OS).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được tên các thành phần CSI.
-- 1đ: Nêu được CSI Controller và Node Plugin nhưng không chỉ ra loại workload (Deployment vs DaemonSet).
-- 2đ: Nêu đúng loại workload nhưng chưa giải thích rõ chức năng từng bên.
-- 3đ: Phân tích đầy đủ vị trí triển khai, loại workload và chức năng của từng thành phần CSI.
-
-**Câu hỏi đào sâu:** (Các sidecar container như csi-provisioner hay csi-attacher làm nhiệm vụ gì? — Chúng lắng nghe sự kiện K8s API và dịch thành các cuộc gọi gRPC tiêu chuẩn tới CSI driver).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Điều kiện gì ở tầng StorageClass và PVC để có thể mở rộng dung lượng ổ đĩa trực tuyến (Online Volume Expansion)?
-
-**Đáp án chuẩn:** StorageClass phải khai báo thuộc tính `allowVolumeExpansion: true`. Sau đó, ta chỉ cần chỉnh sửa trường `spec.resources.requests.storage` của PVC lên dung lượng lớn hơn.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ allowVolumeExpansion.
-- 1đ: Nêu được cờ allowVolumeExpansion nhưng không biết cách sửa PVC.
-- 2đ: Nêu đúng cờ và cách sửa PVC nhưng không nhấn mạnh là chỉ được TĂNG dung lượng.
-- 3đ: Trình bày đầy đủ cờ SC, cách patch PVC và nguyên tắc bất biến chỉ được tăng không được giảm.
-
-**Câu hỏi đào sâu:** (Nếu cố tình sửa giảm dung lượng PVC thì K8s phản hồi thế nào? — Báo lỗi immutable field, API từ chối cập nhật).
-
----
-
-### Câu 6 — 🔥
-**Hỏi:** Hai chặng kỹ thuật của quá trình mở rộng dung lượng PVC (Volume Expansion) diễn ra như thế nào?
-
-**Đáp án chuẩn:** Chặng 1 là **Mở rộng đĩa vật lý** (CSI Controller gọi Storage Provider nới rộng khối đĩa). Chặng 2 là **Mở rộng hệ tập tin** (Kubelet chạy `resize2fs` hoặc `xfs_growfs` trên Node để nới rộng partition bên trong OS).
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng sửa PVC là đĩa tự to ra ngay lập tức.
-- 1đ: Nêu được có 2 chặng nhưng không phân biệt được đĩa vật lý vs hệ tập tin.
-- 2đ: Phân biệt được 2 chặng nhưng không nêu được vai trò của Kubelet ở chặng 2.
-- 3đ: Phân tích chi tiết luồng xử lý từ CSI Controller chặng 1 đến Kubelet chặng 2.
-
-**Câu hỏi đào sâu:** (Nếu chặng 1 xong mà chặng 2 chưa xong thì trạng thái PVC xuất hiện condition gì? — Condition `FileSystemResizePending`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Tại sao CSI Node Plugin lại bắt buộc phải cấu hình `securityContext.privileged: true`?
-
-**Đáp án chuẩn:** Vì CSI Node Plugin chạy trong container nhưng phải thực thi các câu lệnh Linux trực tiếp thao tác trên các thiết bị khối (Block Devices) thuộc thư mục `/dev` của Node mẹ để thực hiện `mount` và `format` đĩa.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được lý do privileged.
-- 1đ: Nêu được để có quyền root nhưng chưa gắn với thao tác mount đĩa Node mẹ.
-- 3đ: Phân tích chính xác quyền truy cập thiết bị khối `/dev` và lệnh mount ở tầng OS.
-
-**Câu hỏi đào sâu:** (Nếu không bật privileged thì Pod ứng dụng có mount được đĩa không? — Không, CSI Node Plugin sẽ crash hoặc báo lỗi permission denied khi nhận lệnh mount).
-
----
-
-### Câu 8 — ★★★
-**Hỏi:** Trường `parameters` trong định nghĩa StorageClass dùng để làm gì?
-
-**Đáp án chuẩn:** Chứa các tham số cấu hình riêng biệt do nhà cung cấp lưu trữ (Provisioner) quy định, ví dụ: loại đĩa (`type: gp3`), số IOPS (`iops: "3000"`), hay mã hóa đĩa (`encrypted: "true"`).
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được mục đích trường parameters.
-- 1đ: Nêu được là cấu hình đĩa nhưng không đưa được ví dụ cụ thể.
-- 3đ: Giải thích đúng ý nghĩa tuỳ biến theo từng provider và nêu các ví dụ thông số đĩa thực tế.
-
-**Câu hỏi đào sâu:** (Kubernetes Core có kiểm tra cú pháp bên trong trường parameters không? — Không, Kubernetes chỉ chuyển tiếp toàn bộ dictionary này cho CSI driver xử lý).
-
----
-
-### Câu 9 — 🔥
-**Hỏi:** Làm thế nào để ép một PVC không dùng StorageClass mặc định mà buộc phải bind vào một PV được tạo thủ công (Static PV)?
-
-**Đáp án chuẩn:** Khai báo trường `storageClassName: ""` (xâu rỗng) trong tệp YAML định nghĩa PVC. Điều này vô hiệu hóa hoàn toàn cơ chế gán StorageClass mặc định và ngăn chặn Dynamic Provisioning.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng chỉ cần bỏ trống trường `storageClassName`.
-- 1đ: Nêu được điền xâu rỗng `""` nhưng không giải thích được sự khác biệt với việc bỏ quên không khai báo.
-- 3đ: Phân tích rõ ràng sự khác biệt giữa bỏ quên (dẫn tới nhận SC default) và điền xâu rỗng (tắt SC default).
-
-**Câu hỏi đào sâu:** (Nếu PV tĩnh có `storageClassName: manual` thì PVC cần khai báo thế nào? — Khai báo `storageClassName: manual` cho khớp tên).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Tại sao không nên dùng `volumeBindingMode: Immediate` cho các loại ổ đĩa gắn cục bộ (Local Storage)?
-
-**Đáp án chuẩn:** Vì `Immediate` sẽ ép tạo PV ngay lập tức trên một Node ngẫu nhiên khi PVC xuất hiện. Nếu sau đó Pod được Scheduler xếp chạy sang Node khác do thiếu CPU/RAM, Pod sẽ bị kẹt vĩnh viễn vì không thể mount đĩa từ xa.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được nguy cơ kẹt Pod.
-- 1đ: Nêu được Pod không chạy được nhưng không giải thích được cơ chế Scheduler.
-- 3đ: Phân tích sâu sắc sự lệch pha giữa quyết định tạo đĩa của SC và quyết định xếp lịch Pod của Scheduler.
-
-**Câu hỏi đào sâu:** (Lỗi hiển thị khi xảy ra sự cố này là gì? — Lỗi `node(s) had volume node affinity conflict`).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Sự khác nhau giữa `reclaimPolicy` được khai báo trong StorageClass và `reclaimPolicy` nằm trong PV là gì?
-
-**Đáp án chuẩn:** `reclaimPolicy` trong StorageClass là cấu hình mẫu để áp dụng tự động cho các PV **được sinh ra từ SC đó**. `reclaimPolicy` trong PV là thuộc tính thực tế điều khiển hành vi của ổ đĩa cụ thể đó khi PVC bị xóa.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm tưởng hai cái là một.
-- 1đ: Nêu được SC là mẫu, PV là thật nhưng chưa rõ thời điểm áp dụng.
-- 3đ: Phân tích mạch lạc cơ chế kế thừa thuộc tính từ StorageClass sang PV tự động sinh ra.
-
-**Câu hỏi đào sâu:** (Sau khi PV được sinh ra từ SC, ta có thể patch đổi reclaimPolicy của riêng PV đó không? — Hoàn toàn được).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Cách nhanh nhất để chẩn đoán nguyên nhân khi một PVC dùng StorageClass bị kẹt ở trạng thái `Pending`?
-
-**Đáp án chuẩn:** Bước 1: `kubectl describe pvc <pvc-name>` xem mục Events. Bước 2: Kiểm tra trạng thái StorageClass và Provisioner pod. Bước 3: Xem log của CSI Provisioner sidecar pod bằng lệnh `kubectl logs -n <csi-namespace> -l app=<provisioner-label>`.
-
-**Tiêu chí chấm:**
-- 0đ: Chỉ biết trả lời chung chung xem log.
-- 1đ: Nêu được lệnh `kubectl describe pvc`.
-- 2đ: Nêu được describe pvc và xem log pod ứng dụng (sai pod log).
-- 3đ: Nêu chuẩn xác luồng 3 bước chẩn đoán từ PVC Events tới log của CSI Provisioner container.
-
-**Câu hỏi đào sâu:** (Nếu describe pvc báo `storageclass.storage.k8s.io "fast" not found` thì sửa thế nào? — Tạo StorageClass tên `fast` hoặc sửa tên storageClassName trong PVC).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1125,28 +1217,6 @@ Static Provisioning đòi hỏi Quản trị viên phải tạo thủ công từ
 2. **"Kiến trúc chuẩn CSI tách biệt hoàn toàn Storage Driver khỏi nhân Kubernetes, cho phép tích hợp linh hoạt mọi giải pháp lưu trữ qua giao diện gRPC tiêu chuẩn."**
 3. **"Chế độ `volumeBindingMode: WaitForFirstConsumer` là bắt buộc đối với đĩa cục bộ hoặc đĩa Cloud theo vùng để đảm bảo đĩa được tạo đúng ở Node mà Pod được xếp lịch."**
 4. **"Mở rộng dung lượng đĩa PVC trực tuyến đòi hỏi cờ `allowVolumeExpansion: true` và gồm 2 chặng: nới rộng đĩa ở hạ tầng cloud và nới rộng hệ tập tin ở Kubelet."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Chưa nắm vững cơ chế Dynamic Provisioning và StorageClass |
-| **19 – 28 điểm** | Đạt yêu cầu | Hiểu rõ StorageClass và CSI, thực hiện tốt các thao tác resize đĩa cơ bản |
-| **29 – 36 điểm** | Xuất sắc | Làm chủ hoàn toàn kiến trúc CSI, xử lý nhuần nhuyễn các sự cố Topology và Resize đĩa cho CKA |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp YAML tạo StorageClass `fast-disks` dùng `rancher.io/local-path`, `volumeBindingMode: WaitForFirstConsumer`, `allowVolumeExpansion: true`.
-- **BTVN 2:** Tạo PVC 1Gi sử dụng StorageClass `fast-disks`, triển khai Pod Nginx mount PVC này và thực hiện resize trực tuyến lên 4Gi.
-- **BTVN 3:** Vẽ sơ đồ luồng gRPC giữa API Server, `csi-provisioner` sidecar và `CSI Driver` khi một PVC được khởi tạo.
-- **BTVN 4 (Chuẩn bị cho Buổi 28 — Chẩn đoán 4 tầng):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Mô hình chẩn đoán 4 tầng trong Kubernetes gồm những tầng nào theo thứ tự từ ngoài vào trong?
-  2. Sự khác nhau giữa lỗi ở tầng Workload (`CrashLoopBackOff`) và lỗi ở tầng Node (`NotReady`) là gì?
-  3. Lệnh CLI nào giúp truy vết các sự kiện bất thường (`Events`) trên toàn cụm nhanh nhất?
 
 ---
 
@@ -1359,14 +1429,15 @@ kubectl patch pvc <pvc-name> -n <ns> -p '{"spec":{"resources":{"requests":{"stor
 kubectl get sc -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.allowVolumeExpansion}{"\n"}{end}'
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 28] Quy Trình Chẩn Đoán & Gỡ Lỗi Bốn Tầng (4-Tier Troubleshooting): Cụm, Node, Workload và Mạng](cka-28-28-chan-doan-bon-tang.html).
+
 {% endraw %}

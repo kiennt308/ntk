@@ -46,7 +46,7 @@ Hệ thống DevSecOps Enterprise hoàn chỉnh đòi hỏi sự phối hợp nh
 4. **Khối Chuỗi Cung Ứng Bất Biến (Immutable Supply Chain)**: Tự động sinh SBOM CycloneDX và ký số OCI Image bằng Sigstore Cosign ghi nhận vào Rekor log.
 5. **Khối Rào Chắn & Phê Duyệt Tự Động (Unified Quality Gate)**: Đánh giá tập trung toàn bộ chỉ số trước khi cấp phép chuyển giao sang giai đoạn CD.
 
-```
+```text
        BỨC TRANH TỔNG THỂ HỆ THỐNG DEVSECOPS CI/CD ENTERPRISE
 
   [ Developer Commit / MR ]
@@ -121,7 +121,7 @@ graph TD
 
 ### 3.1. Cấu Trúc Toàn Bộ Dự Án Capstone DevSecOps
 
-```
+```text
 devsecops-capstone-project/
 ├── .gitlab-ci.yml                   # Root Orchestrator Pipeline
 ├── Dockerfile                       # Multi-Stage Distroless Dockerfile
@@ -269,7 +269,7 @@ unified_gate_evaluation:
 
 > **Bối Cảnh**: Một nhóm DevOps tiến hành tích hợp tất cả các công cụ bảo mật vào cùng một pipeline tuần tự. Kết quả là thời gian chạy pipeline tăng vọt từ 4 phút lên **42 phút**, các Runner liên tục bị nghẽn (Queue Congestion), lập trình viên phải chờ gần 1 tiếng cho mỗi commit nhỏ, dẫn đến việc họ tìm cách vô hiệu hóa các bài quét để đẩy nhanh tiến độ.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -306,7 +306,7 @@ unified_gate_evaluation:
 - Viết Multi-stage Dockerfile dựa trên Distroless Non-root Image.
 - Cấu hình toàn bộ Pipeline DevSecOps 5 stages và xác thực Quality Gate thông qua thành công 100%.
 
-```
+```text
        QUY TRÌNH THỰC HIỆN ĐỒ ÁN CAPSTONE DEVSECOPS (8 BƯỚC)
 
   1. Khởi tạo mã nguồn Go & Unit Test (main.go, main_test.go)
@@ -690,7 +690,7 @@ git push origin main
 
 ### 7.2. Sơ Đồ Tư Duy Hệ Thống DevSecOps Hoàn Chỉnh (Mindmap)
 
-```
+```text
                     NỀN TẢNG DEVSECOPS CI/CD ENTERPRISE HOÀN CHỈNH
                                           │
         ┌─────────────────────────────────┼─────────────────────────────────┐
@@ -702,5 +702,5 @@ git push origin main
 ```
 
 > [!TIP]
-> **Bước tiếp theo trong lộ trình**: Chính thức bước vào **Phase 5: Continuous Delivery & Multi-Cloud Deployment**. Khám phá cơ chế quản trị môi trường và quy trình phê duyệt phát hành trong [Bài 36: Quản Lý Môi Trường (Environments), Deployment Tiers & Manual Approval Gates](gitlab-36-36-environment-va-approval.html).
+> **Bước tiếp theo trong lộ trình**: Chính thức bước vào **Phase 5: Continuous Delivery & Multi-Cloud Deployment**. Khám phá cơ chế quản trị môi trường và quy trình phê duyệt phát hành trong [Bài 36: Quản Lý Môi Trường (Environments), Deployment Tiers & Manual Approval Gates](gitlab-36-36-environment-va-phe-duyet.html).
 {% endraw %}

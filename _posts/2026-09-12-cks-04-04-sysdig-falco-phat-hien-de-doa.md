@@ -444,7 +444,7 @@ Vì thư mục <code>/etc</code> chứa tệp cấu hình hệ thống; ứng d�
         condition: evt.type in (open, openat) and container.id != host and evt.arg.flags contains O_WRONLY and fd.name prefix /etc
         output: "File /etc opened for writing (user=%user.name command=%proc.cmdline file=%fd.name pod=%k8s.pod.name)"
         priority: ERROR
-      ```
+```
 </div>
 </details>
 
@@ -457,24 +457,6 @@ Vì thư mục <code>/etc</code> chứa tệp cấu hình hệ thống; ứng d�
 | Falco Rules Documentation | `https://falco.org/docs/rules/` | Tài liệu chuẩn cú pháp Falco Rules |
 | Falco Supported Fields | `https://falco.org/docs/rules/supported-fields/` | Danh sách các Fields hỗ trợ trong Falco |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Runtime Security & Falco Arch | 12 phút | 12 phút |
-| §5. Cấu trúc Falco Rules & Fields | 12 phút | 12 phút |
-| §6. Custom Rules & Tra cứu log | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -525,7 +507,7 @@ graph TD
     Kernel -->|"eBPF / Syscall Probe"| FalcoEngine[Falco Threat Engine]
     FalcoEngine -->|"Match Local Rule"| LocalRule[/etc/falco/falco_rules.local.yaml]
     LocalRule -->|"Trigger Alert"| LogOutput[Journalctl / Log File /tmp/falco-alerts.txt]
-```yaml
+```
 
 ---
 
@@ -537,25 +519,25 @@ graph TD
 kubectl create namespace lab49
 sudo mkdir -p /etc/falco
 sudo touch /etc/falco/falco_rules.local.yaml
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab49`.**
 
 ```bash
 kubectl get ns lab49 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra tệp luật local `/etc/falco/falco_rules.local.yaml`.**
 
 ```bash
 test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```bash
+```
 
 **CHECKPOINT 3 — Khởi tạo tệp luật local.**
 
 ```bash
 test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```yaml
+```
 
 ---
 
@@ -574,25 +556,25 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Falco Alert: Terminal shell (%proc.name) spawned in container (id=%container.id pod=%k8s.pod.name ns=%k8s.ns.name)"
   priority: WARNING
 EOF
-```bash
+```
 
 **CHECKPOINT 4 — Trích xuất luật `Notice Terminal Shell Spawned`.**
 
 ```bash
 grep -q "Notice Terminal Shell Spawned" /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+```
 
 ### Thao tác 2.2: Khởi động lại Falco hoặc kiểm tra tệp luật
 
 ```bash
 sudo systemctl restart falco 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 5 — Xác minh tệp luật hợp lệ.**
 
 ```bash
 test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```yaml
+```
 
 ---
 
@@ -602,33 +584,33 @@ test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 5 — ĐẠT" || e
 
 ```bash
 kubectl run test-app --image=nginx:alpine -n lab49
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra Pod `test-app` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod test-app -n lab49 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 ### Thao tác 3.2: Thực hiện mô phỏng mở terminal shell trong Pod
 
 ```bash
 kubectl exec test-app -n lab49 -- sh -c "echo ATTACK_SHELL_TEST"
 echo "Falco Alert: Terminal shell (sh) spawned in container (id=abc123 pod=test-app ns=lab49)" >> /tmp/falco-alerts.txt
-```bash
+```
 
 **CHECKPOINT 7 — Xác minh lệnh exec mở shell mô phỏng.**
 
 ```bash
 kubectl exec test-app -n lab49 -- sh -c "echo ATTACK_SHELL_TEST" | grep -q "ATTACK_SHELL_TEST" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```bash
+```
 
 **CHECKPOINT 8 — Xác minh nhật ký log `/tmp/falco-alerts.txt`.**
 
 ```bash
 test -f /tmp/falco-alerts.txt && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```yaml
+```
 
 ---
 
@@ -648,26 +630,26 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Falco Alert: Unauthorized write to /etc (file=%fd.name cmd=%proc.cmdline pod=%k8s.pod.name)"
   priority: ERROR
 EOF
-```bash
+```
 
 **CHECKPOINT 9 — Trích xuất luật `Unauthorized Write to /etc`.**
 
 ```bash
 grep -q "Unauthorized Write to /etc" /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+```
 
 ### Thao tác 4.2: Mô phỏng tấn công 2 (Tạo file giả lập)
 
 ```bash
 kubectl exec test-app -n lab49 -- touch /tmp/hacked_etc.txt 2>/dev/null || true
 echo "Falco Alert: Unauthorized write to /etc (file=/etc/hacked cmd=touch pod=test-app)" >> /tmp/falco-alerts.txt
-```bash
+```
 
 **CHECKPOINT 10 — Kiểm tra mô phỏng tấn công 2.**
 
 ```bash
 test -f /tmp/falco-alerts.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```yaml
+```
 
 ---
 
@@ -677,13 +659,13 @@ test -f /tmp/falco-alerts.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKP
 
 ```bash
 test -s /tmp/falco-alerts.txt && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Trích xuất dòng cảnh báo từ `/tmp/falco-alerts.txt`.**
 
 ```bash
 grep -q "Falco" /tmp/falco-alerts.txt && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -694,13 +676,13 @@ grep -q "Falco" /tmp/falco-alerts.txt && echo "CHECKPOINT 12 — ĐẠT" || echo
 ```bash
 kubectl delete namespace lab49
 rm -f /tmp/falco-alerts.txt /tmp/hacked_etc.txt
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/falco-alerts.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -746,26 +728,11 @@ test ! -f /tmp/falco-alerts.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHEC
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Falco prep | 15 phút | 15 phút |
-| L4. Bước 2: Falco Rule Terminal Shell | 25 phút | 25 phút |
-| L5. Bước 3: Pod deploy & Attack test 1 | 25 phút | 25 phút |
-| L6. Bước 4: Falco Rule Write /etc & Test 2 | 25 phút | 25 phút |
-| L7. Bước 5: Tra cứu journalctl log | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -773,210 +740,330 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cấu trúc 5 trường thuộc tính bắt buộc của một tệp luật Falco Rule là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Falco lắng nghe các lệnh gọi hệ thống (system calls như <code>execve</code>, <code>openat</code>, <code>write</code>) trực tiếp từ Linux Kernel của Node qua eBPF probe hoặc Kernel Module. Falco chuyển đổi dữ liệu kernel thành các thuộc tính Kubernetes và đối soát với bộ tệp luật Falco Rules để cảnh báo tức thì khi có hành vi bất thường.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5 trường thuộc tính: (1) <code>rule</code> (tên luật); (2) <code>desc</code> (mô tả ngắn); (3) <code>condition</code> (biểu thức điều kiện lọc); (4) <code>output</code> (định dạng thông điệp cảnh báo); (5) <code>priority</code> (mức độ ưu tiên như <code>WARNING</code>, <code>ERROR</code>, <code>CRITICAL</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 5 trường thuộc tính.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 trường (rule, condition, output).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% tên và vai trò của cả 5 trường thuộc tính.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao tệp luật tùy chỉnh của học viên nên viết vào <code>/etc/falco/falco_rules.local.yaml</code>? — Để tránh bị ghi đè khi nâng cấp phần mềm Falco).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu cơ chế kernel system calls của Falco.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được soi log nhưng chưa làm rõ tầng Kernel system calls.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế eBPF/Kernel module lắng nghe system calls của Falco.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tại sao hacker không thể che giấu hành vi bất thường trước Falco? — Vì mọi thao tác của hacker trong container đều bắt buộc phải phát sinh system call đi qua Linux Kernel của Node).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Ý nghĩa của cờ điều kiện <code>container.id != host</code> trong tệp luật Falco Rule là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>container.id != host</code> lọc các sự kiện xảy ra BÊN TRONG container và loại bỏ các sự kiện diễn ra trực tiếp trên Host Node. Điều này tránh việc Falco phát báo động giả mỗi khi quản trị viên thực thi lệnh trên Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu cờ container.id != host.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lọc container nhưng chưa làm rõ việc loại trừ Host Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò loại trừ Host Node của <code>container.id != host</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tên biến nào trong trường <code>output</code> được dùng để in ra tên Pod Kubernetes? — Biến <code>%k8s.pod.name</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp điều kiện <code>condition</code> chuẩn để phát hiện hành vi kẻ tấn công thực thi terminal shell (<code>bash</code>, <code>sh</code>) bên trong container là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">condition: ></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">evt.type = execve and</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">container.id != host and</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">proc.name in (bash, sh, zsh, ksh)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai tên sự kiện kernel hoặc sai proc.name.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng proc.name nhưng quên evt.type = execve.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% biểu thức điều kiện <code>condition</code> phát hiện shell spawn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tên sự kiện kernel <code>evt.type = execve</code> đại diện cho hành vi gì? — Đại diện cho hành vi khởi chạy một tiến trình nhị phân mới).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cú pháp điều kiện <code>condition</code> chuẩn để phát hiện hành vi ghi hoặc chỉnh sửa các tệp nhạy cảm thuộc thư mục <code>/etc</code> trong container là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">condition: ></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">evt.type in (open, openat, openat2) and</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">container.id != host and</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">evt.arg.flags contains O_WRONLY and</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">fd.name prefix /etc</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết điều kiện soi ghi file /etc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng fd.name nhưng quên cờ kiểm tra flag ghi <code>O_WRONLY</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo biểu thức điều kiện phát hiện ghi file <code>/etc</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>evt.arg.flags contains O_WRONLY</code> đóng vai trò gì? — Đảm bảo chỉ cảnh báo khi tiến trình MỞ FILE ĐỂ GHI, bỏ qua các thao tác mở file chỉ để đọc).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Lệnh CLI nào dùng để tra cứu nhật ký cảnh báo an ninh Falco theo thời gian thực (Real-time Alerting) trên Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>sudo journalctl -fu falco</code> (nếu Falco chạy dưới dạng dịch vụ systemd) hoặc <code>kubectl logs -n falco -l app=falco</code> (nếu chạy dưới dạng DaemonSet trong cụm).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh xem log Falco.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được journalctl nhưng thiếu cờ <code>-fu falco</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% lệnh tra cứu log Falco thời gian thực.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>-f</code> trong lệnh <code>journalctl -fu falco</code> đóng vai trò gì? — Cờ <code>follow</code> để theo dõi trực tiếp các dòng log mới phát sinh).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự khác biệt về mặt kiến trúc giữa việc Falco sử dụng <code>eBPF probe</code> vs <code>Kernel Module driver</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>Kernel Module</code> nạp trực tiếp mô-đun vào Linux Kernel (yêu cầu kernel-headers và có rủi ro nhỏ làm gợn sóng kernel nếu crash). <code>eBPF probe</code> sử dụng công nghệ eBPF hiện đại chạy an toàn trong môi trường sandbox của kernel, không cần biên dịch lại kernel module.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được eBPF vs Kernel Module.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được eBPF mới hơn nhưng chưa rõ cơ chế sandbox vs kernel module.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo ưu/nhược điểm kiến trúc của eBPF probe vs Kernel Module.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao eBPF probe lại được khuyến nghị sử dụng trên các môi trường Cloud Managed Kubernetes hiện đại? — Vì tính an toàn không gây nguy cơ crash kernel và không đòi hỏi cài đặt kernel-devel).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn của một Falco Custom Rule hoàn chỉnh phát hiện hành vi chạy công cụ dò quét mạng (<code>nc</code>, <code>nmap</code>) với mức ưu tiên <code>WARNING</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• rule: Network Tool Executed in Container</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">desc: Phat hien thuc thi cong cu mang nc nmap</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">condition: ></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">evt.type = execve and</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">container.id != host and</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">proc.name in (nc, nmap, netstat, tcpdump)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">output: "Falco Alert: Network tool (%proc.name) executed (pod=%k8s.pod.name ns=%k8s.ns.name user=%user.name)"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">priority: WARNING</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai cú pháp luật Falco.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng proc.name nhưng thiếu trường output hoặc priority.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Falco Custom Rule.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Biến <code>%user.name</code> trong trường <code>output</code> cho biết thông tin gì? — Tên của user Linux thực thi lệnh đó trong container).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Phân biệt ý nghĩa các cấp độ ưu tiên cảnh báo (<code>priority</code>) trong Falco: <code>CRITICAL</code>, <code>ERROR</code>, <code>WARNING</code>, <code>NOTICE</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>CRITICAL</code>: Mối đe dọa cực kỳ nghiêm trọng đang xảy ra (như đọc tệp mã khóa <code>/etc/shadow</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ERROR</code>: Vi phạm an ninh nghiêm trọng (như ghi file vào thư mục <code>/etc</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>WARNING</code>: Hành vi nghi vấn cần chú ý (như mở terminal shell <code>bash</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>NOTICE</code>: Thông tin theo dõi hành vi hệ thống bình thường.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa các cấp độ priority.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được CRITICAL cao hơn WARNING nhưng chưa phân biệt rõ 4 cấp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 4 mức độ priority và kịch bản áp dụng tương ứng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn lọc duy nhất các cảnh báo từ WARNING trở lên trong log journalctl thì dùng cờ gì? — Dùng cờ <code>journalctl -u falco | grep -E "WARNING|ERROR|CRITICAL"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh CLI nào dùng để kiểm tra cú pháp tệp luật Falco mà không cần khởi động lại dịch vụ hệ thống?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>falco -V /etc/falco/falco_rules.local.yaml</code> (cờ <code>-V</code> hoặc <code>--validate</code> kiểm tra tính hợp lệ cú pháp).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh validate Falco.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lệnh falco nhưng thiếu cờ <code>-V</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>falco -V</code> kiểm tra cú pháp luật.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích của việc chạy validate trước khi restart dịch vụ là gì? — Đảm bảo dịch vụ Falco không bị crash rớt ngầm do lỗi gõ sai syntax YAML).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao tệp token ServiceAccount (<code>/var/run/secrets/kubernetes.io/serviceaccount/token</code>) lại là mục tiêu hàng đầu của hacker khi chiếm được container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì tệp token này chứa thông tin xác thực JWT của ServiceAccount Pod. Hacker có thể đánh cắp token này và gửi request trực tiếp tới K8s API Server để thao tác chiếm quyền điều khiển cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tệp token ServiceAccount.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được token K8s nhưng chưa làm rõ việc hacker gọi trực tiếp API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo lý do tệp ServiceAccount token là mục tiêu tấn công hàng đầu và cần đặt luật Falco giám sát.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>fd.name</code> trong Falco Rule để giám sát tệp token này là gì? — Dùng <code>fd.name prefix /var/run/secrets/kubernetes.io/serviceaccount/token</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để thiết lập kiến trúc Falco Runtime Security Hardening chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Viết toàn bộ các luật tùy chỉnh vào <code>/etc/falco/falco_rules.local.yaml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Luôn thêm điều kiện <code>container.id != host</code> trong <code>condition</code> triệt tiêu báo động giả.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bắt trúng các hành vi nguy hiểm: mở shell (<code>bash</code>/<code>sh</code>), sửa <code>/etc</code>, đọc <code>/etc/shadow</code> và token ServiceAccount.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đảm bảo cấu trúc đủ 5 trường thuộc tính và tra cứu log thời gian thực qua <code>journalctl -fu falco</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Falco Hardening CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 50 là gì? — Học về <code>AppArmor và Seccomp cho Pod CKS: Linux Kernel Security Profiles & Pod Security Hardening</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Cấu trúc 5 trường thuộc tính bắt buộc của một tệp luật Falco Rule là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** 5 trường thuộc tính: (1) `rule` (tên luật); (2) `desc` (mô tả ngắn); (3) `condition` (biểu thức điều kiện lọc); (4) `output` (định dạng thông điệp cảnh báo); (5) `priority` (mức độ ưu tiên như `WARNING`, `ERROR`, `CRITICAL`).
+1. <b style="color: var(--accent-primary);">"Giám sát an ninh thời gian thực ở cấp độ Kernel bằng Falco để lắng nghe các system calls <code>execve</code> và <code>openat</code> từ container."</b>
+2. <b style="color: var(--accent-primary);">"Luôn biên soạn các luật tùy chỉnh vào <code>/etc/falco/falco_rules.local.yaml</code> để bảo toàn cấu hình khi nâng cấp phần mềm."</b>
+3. <b style="color: var(--accent-primary);">"Mọi luật Falco Rule phải đảm bảo đủ 5 trường thuộc tính và chỉ định <code>%k8s.pod.name</code> trong <code>output</code> để định danh sự cố."</b>
+4. <b style="color: var(--accent-primary);">"Kết hợp cờ <code>container.id != host</code> để triệt tiêu 100% cảnh báo giả phát sinh từ Host Node."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 5 trường thuộc tính.
-- 1đ: Nêu được 3 trường (rule, condition, output).
-- 3đ: Trình bày chính xác 100% tên và vai trò của cả 5 trường thuộc tính.
-
-**Câu hỏi đào sâu:** (Tại sao tệp luật tùy chỉnh của học viên nên viết vào `/etc/falco/falco_rules.local.yaml`? — Để tránh bị ghi đè khi nâng cấp phần mềm Falco).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Ý nghĩa của cờ điều kiện `container.id != host` trong tệp luật Falco Rule là gì?
-
-**Đáp án chuẩn:** Cờ `container.id != host` lọc các sự kiện xảy ra BÊN TRONG container và loại bỏ các sự kiện diễn ra trực tiếp trên Host Node. Điều này tránh việc Falco phát báo động giả mỗi khi quản trị viên thực thi lệnh trên Node.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu cờ container.id != host.
-- 1đ: Nêu được lọc container nhưng chưa làm rõ việc loại trừ Host Node.
-- 3đ: Phân tích chuẩn xác vai trò loại trừ Host Node của `container.id != host`.
-
-**Câu hỏi đào sâu:** (Tên biến nào trong trường `output` được dùng để in ra tên Pod Kubernetes? — Biến `%k8s.pod.name`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Cú pháp điều kiện `condition` chuẩn để phát hiện hành vi kẻ tấn công thực thi terminal shell (`bash`, `sh`) bên trong container là gì?
-
-**Đáp án chuẩn:**
-```yaml
-condition: >
-  evt.type = execve and
-  container.id != host and
-  proc.name in (bash, sh, zsh, ksh)
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai tên sự kiện kernel hoặc sai proc.name.
-- 1đ: Nêu đúng proc.name nhưng quên evt.type = execve.
-- 3đ: Viết chuẩn xác 100% biểu thức điều kiện `condition` phát hiện shell spawn.
-
-**Câu hỏi đào sâu:** (Tên sự kiện kernel `evt.type = execve` đại diện cho hành vi gì? — Đại diện cho hành vi khởi chạy một tiến trình nhị phân mới).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cú pháp điều kiện `condition` chuẩn để phát hiện hành vi ghi hoặc chỉnh sửa các tệp nhạy cảm thuộc thư mục `/etc` trong container là gì?
-
-**Đáp án chuẩn:**
-```yaml
-condition: >
-  evt.type in (open, openat, openat2) and
-  container.id != host and
-  evt.arg.flags contains O_WRONLY and
-  fd.name prefix /etc
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Không biết điều kiện soi ghi file /etc.
-- 1đ: Nêu đúng fd.name nhưng quên cờ kiểm tra flag ghi `O_WRONLY`.
-- 3đ: Phân tích thấu đáo biểu thức điều kiện phát hiện ghi file `/etc`.
-
-**Câu hỏi đào sâu:** (Cờ `evt.arg.flags contains O_WRONLY` đóng vai trò gì? — Đảm bảo chỉ cảnh báo khi tiến trình MỞ FILE ĐỂ GHI, bỏ qua các thao tác mở file chỉ để đọc).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Lệnh CLI nào dùng để tra cứu nhật ký cảnh báo an ninh Falco theo thời gian thực (Real-time Alerting) trên Node?
-
-**Đáp án chuẩn:** `sudo journalctl -fu falco` (nếu Falco chạy dưới dạng dịch vụ systemd) hoặc `kubectl logs -n falco -l app=falco` (nếu chạy dưới dạng DaemonSet trong cụm).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh xem log Falco.
-- 1đ: Nêu được journalctl nhưng thiếu cờ `-fu falco`.
-- 3đ: Trình bày chính xác 100% lệnh tra cứu log Falco thời gian thực.
-
-**Câu hỏi đào sâu:** (Cờ `-f` trong lệnh `journalctl -fu falco` đóng vai trò gì? — Cờ `follow` để theo dõi trực tiếp các dòng log mới phát sinh).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Sự khác biệt về mặt kiến trúc giữa việc Falco sử dụng `eBPF probe` vs `Kernel Module driver` là gì?
-
-**Đáp án chuẩn:** `Kernel Module` nạp trực tiếp mô-đun vào Linux Kernel (yêu cầu kernel-headers và có rủi ro nhỏ làm gợn sóng kernel nếu crash). `eBPF probe` sử dụng công nghệ eBPF hiện đại chạy an toàn trong môi trường sandbox của kernel, không cần biên dịch lại kernel module.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được eBPF vs Kernel Module.
-- 1đ: Nêu được eBPF mới hơn nhưng chưa rõ cơ chế sandbox vs kernel module.
-- 3đ: Phân tích thấu đáo ưu/nhược điểm kiến trúc của eBPF probe vs Kernel Module.
-
-**Câu hỏi đào sâu:** (Tại sao eBPF probe lại được khuyến nghị sử dụng trên các môi trường Cloud Managed Kubernetes hiện đại? — Vì tính an toàn không gây nguy cơ crash kernel và không đòi hỏi cài đặt kernel-devel).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một Falco Custom Rule hoàn chỉnh phát hiện hành vi chạy công cụ dò quét mạng (`nc`, `nmap`) với mức ưu tiên `WARNING` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-- rule: Network Tool Executed in Container
-  desc: Phat hien thuc thi cong cu mang nc nmap
-  condition: >
-    evt.type = execve and
-    container.id != host and
-    proc.name in (nc, nmap, netstat, tcpdump)
-  output: "Falco Alert: Network tool (%proc.name) executed (pod=%k8s.pod.name ns=%k8s.ns.name user=%user.name)"
-  priority: WARNING
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai cú pháp luật Falco.
-- 1đ: Nêu đúng proc.name nhưng thiếu trường output hoặc priority.
-- 3đ: Viết chuẩn xác 100% bản kê khai Falco Custom Rule.
-
-**Câu hỏi đào sâu:** (Biến `%user.name` trong trường `output` cho biết thông tin gì? — Tên của user Linux thực thi lệnh đó trong container).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Phân biệt ý nghĩa các cấp độ ưu tiên cảnh báo (`priority`) trong Falco: `CRITICAL`, `ERROR`, `WARNING`, `NOTICE`?
-
-**Đáp án chuẩn:**
-- `CRITICAL`: Mối đe dọa cực kỳ nghiêm trọng đang xảy ra (như đọc tệp mã khóa `/etc/shadow`).
-- `ERROR`: Vi phạm an ninh nghiêm trọng (như ghi file vào thư mục `/etc`).
-- `WARNING`: Hành vi nghi vấn cần chú ý (như mở terminal shell `bash`).
-- `NOTICE`: Thông tin theo dõi hành vi hệ thống bình thường.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa các cấp độ priority.
-- 1đ: Nêu được CRITICAL cao hơn WARNING nhưng chưa phân biệt rõ 4 cấp.
-- 3đ: Phân tích chuẩn xác 4 mức độ priority và kịch bản áp dụng tương ứng.
-
-**Câu hỏi đào sâu:** (Nếu muốn lọc duy nhất các cảnh báo từ WARNING trở lên trong log journalctl thì dùng cờ gì? — Dùng cờ `journalctl -u falco | grep -E "WARNING|ERROR|CRITICAL"`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Lệnh CLI nào dùng để kiểm tra cú pháp tệp luật Falco mà không cần khởi động lại dịch vụ hệ thống?
-
-**Đáp án chuẩn:** `falco -V /etc/falco/falco_rules.local.yaml` (cờ `-V` hoặc `--validate` kiểm tra tính hợp lệ cú pháp).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh validate Falco.
-- 1đ: Nêu được lệnh falco nhưng thiếu cờ `-V`.
-- 3đ: Trình bày chính xác lệnh `falco -V` kiểm tra cú pháp luật.
-
-**Câu hỏi đào sâu:** (Lợi ích của việc chạy validate trước khi restart dịch vụ là gì? — Đảm bảo dịch vụ Falco không bị crash rớt ngầm do lỗi gõ sai syntax YAML).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Tại sao tệp token ServiceAccount (`/var/run/secrets/kubernetes.io/serviceaccount/token`) lại là mục tiêu hàng đầu của hacker khi chiếm được container?
-
-**Đáp án chuẩn:** Vì tệp token này chứa thông tin xác thực JWT của ServiceAccount Pod. Hacker có thể đánh cắp token này và gửi request trực tiếp tới K8s API Server để thao tác chiếm quyền điều khiển cụm.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tệp token ServiceAccount.
-- 1đ: Nêu được token K8s nhưng chưa làm rõ việc hacker gọi trực tiếp API Server.
-- 3đ: Phân tích thấu đáo lý do tệp ServiceAccount token là mục tiêu tấn công hàng đầu và cần đặt luật Falco giám sát.
-
-**Câu hỏi đào sâu:** (Cú pháp `fd.name` trong Falco Rule để giám sát tệp token này là gì? — Dùng `fd.name prefix /var/run/secrets/kubernetes.io/serviceaccount/token`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để thiết lập kiến trúc Falco Runtime Security Hardening chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-1. Viết toàn bộ các luật tùy chỉnh vào `/etc/falco/falco_rules.local.yaml`.
-2. Luôn thêm điều kiện `container.id != host` trong `condition` triệt tiêu báo động giả.
-3. Bắt trúng các hành vi nguy hiểm: mở shell (`bash`/`sh`), sửa `/etc`, đọc `/etc/shadow` và token ServiceAccount.
-4. Đảm bảo cấu trúc đủ 5 trường thuộc tính và tra cứu log thời gian thực qua `journalctl -fu falco`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Falco Hardening CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 50 là gì? — Học về `AppArmor và Seccomp cho Pod CKS: Linux Kernel Security Profiles & Pod Security Hardening`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -986,28 +1073,6 @@ condition: >
 2. **"Luôn biên soạn các luật tùy chỉnh vào `/etc/falco/falco_rules.local.yaml` để bảo toàn cấu hình khi nâng cấp phần mềm."**
 3. **"Mọi luật Falco Rule phải đảm bảo đủ 5 trường thuộc tính và chỉ định `%k8s.pod.name` trong `output` để định danh sự cố."**
 4. **"Kết hợp cờ `container.id != host` để triệt tiêu 100% cảnh báo giả phát sinh từ Host Node."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Falco Runtime Security |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc giám sát đe dọa thời gian thực Kernel |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp luật Falco Rule hoàn chỉnh phát hiện hành vi truy cập tệp token ServiceAccount.
-- **BTVN 2:** Thực hành tra cứu log cảnh báo Falco bằng lệnh `journalctl -fu falco` khi mô phỏng tấn công.
-- **BTVN 3:** So sánh điểm khác biệt giữa Falco và Tracee (Aqua Security Runtime Security tool).
-- **BTVN 4 (Chuẩn bị cho Buổi 50 — AppArmor và Seccomp cho Pod CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Bảo vệ nhân Linux Kernel cho Pod bằng AppArmor và Seccomp ở cấp độ CKS đóng vai trò gì?
-  2. Khái niệm `AppArmor Profile` (profile `apparmor-deny-write`) và `Seccomp Profile` (`RuntimeDefault`, `Unconfined`, `Custom JSON`) khác nhau thế nào?
-  3. Đường dẫn thư mục mặc định lưu tệp Seccomp Profiles trên Node Kubernetes (`/var/lib/kubelet/seccomp/`) là gì?
 
 ---
 
@@ -1075,7 +1140,7 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Terminal shell spawned in container (id=%container.id pod=%k8s.pod.name)"
   priority: WARNING
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1093,7 +1158,7 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Sensitive file /etc/shadow opened (user=%user.name pod=%k8s.pod.name)"
   priority: CRITICAL
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1111,7 +1176,7 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Network tool %proc.name executed in container (pod=%k8s.pod.name)"
   priority: WARNING
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1124,7 +1189,7 @@ EOF
 ```bash
 sudo systemctl restart falco 2>/dev/null || true
 echo "Falco Alert: Terminal shell spawned in container (id=abc123 pod=test-pod)" > /tmp/falco-exam.txt
-```yaml
+```
 
 ---
 </div>
@@ -1194,7 +1259,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1211,16 +1276,17 @@ fi
 # Restart & Tra cứu Log
 sudo systemctl restart falco
 sudo journalctl -fu falco
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 05] Kiểm Soát Quyền Hạn Linux Kernel: AppArmor Profiles, Seccomp BPF & Gia Cố Pod Security](cks-05-05-apparmor-seccomp-cho-pod.html).
+
 {% endraw %}

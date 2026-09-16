@@ -205,7 +205,7 @@ spec:
 
 > **Bối Cảnh**: Vào giờ cao điểm buổi sáng, hơn 300 jobs CI/CD đồng loạt kích hoạt. Các Pod mới tạo liên tục rơi vào trạng thái `Pending` và không thể chạy được. Hàng loạt pipeline bị timeout sau 1 giờ chờ đợi. Điều tra cho thấy mạng AWS VPC Subnet dành cho cụm Runner đã bị cạn kiệt 100% địa chỉ IP khả dụng.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -244,7 +244,7 @@ spec:
 - Cấu hình liên kết Cache S3 và kiểm tra tải/lưu cache tự động.
 - Quan sát Prometheus Metrics xuất ra từ Runner Manager.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB RUNNER AUTOSCALING & MINIO CACHE
 
      [ 1. Cài đặt MinIO S3 ] ──► Khởi tạo Bucket: runner-cache
@@ -512,7 +512,7 @@ curl -s http://localhost:9252/metrics | grep gitlab_runner_jobs_total
 
 ### 7.2. Sơ Đồ Tư Duy Quản Lý Runner Quy Mô Doanh Nghiệp (Mindmap)
 
-```
+```text
                      QUẢN LÝ RUNNER FLEET DOANH NGHIỆP TOÀN DIỆN
                                          │
         ┌────────────────────────────────┼────────────────────────────────┐

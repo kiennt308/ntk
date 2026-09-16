@@ -447,25 +447,6 @@ graph TD
 | CoreDNS Docs: Loop Plugin | CoreDNS v1.11 | Chẩn đoán lỗi Loop plugin và xung đột systemd-resolved |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Kiến trúc CoreDNS và cấu trúc tên miền FQDN chuẩn (`<svc>.<ns>.svc.cluster.local`) | 12 phút |
-| §5 | Cơ chế `/etc/resolv.conf`, cờ `options ndots:5` và tác động hiệu năng | 12 phút |
-| §6 | Chẩn đoán 4 chế độ hỏng DNS phổ biến và cách khắc phục | 10 phút |
-| §7 | Cấu hình dnsPolicy và kiểm tra log | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| §11 | Câu hỏi tự kiểm tra | 5 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -837,24 +818,11 @@ rm -f /tmp/fqdn-res.txt /tmp/pod-resolv.txt /tmp/custom-resolv.txt /tmp/coredns-
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-23/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Phân giải tên miền FQDN chuẩn của Service | 30 phút |
-| L4 | Bước 2 — Cấu hình custom `dnsConfig` hạ `ndots:2` cho Pod | 30 phút |
-| L5 | Bước 3 — Phân tích tệp cấu hình `Corefile` của CoreDNS | 30 phút |
-| L6 | Bước 4 — Kiểm tra 2 bản sao HA của CoreDNS và dọn dẹp | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -868,281 +836,379 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tệp <code>/etc/resolv.conf</code> được Kubelet tự động sinh ra bên trong mỗi Pod chứa những thông số cấu hình mặc định nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Cấu trúc FQDN chuẩn của Service:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Định dạng: <b style="color: var(--accent-primary);"><code><service-name>.<namespace>.svc.cluster.local</code></b> (gồm <b style="color: var(--accent-primary);">5</b> thành phần).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ví dụ:* <code>web-svc.dev.svc.cluster.local</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Cấu trúc FQDN chuẩn của Pod:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod thông thường: <b style="color: var(--accent-primary);"><code><pod-ip-with-dashes>.<namespace>.pod.cluster.local</code></b> (ví dụ IP <code>10.244.1.5</code> -> <code>10-244-1-5.dev.pod.cluster.local</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod thuộc StatefulSet (với Headless Service): <b style="color: var(--accent-primary);"><code><pod-name>.<service-name>.<namespace>.svc.cluster.local</code></b> (ví dụ <code>web-0.nginx.dev.svc.cluster.local</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Các thông số mặc định trong <code>/etc/resolv.conf</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>nameserver 10.96.0.10</code></b>: Địa chỉ IP ClusterIP VIP cố định của Service <code>kube-dns</code> dẫn tới CoreDNS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>search <namespace>.svc.cluster.local svc.cluster.local cluster.local</code></b>: Dải các tên miền tìm kiếm tự động nối đuôi khi gọi tên ngắn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>options ndots:5</code></b>: Cờ quy định số lượng dấu chấm tối thiểu trong tên miền để quyết định có bypass dải <code>search</code> hay không.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết tệp <code>/etc/resolv.conf</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời có nameserver và search nhưng không nhớ địa chỉ IP <code>10.96.0.10</code> và cờ <code>options ndots:5</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 3 thông số: <code>nameserver 10.96.0.10</code>, dải <code>search</code> 3 cấp và cờ <code>options ndots:5</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra vai trò của glibc resolver trong Linux.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có nên dùng lệnh <code>echo</code> để sửa trực tiếp file <code>/etc/resolv.conf</code> bên trong Pod đang chạy hay không? *(Đáp án: Không nên, vì file do Kubelet mount read-only, nên dùng <code>spec.dnsConfig</code> trong Pod spec).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cấu trúc FQDN.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tên service và namespace nhưng thiếu đuôi <code>.svc.cluster.local</code> hoặc không nêu được cấu trúc DNS của StatefulSet (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác cấu trúc FQDN của Service (<code><svc>.<ns>.svc.cluster.local</code>) và Pod StatefulSet.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra sự thay thế dấu chấm trong Pod IP thành dấu gạch ngang <code>-</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao Pods trong cùng 1 Namespace lại có thể gọi nhau bằng tên ngắn <code>web-svc</code> mà không cần gõ đầy đủ FQDN? *(Đáp án: Vì tệp <code>/etc/resolv.conf</code> của Pod mặc định chứa dải search domain <code>dev.svc.cluster.local</code>).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Giải thích ý nghĩa kĩ thuật của cờ <code>options ndots:5</code> trong tệp <code>/etc/resolv.conf</code> của Pod.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa kĩ thuật của <code>ndots:5</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ndots:5</code> là cờ chỉ thị cho bộ giải tên miền OS (glibc resolver): <b style="color: var(--accent-primary);">Nếu số lượng dấu chấm <code>.</code> có trong chuỗi tên miền nhỏ hơn 5 (<code>< 5</code>)</b>, thì tên miền đó sẽ bị coi là "chưa hoàn chỉnh" (Relative Domain Name).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bộ giải tên miền sẽ <b style="color: var(--accent-primary);">bắt buộc phải lấy tên miền đó lần lượt nối đuôi với từng dải miền trong danh sách <code>search</code></b> để gửi truy vấn tới CoreDNS trước, rồi cuối cùng mới gửi truy vấn tên miền gốc.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được cờ <code>ndots</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời là số dấu chấm nhưng không giải thích được quy tắc <code>< 5</code> dấu chấm bị ép nối đuôi dải <code>search</code> domain trước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác ý nghĩa <code>ndots:5</code>: tên miền có <code>< 5</code> dấu chấm bị ép nối đuôi dải <code>search</code> domain trước khi truy vấn gốc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, làm phép tính đếm số dấu chấm trong FQDN.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tên miền FQDN chuẩn <code>web.dev.svc.cluster.local</code> chứa bao nhiêu dấu chấm và có bị cờ <code>ndots:5</code> ép nối đuôi <code>search</code> domain hay không? *(Đáp án: Chứa đúng 4 dấu chấm [< 5] nhưng vì có đuôi <code>cluster.local</code> trùng khớp nên được phân giải ngay).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tại sao một câu lệnh gọi tên miền ngoại mạng như <code>curl api.stripe.com</code> (chứa 2 dấu chấm) lại khiến Pod thực hiện tới 4 truy vấn DNS liên tiếp gây suy giảm hiệu năng? Nêu 2 giải pháp khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân 4 truy vấn DNS:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tên miền <code>api.stripe.com</code> chứa <b style="color: var(--accent-primary);">2 dấu chấm (<code>< 5</code>)</b>, bị cờ <code>ndots:5</code> ép chạy lần lượt <b style="color: var(--accent-primary);">4 truy vấn thử nghiệm</b>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.dev.svc.cluster.local</code> -> CoreDNS trả về <code>NXDOMAIN</code> (Thất bại).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.svc.cluster.local</code> -> CoreDNS trả về <code>NXDOMAIN</code> (Thất bại).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.cluster.local</code> -> CoreDNS trả về <code>NXDOMAIN</code> (Thất bại).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.</code> -> CoreDNS chuyển tiếp ngoại mạng trả về IP thực (<code>200 OK</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gây tốn thời gian trễ (latency) gấp <b style="color: var(--accent-primary);">4 lần</b> và tăng tải rác cho CoreDNS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2 Giải pháp khắc phục:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Giải pháp 1:* Thêm dấu chấm ở cuối tên miền gốc (<b style="color: var(--accent-primary);">Trailing Dot <code>.</code></b> như <code>api.stripe.com.</code>) trong mã nguồn ứng dụng để ép OS coi là FQDN tuyệt đối ngay đợt 1.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Giải pháp 2:* Sử dụng khối <b style="color: var(--accent-primary);"><code>spec.dnsConfig</code></b> trong Pod spec để hạ cờ <code>ndots</code> xuống <b style="color: var(--accent-primary);"><code>ndots:2</code></b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được 4 truy vấn DNS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do ndots:5 nhưng không liệt kê được 4 chuỗi truy vấn NXDOMAIN và 2 giải pháp (Trailing dot & <code>dnsConfig</code> <code>ndots:2</code>) (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 4 bước truy vấn DNS (3 NXDOMAIN + 1 Success) và 2 giải pháp khắc phục (Trailing dot & <code>ndots:2</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do không nên hạ <code>ndots:0</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao không nên hạ <code>ndots:0</code> cho toàn bộ các Pods? *(Đáp án: Vì <code>ndots:0</code> sẽ làm Pod mất hoàn toàn khả năng gọi tên ngắn cho các Service nội bộ như <code>curl web</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khối <code>spec.dnsConfig</code> trong Pod spec được biên soạn như thế nào để hạ cờ <code>ndots</code> xuống <code>ndots:2</code> cho một microservice?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu trúc YAML biên soạn <code>spec.dnsConfig</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: optimized-pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: dev</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">dnsPolicy: ClusterFirst</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">dnsConfig:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">options:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: ndots</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">value: "2"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: nginx:1.27-alpine</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Giúp ứng dụng phân giải các tên miền ngoại mạng như <code>api.stripe.com</code> (2 dấu chấm) ngay từ truy vấn đầu tiên mà không dính 3 truy vấn NXDOMAIN thừa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cú pháp <code>dnsConfig</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nhớ <code>dnsConfig</code> nhưng viết sai cấu trúc <code>options: [{name: "ndots", value: "2"}]</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Biên soạn chuẩn xác khối <code>spec.dnsConfig</code> hạ <code>ndots</code> xuống <code>2</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách thêm custom <code>searches</code> hoặc <code>nameservers</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Thuộc tính <code>value</code> của cờ <code>ndots</code> trong <code>dnsConfig</code> có kiểu dữ liệu là chuỗi String hay Số Integer? *(Đáp án: Bắt buộc là <b style="color: var(--accent-primary);">chuỗi String</b> <code>"2"</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Nêu 4 chế độ hỏng DNS phổ biến nhất trong Kubernetes và dấu hiệu nhận biết của từng chế độ.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. CoreDNS OOMKilled:</b> Pod CoreDNS bị tiêu diệt và restart liên tục do vượt giới hạn RAM (<code>OOMKilled</code>). Dấu hiệu: <code>kubectl get pods -n kube-system</code> thấy CoreDNS nảy RESTARTS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Loop Plugin Error:</b> Vòng lặp chuyển tiếp DNS giữa Node và CoreDNS (<code>Loop 127.0.0.1:53 detected</code>). Dấu hiệu: CoreDNS Pod bị crash và log báo <code>Loop detected</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3. Corefile Syntax Error:</b> Gõ sai cú pháp tệp <code>Corefile</code> trong ConfigMap <code>coredns</code>. Dấu hiệu: CoreDNS Pods từ chối khởi chạy và log báo <code>Corefile syntax error</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">4. Sai <code>dnsPolicy</code>:</b> Pod đặt <code>dnsPolicy: Default</code> thay vì <code>ClusterFirst</code>. Dấu hiệu: Pod không kết nối được bất kỳ Service VIP nào trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được chế độ hỏng nào.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 1-2 trường hợp nhưng không chỉ ra dấu hiệu log <code>Loop detected</code> hay <code>OOMKilled</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 4 chế độ hỏng DNS kinh điển và dấu hiệu nhận biết từng trường hợp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra câu lệnh <code>kubectl logs</code> kiểm tra CoreDNS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi cả 2 Pods CoreDNS bị crash dính <code>Corefile Syntax Error</code> thì câu lệnh <code>kubectl edit configmap coredns -n kube-system</code> có chạy được không? *(Đáp án: Vẫn chạy được bình thường vì API Server không phụ thuộc vào CoreDNS).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nguyên nhân gây ra lỗi <code>Loop Plugin Error</code> (<code>Loop 127.0.0.1:53 detected</code>) trong CoreDNS là gì và thao tác nào dùng để khắc phục triệt để?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân xảy ra lỗi Loop:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tệp <code>/etc/resolv.conf</code> trên máy chủ Worker Node chứa địa chỉ IP loopback <b style="color: var(--accent-primary);"><code>127.0.0.53</code></b> (do tiến trình <code>systemd-resolved</code> quản lý).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi CoreDNS đọc tệp <code>/etc/resolv.conf</code> của Node để forward các truy vấn ngoại mạng, nó lại gửi gói tin tới <code>127.0.0.53</code> trên Node. Node lại chuyển tiếp ngược về CoreDNS -> Tạo ra vòng lặp vô hạn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thao tác khắc phục triệt để:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sửa tệp <code>/etc/resolv.conf</code> trên máy chủ Node thay thế địa chỉ <code>127.0.0.53</code> bằng IP DNS Server thực tế (như <code>8.8.8.8</code> hoặc DNS công ty).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hoặc cấu hình cờ <code>forward . /etc/resolv.conf</code> trong Corefile trỏ trực tiếp tới tệp resolv của upstream DNS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được lỗi Loop.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do vòng lặp nhưng không nhớ địa chỉ IP <code>127.0.0.53</code> và tiến trình <code>systemd-resolved</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguyên nhân IP loopback <code>127.0.0.53</code> trên Node và thao tác sửa <code>/etc/resolv.conf</code> Node trỏ về <code>8.8.8.8</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra vai trò của plugin <code>loop</code> trong Corefile.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao plugin <code>loop</code> lại tự động ngắt tiến trình CoreDNS khi phát hiện vòng lặp? *(Đáp án: Để tránh việc gói tin DNS chạy vòng lặp làm bùng nổ CPU và tràn băng thông mạng cụm).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Sự khác nhau giữa 2 giá trị <code>dnsPolicy: ClusterFirst</code> và <code>dnsPolicy: Default</code> trong Pod spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>dnsPolicy: ClusterFirst</code> (Mặc định cho 99% Pods):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mọi truy vấn DNS từ Pod đều được gửi tới <b style="color: var(--accent-primary);">CoreDNS cụm (<code>10.96.0.10</code>)</b> trước.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp Pod phân giải được cả tên miền Service nội bộ <code>.cluster.local</code> và tên miền ngoại mạng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>dnsPolicy: Default</code> (Bypass CoreDNS):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod <b style="color: var(--accent-primary);">bỏ qua hoàn toàn CoreDNS cụm</b>, lấy trực tiếp cấu hình DNS Server từ máy chủ Node host.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp cho các Pods hạ tầng muốn gọi trực tiếp DNS bên ngoài mà không làm tăng tải cho CoreDNS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>Default</code> là dùng CoreDNS còn <code>ClusterFirst</code> dùng DNS ngoài.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>ClusterFirst</code> cho nội bộ còn <code>Default</code> cho bên ngoài nhưng không nêu được IP <code>10.96.0.10</code> và việc <code>Default</code> bypass CoreDNS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác <code>ClusterFirst</code> (dùng CoreDNS cụm <code>10.96.0.10</code>) vs <code>Default</code> (bypass CoreDNS, dùng DNS Node host).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra giá trị <code>dnsPolicy: ClusterFirstWithHostNet</code> cho Pods chạy <code>hostNetwork: true</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu Pod đặt <code>hostNetwork: true</code> mà muốn gọi Service VIP nội bộ thì phải đặt <code>dnsPolicy</code> là gì? *(Đáp án: Phải đặt <b style="color: var(--accent-primary);"><code>dnsPolicy: ClusterFirstWithHostNet</code></b>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu lệnh CLI nào giúp khởi tạo một Pod tạm thời để kiểm tra phân giải tên miền DNS <code>nslookup</code> trong đúng 2 giây mà không làm bẩn cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh CLI chuẩn (One-liner Troubleshooting):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup web-svc.dev.svc.cluster.local</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích cờ:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>run dnstest</code>: Khởi tạo Pod tạm tên <code>dnstest</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>-it --rm</code>: Mở terminal tương tác và <b style="color: var(--accent-primary);">tự động xoá sạch Pod (<code>--rm</code>) ngay sau khi câu lệnh kết thúc</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>-- nslookup ...</code>: Thực thi lệnh tra cứu DNS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ lệnh <code>kubectl run --rm</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Viết được <code>kubectl run</code> nhưng thiếu cờ <code>--rm</code> làm để lại Pod rác trong cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh <code>kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup <domain></code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách dùng image <code>nicolaka/netshoot</code> thay cho busybox.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu câu lệnh trên in ra <code>Server: 10.96.0.10</code> và <code>*** Can't find web-svc: No answer</code> thì nguyên nhân do đâu? *(Đáp án: Do Service <code>web-svc</code> không tồn tại hoặc sai Namespace).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Plugin <code>kubernetes</code> và <code>forward</code> trong tệp <code>Corefile</code> của ConfigMap <code>coredns</code> đóng vai trò gì trong việc xử lý truy vấn DNS?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Plugin <code>kubernetes</code> (Xử lý tên miền nội bộ):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chịu trách nhiệm lắng nghe API Server và phân giải tất cả các tên miền nội bộ có đuôi <b style="color: var(--accent-primary);"><code>cluster.local</code></b> (như Service VIP, Headless Pod IPs).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Plugin <code>forward</code> (Xử lý tên miền ngoại mạng):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chịu trách nhiệm chuyển tiếp (Forward) tất cả các truy vấn tên miền ngoại mạng (như <code>google.com</code>, <code>github.com</code>) tới upstream DNS Server (đọc từ <code>/etc/resolv.conf</code> của Node hoặc IP <code>8.8.8.8</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết 2 plugin này.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>kubernetes</code> cho K8s còn <code>forward</code> để chuyển tiếp nhưng không phân biệt được tên miền nội bộ <code>.cluster.local</code> vs tên miền ngoại mạng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác plugin <code>kubernetes</code> (xử lý <code>.cluster.local</code> nội bộ) vs <code>forward</code> (chuyển tiếp tên miền ngoài tới upstream DNS).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra plugin <code>cache</code> nằm giữa để lưu cache DNS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu xoá mất khối plugin <code>forward</code> trong Corefile thì Pods trong cụm có gọi được <code>google.com</code> không? *(Đáp án: Không gọi được, các truy vấn ngoại mạng sẽ bị báo lỗi <code>NXDOMAIN</code> hoặc <code>SERVFAIL</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Địa chỉ IP <code>10.96.0.10</code> trong tệp <code>/etc/resolv.conf</code> của Pod từ đâu ra và làm thế nào để đổi địa chỉ DNS Server này sang một IP khác?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguồn gốc IP <code>10.96.0.10</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>10.96.0.10</code> chính là địa chỉ ClusterIP VIP của <b style="color: var(--accent-primary);">Service tên <code>kube-dns</code></b> nằm trong namespace <code>kube-system</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet tự động lấy IP này từ cờ <code>--cluster-dns=10.96.0.10</code> khi khởi động và ghi vào <code>/etc/resolv.conf</code> của 100% các Pods.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách thay đổi:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sửa cờ <code>--cluster-dns</code> trong file cấu hình Kubelet <code>/var/lib/kubelet/config.yaml</code> trên tất cả các Nodes và restart Kubelet.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo IP <code>10.96.0.10</code> là IP vật lý của Master Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời của Service <code>kube-dns</code> nhưng không giải thích được cờ <code>--cluster-dns</code> trong Kubelet config.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác địa chỉ VIP của Service <code>kube-dns</code> và cờ <code>--cluster-dns=10.96.0.10</code> trong Kubelet config.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl get svc -n kube-system kube-dns</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao tên Service trong namespace <code>kube-system</code> lại là <code>kube-dns</code> mà Pods lại tên là <code>coredns</code>? *(Đáp án: Vì ngày trước Kubernetes dùng Kube-DNS, sau này đổi sang CoreDNS nhưng giữ nguyên tên Service <code>kube-dns</code> để đảm bảo tương thích ngược).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do trễ 50ms mỗi request API ngoài vì dính <code>ndots:5</code>, 1 âm thầm do 100% cụm liệt DNS vì CoreDNS dính Loop error <code>127.0.0.53</code>) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Kết nối API ngoại mạng bị trễ 50ms do cờ <code>ndots:5</code> gây ra 3 truy vấn NXDOMAIN thừa):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Microservice gọi HTTPS sang <code>api.stripe.com</code> bị chậm 50ms cho mỗi request, CoreDNS CPU bị tăng cao.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Dùng <code>tcpdump port 53</code> thấy 3 truy vấn <code>api.stripe.com.dev.svc.cluster.local</code> bị báo <code>NXDOMAIN</code> trước khi tới truy vấn gốc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Thêm trailing dot <code>api.stripe.com.</code> trong code hoặc biên soạn <code>spec.dnsConfig</code> hạ <code>ndots:2</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Toàn bộ cụm bị liệt phân giải DNS do CoreDNS dính lỗi Loop plugin <code>127.0.0.53</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* 100% Pods trong cụm báo lỗi <code>Name or service not known</code>, CoreDNS Pods bị <code>CrashLoopBackOff</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>kubectl logs -n kube-system -l k8s-app=kube-dns</code> thấy log <code>Loop (127.0.0.1:53 -> ...) detected</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa tệp <code>/etc/resolv.conf</code> trên các máy chủ Worker Nodes thay địa chỉ <code>127.0.0.53</code> bằng IP DNS thực (<code>8.8.8.8</code>) và restart CoreDNS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân 3 truy vấn NXDOMAIN thừa và địa chỉ loopback <code>127.0.0.53</code> trên Node (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi CoreDNS bị crash, câu lệnh nào kiểm tra nhanh xem Service <code>kube-dns</code> có đang lấp đầy Endpoints hay không trong 2 giây? *(Đáp án: Lệnh <code>kubectl get ep -n kube-system kube-dns</code>).*
+
 ---
 
-### Câu 2 — ★★★
-
-**Hỏi:** Tệp `/etc/resolv.conf` được Kubelet tự động sinh ra bên trong mỗi Pod chứa những thông số cấu hình mặc định nào?
-
-**Đáp án chuẩn:**
-- **Các thông số mặc định trong `/etc/resolv.conf`:**
-  1. **`nameserver 10.96.0.10`**: Địa chỉ IP ClusterIP VIP cố định của Service `kube-dns` dẫn tới CoreDNS.
-  2. **`search <namespace>.svc.cluster.local svc.cluster.local cluster.local`**: Dải các tên miền tìm kiếm tự động nối đuôi khi gọi tên ngắn.
-  3. **`options ndots:5`**: Cờ quy định số lượng dấu chấm tối thiểu trong tên miền để quyết định có bypass dải `search` hay không.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết tệp `/etc/resolv.conf`.
-- **1đ:** Trả lời có nameserver và search nhưng không nhớ địa chỉ IP `10.96.0.10` và cờ `options ndots:5`.
-- **2đ:** Giải thích chuẩn xác 3 thông số: `nameserver 10.96.0.10`, dải `search` 3 cấp và cờ `options ndots:5`.
-- **3đ:** Trả lời xuất sắc, chỉ ra vai trò của glibc resolver trong Linux.
-
-**Câu hỏi đào sâu:** Có nên dùng lệnh `echo` để sửa trực tiếp file `/etc/resolv.conf` bên trong Pod đang chạy hay không? *(Đáp án: Không nên, vì file do Kubelet mount read-only, nên dùng `spec.dnsConfig` trong Pod spec).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Giải thích ý nghĩa kĩ thuật của cờ `options ndots:5` trong tệp `/etc/resolv.conf` của Pod.
-
-**Đáp án chuẩn:**
-- **Ý nghĩa kĩ thuật của `ndots:5`:**
-  - `ndots:5` là cờ chỉ thị cho bộ giải tên miền OS (glibc resolver): **Nếu số lượng dấu chấm `.` có trong chuỗi tên miền nhỏ hơn 5 (`< 5`)**, thì tên miền đó sẽ bị coi là "chưa hoàn chỉnh" (Relative Domain Name).
-  - Bộ giải tên miền sẽ **bắt buộc phải lấy tên miền đó lần lượt nối đuôi với từng dải miền trong danh sách `search`** để gửi truy vấn tới CoreDNS trước, rồi cuối cùng mới gửi truy vấn tên miền gốc.
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được cờ `ndots`.
-- **1đ:** Trả lời là số dấu chấm nhưng không giải thích được quy tắc `< 5` dấu chấm bị ép nối đuôi dải `search` domain trước.
-- **2đ:** Giải thích chuẩn xác ý nghĩa `ndots:5`: tên miền có `< 5` dấu chấm bị ép nối đuôi dải `search` domain trước khi truy vấn gốc.
-- **3đ:** Trả lời xuất sắc, làm phép tính đếm số dấu chấm trong FQDN.
-
-**Câu hỏi đào sâu:** Tên miền FQDN chuẩn `web.dev.svc.cluster.local` chứa bao nhiêu dấu chấm và có bị cờ `ndots:5` ép nối đuôi `search` domain hay không? *(Đáp án: Chứa đúng 4 dấu chấm [< 5] nhưng vì có đuôi `cluster.local` trùng khớp nên được phân giải ngay).*
-
----
-
-### Câu 4 — 🔥
-
-**Hỏi:** Tại sao một câu lệnh gọi tên miền ngoại mạng như `curl api.stripe.com` (chứa 2 dấu chấm) lại khiến Pod thực hiện tới 4 truy vấn DNS liên tiếp gây suy giảm hiệu năng? Nêu 2 giải pháp khắc phục.
-
-**Đáp án chuẩn:**
-- **Nguyên nhân 4 truy vấn DNS:**
-  - Tên miền `api.stripe.com` chứa **2 dấu chấm (`< 5`)**, bị cờ `ndots:5` ép chạy lần lượt **4 truy vấn thử nghiệm**:
-    1. `api.stripe.com.dev.svc.cluster.local` -> CoreDNS trả về `NXDOMAIN` (Thất bại).
-    2. `api.stripe.com.svc.cluster.local` -> CoreDNS trả về `NXDOMAIN` (Thất bại).
-    3. `api.stripe.com.cluster.local` -> CoreDNS trả về `NXDOMAIN` (Thất bại).
-    4. `api.stripe.com.` -> CoreDNS chuyển tiếp ngoại mạng trả về IP thực (`200 OK`).
-  - Gây tốn thời gian trễ (latency) gấp **4 lần** và tăng tải rác cho CoreDNS.
-- **2 Giải pháp khắc phục:**
-  - *Giải pháp 1:* Thêm dấu chấm ở cuối tên miền gốc (**Trailing Dot `.`** như `api.stripe.com.`) trong mã nguồn ứng dụng để ép OS coi là FQDN tuyệt đối ngay đợt 1.
-  - *Giải pháp 2:* Sử dụng khối **`spec.dnsConfig`** trong Pod spec để hạ cờ `ndots` xuống **`ndots:2`**.
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được 4 truy vấn DNS.
-- **1đ:** Trả lời do ndots:5 nhưng không liệt kê được 4 chuỗi truy vấn NXDOMAIN và 2 giải pháp (Trailing dot & `dnsConfig` `ndots:2`) (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác 4 bước truy vấn DNS (3 NXDOMAIN + 1 Success) và 2 giải pháp khắc phục (Trailing dot & `ndots:2`).
-- **3đ:** Trả lời xuất sắc, chỉ ra lý do không nên hạ `ndots:0`.
-
-**Câu hỏi đào sâu:** Tại sao không nên hạ `ndots:0` cho toàn bộ các Pods? *(Đáp án: Vì `ndots:0` sẽ làm Pod mất hoàn toàn khả năng gọi tên ngắn cho các Service nội bộ như `curl web`).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Khối `spec.dnsConfig` trong Pod spec được biên soạn như thế nào để hạ cờ `ndots` xuống `ndots:2` cho một microservice?
-
-**Đáp án chuẩn:**
-- **Cấu trúc YAML biên soạn `spec.dnsConfig`:**
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: optimized-pod
-  namespace: dev
-spec:
-  dnsPolicy: ClusterFirst
-  dnsConfig:
-    options:
-    - name: ndots
-      value: "2"
-  containers:
-  - name: app
-    image: nginx:1.27-alpine
-```
-- **Tác dụng:** Giúp ứng dụng phân giải các tên miền ngoại mạng như `api.stripe.com` (2 dấu chấm) ngay từ truy vấn đầu tiên mà không dính 3 truy vấn NXDOMAIN thừa.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ cú pháp `dnsConfig`.
-- **1đ:** Nhớ `dnsConfig` nhưng viết sai cấu trúc `options: [{name: "ndots", value: "2"}]`.
-- **2đ:** Biên soạn chuẩn xác khối `spec.dnsConfig` hạ `ndots` xuống `2`.
-- **3đ:** Trả lời xuất sắc, chỉ ra cách thêm custom `searches` hoặc `nameservers`.
-
-**Câu hỏi đào sâu:** Thuộc tính `value` của cờ `ndots` trong `dnsConfig` có kiểu dữ liệu là chuỗi String hay Số Integer? *(Đáp án: Bắt buộc là **chuỗi String** `"2"`).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Nêu 4 chế độ hỏng DNS phổ biến nhất trong Kubernetes và dấu hiệu nhận biết của từng chế độ.
-
-**Đáp án chuẩn:**
-- **1. CoreDNS OOMKilled:** Pod CoreDNS bị tiêu diệt và restart liên tục do vượt giới hạn RAM (`OOMKilled`). Dấu hiệu: `kubectl get pods -n kube-system` thấy CoreDNS nảy RESTARTS.
-- **2. Loop Plugin Error:** Vòng lặp chuyển tiếp DNS giữa Node và CoreDNS (`Loop 127.0.0.1:53 detected`). Dấu hiệu: CoreDNS Pod bị crash và log báo `Loop detected`.
-- **3. Corefile Syntax Error:** Gõ sai cú pháp tệp `Corefile` trong ConfigMap `coredns`. Dấu hiệu: CoreDNS Pods từ chối khởi chạy và log báo `Corefile syntax error`.
-- **4. Sai `dnsPolicy`:** Pod đặt `dnsPolicy: Default` thay vì `ClusterFirst`. Dấu hiệu: Pod không kết nối được bất kỳ Service VIP nào trong cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được chế độ hỏng nào.
-- **1đ:** Nêu được 1-2 trường hợp nhưng không chỉ ra dấu hiệu log `Loop detected` hay `OOMKilled`.
-- **2đ:** Giải thích chuẩn xác 4 chế độ hỏng DNS kinh điển và dấu hiệu nhận biết từng trường hợp.
-- **3đ:** Trả lời xuất sắc, chỉ ra câu lệnh `kubectl logs` kiểm tra CoreDNS.
-
-**Câu hỏi đào sâu:** Khi cả 2 Pods CoreDNS bị crash dính `Corefile Syntax Error` thì câu lệnh `kubectl edit configmap coredns -n kube-system` có chạy được không? *(Đáp án: Vẫn chạy được bình thường vì API Server không phụ thuộc vào CoreDNS).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Nguyên nhân gây ra lỗi `Loop Plugin Error` (`Loop 127.0.0.1:53 detected`) trong CoreDNS là gì và thao tác nào dùng để khắc phục triệt để?
-
-**Đáp án chuẩn:**
-- **Nguyên nhân xảy ra lỗi Loop:**
-  - Tệp `/etc/resolv.conf` trên máy chủ Worker Node chứa địa chỉ IP loopback **`127.0.0.53`** (do tiến trình `systemd-resolved` quản lý).
-  - Khi CoreDNS đọc tệp `/etc/resolv.conf` của Node để forward các truy vấn ngoại mạng, nó lại gửi gói tin tới `127.0.0.53` trên Node. Node lại chuyển tiếp ngược về CoreDNS -> Tạo ra vòng lặp vô hạn.
-- **Thao tác khắc phục triệt để:**
-  - Sửa tệp `/etc/resolv.conf` trên máy chủ Node thay thế địa chỉ `127.0.0.53` bằng IP DNS Server thực tế (như `8.8.8.8` hoặc DNS công ty).
-  - Hoặc cấu hình cờ `forward . /etc/resolv.conf` trong Corefile trỏ trực tiếp tới tệp resolv của upstream DNS.
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được lỗi Loop.
-- **1đ:** Trả lời do vòng lặp nhưng không nhớ địa chỉ IP `127.0.0.53` và tiến trình `systemd-resolved`.
-- **2đ:** Giải thích chuẩn xác nguyên nhân IP loopback `127.0.0.53` trên Node và thao tác sửa `/etc/resolv.conf` Node trỏ về `8.8.8.8`.
-- **3đ:** Trả lời xuất sắc, chỉ ra vai trò của plugin `loop` trong Corefile.
-
-**Câu hỏi đào sâu:** Tại sao plugin `loop` lại tự động ngắt tiến trình CoreDNS khi phát hiện vòng lặp? *(Đáp án: Để tránh việc gói tin DNS chạy vòng lặp làm bùng nổ CPU và tràn băng thông mạng cụm).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Sự khác nhau giữa 2 giá trị `dnsPolicy: ClusterFirst` và `dnsPolicy: Default` trong Pod spec là gì?
-
-**Đáp án chuẩn:**
-- **`dnsPolicy: ClusterFirst` (Mặc định cho 99% Pods):**
-  - Mọi truy vấn DNS từ Pod đều được gửi tới **CoreDNS cụm (`10.96.0.10`)** trước.
-  - Giúp Pod phân giải được cả tên miền Service nội bộ `.cluster.local` và tên miền ngoại mạng.
-- **`dnsPolicy: Default` (Bypass CoreDNS):**
-  - Pod **bỏ qua hoàn toàn CoreDNS cụm**, lấy trực tiếp cấu hình DNS Server từ máy chủ Node host.
-  - Phù hợp cho các Pods hạ tầng muốn gọi trực tiếp DNS bên ngoài mà không làm tăng tải cho CoreDNS.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `Default` là dùng CoreDNS còn `ClusterFirst` dùng DNS ngoài.
-- **1đ:** Trả lời `ClusterFirst` cho nội bộ còn `Default` cho bên ngoài nhưng không nêu được IP `10.96.0.10` và việc `Default` bypass CoreDNS.
-- **2đ:** Phân tích chuẩn xác `ClusterFirst` (dùng CoreDNS cụm `10.96.0.10`) vs `Default` (bypass CoreDNS, dùng DNS Node host).
-- **3đ:** Trả lời xuất sắc, chỉ ra giá trị `dnsPolicy: ClusterFirstWithHostNet` cho Pods chạy `hostNetwork: true`.
-
-**Câu hỏi đào sâu:** Nếu Pod đặt `hostNetwork: true` mà muốn gọi Service VIP nội bộ thì phải đặt `dnsPolicy` là gì? *(Đáp án: Phải đặt **`dnsPolicy: ClusterFirstWithHostNet`**).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Câu lệnh CLI nào giúp khởi tạo một Pod tạm thời để kiểm tra phân giải tên miền DNS `nslookup` trong đúng 2 giây mà không làm bẩn cụm?
-
-**Đáp án chuẩn:**
-- **Câu lệnh CLI chuẩn (One-liner Troubleshooting):**
-  `kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup web-svc.dev.svc.cluster.local`
-- **Giải thích cờ:**
-  - `run dnstest`: Khởi tạo Pod tạm tên `dnstest`.
-  - `-it --rm`: Mở terminal tương tác và **tự động xoá sạch Pod (`--rm`) ngay sau khi câu lệnh kết thúc**.
-  - `-- nslookup ...`: Thực thi lệnh tra cứu DNS.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ lệnh `kubectl run --rm`.
-- **1đ:** Viết được `kubectl run` nhưng thiếu cờ `--rm` làm để lại Pod rác trong cụm.
-- **2đ:** Viết chuẩn xác câu lệnh `kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup <domain>`.
-- **3đ:** Trả lời xuất sắc, chỉ ra cách dùng image `nicolaka/netshoot` thay cho busybox.
-
-**Câu hỏi đào sâu:** Nếu câu lệnh trên in ra `Server: 10.96.0.10` và `*** Can't find web-svc: No answer` thì nguyên nhân do đâu? *(Đáp án: Do Service `web-svc` không tồn tại hoặc sai Namespace).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Plugin `kubernetes` và `forward` trong tệp `Corefile` của ConfigMap `coredns` đóng vai trò gì trong việc xử lý truy vấn DNS?
-
-**Đáp án chuẩn:**
-- **Plugin `kubernetes` (Xử lý tên miền nội bộ):**
-  - Chịu trách nhiệm lắng nghe API Server và phân giải tất cả các tên miền nội bộ có đuôi **`cluster.local`** (như Service VIP, Headless Pod IPs).
-- **Plugin `forward` (Xử lý tên miền ngoại mạng):**
-  - Chịu trách nhiệm chuyển tiếp (Forward) tất cả các truy vấn tên miền ngoại mạng (như `google.com`, `github.com`) tới upstream DNS Server (đọc từ `/etc/resolv.conf` của Node hoặc IP `8.8.8.8`).
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết 2 plugin này.
-- **1đ:** Trả lời `kubernetes` cho K8s còn `forward` để chuyển tiếp nhưng không phân biệt được tên miền nội bộ `.cluster.local` vs tên miền ngoại mạng.
-- **2đ:** Giải thích chuẩn xác plugin `kubernetes` (xử lý `.cluster.local` nội bộ) vs `forward` (chuyển tiếp tên miền ngoài tới upstream DNS).
-- **3đ:** Trả lời xuất sắc, chỉ ra plugin `cache` nằm giữa để lưu cache DNS.
-
-**Câu hỏi đào sâu:** Nếu xoá mất khối plugin `forward` trong Corefile thì Pods trong cụm có gọi được `google.com` không? *(Đáp án: Không gọi được, các truy vấn ngoại mạng sẽ bị báo lỗi `NXDOMAIN` hoặc `SERVFAIL`).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Địa chỉ IP `10.96.0.10` trong tệp `/etc/resolv.conf` của Pod từ đâu ra và làm thế nào để đổi địa chỉ DNS Server này sang một IP khác?
-
-**Đáp án chuẩn:**
-- **Nguồn gốc IP `10.96.0.10`:**
-  - `10.96.0.10` chính là địa chỉ ClusterIP VIP của **Service tên `kube-dns`** nằm trong namespace `kube-system`.
-  - Kubelet tự động lấy IP này từ cờ `--cluster-dns=10.96.0.10` khi khởi động và ghi vào `/etc/resolv.conf` của 100% các Pods.
-- **Cách thay đổi:**
-  - Sửa cờ `--cluster-dns` trong file cấu hình Kubelet `/var/lib/kubelet/config.yaml` trên tất cả các Nodes và restart Kubelet.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo IP `10.96.0.10` là IP vật lý của Master Node.
-- **1đ:** Trả lời của Service `kube-dns` nhưng không giải thích được cờ `--cluster-dns` trong Kubelet config.
-- **2đ:** Giải thích chuẩn xác địa chỉ VIP của Service `kube-dns` và cờ `--cluster-dns=10.96.0.10` trong Kubelet config.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl get svc -n kube-system kube-dns`.
-
-**Câu hỏi đào sâu:** Tại sao tên Service trong namespace `kube-system` lại là `kube-dns` mà Pods lại tên là `coredns`? *(Đáp án: Vì ngày trước Kubernetes dùng Kube-DNS, sau này đổi sang CoreDNS nhưng giữ nguyên tên Service `kube-dns` để đảm bảo tương thích ngược).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do trễ 50ms mỗi request API ngoài vì dính `ndots:5`, 1 âm thầm do 100% cụm liệt DNS vì CoreDNS dính Loop error `127.0.0.53`) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Kết nối API ngoại mạng bị trễ 50ms do cờ `ndots:5` gây ra 3 truy vấn NXDOMAIN thừa):**
-   - *Triệu chứng:* Microservice gọi HTTPS sang `api.stripe.com` bị chậm 50ms cho mỗi request, CoreDNS CPU bị tăng cao.
-   - *Phát hiện:* Dùng `tcpdump port 53` thấy 3 truy vấn `api.stripe.com.dev.svc.cluster.local` bị báo `NXDOMAIN` trước khi tới truy vấn gốc.
-   - *Khắc phục:* Thêm trailing dot `api.stripe.com.` trong code hoặc biên soạn `spec.dnsConfig` hạ `ndots:2`.
-2. **Chế độ hỏng 2 (Âm thầm - Toàn bộ cụm bị liệt phân giải DNS do CoreDNS dính lỗi Loop plugin `127.0.0.53`):**
-   - *Triệu chứng:* 100% Pods trong cụm báo lỗi `Name or service not known`, CoreDNS Pods bị `CrashLoopBackOff`.
-   - *Phát hiện:* Kiểm tra `kubectl logs -n kube-system -l k8s-app=kube-dns` thấy log `Loop (127.0.0.1:53 -> ...) detected`.
-   - *Khắc phục:* Sửa tệp `/etc/resolv.conf` trên các máy chủ Worker Nodes thay địa chỉ `127.0.0.53` bằng IP DNS thực (`8.8.8.8`) và restart CoreDNS.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân 3 truy vấn NXDOMAIN thừa và địa chỉ loopback `127.0.0.53` trên Node (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi CoreDNS bị crash, câu lệnh nào kiểm tra nhanh xem Service `kube-dns` có đang lấp đầy Endpoints hay không trong 2 giây? *(Đáp án: Lệnh `kubectl get ep -n kube-system kube-dns`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Service FQDN có cấu trúc chuẩn <b style="color: var(--accent-primary);"><code><service-name>.<namespace>.svc.cluster.local</code></b> (gồm 5 thành phần)."*
+2. *"Tệp <code>/etc/resolv.conf</code> của Pod do Kubelet cấp chứa <code>nameserver 10.96.0.10</code>, dải <code>search</code> và cờ <b style="color: var(--accent-primary);"><code>options ndots:5</code></b>."*
+3. *"Cờ <code>ndots:5</code> ép mọi tên miền <code>< 5</code> dấu chấm phải thử 4 truy vấn search domain thừa; xử lý bằng trailing dot <code>.</code> hoặc <code>dnsConfig</code> <code>ndots:2</code>."*
+4. *"4 chế độ hỏng DNS kinh điển: CoreDNS OOMKilled, Loop Plugin (<code>127.0.0.53</code>), Corefile Syntax Error, và sai <code>dnsPolicy</code>."*
+5. *"Dùng <code>kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain></code> để kiểm tra DNS trong 2 giây."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1153,40 +1219,6 @@ spec:
 3. *"Cờ `ndots:5` ép mọi tên miền `< 5` dấu chấm phải thử 4 truy vấn search domain thừa; xử lý bằng trailing dot `.` hoặc `dnsConfig` `ndots:2`."*
 4. *"4 chế độ hỏng DNS kinh điển: CoreDNS OOMKilled, Loop Plugin (`127.0.0.53`), Corefile Syntax Error, và sai `dnsPolicy`."*
 5. *"Dùng `kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain>` để kiểm tra DNS trong 2 giây."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Cấu trúc FQDN chuẩn `<svc>.<ns>.svc.cluster.local` (trần 1đ nếu thiếu) |
-| Câu 2 | ★★★ | 3 | | Thông số mặc định trong `/etc/resolv.conf` (`nameserver 10.96.0.10`, `search`, `ndots:5`) |
-| Câu 3 | ★★★ | 3 | | Ý nghĩa kĩ thuật cờ `options ndots:5` quy định số dấu chấm `< 5` |
-| Câu 4 | 🔥 | 3 | | Tác hại 4 truy vấn DNS của `ndots:5` và 2 giải pháp (trailing dot & `ndots:2`) (trần 1đ nếu thiếu) |
-| Câu 5 | ★★★ | 3 | | Biên soạn `spec.dnsConfig` hạ `ndots` xuống `2` |
-| Câu 6 | ★★★ | 3 | | 4 chế độ hỏng DNS phổ biến (OOMKilled, Loop, Syntax Error, dnsPolicy) |
-| Câu 7 | ★★★ | 3 | | Nguyên nhân Loop error IP `127.0.0.53` và cách khắc phục |
-| Câu 8 | ★★★ | 3 | | Phân biệt `dnsPolicy: ClusterFirst` vs `dnsPolicy: Default` |
-| Câu 9 | ★★★ | 3 | | Lệnh one-liner `kubectl run --rm` nslookup trong 2s |
-| Câu 10 | ★★★ | 3 | | Vai trò plugin `kubernetes` (.cluster.local) và `forward` (ngoại mạng) |
-| Câu 11 | ★★★ | 3 | | Nguồn gốc IP ClusterIP DNS `10.96.0.10` từ Service `kube-dns` |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (Trễ API ngoài do ndots:5 & Liệt DNS toàn cụm do Loop 127.0.0.53) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các Pods trong cụm và phát hiện ngay các Pods đang sử dụng `dnsPolicy: Default`.
-2. **BTVN 2:** Thực hành sửa file `/etc/resolv.conf` trên một Worker Node thêm `nameserver 127.0.0.53` để tái lập sự cố Loop error trong môi trường lab và khắc phục.
-3. **BTVN 3:** Đo thời gian phản hồi bằng `time nslookup api.github.com` vs `time nslookup api.github.com.` từ bên trong Pod để chứng minh hiệu năng của Trailing Dot.
-4. **BTVN 4 — Chuẩn bị cho Buổi 24 (`buoi-24-ingress-va-gateway-api`):**
-   - *Câu 1:* Đối tượng `Ingress` và `Ingress Controller` trong Kubernetes đóng vai trò gì ở Layer 7 (HTTP/HTTPS) mà Service Layer 4 không đáp ứng được?
-   - *Câu 2:* Phân biệt kiến trúc định tuyến theo đường dẫn (Path-based Routing như `/api`, `/web`) và theo tên miền (Host-based Routing như `app.example.com`).
-   - *Câu 3:* Chuẩn API thế hệ mới `Gateway API` (`gateway.networking.k8s.io`) giải quyết những nhược điểm gì của Ingress API cũ trong việc phân quyền Role-based?
-
-> **Đoạn kết nối Buổi 24:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 24 — buổi học chuyên sâu về Ingress Controller (Nginx Ingress), định tuyến HTTP/HTTPS Layer 7, SSL Termination và chuẩn API thế hệ mới Gateway API trong CKA và CKAD.
 
 ---
 
@@ -1454,15 +1486,15 @@ kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50
 kubectl run dnstest --image=busybox:1.36 -it --rm -n <namespace> -- nslookup <domain>
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 24] Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute](cka-24-24-ingress-va-gateway-api.html).
+
 {% endraw %}

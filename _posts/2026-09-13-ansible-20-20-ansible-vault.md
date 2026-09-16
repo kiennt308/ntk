@@ -682,40 +682,12 @@ db_password: !vault |
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Luôn mã hóa dữ liệu nhạy cảm:** Dùng Ansible Vault mã hóa 100% mật khẩu và SSH keys bằng AES-256 trước khi commit Git.
-2. **Quản lý bằng CLI:** Nắm vững các lệnh `create`, `encrypt`, `view`, `edit`, `rekey`, và `encrypt_string`.
-3. **Thêm `.vault_pass` vào `.gitignore`:** Phân quyền 0600 và tuyệt đối không bao giờ push tệp chứa mật khẩu Vault lên kho Git.
-4. **Tự động hóa giải mã trong CI/CD:** Tiêm mật khẩu Vault qua Secret Variables của hệ thống CI/CD để tự động sinh file mật khẩu tạm thời.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Sử dụng biến giải mã từ Vault phải giữ nguyên tính Idempotency `changed=0` ở Lần chạy thứ hai.
-
-```mermaid
-mindmap
-  root((Ansible Vault))
-    Encryption Engine
-      AES-256 Ciphertext
-      $ANSIBLE_VAULT;1.1;AES256
-      Salt ngẫu nhiên bảo mật
-    CLI Operations
-      ansible-vault create/encrypt
-      ansible-vault view/edit
-      ansible-vault rekey
-      ansible-vault encrypt_string
-    Password Management
-      .vault_pass quyền 0600
-      Bắt buộc thêm vào .gitignore
-      --vault-id phân quyền Dev/Prod
-    Enterprise CI/CD
-      Secret Injection trong pipeline
-      Giải mã tạm thời trên RAM
-      Idempotency changed=0 ở Lần 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 21: Quản Trị Hệ Thống Nâng Cao Với RHEL System Roles: Tự Động Hóa SELinux, Firewall, Timesync & Storage](ansible-21-21-system-roles-selinux.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 21] Quản Trị Hệ Thống Nâng Cao Với RHEL System Roles: Tự Động Hóa SELinux, Sudoers, User/Group & Quản Trị Đặc Quyền Become](ansible-21-21-system-roles-selinux.html).
 
 {% endraw %}

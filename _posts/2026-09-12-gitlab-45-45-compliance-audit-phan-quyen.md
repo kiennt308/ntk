@@ -162,7 +162,7 @@ curl --request POST --header "PRIVATE-TOKEN: ${ADMIN_TOKEN}"      --header "Cont
 
 > **Bối Cảnh**: Một cựu kỹ sư cao cấp đã rời công ty 2 tháng nhưng vẫn dùng tài khoản cá nhân đăng nhập vào GitLab từ mạng gia đình và sao chép toàn bộ mã nguồn của dự án cốt lõi. Nguyên nhân là do dự án quản trị tài khoản thủ công và quản trị viên đã quên xóa tài khoản của kỹ sư này khỏi các Subgroups.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -199,7 +199,7 @@ curl --request POST --header "PRIVATE-TOKEN: ${ADMIN_TOKEN}"      --header "Cont
 - Tạo một Service Account tự động cho CI bot.
 - Cấu hình Audit Events Streaming và kiểm tra dữ liệu JSON sự kiện gửi về máy chủ nhận.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB QUẢN TRỊ PHÂN QUYỀN & AUDIT STREAMING
 
   [ 1. Cấu hình Group Security Settings ] ──► Bật Enforce 2FA & IP Allowlist
@@ -451,7 +451,7 @@ server.listen(8088, () => console.log('Audit Stream Collector listening on port 
 
 ### 7.2. Sơ Đồ Tư Duy Quản Trị Compliance & Phân Quyền (Mindmap)
 
-```
+```text
                      QUẢN TRỊ COMPLIANCE & PHÂN QUYỀN DOANH NGHIỆP
                                            │
         ┌──────────────────────────────────┼──────────────────────────────────┐

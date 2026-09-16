@@ -754,37 +754,12 @@ docker exec target1 cat /var/www/vhost_alpha/index.txt
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Phân biệt `import` vs `include`:** `import` nạp tĩnh ở Parse-time; `include` nạp động ở Runtime.
-2. **Dùng `import_playbook` cho Playbook:** Gom nhóm nhiều tệp Playbook độc lập bằng `import_playbook` ở cấp root ngoài khối `tasks:`.
-3. **Dùng `include_tasks` với `loop:`:** Nạp tệp task con linh hoạt trong vòng lặp mảng danh sách kèm `loop_control`.
-4. **Dùng `apply:` cho `include_tasks`:** Ép truyền thẻ `tags` và quyền `become` xuống các task con nạp động.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Mọi kịch bản chia nhỏ bằng include/import ở lượt chạy Lần 2 bắt buộc phải đạt `changed=0`.
-
-```mermaid
-mindmap
-  root((Include vs Import))
-    Static Re-use
-      import_tasks ở Parse-time
-      Hòa trộn phẳng Playbook Tree
-      Kế thừa Tags và Handlers trực tiếp
-      import_playbook gom nhóm Playbook
-    Dynamic Re-use
-      include_tasks ở Runtime
-      Hỗ trợ loop và when biến runtime
-      Cần khối apply để truyền Tags/Become
-      Tránh lồng quá 3 cấp
-    Best Practices
-      Tổ chức thư mục tasks/ và playbooks/
-      Tránh bẫy biến undefined ở Parse-time
-      Đảm bảo Idempotency changed=0 ở Lần 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 19: Quản Trị Đa Môi Trường Chuyên Nghiệp: Tách Biệt Inventory Staging/Production & Cấu Trúc Group_vars Layering](ansible-19-19-da-moi-truong-inventory.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 19] Quản Trị Đa Môi Trường (Multi-Environment): Tổ Chức Directory Layout Cho Dev, Staging, UAT & Production Không Lặp Code](ansible-19-19-da-moi-truong-inventory.html).
 
 {% endraw %}

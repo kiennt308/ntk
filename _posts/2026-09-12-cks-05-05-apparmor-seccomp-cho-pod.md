@@ -356,7 +356,7 @@ graph TD
        securityContext:
          seccompProfile:
            type: RuntimeDefault
-     ```
+```
 </div>
 </details>
 
@@ -480,7 +480,7 @@ Vì cờ <code>Unconfined</code> sẽ vô hiệu hóa hoàn toàn rào chắn Se
         containers:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
             image: nginx:alpine
-      ```
+```
 </div>
 </details>
 
@@ -493,24 +493,6 @@ Vì cờ <code>Unconfined</code> sẽ vô hiệu hóa hoàn toàn rào chắn Se
 | Seccomp Documentation | `https://kubernetes.io/docs/tutorials/security/seccomp/` | Tài liệu chuẩn K8s Seccomp |
 | AppArmor Documentation | `https://kubernetes.io/docs/tutorials/security/apparmor/` | Tài liệu chuẩn K8s AppArmor |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Hạn chế Syscalls bằng Seccomp | 12 phút | 12 phút |
-| §5. Bảo vệ tài nguyên bằng AppArmor | 12 phút | 12 phút |
-| §6. Cấu hình Seccomp JSON & Kubelet dir | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -837,26 +819,11 @@ test ! -f /etc/apparmor.d/k8s-deny-write && echo "CHECKPOINT 13 — ĐẠT" || e
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Seccomp dir | 15 phút | 15 phút |
-| L4. Bước 2: AppArmor Profile & Parser | 25 phút | 25 phút |
-| L5. Bước 3: Deploy AppArmor Pod | 25 phút | 25 phút |
-| L6. Bước 4: Seccomp JSON & Localhost Pod | 25 phút | 25 phút |
-| L7. Bước 5: Tra cứu describe pod | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -864,206 +831,327 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ý nghĩa của cấu hình <code>securityContext.seccompProfile.type: RuntimeDefault</code> và tại sao đây là tiêu chuẩn bắt buộc cho Pod Production CKS?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>Seccomp</code> hoạt động ở tầng <b style="color: var(--accent-primary);">System Calls</b> (giới hạn các lệnh gọi kernel như <code>reboot</code>, <code>mkdir</code> mà tiến trình được phép gọi). <code>AppArmor</code> hoạt động ở tầng <b style="color: var(--accent-primary);">Resource Control</b> (phân quyền chi tiết các đường dẫn tệp tin <code>/etc</code>, khả năng truy cập mạng hoặc thực thi file nhị phân).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>RuntimeDefault</code> kích hoạt hồ sơ Seccomp mặc định của Container Runtime (như CRI-O hoặc Docker/containerd). Hồ sơ này tự động vô hiệu hóa hơn 40 lệnh gọi hệ thống nguy hiểm (như <code>reboot</code>, <code>kexec_load</code>, <code>swapoff</code>), giúp thu hẹp bề mặt tấn công Kernel mà không ảnh hưởng tới ứng dụng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ RuntimeDefault.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ mặc định nhưng chưa rõ vô hiệu hóa 40+ syscalls nguy hiểm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác ý nghĩa <code>RuntimeDefault</code> và vai trò bảo vệ Linux Kernel.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đổi <code>type</code> thành <code>Unconfined</code> thì điều gì xảy ra? — Vô hiệu hóa Seccomp, mở toang toàn bộ 300+ syscalls của Linux Kernel cho container).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được Seccomp và AppArmor.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái chặn lệnh 1 cái chặn file nhưng chưa rõ syscalls vs resource control.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo ranh giới bảo mật L3/L4 syscalls của Seccomp vs Resource Control của AppArmor.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu muốn chặn một tiến trình trong container không được tạo thư mục mới thì dùng Seccomp hay AppArmor hiệu quả hơn? — Dùng Seccomp chặn syscall <code>mkdir</code> hoặc AppArmor deny write thư mục).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Quy định về đường dẫn của thuộc tính <code>localhostProfile</code> khi dùng <code>seccompProfile.type: Localhost</code> trong Pod spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>localhostProfile</code> bắt buộc phải là <b style="color: var(--accent-primary);">đường dẫn TƯƠNG ĐỐI</b> tính từ thư mục gốc Seccomp của Kubelet <code>/var/lib/kubelet/seccomp/</code> (ví dụ: tệp lưu tại <code>/var/lib/kubelet/seccomp/profiles/deny-mkdir.json</code> thì điền <code>localhostProfile: "profiles/deny-mkdir.json"</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng điền đường dẫn tuyệt đối bắt đầu bằng <code>/</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được đường dẫn tương đối nhưng quên thư mục root Kubelet <code>/var/lib/kubelet/seccomp/</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy định đường dẫn tương đối và hậu quả lỗi <code>CreateContainerError</code> nếu điền đường dẫn tuyệt đối.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu điền <code>localhostProfile: "/var/lib/kubelet/seccomp/my.json"</code> thì Kubelet báo lỗi gì? — Báo lỗi không tìm thấy file do bị nối chuỗi đường dẫn thành <code>/var/lib/kubelet/seccomp//var/...</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Quy trình 2 bước để nạp và kiểm tra một tệp AppArmor Profile mới trên Linux Worker Node là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bước 1: Nạp profile vào Linux Kernel bằng lệnh <code>sudo apparmor_parser -r -W /path/to/profile</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bước 2: Xác minh profile đã loaded thành công bằng lệnh <code>sudo aa-status | grep <profile-name></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh nạp AppArmor profile.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng apparmor_parser nhưng quên lệnh aa-status kiểm tra.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 2 bước nạp và kiểm tra AppArmor Profile trên Node.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>-r</code> trong lệnh <code>apparmor_parser</code> đóng vai trò gì? — Cờ <code>replace</code> để nạp đè profile nếu profile đó đã tồn tại trong Kernel).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cú pháp annotation chuẩn để áp dụng một AppArmor Profile có tên <code>k8s-deny-write</code> cho container <code>web</code> trong Pod spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">annotations:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apparmor.security.beta.kubernetes.io/container.web: "localhost/k8s-deny-write"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai tên annotation hoặc thiếu tiền tố localhost/.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng tên container nhưng quên tiền tố <code>"localhost/"</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% cú pháp annotation AppArmor trong K8s.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu gõ thiếu tiền tố <code>localhost/</code> (ví dụ chỉ điền <code>"k8s-deny-write"</code>) thì Pod bị lỗi gì? — Pod bị kẹt không khởi tạo được container với lỗi <code>BlockedByAppArmor</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao tệp Seccomp Profile JSON hay tệp AppArmor Profile bắt buộc phải được sao chép sang TẤT CẢ các Worker Nodes trong cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Seccomp và AppArmor là các tính năng bảo mật cấp độ Kernel cục bộ trên từng Node. Kubernetes không tự động đồng bộ tệp profile từ Control Plane sang các Worker Nodes. Nếu Pod bị đẩy sang một Node thiếu tệp profile, Pod sẽ bị rớt lỗi ngay lập tức.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng K8s tự đồng bộ tệp profile sang các Nodes.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thiếu file rớt Pod nhưng chưa làm rõ tính cục bộ cấp Kernel của Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo tính chất cục bộ cấp Kernel của Node và tầm quan trọng của việc đồng bộ profile đa Node.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để copy tệp seccomp JSON từ <code>cp-01</code> sang <code>worker-01</code>? — Dùng lệnh <code>scp /var/lib/kubelet/seccomp/my.json worker-01:/var/lib/kubelet/seccomp/</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cấu trúc một tệp Seccomp Profile JSON chuẩn CKS phải định nghĩa thuộc tính <code>defaultAction</code> và mảng <code>syscalls</code> ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Định nghĩa <code>"defaultAction": "SCMP_ACT_ERRNO"</code> để mặc định từ chối tất cả các syscalls. Sau đó khai báo mảng <code>syscalls</code> chứa danh sách các syscalls an toàn (như <code>read</code>, <code>write</code>, <code>execve</code>) với thuộc tính <code>"action": "SCMP_ACT_ALLOW"</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa SCMP_ACT_ERRNO và SCMP_ACT_ALLOW.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được defaultAction nhưng chưa rõ mảng syscalls ALLOW.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên tắc Whitelisting trong cấu trúc tệp Seccomp Profile JSON.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đặt <code>"defaultAction": "SCMP_ACT_LOG"</code> thì Seccomp hoạt động ở chế độ nào? — Hoạt động ở chế độ Audit/Log, chỉ ghi log cảnh báo chứ không chặn syscalls).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Khi một ứng dụng trong container bị từ chối thực thi do dính luật AppArmor hoặc Seccomp, mã lỗi hệ thống và sự kiện <code>describe</code> hiển thị là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ứng dụng nhận mã lỗi <b style="color: var(--accent-primary);"><code>Permission denied</code></b> (AppArmor) hoặc <b style="color: var(--accent-primary);"><code>Operation not permitted</code></b> (Seccomp ERRNO). Sự kiện trong <code>kubectl describe pod</code> hiển thị trạng thái <b style="color: var(--accent-primary);"><code>BlockedByAppArmor</code></b> hoặc <b style="color: var(--accent-primary);"><code>CreateContainerError</code></b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết mã lỗi hệ thống của AppArmor/Seccomp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Permission denied nhưng thiếu sự kiện describe pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác các mã lỗi hệ thống và sự kiện describe pod tương ứng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào trên Node dùng để tra cứu xem syscall nào vừa bị Seccomp/AppArmor chặn? — Lệnh <code>sudo dmesg | grep -i "seccomp\|apparmor"</code> hoặc xem <code>/var/log/audit/audit.log</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Sự khác nhau giữa <code>Enforcing Mode</code> và <code>Complain Mode</code> trong AppArmor là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>Enforcing Mode</code> áp đặt luật cưỡng chế, CHẶN THẲNG các thao tác vi phạm và trả về lỗi <code>Permission denied</code>. <code>Complain Mode</code> chỉ ghi vết vi phạm vào nhật ký audit log mà VẪN CHO PHÉP tiến trình thực thi bình thường.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa Enforcing và Complain mode.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái chặn 1 cái ghi log nhưng chưa rõ tên thuật ngữ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự khác biệt và kịch bản dùng Complain mode để thử nghiệm profile mới.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để chuyển một AppArmor profile sang chế độ Complain mode? — Lệnh <code>sudo aa-complain /path/to/profile</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao không nên viết một Seccomp Profile quá hẹp chỉ chứa 5-10 syscalls ứng dụng mà bỏ qua các syscalls của Container Runtime?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì trước khi mã nguồn ứng dụng chạy, Container Runtime (như containerd) cần thực hiện hàng chục syscalls nền tảng để khởi tạo container (như <code>clone</code>, <code>futex</code>, <code>epoll_create</code>, <code>setgid</code>). Nếu chặn các syscalls này, container sẽ bị crash ngay từ bước khởi tạo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng chỉ cần khai báo syscalls của ứng dụng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được crash container nhưng chưa rõ nhu cầu syscalls của Container Runtime.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do cần duy trì các syscalls nền tảng của Container Runtime trong Seccomp profile.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Giải pháp an toàn nhất để tạo Custom Seccomp Profile không bị thiếu syscalls nền tảng là gì? — Đã dựa trên mẫu <code>RuntimeDefault</code> profile và chỉ loại bỏ bớt các syscalls nguy hiểm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của một Pod Hardened hoàn chỉnh kết hợp cả Seccomp <code>RuntimeDefault</code> và AppArmor profile <code>localhost/k8s-deny-write</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: hardened-pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">annotations:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apparmor.security.beta.kubernetes.io/container.web: "localhost/k8s-deny-write"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">securityContext:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">seccompProfile:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">type: RuntimeDefault</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: web</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: nginx:alpine</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai vị trí seccompProfile hoặc annotation AppArmor.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng seccompProfile nhưng sai cú pháp annotation AppArmor.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Pod Hardened CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cột mốc hoàn thành Buổi 50 đánh dấu tỉ lệ hoàn thành khoá học đạt bao nhiêu phần trăm? — Đạt <b style="color: var(--accent-primary);">69,4 %</b> khoá học (50/72 buổi)).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để gia cố bảo mật Linux Kernel cho Pods chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bật <code>seccompProfile.type: RuntimeDefault</code> cho tất cả Pods Production.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng đường dẫn TƯƠNG ĐỐI cho <code>localhostProfile</code> tính từ <code>/var/lib/kubelet/seccomp/</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nạp AppArmor Profile bằng <code>apparmor_parser -r -W</code> và kiểm tra qua <code>aa-status</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đồng bộ đầy đủ các tệp profile AppArmor/Seccomp sang TẤT CẢ các Worker Nodes trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Kernel Hardening CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 51 là gì? — Học về <code>TLS và Bảo mật etcd CKS: Encryption at Rest & etcdctl Auditing</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Ý nghĩa của cấu hình `securityContext.seccompProfile.type: RuntimeDefault` và tại sao đây là tiêu chuẩn bắt buộc cho Pod Production CKS?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `RuntimeDefault` kích hoạt hồ sơ Seccomp mặc định của Container Runtime (như CRI-O hoặc Docker/containerd). Hồ sơ này tự động vô hiệu hóa hơn 40 lệnh gọi hệ thống nguy hiểm (như `reboot`, `kexec_load`, `swapoff`), giúp thu hẹp bề mặt tấn công Kernel mà không ảnh hưởng tới ứng dụng.
+1. <b style="color: var(--accent-primary);">"Gia cố bảo mật nhân Linux Kernel bằng cách bật <code>seccompProfile.type: RuntimeDefault</code> để vô hiệu hóa hơn 40 syscalls nguy hiểm."</b>
+2. <b style="color: var(--accent-primary);">"Luôn điền đường dẫn TƯƠNG ĐỐI cho <code>localhostProfile</code> tính từ thư mục Kubelet <code>/var/lib/kubelet/seccomp/</code>."</b>
+3. <b style="color: var(--accent-primary);">"Nạp AppArmor Profile bằng <code>apparmor_parser -r -W</code> và đính kèm vào Pod qua annotation <code>localhost/<profile-name></code>."</b>
+4. <b style="color: var(--accent-primary);">"Bắt buộc đồng bộ tệp profile AppArmor và Seccomp JSON sang 100% các Worker Nodes để tránh lỗi rớt Pod."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ RuntimeDefault.
-- 1đ: Nêu được cờ mặc định nhưng chưa rõ vô hiệu hóa 40+ syscalls nguy hiểm.
-- 3đ: Trình bày chuẩn xác ý nghĩa `RuntimeDefault` và vai trò bảo vệ Linux Kernel.
-
-**Câu hỏi đào sâu:** (Nếu đổi `type` thành `Unconfined` thì điều gì xảy ra? — Vô hiệu hóa Seccomp, mở toang toàn bộ 300+ syscalls của Linux Kernel cho container).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Quy định về đường dẫn của thuộc tính `localhostProfile` khi dùng `seccompProfile.type: Localhost` trong Pod spec là gì?
-
-**Đáp án chuẩn:** `localhostProfile` bắt buộc phải là **đường dẫn TƯƠNG ĐỐI** tính từ thư mục gốc Seccomp của Kubelet `/var/lib/kubelet/seccomp/` (ví dụ: tệp lưu tại `/var/lib/kubelet/seccomp/profiles/deny-mkdir.json` thì điền `localhostProfile: "profiles/deny-mkdir.json"`).
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng điền đường dẫn tuyệt đối bắt đầu bằng `/`.
-- 1đ: Nêu được đường dẫn tương đối nhưng quên thư mục root Kubelet `/var/lib/kubelet/seccomp/`.
-- 3đ: Phân tích chuẩn xác quy định đường dẫn tương đối và hậu quả lỗi `CreateContainerError` nếu điền đường dẫn tuyệt đối.
-
-**Câu hỏi đào sâu:** (Nếu điền `localhostProfile: "/var/lib/kubelet/seccomp/my.json"` thì Kubelet báo lỗi gì? — Báo lỗi không tìm thấy file do bị nối chuỗi đường dẫn thành `/var/lib/kubelet/seccomp//var/...`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Quy trình 2 bước để nạp và kiểm tra một tệp AppArmor Profile mới trên Linux Worker Node là gì?
-
-**Đáp án chuẩn:**
-- Bước 1: Nạp profile vào Linux Kernel bằng lệnh `sudo apparmor_parser -r -W /path/to/profile`.
-- Bước 2: Xác minh profile đã loaded thành công bằng lệnh `sudo aa-status | grep <profile-name>`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh nạp AppArmor profile.
-- 1đ: Nêu đúng apparmor_parser nhưng quên lệnh aa-status kiểm tra.
-- 3đ: Trình bày chính xác 2 bước nạp và kiểm tra AppArmor Profile trên Node.
-
-**Câu hỏi đào sâu:** (Cờ `-r` trong lệnh `apparmor_parser` đóng vai trò gì? — Cờ `replace` để nạp đè profile nếu profile đó đã tồn tại trong Kernel).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cú pháp annotation chuẩn để áp dụng một AppArmor Profile có tên `k8s-deny-write` cho container `web` trong Pod spec là gì?
-
-**Đáp án chuẩn:**
-```yaml
-metadata:
-  annotations:
-    apparmor.security.beta.kubernetes.io/container.web: "localhost/k8s-deny-write"
-```
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai tên annotation hoặc thiếu tiền tố localhost/.
-- 1đ: Nêu đúng tên container nhưng quên tiền tố `"localhost/"`.
-- 3đ: Viết chuẩn xác 100% cú pháp annotation AppArmor trong K8s.
-
-**Câu hỏi đào sâu:** (Nếu gõ thiếu tiền tố `localhost/` (ví dụ chỉ điền `"k8s-deny-write"`) thì Pod bị lỗi gì? — Pod bị kẹt không khởi tạo được container với lỗi `BlockedByAppArmor`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Tại sao tệp Seccomp Profile JSON hay tệp AppArmor Profile bắt buộc phải được sao chép sang TẤT CẢ các Worker Nodes trong cụm?
-
-**Đáp án chuẩn:** Vì Seccomp và AppArmor là các tính năng bảo mật cấp độ Kernel cục bộ trên từng Node. Kubernetes không tự động đồng bộ tệp profile từ Control Plane sang các Worker Nodes. Nếu Pod bị đẩy sang một Node thiếu tệp profile, Pod sẽ bị rớt lỗi ngay lập tức.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng K8s tự đồng bộ tệp profile sang các Nodes.
-- 1đ: Nêu được thiếu file rớt Pod nhưng chưa làm rõ tính cục bộ cấp Kernel của Node.
-- 3đ: Phân tích thấu đáo tính chất cục bộ cấp Kernel của Node và tầm quan trọng của việc đồng bộ profile đa Node.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để copy tệp seccomp JSON từ `cp-01` sang `worker-01`? — Dùng lệnh `scp /var/lib/kubelet/seccomp/my.json worker-01:/var/lib/kubelet/seccomp/`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cấu trúc một tệp Seccomp Profile JSON chuẩn CKS phải định nghĩa thuộc tính `defaultAction` và mảng `syscalls` ra sao?
-
-**Đáp án chuẩn:** Định nghĩa `"defaultAction": "SCMP_ACT_ERRNO"` để mặc định từ chối tất cả các syscalls. Sau đó khai báo mảng `syscalls` chứa danh sách các syscalls an toàn (như `read`, `write`, `execve`) với thuộc tính `"action": "SCMP_ACT_ALLOW"`.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa SCMP_ACT_ERRNO và SCMP_ACT_ALLOW.
-- 1đ: Nêu được defaultAction nhưng chưa rõ mảng syscalls ALLOW.
-- 3đ: Phân tích chuẩn xác nguyên tắc Whitelisting trong cấu trúc tệp Seccomp Profile JSON.
-
-**Câu hỏi đào sâu:** (Nếu đặt `"defaultAction": "SCMP_ACT_LOG"` thì Seccomp hoạt động ở chế độ nào? — Hoạt động ở chế độ Audit/Log, chỉ ghi log cảnh báo chứ không chặn syscalls).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Khi một ứng dụng trong container bị từ chối thực thi do dính luật AppArmor hoặc Seccomp, mã lỗi hệ thống và sự kiện `describe` hiển thị là gì?
-
-**Đáp án chuẩn:** Ứng dụng nhận mã lỗi **`Permission denied`** (AppArmor) hoặc **`Operation not permitted`** (Seccomp ERRNO). Sự kiện trong `kubectl describe pod` hiển thị trạng thái **`BlockedByAppArmor`** hoặc **`CreateContainerError`**.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết mã lỗi hệ thống của AppArmor/Seccomp.
-- 1đ: Nêu được Permission denied nhưng thiếu sự kiện describe pod.
-- 3đ: Phân tích chuẩn xác các mã lỗi hệ thống và sự kiện describe pod tương ứng.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào trên Node dùng để tra cứu xem syscall nào vừa bị Seccomp/AppArmor chặn? — Lệnh `sudo dmesg | grep -i "seccomp\|apparmor"` hoặc xem `/var/log/audit/audit.log`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Sự khác nhau giữa `Enforcing Mode` và `Complain Mode` trong AppArmor là gì?
-
-**Đáp án chuẩn:** `Enforcing Mode` áp đặt luật cưỡng chế, CHẶN THẲNG các thao tác vi phạm và trả về lỗi `Permission denied`. `Complain Mode` chỉ ghi vết vi phạm vào nhật ký audit log mà VẪN CHO PHÉP tiến trình thực thi bình thường.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa Enforcing và Complain mode.
-- 1đ: Nêu được 1 cái chặn 1 cái ghi log nhưng chưa rõ tên thuật ngữ.
-- 3đ: Phân tích thấu đáo sự khác biệt và kịch bản dùng Complain mode để thử nghiệm profile mới.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để chuyển một AppArmor profile sang chế độ Complain mode? — Lệnh `sudo aa-complain /path/to/profile`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Tại sao không nên viết một Seccomp Profile quá hẹp chỉ chứa 5-10 syscalls ứng dụng mà bỏ qua các syscalls của Container Runtime?
-
-**Đáp án chuẩn:** Vì trước khi mã nguồn ứng dụng chạy, Container Runtime (như containerd) cần thực hiện hàng chục syscalls nền tảng để khởi tạo container (như `clone`, `futex`, `epoll_create`, `setgid`). Nếu chặn các syscalls này, container sẽ bị crash ngay từ bước khởi tạo.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng chỉ cần khai báo syscalls của ứng dụng.
-- 1đ: Nêu được crash container nhưng chưa rõ nhu cầu syscalls của Container Runtime.
-- 3đ: Phân tích chuẩn xác lý do cần duy trì các syscalls nền tảng của Container Runtime trong Seccomp profile.
-
-**Câu hỏi đào sâu:** (Giải pháp an toàn nhất để tạo Custom Seccomp Profile không bị thiếu syscalls nền tảng là gì? — Đã dựa trên mẫu `RuntimeDefault` profile và chỉ loại bỏ bớt các syscalls nguy hiểm).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một Pod Hardened hoàn chỉnh kết hợp cả Seccomp `RuntimeDefault` và AppArmor profile `localhost/k8s-deny-write` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hardened-pod
-  namespace: prod
-  annotations:
-    apparmor.security.beta.kubernetes.io/container.web: "localhost/k8s-deny-write"
-spec:
-  securityContext:
-    seccompProfile:
-      type: RuntimeDefault
-  containers:
-    - name: web
-      image: nginx:alpine
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai vị trí seccompProfile hoặc annotation AppArmor.
-- 1đ: Nêu đúng seccompProfile nhưng sai cú pháp annotation AppArmor.
-- 3đ: Viết chuẩn xác 100% bản kê khai Pod Hardened CKS.
-
-**Câu hỏi đào sâu:** (Cột mốc hoàn thành Buổi 50 đánh dấu tỉ lệ hoàn thành khoá học đạt bao nhiêu phần trăm? — Đạt **69,4 %** khoá học (50/72 buổi)).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để gia cố bảo mật Linux Kernel cho Pods chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-1. Bật `seccompProfile.type: RuntimeDefault` cho tất cả Pods Production.
-2. Dùng đường dẫn TƯƠNG ĐỐI cho `localhostProfile` tính từ `/var/lib/kubelet/seccomp/`.
-3. Nạp AppArmor Profile bằng `apparmor_parser -r -W` và kiểm tra qua `aa-status`.
-4. Đồng bộ đầy đủ các tệp profile AppArmor/Seccomp sang TẤT CẢ các Worker Nodes trong cụm.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Kernel Hardening CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 51 là gì? — Học về `TLS và Bảo mật etcd CKS: Encryption at Rest & etcdctl Auditing`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1073,28 +1161,6 @@ spec:
 2. **"Luôn điền đường dẫn TƯƠNG ĐỐI cho `localhostProfile` tính từ thư mục Kubelet `/var/lib/kubelet/seccomp/`."**
 3. **"Nạp AppArmor Profile bằng `apparmor_parser -r -W` và đính kèm vào Pod qua annotation `localhost/<profile-name>`."**
 4. **"Bắt buộc đồng bộ tệp profile AppArmor và Seccomp JSON sang 100% các Worker Nodes để tránh lỗi rớt Pod."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS System Hardening |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc bảo mật nhân Linux AppArmor & Seccomp |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp Seccomp Profile JSON tùy chỉnh chặn syscall `mkdir` và nạp vào thư mục Kubelet Seccomp.
-- **BTVN 2:** Thực hành nạp tệp AppArmor Profile bằng `apparmor_parser` và gắn vào Pod annotation kiểm tra bị từ chối ghi tệp `/tmp`.
-- **BTVN 3:** So sánh điểm khác biệt giữa AppArmor (trên Ubuntu/Debian) và SELinux (trên RHEL/CentOS).
-- **BTVN 4 (Chuẩn bị cho Buổi 51 — TLS và Bảo mật etcd CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Mã hóa dữ liệu lưu trữ tại chỗ (Encryption at Rest) cho etcd trong CKS đóng vai trò gì?
-  2. Tệp cấu hình `EncryptionConfiguration` sử dụng các provider mã hóa nào (như `aescbc`, `secretbox`, `kms`)?
-  3. Lệnh CLI `etcdctl` nào dùng để kiểm tra trực tiếp chuỗi dữ liệu Secret lưu trong etcd có bị mã hóa hay không?
 
 ---
 
@@ -1355,14 +1421,15 @@ annotations:
   apparmor.security.beta.kubernetes.io/container.app: "localhost/profile-name"
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 06] Bảo Mật Toàn Diện etcd: Mã Hóa Dữ Liệu Lưu Trữ (Encryption at Rest), TLS & Kiểm Tra An Ninh etcdctl](cks-06-06-tls-va-bao-mat-etcd.html).
+
 {% endraw %}

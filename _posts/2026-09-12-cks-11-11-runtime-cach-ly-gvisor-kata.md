@@ -461,7 +461,7 @@ Vì việc đánh chặn syscalls qua Sentry trong user-space làm tăng độ t
         containers:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
             image: nginx:alpine
-      ```
+```
 </div>
 </details>
 
@@ -474,24 +474,6 @@ Vì việc đánh chặn syscalls qua Sentry trong user-space làm tăng độ t
 | RuntimeClass Kubernetes | `https://kubernetes.io/docs/concepts/containers/runtime-class/` | Tài liệu chuẩn RuntimeClass |
 | gVisor Documentation | `https://gvisor.dev/docs/` | Tài liệu chuẩn công cụ gVisor |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Kiến trúc Sandboxed Runtimes | 12 phút | 12 phút |
-| §5. Định nghĩa đối tượng RuntimeClass | 12 phút | 12 phút |
-| §6. runtimeClassName & Benchmarking | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -542,7 +524,7 @@ graph TD
     RC -->|"3. Invoke CRI containerd"| Containerd[containerd CRI Plugin]
     Containerd -->|"4. Launch runsc Sandbox"| gVisorSentry[gVisor Sentry User-Space Kernel]
     gVisorSentry -->|"5. Isolated Execution"| UntrustedApp[Untrusted Pod Container]
-```yaml
+```
 
 ---
 
@@ -560,19 +542,19 @@ metadata:
   name: gvisor
 handler: gvisor
 EOF
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab56`.**
 
 ```bash
 kubectl get ns lab56 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/runtimeclass-gvisor.yaml`.**
 
 ```bash
 grep -q "handler: gvisor" /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+```
 
 ---
 
@@ -582,19 +564,19 @@ grep -q "handler: gvisor" /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 2 �
 
 ```bash
 kubectl apply -f /tmp/runtimeclass-gvisor.yaml
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra `RuntimeClass` gvisor qua jsonpath.**
 
 ```bash
 kubectl get runtimeclass gvisor -o jsonpath='{.metadata.name}' | grep -qx gvisor && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra cờ `handler: gvisor`.**
 
 ```bash
 kubectl get runtimeclass gvisor -o jsonpath='{.handler}' | grep -qx gvisor && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```yaml
+```
 
 ---
 
@@ -617,25 +599,25 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-untrusted.yaml 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra tệp `/tmp/pod-untrusted.yaml`.**
 
 ```bash
 grep -q "runtimeClassName: gvisor" /tmp/pod-untrusted.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra lệnh apply Pod `untrusted-pod`.**
 
 ```bash
 test -f /tmp/pod-untrusted.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra Pod `untrusted-pod` sẵn sàng.**
 
 ```bash
 test -f /tmp/pod-untrusted.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+```
 
 ---
 
@@ -645,13 +627,13 @@ test -f /tmp/pod-untrusted.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECK
 
 ```bash
 test -f /tmp/runtimeclass-gvisor.yaml && echo "SANDBOX_VERIFIED" >/dev/null
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra đối soát kernel sandbox.**
 
 ```bash
 test -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```yaml
+```
 
 ---
 
@@ -673,31 +655,31 @@ overhead:
 EOF
 
 kubectl apply -f /tmp/runtimeclass-kata.yaml 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra cờ `handler: kata` trong `/tmp/runtimeclass-kata.yaml`.**
 
 ```bash
 grep -q "handler: kata" /tmp/runtimeclass-kata.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+```
 
 **CHECKPOINT 10 — Kiểm tra nạp `RuntimeClass` kata.**
 
 ```bash
 test -f /tmp/runtimeclass-kata.yaml && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```bash
+```
 
 **CHECKPOINT 11 — Tra cứu danh sách tất cả `RuntimeClass`.**
 
 ```bash
 kubectl get runtimeclass | grep -q "gvisor" && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — So sánh runtime tiêu chuẩn và sandbox.**
 
 ```bash
 test -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -709,13 +691,13 @@ test -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo
 kubectl delete namespace lab56
 kubectl delete runtimeclass gvisor kata 2>/dev/null || true
 rm -f /tmp/runtimeclass-gvisor.yaml /tmp/pod-untrusted.yaml /tmp/runtimeclass-kata.yaml
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -761,26 +743,11 @@ test ! -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 13 — ĐẠT" || ec
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & gVisor RuntimeClass | 15 phút | 15 phút |
-| L4. Bước 2: Apply & Verify RuntimeClass | 25 phút | 25 phút |
-| L5. Bước 3: Deploy Untrusted Pod gVisor | 25 phút | 25 phút |
-| L6. Bước 4: Verify Kernel Sandbox Isolation | 25 phút | 25 phút |
-| L7. Bước 5: Kata RuntimeClass & Overhead | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -788,192 +755,313 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Vai trò của đối tượng <code>RuntimeClass</code> trong Kubernetes và cách kết nối nó với CRI Container Engine trên Node là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>runc</code>: Chia sẻ dùng chung 100% nhân Linux Kernel với Host Node (chỉ cách ly bằng cgroups & namespaces).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>gVisor</code> (<code>runsc</code>): Giả lập nhân Linux ảo bằng Sentry Kernel viết bằng Go trong user-space, đánh chặn 100% syscalls.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Kata Containers</code>: Khởi tạo một Micro-VM độc lập chạy nhân Linux Kernel riêng biệt thông qua KVM/QEMU.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>RuntimeClass</code> làm cầu nối chỉ định môi trường thực thi cho Pod. Cờ <code>handler</code> trong <code>RuntimeClass</code> phải trùng khớp 100% với tên runtime được khai báo trong tệp cấu hình <code>/etc/containerd/config.toml</code> của Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết đối tượng RuntimeClass.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được RuntimeClass chọn runtime nhưng chưa rõ mối liên kết cờ handler với containerd config.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò và cơ chế liên kết cờ <code>handler</code> với <code>containerd</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp YAML <code>apiVersion</code> và <code>kind</code> chuẩn để tạo RuntimeClass là gì? — <code>apiVersion: node.k8s.io/v1</code> và <code>kind: RuntimeClass</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 3 loại runtime.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được runc dùng chung kernel nhưng nhầm lẫn giữa gVisor và Kata.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo kiến trúc dùng chung kernel (<code>runc</code>), user-space Sentry (<code>gVisor</code>), và Micro-VM (<code>Kata</code>).</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tại sao gVisor lại an toàn hơn <code>runc</code> trước nguy cơ Container Escape? — Vì tiến trình trong gVisor không thể gọi trực tiếp Host Kernel mà bị Sentry đánh chặn hoàn toàn).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp thuộc tính YAML chuẩn dưới Pod manifest được dùng để ép buộc Kubelet khởi tạo container qua gVisor Sandbox là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>spec.runtimeClassName: gvisor</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết thuộc tính runtimeClassName.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được runtimeClassName nhưng đặt sai vị trí cấp độ spec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% thuộc tính <code>runtimeClassName: gvisor</code> đặt trực tiếp dưới <code>spec</code> của Pod.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu không khai báo <code>runtimeClassName</code> trong Pod spec thì Kubelet sử dụng runtime nào? — Sử dụng runtime mặc định của cụm, thường là <code>runc</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Thuộc tính <code>spec.overhead.podFixed</code> trong <code>RuntimeClass</code> đóng vai trò gì trong việc tính toán tài nguyên của K8s Scheduler?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khai báo dung lượng CPU và Memory phát sinh thêm (fixed overhead) do các tiến trình Sandbox Daemon (gVisor shim hay Kata Micro-VM) tiêu tốn ngầm. Điều này giúp K8s Scheduler tính toán chính xác và không xếp Pod quá tải RAM/CPU của Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết thuộc tính spec.overhead.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được giới hạn tài nguyên nhưng chưa rõ việc tính thêm chi phí ngầm cho Scheduler.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò của <code>spec.overhead.podFixed</code> bảo vệ Node khỏi rủi ro OOM ngầm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sandbox Runtime nào tiêu tốn <code>overhead</code> bộ nhớ lớn hơn: gVisor hay Kata Containers? — Kata Containers tiêu tốn overhead lớn hơn do khởi chạy hẳn 1 Micro-VM).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cách kiểm tra và đối soát nhanh nhất để xác minh một Pod đang chạy thực sự nằm bên trong gVisor Sandbox thông qua CLI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chạy lệnh <code>kubectl exec <pod-name> -- dmesg</code> hoặc <code>kubectl exec <pod-name> -- uname -a</code>. Nếu là gVisor Sandbox, kết quả sẽ in ra chuỗi <code>gVisor</code> hoặc phiên bản kernel giả lập chứ không phải kernel Host Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách kiểm tra sandbox kernel.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng uname -a nhưng chưa rõ thông tin gVisor Kernel in ra.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác câu lệnh đối soát <code>kubectl exec -- dmesg</code> / <code>uname -a</code> xác minh gVisor Kernel.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu chạy <code>uname -r</code> trong Pod mà in ra <code>5.15.0-generic</code> của Ubuntu Host thì Pod đó đang chạy runtime nào? — Đang chạy <code>runc</code> tiêu chuẩn, chưa vào Sandbox!).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Nguyên nhân gốc rễ và cách khắc phục khi một Pod triển khai bị kẹt ở trạng thái <code>CreateContainerError</code> liên quan tới <code>RuntimeClass</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nguyên nhân do gõ sai tên cờ <code>handler</code> trong <code>RuntimeClass</code> so với cấu hình trong <code>/etc/containerd/config.toml</code>, hoặc chưa cài đặt gói nhị phân runtime (<code>runsc</code>) trên Node. Cách sửa: Soát lại tên handler trùng 100% và restart containerd (<code>systemctl restart containerd</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không chẩn đoán được lỗi CreateContainerError của RuntimeClass.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gõ sai tên nhưng chưa rõ cách đối soát file config.toml và restart containerd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên nhân lệch handler name và quy trình gỡ lỗi triệt để.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cần làm gì trên Node sau khi chỉnh sửa tệp <code>/etc/containerd/config.toml</code>? — Bắt buộc phải chạy <code>sudo systemctl restart containerd</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự đánh đổi về mặt hiệu năng (Performance Trade-offs) khi áp dụng gVisor Sandbox cho một ứng dụng là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">gVisor tăng độ trễ (latency overhead) và giảm thông lượng (throughput) đối với các thao tác I/O đĩa cứng và gọi hệ thống mạng tần suất cao, do mọi syscall đều bị Sentry đánh chặn và xử lý trong user-space.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng gVisor không làm giảm hiệu năng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được bị chậm nhưng chưa rõ rủi ro latency I/O đĩa và syscalls.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự đánh đổi về latency I/O và lý do không nên dùng gVisor cho ứng dụng đĩa cứng nặng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Loại ứng dụng nào phù hợp nhất để triển khai gVisor Sandbox? — Ứng dụng xử lý mã nguồn không tin cậy (untrusted user code), parser tài liệu bên ngoài, webapp multi-tenant).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Làm thế nào để đảm bảo một Pod sử dụng <code>RuntimeClass</code> <code>gvisor</code> chỉ được xếp lịch lên các Worker Nodes đã được cài đặt sẵn gVisor daemon?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khai báo khối <code>spec.scheduling.nodeSelector</code> bên trong bản kê khai của <code>RuntimeClass</code> (ví dụ <code>sandbox: "true"</code>), K8s Scheduler sẽ tự động đẩy Pod tới đúng Node có nhãn đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách cấu hình nodeSelector trong RuntimeClass.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng nhãn node nhưng đặt trực tiếp dưới Pod spec thay vì RuntimeClass spec.scheduling.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác tính năng <code>spec.scheduling</code> của <code>RuntimeClass</code> để tự động hóa định tuyến Node.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ưu điểm của việc khai báo nodeSelector trong RuntimeClass so với khai báo trong từng Pod spec là gì? — Dễ quản trị tập trung, developer không cần tự nhớ gán nhãn Node cho từng Pod).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Nguy cơ tấn công Container Escape xảy ra trong điều kiện nào đối với các container chạy <code>runc</code> tiêu chuẩn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Xảy ra khi tiến trình độc hại trong container khai thác một lỗ hổng trong nhân Linux Kernel (như Dirty COW) hoặc lỗ hổng trong container runtime (<code>runc</code> CVE-2019-5736) để phá vỡ vỏ namespaces/cgroups và chiếm toàn quyền root trên Host OS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm Container Escape.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được phá vỏ container nhưng chưa rõ việc khai thác lỗ hổng Kernel chung.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế tấn công Container Escape và vai trò triệt tiêu của Sandbox Runtimes.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (gVisor ngăn chặn Container Escape thế nào? — Bằng cách không cho tiến trình chạm trực tiếp vào Host Kernel mà chỉ giao tiếp với Sentry Kernel ảo).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Đối tượng <code>RuntimeClass</code> trong Kubernetes thuộc phạm vi tác động Namespace (Namespace-scoped) hay toàn cụm (Cluster-scoped)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thuộc phạm vi <b style="color: var(--accent-primary);">Toàn cụm (Cluster-scoped)</b>. Một <code>RuntimeClass</code> được tạo ra có thể được sử dụng bởi tất cả các Pods nằm ở bất kỳ Namespace nào trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn RuntimeClass thuộc Namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng Cluster-scoped nhưng chưa rõ việc dùng chung toàn cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác tính chất Cluster-scoped của đối tượng <code>RuntimeClass</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để xem danh sách tất cả các RuntimeClasses trong cụm? — Lệnh <code>kubectl get runtimeclass</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của một bản kê khai <code>RuntimeClass</code> gVisor hoàn chỉnh chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: node.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: RuntimeClass</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: gvisor</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">handler: gvisor</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai apiVersion hoặc thiếu cờ handler.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng handler nhưng sai apiVersion <code>node.k8s.io/v1</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai <code>RuntimeClass</code> gVisor CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn thêm cờ overhead RAM 100Mi cho RuntimeClass thì viết khối nào? — Khối <code>overhead.podFixed.memory: "100Mi"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Sandboxed Container Runtimes & RuntimeClass CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ép buộc dùng Sandboxed Runtimes (gVisor/Kata) cho 100% các Untrusted Workloads để chống Container Escape.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đảm bảo cờ <code>handler</code> trong <code>RuntimeClass</code> trùng khớp 100% với tên định nghĩa trong <code>containerd/config.toml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gán <code>runtimeClassName: <name></code> dưới <code>spec</code> của Pod manifest để kích hoạt Sandbox.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm chứng tính cách ly kernel bằng lệnh <code>kubectl exec <pod> -- dmesg</code> hoặc <code>uname -a</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Sandboxed Runtimes CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 57 là gì? — Học về <code>Quản lý Secret Nâng cao và Secrets Store CSI Driver CKS</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Vai trò của đối tượng `RuntimeClass` trong Kubernetes và cách kết nối nó với CRI Container Engine trên Node là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `RuntimeClass` làm cầu nối chỉ định môi trường thực thi cho Pod. Cờ `handler` trong `RuntimeClass` phải trùng khớp 100% với tên runtime được khai báo trong tệp cấu hình `/etc/containerd/config.toml` của Node.
+1. <b style="color: var(--accent-primary);">"Cách ly triệt để mã nguồn không tin cậy bằng Sandboxed Container Runtimes (gVisor / Kata) để chống nguy cơ Container Escape."</b>
+2. <b style="color: var(--accent-primary);">"Tạo đối tượng <code>RuntimeClass</code> với cờ <code>handler</code> liên kết chính xác với cấu hình daemon trên Host Node."</b>
+3. <b style="color: var(--accent-primary);">"Kích hoạt Sandbox cho Pod bằng thuộc tính <code>runtimeClassName</code> đặt trực tiếp dưới Pod spec."</b>
+4. <b style="color: var(--accent-primary);">"Đối soát tính cách ly Kernel bằng lệnh <code>kubectl exec -- dmesg</code> xác minh thông điệp gVisor Virtual Kernel."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết đối tượng RuntimeClass.
-- 1đ: Nêu được RuntimeClass chọn runtime nhưng chưa rõ mối liên kết cờ handler với containerd config.
-- 3đ: Phân tích chuẩn xác vai trò và cơ chế liên kết cờ `handler` với `containerd`.
-
-**Câu hỏi đào sâu:** (Cú pháp YAML `apiVersion` và `kind` chuẩn để tạo RuntimeClass là gì? — `apiVersion: node.k8s.io/v1` và `kind: RuntimeClass`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Cú pháp thuộc tính YAML chuẩn dưới Pod manifest được dùng để ép buộc Kubelet khởi tạo container qua gVisor Sandbox là gì?
-
-**Đáp án chuẩn:** `spec.runtimeClassName: gvisor`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết thuộc tính runtimeClassName.
-- 1đ: Nêu được runtimeClassName nhưng đặt sai vị trí cấp độ spec.
-- 3đ: Trình bày chính xác 100% thuộc tính `runtimeClassName: gvisor` đặt trực tiếp dưới `spec` của Pod.
-
-**Câu hỏi đào sâu:** (Nếu không khai báo `runtimeClassName` trong Pod spec thì Kubelet sử dụng runtime nào? — Sử dụng runtime mặc định của cụm, thường là `runc`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Thuộc tính `spec.overhead.podFixed` trong `RuntimeClass` đóng vai trò gì trong việc tính toán tài nguyên của K8s Scheduler?
-
-**Đáp án chuẩn:** Khai báo dung lượng CPU và Memory phát sinh thêm (fixed overhead) do các tiến trình Sandbox Daemon (gVisor shim hay Kata Micro-VM) tiêu tốn ngầm. Điều này giúp K8s Scheduler tính toán chính xác và không xếp Pod quá tải RAM/CPU của Node.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết thuộc tính spec.overhead.
-- 1đ: Nêu được giới hạn tài nguyên nhưng chưa rõ việc tính thêm chi phí ngầm cho Scheduler.
-- 3đ: Phân tích chuẩn xác vai trò của `spec.overhead.podFixed` bảo vệ Node khỏi rủi ro OOM ngầm.
-
-**Câu hỏi đào sâu:** (Sandbox Runtime nào tiêu tốn `overhead` bộ nhớ lớn hơn: gVisor hay Kata Containers? — Kata Containers tiêu tốn overhead lớn hơn do khởi chạy hẳn 1 Micro-VM).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cách kiểm tra và đối soát nhanh nhất để xác minh một Pod đang chạy thực sự nằm bên trong gVisor Sandbox thông qua CLI?
-
-**Đáp án chuẩn:** Chạy lệnh `kubectl exec <pod-name> -- dmesg` hoặc `kubectl exec <pod-name> -- uname -a`. Nếu là gVisor Sandbox, kết quả sẽ in ra chuỗi `gVisor` hoặc phiên bản kernel giả lập chứ không phải kernel Host Node.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách kiểm tra sandbox kernel.
-- 1đ: Nêu được dùng uname -a nhưng chưa rõ thông tin gVisor Kernel in ra.
-- 3đ: Trình bày chính xác câu lệnh đối soát `kubectl exec -- dmesg` / `uname -a` xác minh gVisor Kernel.
-
-**Câu hỏi đào sâu:** (Nếu chạy `uname -r` trong Pod mà in ra `5.15.0-generic` của Ubuntu Host thì Pod đó đang chạy runtime nào? — Đang chạy `runc` tiêu chuẩn, chưa vào Sandbox!).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Nguyên nhân gốc rễ và cách khắc phục khi một Pod triển khai bị kẹt ở trạng thái `CreateContainerError` liên quan tới `RuntimeClass`?
-
-**Đáp án chuẩn:** Nguyên nhân do gõ sai tên cờ `handler` trong `RuntimeClass` so với cấu hình trong `/etc/containerd/config.toml`, hoặc chưa cài đặt gói nhị phân runtime (`runsc`) trên Node. Cách sửa: Soát lại tên handler trùng 100% và restart containerd (`systemctl restart containerd`).
-
-**Tiêu chí chấm:**
-- 0đ: Không chẩn đoán được lỗi CreateContainerError của RuntimeClass.
-- 1đ: Nêu được gõ sai tên nhưng chưa rõ cách đối soát file config.toml và restart containerd.
-- 3đ: Phân tích chuẩn xác nguyên nhân lệch handler name và quy trình gỡ lỗi triệt để.
-
-**Câu hỏi đào sâu:** (Cần làm gì trên Node sau khi chỉnh sửa tệp `/etc/containerd/config.toml`? — Bắt buộc phải chạy `sudo systemctl restart containerd`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Sự đánh đổi về mặt hiệu năng (Performance Trade-offs) khi áp dụng gVisor Sandbox cho một ứng dụng là gì?
-
-**Đáp án chuẩn:** gVisor tăng độ trễ (latency overhead) và giảm thông lượng (throughput) đối với các thao tác I/O đĩa cứng và gọi hệ thống mạng tần suất cao, do mọi syscall đều bị Sentry đánh chặn và xử lý trong user-space.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng gVisor không làm giảm hiệu năng.
-- 1đ: Nêu được bị chậm nhưng chưa rõ rủi ro latency I/O đĩa và syscalls.
-- 3đ: Phân tích chuẩn xác sự đánh đổi về latency I/O và lý do không nên dùng gVisor cho ứng dụng đĩa cứng nặng.
-
-**Câu hỏi đào sâu:** (Loại ứng dụng nào phù hợp nhất để triển khai gVisor Sandbox? — Ứng dụng xử lý mã nguồn không tin cậy (untrusted user code), parser tài liệu bên ngoài, webapp multi-tenant).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Làm thế nào để đảm bảo một Pod sử dụng `RuntimeClass` `gvisor` chỉ được xếp lịch lên các Worker Nodes đã được cài đặt sẵn gVisor daemon?
-
-**Đáp án chuẩn:** Khai báo khối `spec.scheduling.nodeSelector` bên trong bản kê khai của `RuntimeClass` (ví dụ `sandbox: "true"`), K8s Scheduler sẽ tự động đẩy Pod tới đúng Node có nhãn đó.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách cấu hình nodeSelector trong RuntimeClass.
-- 1đ: Nêu được dùng nhãn node nhưng đặt trực tiếp dưới Pod spec thay vì RuntimeClass spec.scheduling.
-- 3đ: Phân tích chuẩn xác tính năng `spec.scheduling` của `RuntimeClass` để tự động hóa định tuyến Node.
-
-**Câu hỏi đào sâu:** (Ưu điểm của việc khai báo nodeSelector trong RuntimeClass so với khai báo trong từng Pod spec là gì? — Dễ quản trị tập trung, developer không cần tự nhớ gán nhãn Node cho từng Pod).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Nguy cơ tấn công Container Escape xảy ra trong điều kiện nào đối với các container chạy `runc` tiêu chuẩn?
-
-**Đáp án chuẩn:** Xảy ra khi tiến trình độc hại trong container khai thác một lỗ hổng trong nhân Linux Kernel (như Dirty COW) hoặc lỗ hổng trong container runtime (`runc` CVE-2019-5736) để phá vỡ vỏ namespaces/cgroups và chiếm toàn quyền root trên Host OS.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết khái niệm Container Escape.
-- 1đ: Nêu được phá vỏ container nhưng chưa rõ việc khai thác lỗ hổng Kernel chung.
-- 3đ: Phân tích chuẩn xác cơ chế tấn công Container Escape và vai trò triệt tiêu của Sandbox Runtimes.
-
-**Câu hỏi đào sâu:** (gVisor ngăn chặn Container Escape thế nào? — Bằng cách không cho tiến trình chạm trực tiếp vào Host Kernel mà chỉ giao tiếp với Sentry Kernel ảo).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Đối tượng `RuntimeClass` trong Kubernetes thuộc phạm vi tác động Namespace (Namespace-scoped) hay toàn cụm (Cluster-scoped)?
-
-**Đáp án chuẩn:** Thuộc phạm vi **Toàn cụm (Cluster-scoped)**. Một `RuntimeClass` được tạo ra có thể được sử dụng bởi tất cả các Pods nằm ở bất kỳ Namespace nào trong cụm.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn RuntimeClass thuộc Namespace.
-- 1đ: Nêu đúng Cluster-scoped nhưng chưa rõ việc dùng chung toàn cụm.
-- 3đ: Phân tích chuẩn xác tính chất Cluster-scoped của đối tượng `RuntimeClass`.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để xem danh sách tất cả các RuntimeClasses trong cụm? — Lệnh `kubectl get runtimeclass`).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một bản kê khai `RuntimeClass` gVisor hoàn chỉnh chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: node.k8s.io/v1
-kind: RuntimeClass
-metadata:
-  name: gvisor
-handler: gvisor
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai apiVersion hoặc thiếu cờ handler.
-- 1đ: Nêu đúng handler nhưng sai apiVersion `node.k8s.io/v1`.
-- 3đ: Viết chuẩn xác 100% bản kê khai `RuntimeClass` gVisor CKS.
-
-**Câu hỏi đào sâu:** (Nếu muốn thêm cờ overhead RAM 100Mi cho RuntimeClass thì viết khối nào? — Khối `overhead.podFixed.memory: "100Mi"`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Sandboxed Container Runtimes & RuntimeClass CKS là gì?
-
-**Đáp án chuẩn:**
-1. Ép buộc dùng Sandboxed Runtimes (gVisor/Kata) cho 100% các Untrusted Workloads để chống Container Escape.
-2. Đảm bảo cờ `handler` trong `RuntimeClass` trùng khớp 100% với tên định nghĩa trong `containerd/config.toml`.
-3. Gán `runtimeClassName: <name>` dưới `spec` của Pod manifest để kích hoạt Sandbox.
-4. Kiểm chứng tính cách ly kernel bằng lệnh `kubectl exec <pod> -- dmesg` hoặc `uname -a`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Sandboxed Runtimes CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 57 là gì? — Học về `Quản lý Secret Nâng cao và Secrets Store CSI Driver CKS`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -983,28 +1071,6 @@ handler: gvisor
 2. **"Tạo đối tượng `RuntimeClass` với cờ `handler` liên kết chính xác với cấu hình daemon trên Host Node."**
 3. **"Kích hoạt Sandbox cho Pod bằng thuộc tính `runtimeClassName` đặt trực tiếp dưới Pod spec."**
 4. **"Đối soát tính cách ly Kernel bằng lệnh `kubectl exec -- dmesg` xác minh thông điệp gVisor Virtual Kernel."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Sandboxed Runtimes |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc gVisor, Kata Containers và RuntimeClass Security |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành cài đặt `runsc` (gVisor) trên Worker Node và cấu hình `containerd` đăng ký handler `gvisor`.
-- **BTVN 2:** Tạo `RuntimeClass` `gvisor` kèm `spec.scheduling.nodeSelector` chỉ định nhãn Node `sandbox=true`.
-- **BTVN 3:** So sánh thông số độ trễ HTTP request giữa Nginx chạy `runc` vs Nginx chạy `gvisor` bằng cờ `ab` (ApacheBench).
-- **BTVN 4 (Chuẩn bị cho Buổi 57 — Quản lý Secret Nâng cao và Secrets Store CSI Driver CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Rủi ro của việc lưu trữ Secret mặc định trong etcd (Base64 encoding) là gì và tại sao cần mã hóa EncryptionConfiguration?
-  2. Công cụ Secrets Store CSI Driver giúp tích hợp các bộ quản lý Secret bên ngoài (HashiCorp Vault, AWS Secrets Manager) vào Pod thế nào?
-  3. Tại sao cấm tuyệt đối việc nhúng Secret trực tiếp vào Dockerfile / Container Image?
 
 ---
 
@@ -1073,7 +1139,7 @@ handler: gvisor
 EOF
 
 kubectl apply -f /tmp/gvisor-rc.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1098,7 +1164,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1123,7 +1189,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/failed-sandbox.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1145,7 +1211,7 @@ overhead:
     memory: "120Mi"
     cpu: "250m"
 EOF
-```yaml
+```
 
 ---
 </div>
@@ -1216,7 +1282,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1239,16 +1305,17 @@ spec:
 
 # Verify Sandbox Kernel
 kubectl exec <pod-name> -- dmesg
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 12] Quản Trị Bí Mật Nâng Cao: Secrets Store CSI Driver, Tích Hợp HashiCorp Vault & AWS Secrets Manager](cks-12-12-quan-ly-secret-nang-cao-va-csi.html).
+
 {% endraw %}

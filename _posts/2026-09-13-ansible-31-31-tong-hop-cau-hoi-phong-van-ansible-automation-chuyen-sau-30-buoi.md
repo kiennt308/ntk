@@ -7574,4 +7574,12 @@ Chúc mừng bạn đã hoàn thành xuất sắc toàn bộ khóa huấn luyệ
 > **Lời kết Series:**
 > Chúc mừng bạn đã hoàn thành trọn vẹn khóa huấn luyện chuyên sâu 31 bài về **Ansible Automation Mastery & Enterprise Infrastructure Automation**! Với khối lượng tri thức, kinh nghiệm thực chiến và tư duy kiến trúc đã tích lũy, bạn đã sẵn sàng tự tin dẫn dắt các dự án tự động hóa hạ tầng quy mô lớn và chinh phục những đỉnh cao mới trong sự nghiệp Cloud / DevOps / SRE Architect!
 
+## Tổng Kết & Hoàn Thành Series Đào Tạo
+
+Chúc mừng bạn đã hoàn thành trọn vẹn Series chuyên sâu về Ansible Automation! Toàn bộ kiến thức từ cấu trúc cơ bản, roles, testing cho đến quản trị doanh nghiệp với AWX/AAP và tối ưu hiệu năng sẽ là nền tảng vững chắc để bạn tự tin xây dựng và vận hành các hệ thống tự động hóa cấp doanh nghiệp.
+
+> [!NOTE]
+> **HOÀN THÀNH TOÀN BỘ SERIES:**
+> Chúc mừng bạn đã hoàn thành xuất sắc toàn bộ 31 chuyên đề thuộc chuỗi **Ansible Automation Mastery**. Hãy tiếp tục thực hành và áp dụng các tiêu chuẩn tự động hóa vào hạ tầng thực tế của bạn!
+
 {% endraw %}

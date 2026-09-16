@@ -455,25 +455,6 @@ graph TD
 | Official Docs: Configurable scaling behavior | Kubernetes v1.35 | Cấu hình behavior, scaleUp, scaleDown và stabilizationWindowSeconds |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Phân biệt Co giãn hàng ngang (HPA) vs Co giãn hàng dọc (VPA) | 10 phút |
-| §5 | Công thức tính số Pods và cấu trúc YAML HPA v2 API (`autoscaling/v2`) | 12 phút |
-| §6 | Điều kiện phụ thuộc `resources.requests` và cơ chế chống Flapping (`stabilizationWindowSeconds`) | 12 phút |
-| §7 | Cấu hình nhiều chỉ số đo đạc và tùy chỉnh hành vi scaleUp | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| §11 | Câu hỏi tự kiểm tra | 5 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -949,24 +930,11 @@ rm -f /tmp/hpa-api.txt /tmp/hpa-target.txt /tmp/scaled-replicas.txt /tmp/period-
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-19/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khởi tạo Deployment `php-deploy` và HPA bằng lệnh CLI | 30 phút |
-| L4 | Bước 2 — Biển soạn tệp YAML HPA v2 API (`autoscaling/v2`) | 30 phút |
-| L5 | Bước 3 — Bắn tải thử nghiệm (Load Testing) kích hoạt HPA scale out Pods | 30 phút |
-| L6 | Bước 4 — Kiểm tra cấu hình `behavior` nâng cao và dọn dẹp | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -980,261 +948,359 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày công thức toán học Kube-Controller-Manager sử dụng để tính số lượng bản sao Pods mong muốn (<code>desiredReplicas</code>) cho HPA.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>HorizontalPodAutoscaler</code> (HPA - Co giãn hàng ngang):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Tự động tăng hoặc giảm <b style="color: var(--accent-primary);">số lượng bản sao Pods (Replicas)</b> (scale out / scale in).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Phù hợp tuyệt đối cho các ứng dụng Stateless Web / Microservices có khả năng chia tải.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>VerticalPodAutoscaler</code> (VPA - Co giãn hàng dọc):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Tự động thay đổi <b style="color: var(--accent-primary);">mức dung lượng tài nguyên <code>requests</code> và <code>limits</code> (CPU/RAM)</b> của từng Pod (scale up / scale down).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dùng cho các ứng dụng Stateful / Database khó chia bản sao nhưng cần thêm RAM/CPU khi tải cao.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Công thức bất biến:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">**<code>desiredReplicas = ceil[ currentReplicas * ( currentMetricValue / desiredMetricValue ) ]</code>**</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích các thành phần:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>currentReplicas</code>: Số lượng bản sao Pods hiện tại đang chạy.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>currentMetricValue</code>: Tỷ lệ tiêu thụ tài nguyên thực tế hiện tại (lấy từ <code>metrics-server</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>desiredMetricValue</code>: Tỷ lệ tiêu thụ tài nguyên mục tiêu khai báo trong HPA spec (như <code>50%</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ceil[...]</code>: Hàm toán học làm tròn lên số nguyên gần nhất (ví dụ 3,1 -> 4).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ công thức HPA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời lấy số hiện tại nhân tỷ lệ nhưng không viết được chính xác công thức và hàm làm tròn lên <code>ceil</code> (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác công thức <code>desiredReplicas = ceil[ currentReplicas * ( currentMetric / targetMetric ) ]</code> và giải thích các biến.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, làm bài toán tính số Pods thực tế ngay tại chỗ.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu currentReplicas = 2, current CPU = 80%, target CPU = 50% thì HPA sẽ scale lên bao nhiêu Pods? *(Đáp án: <code>desiredReplicas = ceil[ 2 * (80/50) ] = ceil[3.2] = 4 Pods</code>).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo HPA và VPA là hai tên gọi khác nhau của 1 đối tượng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời HPA là số Pods còn VPA là CPU/RAM nhưng không nêu được ứng dụng Stateless vs Stateful (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác HPA (tăng/giảm số bản sao Pods scale out/in) vs VPA (tăng/giảm CPU/RAM requests scale up/down).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do không nên vừa bật HPA vừa bật VPA trên cùng 1 chỉ số CPU.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao không nên cấu hình cả HPA và VPA cùng co giãn dựa trên 1 chỉ số CPU của 1 Deployment? *(Đáp án: Vì 2 bộ controller sẽ xung đột lẫn nhau: HPA đòi tăng bản sao trong khi VPA đòi tăng CPU request).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao nếu Pod spec của Deployment KHÔNG khai báo <code>resources.requests.cpu</code> thì HPA không thể tính toán được tỷ lệ % CPU utilization và báo chỉ số <code><unknown></code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Công thức tính % Utilization:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tỷ lệ phần trăm % CPU utilization được HPA tính theo công thức:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">**<code>CPU Utilization % = (CPU thực tế tiêu thụ / CPU Request) * 100</code>**</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân lỗi:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nếu không khai báo <code>resources.requests.cpu</code> trong Pod spec, mẫu số <code>CPU Request</code> không tồn tại (bằng 0 hoặc null). Phép chia cho null bị vô nghĩa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả:</b> HPA Controller không thể tính được % CPU, cột <code>TARGETS</code> hiển thị <code><unknown>/50%</code> và HPA đứng yên không chịu scale.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo HPA báo unknown do thiếu metrics-server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do thiếu requests nhưng không giải thích được công thức chia % CPU cần <code>requests.cpu</code> làm mẫu số.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác công thức <code>% CPU = (Thực tế / Request) * 100</code> và việc thiếu mẫu số làm phép chia vô nghĩa gây lỗi <code><unknown></code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra câu lệnh <code>kubectl describe hpa</code> để phát hiện lỗi này.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Để HPA thoát khỏi lỗi <code><unknown></code>, kỹ sư cần thực hiện câu lệnh hoặc thao tác gì? *(Đáp án: Bổ sung <code>resources.requests.cpu</code> vào Pod spec của Deployment và re-apply).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tần suất vòng lặp kiểm tra chỉ số HPA của tiến trình <code>HPA Controller</code> (nằm trong <code>kube-controller-manager</code>) là bao nhiêu giây một lần?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tần suất định kỳ:</b> Tiến trình HPA Controller chạy vòng lặp kiểm tra định kỳ mặc định <b style="color: var(--accent-primary);">15 giây một lần</b> (<code>--horizontal-pod-autoscaler-sync-period=15s</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chu kỳ 15 giây đảm bảo HPA phản ứng đủ nhanh khi có đợt tăng tải đột biến (Traffic Spike).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không gây quá tải (Overhead) cho <code>metrics-server</code> và API Server của cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 1 phút hoặc 5 phút một lần.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời 15 giây nhưng không nêu được tên tiến trình phụ trách <code>kube-controller-manager</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác tần suất 15 giây/lần của HPA Controller trong <code>kube-controller-manager</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cờ cấu hình <code>--horizontal-pod-autoscaler-sync-period</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao vừa bắn tải mà <code>kubectl get hpa</code> phải mất từ 15 đến 30 giây mới bắt đầu nhảy chỉ số CPU? *(Đáp án: Do phải chờ đến lượt vòng lặp 15s tiếp theo của HPA Controller quét metrics).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cửa sổ thời gian ổn định co giảm <code>stabilizationWindowSeconds</code> trong HPA có giá trị mặc định là bao nhiêu và vai trò của nó là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giá trị mặc định:</b> <code>stabilizationWindowSeconds</code> trong khối <code>behavior.scaleDown</code> có giá trị mặc định là <b style="color: var(--accent-primary);">300 giây (5 phút)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò chính:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trì hoãn việc xoá bớt Pods (scale down / scale in) trong đúng 5 phút sau khi tải đã giảm xuống rảnh.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chống hiện tượng Flapping / Thrashing (Rung lắc số bản sao):</b> Tránh việc HPA vừa xoá bớt Pods xong 10 giây sau lưu lượng truy cập lại bùng nổ lên, bắt Kubernetes phải tạo lại Pods mới gây tốn tài nguyên khởi tạo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo mặc định là 0 giây.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời 5 phút nhưng không giải thích được thuật ngữ Flapping/Thrashing và lý do giữ ổn định hạ tầng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác con số 300s (5 phút) và vai trò chống Flapping/Thrashing khi tải trồi sụt.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ cách chỉnh <code>stabilizationWindowSeconds: 60</code> trong YAML v2.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu đặt <code>stabilizationWindowSeconds: 0</code> cho scaleDown thì chuyện gì sẽ xảy ra khi traffic trồi sụt liên tục? *(Đáp án: Pods sẽ bị xoá và tạo mới liên tục hàng chục lần gây đứt kết nối ứng dụng).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu lệnh CLI nào giúp khởi tạo nhanh một HPA cho Deployment <code>web-deploy</code> với <code>minReplicas: 2</code>, <code>maxReplicas: 10</code>, và target CPU <code>50%</code> trong 2 giây?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh CLI chuẩn (Imperative Command):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl autoscale deployment web-deploy -n dev --min=2 --max=10 --cpu-percent=50</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Tự động sinh ra đối tượng HPA liên kết trực tiếp với Deployment <code>web-deploy</code> trong Namespace <code>dev</code> mà không cần viết file YAML thủ công.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ lệnh <code>kubectl autoscale</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>kubectl autoscale</code> nhưng thiếu các cờ <code>--min</code>, <code>--max</code>, <code>--cpu-percent</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh <code>kubectl autoscale deployment web-deploy -n dev --min=2 --max=10 --cpu-percent=50</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cờ <code>--dry-run=client -o yaml</code> để xuất ra file YAML.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh trên tạo ra HPA dùng API version nào? *(Đáp án: Mặc định tạo ra HPA dùng API version <code>autoscaling/v1</code> hoặc <code>v2</code> tùy phiên bản kubectl).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự khác biệt giữa HPA API version <code>autoscaling/v1</code> và <code>autoscaling/v2</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>autoscaling/v1</code> (Phiên bản cũ):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ hỗ trợ <b style="color: var(--accent-primary);">ĐƠN CHỈ SỐ duy nhất là CPU utilization %</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu trúc YAML đơn giản nhưng hạn chế mở rộng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>autoscaling/v2</code> (Phiên bản hiện đại chuẩn hóa):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hỗ trợ <b style="color: var(--accent-primary);">NHIỀU CHỈ SỐ ĐỒNG THỜI (Multiple Metrics)</b>: CPU, Memory, Custom Metrics (QPS, Queue Length), External Metrics.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hỗ trợ khối <b style="color: var(--accent-primary);"><code>spec.behavior</code></b> cho phép tùy chỉnh chi tiết tốc độ scaleUp và scaleDown (stabilizationWindowSeconds).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 API version giống hệt nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời v2 mới hơn nhưng không nêu được khả năng hỗ trợ Memory, Multiple Metrics và khối <code>spec.behavior</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác v1 (chỉ CPU) vs v2 (Memory, Multiple Metrics, Custom Metrics, <code>spec.behavior</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ khối <code>metrics[]</code> trong v2 YAML.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi khai báo nhiều chỉ số (CPU 50% và Memory 80%) trong HPA v2 thì HPA chọn số Pods tính theo CPU hay Memory? *(Đáp án: HPA sẽ chọn số Pods LỚN NHẤT giữa các kết quả tính toán).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao việc tự gõ lệnh <code>kubectl scale deployment</code> thủ công lại bị vô hiệu hóa hoặc không có tác dụng dài hạn khi Deployment đó đang được HPA quản lý?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân:</b> Khi một Deployment đã được gán đối tượng HPA, đối tượng HPA giữ quyền điều khiển duy nhất đối với trường <code>spec.replicas</code> của Deployment đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hành vi HPA Controller:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu kỹ sư tự gõ <code>kubectl scale deployment web-deploy --replicas=8</code> thủ công, số bản sao tạm thời nảy lên 8.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tuy nhiên, trong <b style="color: var(--accent-primary);">vòng lặp 15 giây tiếp theo</b>, HPA Controller tính toán lại tải thực tế (ví dụ tải thấp chỉ cần 2 Pods) và <b style="color: var(--accent-primary);">tự động ghi đè số <code>replicas</code> về lại 2 Pods</b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>kubectl scale</code> bị API Server báo lỗi cấm gõ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời bị ghi đè nhưng không giải thích được vòng lặp 15s của HPA Controller ghi đè trường <code>spec.replicas</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc HPA Controller tự động ghi đè lại số <code>replicas</code> trong vòng lặp 15s tiếp theo.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách gỡ HPA trước khi scale thủ công.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để thay đổi số Pods tối thiểu thủ công mà không xoá HPA? *(Đáp án: Dùng lệnh <code>kubectl edit hpa</code> hoặc <code>kubectl patch hpa</code> để sửa cờ <code>minReplicas</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Kube-Controller-Manager xử lý như thế nào khi tính toán HPA mà kết quả công thức <code>desiredReplicas</code> nằm ngoài khoảng <code>minReplicas</code> và <code>maxReplicas</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên tắc ép khoảng (Clamping):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu <code>desiredReplicas < minReplicas</code>: HPA tự động gán <code>desiredReplicas = minReplicas</code> (không bao giờ giảm dưới min).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu <code>desiredReplicas > maxReplicas</code>: HPA tự động gán <code>desiredReplicas = maxReplicas</code> (không bao giờ vượt quá max).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b> <code>minReplicas</code> bảo vệ tính sẵn sàng cao (HA); <code>maxReplicas</code> bảo vệ cụm Node không bị cạn kiệt tài nguyên RAM/CPU.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo HPA báo lỗi crash khi vượt maxReplicas.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời giữ ở min và max nhưng không giải thích được thuật ngữ ép khoảng (clamping) bảo vệ HA và bảo vệ cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế ép khoảng: giữ nguyên <code>minReplicas</code> khi tải rảnh và không vượt quá <code>maxReplicas</code> khi bão tải.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra nguy cơ kẹt Pod <code>Pending</code> nếu <code>maxReplicas</code> đặt quá cao.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Chuyện gì xảy ra nếu <code>maxReplicas</code> đặt là 50 mà cụm chỉ đủ CPU/RAM cho 20 Pods? *(Đáp án: HPA scale ra 50 Pods, 20 Pods Running, 30 Pods còn lại bị kẹt <code>Pending</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Khối <code>spec.behavior.scaleUp</code> trong HPA v2 API được sử dụng trong kịch bản nào trên thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kịch bản sử dụng:</b> Khi ứng dụng gặp đợt bùng nổ lưu lượng truy cập cực lớn trong thời gian cực ngắn (Traffic Spike / Flash Sale).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tùy chỉnh scaleUp:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đặt <code>stabilizationWindowSeconds: 0</code> để HPA scale up ngay lập tức mà không trì hoãn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu hình policy <code>percent: 100</code> hoặc <code>pods: 4</code> mỗi 15 giây để nhân đôi số bản sao Pods trong vài giây.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích:</b> Giúp ứng dụng bùng nổ năng lực xử lý tức thì, tránh việc Pods mới được tạo quá chậm làm sập server.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết khối behavior scaleUp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dùng để tăng tốc scale up nhưng không nêu được các thuộc tính policy <code>percent</code> / <code>pods</code> và <code>stabilizationWindowSeconds</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác kịch bản bùng nổ Flash Sale/Traffic Spike và các thuộc tính tùy chỉnh tốc độ scaleUp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ file YAML HPA v2 với <code>behavior.scaleUp</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Chu kỳ periodSeconds mặc định của scaleUp policy trong HPA behavior là bao nhiêu? *(Đáp án: Mặc định là <b style="color: var(--accent-primary);">15 giây</b>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao HPA KHÔNG thể tự động co giãn các bản sao Pods do đối tượng <code>DaemonSet</code> quản lý?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bản chất của DaemonSet:</b> Số lượng Pods do DaemonSet quản lý phụ thuộc 100% vào số lượng Worker Node trong cụm (mỗi Node chạy đúng 1 Pod). DaemonSet <b style="color: var(--accent-primary);">KHÔNG CÓ trường <code>spec.replicas</code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Yêu cầu của HPA:</b> HPA chỉ làm việc được với các đối tượng sở hữu subresource <code>/scale</code> và trường <code>spec.replicas</code> (như Deployment, StatefulSet, ReplicaSet).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kết quả:</b> Gán HPA vào DaemonSet sẽ bị API Server từ chối.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo HPA scale được DaemonSet bình thường.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời DaemonSet 1 Pod/Node nhưng không giải thích được việc DaemonSet thiếu trường <code>spec.replicas</code> và subresource <code>/scale</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguyên lý 1 Pod/Node của DaemonSet và việc thiếu trường <code>spec.replicas</code> làm HPA không làm việc được.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra các đối tượng HPA hỗ trợ (<code>Deployment</code>, <code>StatefulSet</code>).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Đối tượng nào ngoài Deployment có thể liên kết với HPA? *(Đáp án: Đối tượng <code>StatefulSet</code> và <code>ReplicaSet</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do HPA báo <code><unknown></code> vì thiếu requests.cpu, 1 âm thầm do Flapping Pods bị xoá/tạo liên tục vì để stabilizationWindow bằng 0) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - HPA đứng yên báo chỉ số <code><unknown></code> do Deployment thiếu <code>requests.cpu</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Bắn tải dồn dập vào Web nhưng HPA không chịu scale out Pods, cột <code>TARGETS</code> trong <code>kubectl get hpa</code> báo <code><unknown>/50%</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Chạy <code>kubectl describe hpa</code> thấy lỗi <code>failed to get cpu utilization: missing request for cpu</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Bổ sung <code>resources.requests.cpu</code> vào Pod spec của Deployment.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Flapping Pods bị tạo mới và xoá liên tục do để <code>stabilizationWindowSeconds: 0</code> cho scaleDown):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Lưu lượng truy cập trồi sụt nhẹ làm HPA liên tục scale up rồi scale down 20-30 lần/giờ, gây quá tải etcd và làm gián đoạn kết nối DB.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Xem nhật ký <code>kubectl get hpa -w</code> thấy số Replicas nhảy 2 -> 6 -> 2 -> 6 liên tục trong vài phút.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Giữ nguyên hoặc nâng <code>stabilizationWindowSeconds: 300</code> (5 phút) cho khối scaleDown.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu <code>requests.cpu</code> và <code>stabilizationWindowSeconds: 0</code> gây Flapping (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi HPA báo chỉ số <code><unknown></code>, câu lệnh nào xem được chi tiết nguyên nhân trong 2 giây? *(Đáp án: Lệnh <code>kubectl describe hpa <hpa-name></code>).*
+
 ---
 
-### Câu 2 — 🔥
-
-**Hỏi:** Trình bày công thức toán học Kube-Controller-Manager sử dụng để tính số lượng bản sao Pods mong muốn (`desiredReplicas`) cho HPA.
-
-**Đáp án chuẩn:**
-- **Công thức bất biến:**
-  **`desiredReplicas = ceil[ currentReplicas * ( currentMetricValue / desiredMetricValue ) ]`**
-- **Giải thích các thành phần:**
-  - `currentReplicas`: Số lượng bản sao Pods hiện tại đang chạy.
-  - `currentMetricValue`: Tỷ lệ tiêu thụ tài nguyên thực tế hiện tại (lấy từ `metrics-server`).
-  - `desiredMetricValue`: Tỷ lệ tiêu thụ tài nguyên mục tiêu khai báo trong HPA spec (như `50%`).
-  - `ceil[...]`: Hàm toán học làm tròn lên số nguyên gần nhất (ví dụ 3,1 -> 4).
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ công thức HPA.
-- **1đ:** Trả lời lấy số hiện tại nhân tỷ lệ nhưng không viết được chính xác công thức và hàm làm tròn lên `ceil` (dính trần 1đ).
-- **2đ:** Viết chuẩn xác công thức `desiredReplicas = ceil[ currentReplicas * ( currentMetric / targetMetric ) ]` và giải thích các biến.
-- **3đ:** Trả lời xuất sắc, làm bài toán tính số Pods thực tế ngay tại chỗ.
-
-**Câu hỏi đào sâu:** Nếu currentReplicas = 2, current CPU = 80%, target CPU = 50% thì HPA sẽ scale lên bao nhiêu Pods? *(Đáp án: `desiredReplicas = ceil[ 2 * (80/50) ] = ceil[3.2] = 4 Pods`).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Tại sao nếu Pod spec của Deployment KHÔNG khai báo `resources.requests.cpu` thì HPA không thể tính toán được tỷ lệ % CPU utilization và báo chỉ số `<unknown>`?
-
-**Đáp án chuẩn:**
-- **Công thức tính % Utilization:**
-  Tỷ lệ phần trăm % CPU utilization được HPA tính theo công thức:
-  **`CPU Utilization % = (CPU thực tế tiêu thụ / CPU Request) * 100`**
-- **Nguyên nhân lỗi:**
-  Nếu không khai báo `resources.requests.cpu` trong Pod spec, mẫu số `CPU Request` không tồn tại (bằng 0 hoặc null). Phép chia cho null bị vô nghĩa.
-- **Hệ quả:** HPA Controller không thể tính được % CPU, cột `TARGETS` hiển thị `<unknown>/50%` và HPA đứng yên không chịu scale.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo HPA báo unknown do thiếu metrics-server.
-- **1đ:** Trả lời do thiếu requests nhưng không giải thích được công thức chia % CPU cần `requests.cpu` làm mẫu số.
-- **2đ:** Phân tích chuẩn xác công thức `% CPU = (Thực tế / Request) * 100` và việc thiếu mẫu số làm phép chia vô nghĩa gây lỗi `<unknown>`.
-- **3đ:** Trả lời xuất sắc, chỉ ra câu lệnh `kubectl describe hpa` để phát hiện lỗi này.
-
-**Câu hỏi đào sâu:** Để HPA thoát khỏi lỗi `<unknown>`, kỹ sư cần thực hiện câu lệnh hoặc thao tác gì? *(Đáp án: Bổ sung `resources.requests.cpu` vào Pod spec của Deployment và re-apply).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Tần suất vòng lặp kiểm tra chỉ số HPA của tiến trình `HPA Controller` (nằm trong `kube-controller-manager`) là bao nhiêu giây một lần?
-
-**Đáp án chuẩn:**
-- **Tần suất định kỳ:** Tiến trình HPA Controller chạy vòng lặp kiểm tra định kỳ mặc định **15 giây một lần** (`--horizontal-pod-autoscaler-sync-period=15s`).
-- **Ý nghĩa:**
-  - Chu kỳ 15 giây đảm bảo HPA phản ứng đủ nhanh khi có đợt tăng tải đột biến (Traffic Spike).
-  - Không gây quá tải (Overhead) cho `metrics-server` và API Server của cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 1 phút hoặc 5 phút một lần.
-- **1đ:** Trả lời 15 giây nhưng không nêu được tên tiến trình phụ trách `kube-controller-manager`.
-- **2đ:** Giải thích chuẩn xác tần suất 15 giây/lần của HPA Controller trong `kube-controller-manager`.
-- **3đ:** Trả lời xuất sắc, chỉ ra cờ cấu hình `--horizontal-pod-autoscaler-sync-period`.
-
-**Câu hỏi đào sâu:** Tại sao vừa bắn tải mà `kubectl get hpa` phải mất từ 15 đến 30 giây mới bắt đầu nhảy chỉ số CPU? *(Đáp án: Do phải chờ đến lượt vòng lặp 15s tiếp theo của HPA Controller quét metrics).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Cửa sổ thời gian ổn định co giảm `stabilizationWindowSeconds` trong HPA có giá trị mặc định là bao nhiêu và vai trò của nó là gì?
-
-**Đáp án chuẩn:**
-- **Giá trị mặc định:** `stabilizationWindowSeconds` trong khối `behavior.scaleDown` có giá trị mặc định là **300 giây (5 phút)**.
-- **Vai trò chính:**
-  - Trì hoãn việc xoá bớt Pods (scale down / scale in) trong đúng 5 phút sau khi tải đã giảm xuống rảnh.
-  - **Chống hiện tượng Flapping / Thrashing (Rung lắc số bản sao):** Tránh việc HPA vừa xoá bớt Pods xong 10 giây sau lưu lượng truy cập lại bùng nổ lên, bắt Kubernetes phải tạo lại Pods mới gây tốn tài nguyên khởi tạo.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo mặc định là 0 giây.
-- **1đ:** Trả lời 5 phút nhưng không giải thích được thuật ngữ Flapping/Thrashing và lý do giữ ổn định hạ tầng.
-- **2đ:** Giải thích chuẩn xác con số 300s (5 phút) và vai trò chống Flapping/Thrashing khi tải trồi sụt.
-- **3đ:** Trả lời xuất sắc, minh hoạ cách chỉnh `stabilizationWindowSeconds: 60` trong YAML v2.
-
-**Câu hỏi đào sâu:** Nếu đặt `stabilizationWindowSeconds: 0` cho scaleDown thì chuyện gì sẽ xảy ra khi traffic trồi sụt liên tục? *(Đáp án: Pods sẽ bị xoá và tạo mới liên tục hàng chục lần gây đứt kết nối ứng dụng).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Câu lệnh CLI nào giúp khởi tạo nhanh một HPA cho Deployment `web-deploy` với `minReplicas: 2`, `maxReplicas: 10`, và target CPU `50%` trong 2 giây?
-
-**Đáp án chuẩn:**
-- **Câu lệnh CLI chuẩn (Imperative Command):**
-  `kubectl autoscale deployment web-deploy -n dev --min=2 --max=10 --cpu-percent=50`
-- **Tác dụng:** Tự động sinh ra đối tượng HPA liên kết trực tiếp với Deployment `web-deploy` trong Namespace `dev` mà không cần viết file YAML thủ công.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ lệnh `kubectl autoscale`.
-- **1đ:** Nêu được `kubectl autoscale` nhưng thiếu các cờ `--min`, `--max`, `--cpu-percent`.
-- **2đ:** Viết chuẩn xác câu lệnh `kubectl autoscale deployment web-deploy -n dev --min=2 --max=10 --cpu-percent=50`.
-- **3đ:** Trả lời xuất sắc, chỉ ra cờ `--dry-run=client -o yaml` để xuất ra file YAML.
-
-**Câu hỏi đào sâu:** Lệnh trên tạo ra HPA dùng API version nào? *(Đáp án: Mặc định tạo ra HPA dùng API version `autoscaling/v1` hoặc `v2` tùy phiên bản kubectl).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Sự khác biệt giữa HPA API version `autoscaling/v1` và `autoscaling/v2` là gì?
-
-**Đáp án chuẩn:**
-- **`autoscaling/v1` (Phiên bản cũ):**
-  - Chỉ hỗ trợ **ĐƠN CHỈ SỐ duy nhất là CPU utilization %**.
-  - Cấu trúc YAML đơn giản nhưng hạn chế mở rộng.
-- **`autoscaling/v2` (Phiên bản hiện đại chuẩn hóa):**
-  - Hỗ trợ **NHIỀU CHỈ SỐ ĐỒNG THỜI (Multiple Metrics)**: CPU, Memory, Custom Metrics (QPS, Queue Length), External Metrics.
-  - Hỗ trợ khối **`spec.behavior`** cho phép tùy chỉnh chi tiết tốc độ scaleUp và scaleDown (stabilizationWindowSeconds).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 API version giống hệt nhau.
-- **1đ:** Trả lời v2 mới hơn nhưng không nêu được khả năng hỗ trợ Memory, Multiple Metrics và khối `spec.behavior`.
-- **2đ:** Phân tích chuẩn xác v1 (chỉ CPU) vs v2 (Memory, Multiple Metrics, Custom Metrics, `spec.behavior`).
-- **3đ:** Trả lời xuất sắc, minh hoạ khối `metrics[]` trong v2 YAML.
-
-**Câu hỏi đào sâu:** Khi khai báo nhiều chỉ số (CPU 50% và Memory 80%) trong HPA v2 thì HPA chọn số Pods tính theo CPU hay Memory? *(Đáp án: HPA sẽ chọn số Pods LỚN NHẤT giữa các kết quả tính toán).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Tại sao việc tự gõ lệnh `kubectl scale deployment` thủ công lại bị vô hiệu hóa hoặc không có tác dụng dài hạn khi Deployment đó đang được HPA quản lý?
-
-**Đáp án chuẩn:**
-- **Nguyên nhân:** Khi một Deployment đã được gán đối tượng HPA, đối tượng HPA giữ quyền điều khiển duy nhất đối với trường `spec.replicas` của Deployment đó.
-- **Hành vi HPA Controller:**
-  - Nếu kỹ sư tự gõ `kubectl scale deployment web-deploy --replicas=8` thủ công, số bản sao tạm thời nảy lên 8.
-  - Tuy nhiên, trong **vòng lặp 15 giây tiếp theo**, HPA Controller tính toán lại tải thực tế (ví dụ tải thấp chỉ cần 2 Pods) và **tự động ghi đè số `replicas` về lại 2 Pods**.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `kubectl scale` bị API Server báo lỗi cấm gõ.
-- **1đ:** Trả lời bị ghi đè nhưng không giải thích được vòng lặp 15s của HPA Controller ghi đè trường `spec.replicas`.
-- **2đ:** Giải thích chuẩn xác việc HPA Controller tự động ghi đè lại số `replicas` trong vòng lặp 15s tiếp theo.
-- **3đ:** Trả lời xuất sắc, chỉ ra cách gỡ HPA trước khi scale thủ công.
-
-**Câu hỏi đào sâu:** Làm sao để thay đổi số Pods tối thiểu thủ công mà không xoá HPA? *(Đáp án: Dùng lệnh `kubectl edit hpa` hoặc `kubectl patch hpa` để sửa cờ `minReplicas`).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Kube-Controller-Manager xử lý như thế nào khi tính toán HPA mà kết quả công thức `desiredReplicas` nằm ngoài khoảng `minReplicas` và `maxReplicas`?
-
-**Đáp án chuẩn:**
-- **Nguyên tắc ép khoảng (Clamping):**
-  - Nếu `desiredReplicas < minReplicas`: HPA tự động gán `desiredReplicas = minReplicas` (không bao giờ giảm dưới min).
-  - Nếu `desiredReplicas > maxReplicas`: HPA tự động gán `desiredReplicas = maxReplicas` (không bao giờ vượt quá max).
-- **Ý nghĩa:** `minReplicas` bảo vệ tính sẵn sàng cao (HA); `maxReplicas` bảo vệ cụm Node không bị cạn kiệt tài nguyên RAM/CPU.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo HPA báo lỗi crash khi vượt maxReplicas.
-- **1đ:** Trả lời giữ ở min và max nhưng không giải thích được thuật ngữ ép khoảng (clamping) bảo vệ HA và bảo vệ cụm.
-- **2đ:** Giải thích chuẩn xác cơ chế ép khoảng: giữ nguyên `minReplicas` khi tải rảnh và không vượt quá `maxReplicas` khi bão tải.
-- **3đ:** Trả lời xuất sắc, chỉ ra nguy cơ kẹt Pod `Pending` nếu `maxReplicas` đặt quá cao.
-
-**Câu hỏi đào sâu:** Chuyện gì xảy ra nếu `maxReplicas` đặt là 50 mà cụm chỉ đủ CPU/RAM cho 20 Pods? *(Đáp án: HPA scale ra 50 Pods, 20 Pods Running, 30 Pods còn lại bị kẹt `Pending`).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Khối `spec.behavior.scaleUp` trong HPA v2 API được sử dụng trong kịch bản nào trên thực tế?
-
-**Đáp án chuẩn:**
-- **Kịch bản sử dụng:** Khi ứng dụng gặp đợt bùng nổ lưu lượng truy cập cực lớn trong thời gian cực ngắn (Traffic Spike / Flash Sale).
-- **Tùy chỉnh scaleUp:**
-  - Đặt `stabilizationWindowSeconds: 0` để HPA scale up ngay lập tức mà không trì hoãn.
-  - Cấu hình policy `percent: 100` hoặc `pods: 4` mỗi 15 giây để nhân đôi số bản sao Pods trong vài giây.
-- **Lợi ích:** Giúp ứng dụng bùng nổ năng lực xử lý tức thì, tránh việc Pods mới được tạo quá chậm làm sập server.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết khối behavior scaleUp.
-- **1đ:** Trả lời dùng để tăng tốc scale up nhưng không nêu được các thuộc tính policy `percent` / `pods` và `stabilizationWindowSeconds`.
-- **2đ:** Giải thích chuẩn xác kịch bản bùng nổ Flash Sale/Traffic Spike và các thuộc tính tùy chỉnh tốc độ scaleUp.
-- **3đ:** Trả lời xuất sắc, minh hoạ file YAML HPA v2 với `behavior.scaleUp`.
-
-**Câu hỏi đào sâu:** Chu kỳ periodSeconds mặc định của scaleUp policy trong HPA behavior là bao nhiêu? *(Đáp án: Mặc định là **15 giây**).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Tại sao HPA KHÔNG thể tự động co giãn các bản sao Pods do đối tượng `DaemonSet` quản lý?
-
-**Đáp án chuẩn:**
-- **Bản chất của DaemonSet:** Số lượng Pods do DaemonSet quản lý phụ thuộc 100% vào số lượng Worker Node trong cụm (mỗi Node chạy đúng 1 Pod). DaemonSet **KHÔNG CÓ trường `spec.replicas`**.
-- **Yêu cầu của HPA:** HPA chỉ làm việc được với các đối tượng sở hữu subresource `/scale` và trường `spec.replicas` (như Deployment, StatefulSet, ReplicaSet).
-- **Kết quả:** Gán HPA vào DaemonSet sẽ bị API Server từ chối.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo HPA scale được DaemonSet bình thường.
-- **1đ:** Trả lời DaemonSet 1 Pod/Node nhưng không giải thích được việc DaemonSet thiếu trường `spec.replicas` và subresource `/scale`.
-- **2đ:** Giải thích chuẩn xác nguyên lý 1 Pod/Node của DaemonSet và việc thiếu trường `spec.replicas` làm HPA không làm việc được.
-- **3đ:** Trả lời xuất sắc, chỉ ra các đối tượng HPA hỗ trợ (`Deployment`, `StatefulSet`).
-
-**Câu hỏi đào sâu:** Đối tượng nào ngoài Deployment có thể liên kết với HPA? *(Đáp án: Đối tượng `StatefulSet` và `ReplicaSet`).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do HPA báo `<unknown>` vì thiếu requests.cpu, 1 âm thầm do Flapping Pods bị xoá/tạo liên tục vì để stabilizationWindow bằng 0) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - HPA đứng yên báo chỉ số `<unknown>` do Deployment thiếu `requests.cpu`):**
-   - *Triệu chứng:* Bắn tải dồn dập vào Web nhưng HPA không chịu scale out Pods, cột `TARGETS` trong `kubectl get hpa` báo `<unknown>/50%`.
-   - *Phát hiện:* Chạy `kubectl describe hpa` thấy lỗi `failed to get cpu utilization: missing request for cpu`.
-   - *Khắc phục:* Bổ sung `resources.requests.cpu` vào Pod spec của Deployment.
-2. **Chế độ hỏng 2 (Âm thầm - Flapping Pods bị tạo mới và xoá liên tục do để `stabilizationWindowSeconds: 0` cho scaleDown):**
-   - *Triệu chứng:* Lưu lượng truy cập trồi sụt nhẹ làm HPA liên tục scale up rồi scale down 20-30 lần/giờ, gây quá tải etcd và làm gián đoạn kết nối DB.
-   - *Phát hiện:* Xem nhật ký `kubectl get hpa -w` thấy số Replicas nhảy 2 -> 6 -> 2 -> 6 liên tục trong vài phút.
-   - *Khắc phục:* Giữ nguyên hoặc nâng `stabilizationWindowSeconds: 300` (5 phút) cho khối scaleDown.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu `requests.cpu` và `stabilizationWindowSeconds: 0` gây Flapping (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi HPA báo chỉ số `<unknown>`, câu lệnh nào xem được chi tiết nguyên nhân trong 2 giây? *(Đáp án: Lệnh `kubectl describe hpa <hpa-name>`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"HPA co giãn số bản sao Pods (Replicas) hàng ngang; VPA co giãn dung lượng CPU/RAM của từng Pod theo chiều dọc."*
+2. *"HPA Controller tính số Pods theo công thức bất biến: <code>desiredReplicas = ceil[ currentReplicas * ( currentMetric / targetMetric ) ]</code>."*
+3. *"100% containers trong Pod spec bắt buộc phải có <code>resources.requests.cpu</code>; thiếu <code>requests.cpu</code> làm HPA báo chỉ số <code><unknown></code>."*
+4. *"Tiến trình HPA Controller chạy vòng lặp quét chỉ số từ <code>metrics-server</code> định kỳ <b style="color: var(--accent-primary);">15 giây một lần</b>."*
+5. *"Cửa sổ trì hoãn <code>stabilizationWindowSeconds: 300</code> (5 phút) bảo vệ hệ thống khỏi sự cố rung lắc số bản sao (Flapping/Thrashing)."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1245,40 +1311,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"100% containers trong Pod spec bắt buộc phải có `resources.requests.cpu`; thiếu `requests.cpu` làm HPA báo chỉ số `<unknown>`."*
 4. *"Tiến trình HPA Controller chạy vòng lặp quét chỉ số từ `metrics-server` định kỳ **15 giây một lần**."*
 5. *"Cửa sổ trì hoãn `stabilizationWindowSeconds: 300` (5 phút) bảo vệ hệ thống khỏi sự cố rung lắc số bản sao (Flapping/Thrashing)."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Phân biệt HPA (scale out/in replicas) vs VPA (scale up/down CPU/RAM) (trần 1đ nếu thiếu) |
-| Câu 2 | 🔥 | 3 | | Công thức toán học HPA `desiredReplicas = ceil[...]` (trần 1đ nếu thiếu) |
-| Câu 3 | ★★★ | 3 | | Điều kiện phụ thuộc `resources.requests.cpu` và lỗi `<unknown>` |
-| Câu 4 | ★★★ | 3 | | Tần suất vòng lặp 15s của HPA Controller |
-| Câu 5 | ★★★ | 3 | | Cửa sổ ổn định `stabilizationWindowSeconds: 300` chống Flapping |
-| Câu 6 | ★★★ | 3 | | Câu lệnh CLI `kubectl autoscale` tạo HPA nhanh |
-| Câu 7 | ★★★ | 3 | | Phân biệt `autoscaling/v1` (chỉ CPU) vs `autoscaling/v2` (Memory & Multiple Metrics) |
-| Câu 8 | ★★★ | 3 | | HPA Controller tự động ghi đè lệnh `kubectl scale` thủ công |
-| Câu 9 | ★★★ | 3 | | Cơ chế ép khoảng `minReplicas` và `maxReplicas` |
-| Câu 10 | ★★★ | 3 | | Khối `spec.behavior.scaleUp` tùy chỉnh bùng nổ Flash Sale |
-| Câu 11 | ★★★ | 3 | | Lý do HPA không làm việc được với DaemonSet (thiếu `spec.replicas`) |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (HPA `<unknown>` thiếu requests & Flapping scaleDown) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các HPA trong cụm và phát hiện ngay các HPA đang bị dính chỉ số `<unknown>`.
-2. **BTVN 2:** Tạo Deployment Nginx 2 bản sao và viết file YAML HPA v2 cấu hình co giãn theo Memory utilization `70%` với `minReplicas: 2`, `maxReplicas: 6`.
-3. **BTVN 3:** Thực hành sử dụng công cụ `hey` hoặc `ab` bắn 1000 requests vào `php-service` và quan sát HPA scale out Pods qua lệnh `kubectl get hpa -w`.
-4. **BTVN 4 — Chuẩn bị cho Buổi 20 (`buoi-20-cau-hinh-configmap-secret`):**
-   - *Câu 1:* Phân biệt sự khác nhau giữa đối tượng `ConfigMap` (lưu cấu hình dạng plaintext) và `Secret` (lưu dữ liệu mã hoá Base64 / mã hoá etcd).
-   - *Câu 2:* Ba cách truyền dữ liệu từ ConfigMap/Secret vào Pod (Biến môi trường `env`, Khối `envFrom`, Mount thành Volume tệp tin) khác nhau như thế nào?
-   - *Câu 3:* Khi thay đổi nội dung của ConfigMap, cách truyền nào (Biến môi trường vs Volume mount) hỗ trợ cập nhật nóng (Hot Reloading) mà không cần restart Pod?
-
-> **Đoạn kết nối Buổi 20:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 20 — buổi học quản lý cấu hình và dữ liệu nhạy cảm bằng ConfigMap & Secret, các phương thức inject vào Pod và kỹ thuật cập nhật nóng Hot Reloading trong CKA và CKAD.
 
 ---
 
@@ -1614,15 +1646,15 @@ kubectl describe hpa <hpa-name> -n <namespace>
 kubectl set resources deployment <deploy-name> -n <namespace> -c=<container-name> --requests=cpu=100m
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 20] Quản Lý Cấu Hình Ứng Dụng: ConfigMap, Secret, EnvFrom, Projected Volumes & Kỹ Thuật Hot Reload](cka-20-20-cau-hinh-configmap-secret.html).
+
 {% endraw %}

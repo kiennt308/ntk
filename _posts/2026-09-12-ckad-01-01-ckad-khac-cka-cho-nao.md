@@ -518,24 +518,6 @@ Giá trị <code>limits</code> phải luôn lớn hơn hoặc bằng giá trị 
 | Trang chủ CKAD Curriculum CNCF | `https://github.com/cncf/curriculum` | Chương trình thi CKAD mới nhất |
 | Kubernetes SecurityContext | `https://kubernetes.io/docs/tasks/configure-pod-container/security-context/` | Cấu hình bảo mật Pod |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. So sánh CKA so với CKAD | 12 phút | 12 phút |
-| §5. Bối cảnh 5 miền CKAD | 12 phút | 12 phút |
-| §6. Tư duy Lập trình viên Cloud Native | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -870,26 +852,11 @@ test ! -f /tmp/lab31-app.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKP
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace | 10 phút | 10 phút |
-| L4. Bước 2: SecurityContext | 25 phút | 25 phút |
-| L5. Bước 3: ConfigMap envFrom | 25 phút | 25 phút |
-| L6. Bước 4: Observability Probes | 25 phút | 25 phút |
-| L7. Bước 5: Multi-container Sidecar | 25 phút | 25 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -897,180 +864,304 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Hai miền kiến thức nào chiếm tổng trọng số cao nhất (45 %) trong ma trận 5 miền thi CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-CKA dành cho Quản trị viên hạ tầng (SysAdmin/DevOps), tập trung vào dựng cụm, etcd, Kubelet, CNI và nâng cấp cụm. CKAD dành cho Lập trình viên phát triển ứng dụng (Software Engineer/Developer), tập trung 100% vào đóng gói container, thiết kế Pod đa container, cấu hình biến môi trường, bảo mật SecurityContext và giám sát Probes.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Miền <code>Application Environment, Configuration and Security</code> (chiếm 25 %) và miền <code>Application Design and Build</code> (chiếm 20 %).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn trọng số các miền.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng tên 2 miền nhưng nhầm con số trọng số %.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Nêu chính xác tên và trọng số 25% và 20% của 2 miền cốt lõi này.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nội dung chính của miền Environment & Config bao gồm những tài nguyên nào? — ConfigMaps, Secrets, SecurityContext, Resource Requests/Limits và ServiceAccount).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời chung chung không phân biệt được 2 đối tượng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Phân biệt được CKA là admin, CKAD là dev nhưng không nêu được các thành phần kỹ thuật tương ứng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Phân biệt tốt nhưng chưa nhấn mạnh việc CKAD không cần SSH Node hay sửa file Static Pod.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích mạch lạc, chính xác sự chuyển đổi tư duy từ Infrastructure (CKA) sang Workloads (CKAD).</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Bài thi CKAD có câu hỏi nào về etcd backup hay nâng cấp kubeadm không? — Không có, toàn bộ 100% là bài tập cấu hình Workloads qua API Server).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao ứng dụng thiết kế chạy trên Kubernetes (Cloud Native) lại bắt buộc phải là ứng dụng không lưu trạng thái (Stateless)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì trên Kubernetes, Pod có thể bị Kubelet hủy (terminate) và tạo lại bất kỳ lúc nào trên một Worker Node khác. Ứng dụng Stateless không lưu dữ liệu người dùng cục bộ bên trong đĩa container, giúp ứng dụng có thể co giãn linh hoạt và phục hồi tức thì không gây mất dữ liệu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được khái niệm Stateless.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không lưu dữ liệu nhưng không gắn với đặc tính hủy/tạo Pod của Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo theo nguyên tắc 12-Factor App và cơ chế co giãn tự động của Kubernetes.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu ứng dụng bắt buộc phải lưu tệp tải lên của người dùng thì trên K8s phải xử lý thế nào? — Lưu vào bộ lưu trữ đối tượng bên ngoài như AWS S3 hoặc mount PersistentVolume).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cờ cấu hình <code>runAsNonRoot: true</code> trong <code>securityContext</code> của Pod có vai trò gì về mặt bảo mật?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>runAsNonRoot: true</code> bắt buộc Kubelet kiểm tra và từ chối khởi chạy container nếu tiến trình bên trong container được cấu hình chạy dưới quyền root (UID 0), ngăn ngừa nguy cơ kẻ tấn công chiếm quyền điều khiển hạ tầng khi ứng dụng bị khai thác lỗ hổng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tác dụng của cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không cho chạy root nhưng không giải thích được cơ chế Kubelet validate UID.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác mục đích giảm bề mặt tấn công và cơ chế ngăn chặn UID 0 của Kubelet.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu ảnh container mặc định chạy root mà ta đặt <code>runAsNonRoot: true</code> thì điều gì sẽ xảy ra? — Kubelet sẽ báo lỗi <code>CreateContainerConfigError</code> và Pod không chạy được).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự khác biệt giữa cờ <code>env</code> và cờ <code>envFrom</code> khi nạp dữ liệu từ ConfigMap vào Pod là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>env</code> nạp từng biến môi trường thủ công bằng cách chỉ định rõ key-value. Cờ <code>envFrom</code> nạp đồng thời toàn bộ các cặp Key-Value có trong ConfigMap làm biến môi trường container chỉ với 1 dòng khai báo, giúp tiết kiệm thời gian gõ YAML.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được envFrom nạp nhanh hơn nhưng không rõ cơ chế nạp toàn bộ cặp key-value.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: So sánh rõ ràng cú pháp và trường hợp sử dụng của <code>env</code> và <code>envFrom</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu trong ConfigMap có 20 cặp key-value thì dùng cờ nào tối ưu nhất trong đề thi CKAD? — Dùng cờ <code>envFrom</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Phân biệt mục đích kỹ thuật giữa <code>livenessProbe</code> và <code>readinessProbe</code> trong Kubernetes Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>livenessProbe</code> kiểm tra xem container có đang sống hay không; nếu probe fail, Kubelet sẽ kill container và restart lại. <code>readinessProbe</code> kiểm tra xem container đã sẵn sàng nhận traffic chưa; nếu probe fail, Service sẽ gỡ IP của Pod khỏi danh sách Endpoints để không chuyển request vào, nhưng Kubelet không restart container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn chức năng của 2 loại probe.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được liveness restart nhưng không rõ readiness gỡ khỏi Service Endpoints.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác hành vi của Kubelet với livenessProbe và hành vi của Service với readinessProbe.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu ứng dụng nạp dữ liệu cache hết 45 giây khi khởi động thì nên dùng probe nào để tránh người dùng bị lỗi 502? — Dùng <code>readinessProbe</code> với <code>initialDelaySeconds: 45</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Mẫu thiết kế Pod đa container Sidecar (Sidecar Pattern) là gì và ứng dụng phổ biến nhất của nó là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Sidecar Pattern là mẫu thiết kế đặt một container phụ (sidecar) chạy song song cùng container chính trong cùng 1 Pod, chia sẻ chung Volume đĩa. Ứng dụng phổ biến nhất là thu thập/chuyển đổi log (Log Collection) hoặc đóng vai trò mTLS proxy (Service Mesh).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được khái niệm Sidecar.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được container phụ chạy cùng container chính nhưng thiếu ý chia sẻ Volume đĩa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày hoàn chỉnh định nghĩa Sidecar, cơ chế chia sẻ Volume/Network và ứng dụng thu thập log.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sidecar container khác InitContainer ở điểm cốt lõi nào? — InitContainer chạy xong và kết thúc trước khi container chính chạy; Sidecar container chạy liên tục song song cùng container chính).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tác dụng của chỉ thị <code>imagePullPolicy: IfNotPresent</code> khi biên soạn Pod spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chỉ thị <code>IfNotPresent</code> ra lệnh cho Kubelet kiểm tra xem ảnh container đã có sẵn trên đĩa cục bộ của Worker Node chưa. Nếu đã có thì sử dụng ngay, chỉ thực hiện kéo (pull) ảnh từ Registry về khi ổ đĩa Node chưa có bản ảnh đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ tác dụng của policy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không kéo ảnh nhưng không rõ điều kiện "nếu đĩa đã có".</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế tối ưu thời gian khởi động Pod và tiết kiệm băng thông của <code>IfNotPresent</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu tag của ảnh là <code>:latest</code> thì mặc định <code>imagePullPolicy</code> sẽ là gì? — Mặc định sẽ là <code>Always</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Ý nghĩa của cờ <code>readOnlyRootFilesystem: true</code> trong SecurityContext là gì và bẫy hay gặp khi ứng dụng cần ghi file tạm là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ này khóa toàn bộ hệ thống tệp gốc của container ở chế độ chỉ đọc, ngăn kẻ tấn công ghi mã độc vào đĩa. Bẫy hay gặp là ứng dụng (như Java/Node.js) bị crash do không ghi được tệp tạm vào <code>/tmp</code>. Cách xử lý là mount một volume <code>emptyDir</code> vào <code>/tmp</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết ý nghĩa cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được khóa ổ đĩa chỉ đọc nhưng không biết cách xử lý khi app cần ghi file tạm <code>/tmp</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích tác dụng bảo mật và giải pháp mount <code>emptyDir</code> giải quyết bẫy ghi file tạm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Volume <code>emptyDir</code> có bị khóa chỉ đọc khi đặt <code>readOnlyRootFilesystem: true</code> không? — Không, volume mount riêng vẫn cho phép ghi bình thường).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để kiểm tra danh sách toàn bộ biến môi trường thực tế đang chạy bên trong một Pod từ terminal?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Sử dụng câu lệnh <code>kubectl exec <pod-name> -n <namespace> -- env</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh exec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được <code>kubectl exec</code> nhưng quên cờ <code>-- env</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác câu lệnh <code>kubectl exec</code> kết hợp lệnh Linux <code>env</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Pod có 2 container thì câu lệnh exec phải bổ sung cờ gì? — Bổ sung cờ <code>-c <container-name></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao người viết ứng dụng Cloud Native lại cần khai báo đầy đủ cả 2 trường <code>requests</code> và <code>limits</code> cho RAM và CPU?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Trường <code>requests</code> giúp Kubernetes Scheduler tìm Node có đủ tài nguyên trống để xếp lịch Pod. Trường <code>limits</code> thiết lập trần tối đa container được dùng, ngăn không cho container bị rò rỉ bộ nhớ (memory leak) chiếm sạch tài nguyên của Node gây ảnh hưởng các Pod khác.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa requests và limits.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xin tài nguyên và giới hạn nhưng chưa giải thích vai trò của Scheduler và bảo vệ Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò của <code>requests</code> với Scheduler và <code>limits</code> với cờ OOMKill/CFS Throttling.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chuyện gì xảy ra khi container vượt quá <code>memory.limits</code>? — Container sẽ bị Linux Kernel tiêu diệt ngay lập tức do lỗi OOMKilled).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Cờ lệnh imperative nào là vũ khí quan trọng nhất giúp bạn tạo nhanh khung tệp YAML cho các câu hỏi CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ lệnh <code>--dry-run=client -o yaml</code> (ví dụ: <code>kubectl run app --image=nginx --dry-run=client -o yaml > app.yaml</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ cờ dry-run.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dry-run nhưng gõ thiếu client hoặc -o yaml.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày cú pháp chính xác và ứng dụng tốc độ cao trong bài thi CKAD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--dry-run=client</code> có gửi request tới API Server không? — Không, nó xử lý hoàn toàn cục bộ ở cờ kubectl client).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Hai miền kiến thức nào chiếm tổng trọng số cao nhất (45 %) trong ma trận 5 miền thi CKAD?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Miền `Application Environment, Configuration and Security` (chiếm 25 %) và miền `Application Design and Build` (chiếm 20 %).
+1. <b style="color: var(--accent-primary);">"Chuyển đổi từ CKA sang CKAD là sự chuyển dịch tư duy từ Quản trị viên hạ tầng (SysAdmin) sang Lập trình viên ứng dụng Cloud Native (App Developer)."</b>
+2. <b style="color: var(--accent-primary);">"Mọi ứng dụng chuẩn Cloud Native trên Kubernetes phải tuân thủ nguyên tắc Stateless, tách biệt cấu hình khỏi code qua ConfigMap/Secret, và bảo vệ bởi SecurityContext."</b>
+3. <b style="color: var(--accent-primary);">"Khả năng quan sát ứng dụng (Application Observability) thông qua bộ đôi Readiness và Liveness Probes là mắt xích bắt buộc để đảm bảo hệ thống đạt độ sẵn sàng cao không bị gián đoạn dịch vụ."</b>
+4. <b style="color: var(--accent-primary);">"Thành thục các mẫu thiết kế Pod đa container (Sidecar Pattern) giúp mở rộng chức năng ứng dụng mà không cần sửa đổi mã nguồn chính."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn trọng số các miền.
-- 1đ: Nêu đúng tên 2 miền nhưng nhầm con số trọng số %.
-- 3đ: Nêu chính xác tên và trọng số 25% và 20% của 2 miền cốt lõi này.
-
-**Câu hỏi đào sâu:** (Nội dung chính của miền Environment & Config bao gồm những tài nguyên nào? — ConfigMaps, Secrets, SecurityContext, Resource Requests/Limits và ServiceAccount).
-
----
-
-### Câu 3 — 🔥
-**Hỏi:** Tại sao ứng dụng thiết kế chạy trên Kubernetes (Cloud Native) lại bắt buộc phải là ứng dụng không lưu trạng thái (Stateless)?
-
-**Đáp án chuẩn:** Vì trên Kubernetes, Pod có thể bị Kubelet hủy (terminate) và tạo lại bất kỳ lúc nào trên một Worker Node khác. Ứng dụng Stateless không lưu dữ liệu người dùng cục bộ bên trong đĩa container, giúp ứng dụng có thể co giãn linh hoạt và phục hồi tức thì không gây mất dữ liệu.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được khái niệm Stateless.
-- 1đ: Nêu được không lưu dữ liệu nhưng không gắn với đặc tính hủy/tạo Pod của Kubelet.
-- 3đ: Phân tích thấu đáo theo nguyên tắc 12-Factor App và cơ chế co giãn tự động của Kubernetes.
-
-**Câu hỏi đào sâu:** (Nếu ứng dụng bắt buộc phải lưu tệp tải lên của người dùng thì trên K8s phải xử lý thế nào? — Lưu vào bộ lưu trữ đối tượng bên ngoài như AWS S3 hoặc mount PersistentVolume).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Cờ cấu hình `runAsNonRoot: true` trong `securityContext` của Pod có vai trò gì về mặt bảo mật?
-
-**Đáp án chuẩn:** Cờ `runAsNonRoot: true` bắt buộc Kubelet kiểm tra và từ chối khởi chạy container nếu tiến trình bên trong container được cấu hình chạy dưới quyền root (UID 0), ngăn ngừa nguy cơ kẻ tấn công chiếm quyền điều khiển hạ tầng khi ứng dụng bị khai thác lỗ hổng.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tác dụng của cờ.
-- 1đ: Nêu được không cho chạy root nhưng không giải thích được cơ chế Kubelet validate UID.
-- 3đ: Trình bày chính xác mục đích giảm bề mặt tấn công và cơ chế ngăn chặn UID 0 của Kubelet.
-
-**Câu hỏi đào sâu:** (Nếu ảnh container mặc định chạy root mà ta đặt `runAsNonRoot: true` thì điều gì sẽ xảy ra? — Kubelet sẽ báo lỗi `CreateContainerConfigError` và Pod không chạy được).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Sự khác biệt giữa cờ `env` và cờ `envFrom` khi nạp dữ liệu từ ConfigMap vào Pod là gì?
-
-**Đáp án chuẩn:** Cờ `env` nạp từng biến môi trường thủ công bằng cách chỉ định rõ key-value. Cờ `envFrom` nạp đồng thời toàn bộ các cặp Key-Value có trong ConfigMap làm biến môi trường container chỉ với 1 dòng khai báo, giúp tiết kiệm thời gian gõ YAML.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 2 cờ.
-- 1đ: Nêu được envFrom nạp nhanh hơn nhưng không rõ cơ chế nạp toàn bộ cặp key-value.
-- 3đ: So sánh rõ ràng cú pháp và trường hợp sử dụng của `env` và `envFrom`.
-
-**Câu hỏi đào sâu:** (Nếu trong ConfigMap có 20 cặp key-value thì dùng cờ nào tối ưu nhất trong đề thi CKAD? — Dùng cờ `envFrom`).
-
----
-
-### Câu 6 — 🔥
-**Hỏi:** Phân biệt mục đích kỹ thuật giữa `livenessProbe` và `readinessProbe` trong Kubernetes Pod?
-
-**Đáp án chuẩn:** `livenessProbe` kiểm tra xem container có đang sống hay không; nếu probe fail, Kubelet sẽ kill container và restart lại. `readinessProbe` kiểm tra xem container đã sẵn sàng nhận traffic chưa; nếu probe fail, Service sẽ gỡ IP của Pod khỏi danh sách Endpoints để không chuyển request vào, nhưng Kubelet không restart container.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn chức năng của 2 loại probe.
-- 1đ: Nêu được liveness restart nhưng không rõ readiness gỡ khỏi Service Endpoints.
-- 3đ: Phân tích chuẩn xác hành vi của Kubelet với livenessProbe và hành vi của Service với readinessProbe.
-
-**Câu hỏi đào sâu:** (Nếu ứng dụng nạp dữ liệu cache hết 45 giây khi khởi động thì nên dùng probe nào để tránh người dùng bị lỗi 502? — Dùng `readinessProbe` với `initialDelaySeconds: 45`).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Mẫu thiết kế Pod đa container Sidecar (Sidecar Pattern) là gì và ứng dụng phổ biến nhất của nó là gì?
-
-**Đáp án chuẩn:** Sidecar Pattern là mẫu thiết kế đặt một container phụ (sidecar) chạy song song cùng container chính trong cùng 1 Pod, chia sẻ chung Volume đĩa. Ứng dụng phổ biến nhất là thu thập/chuyển đổi log (Log Collection) hoặc đóng vai trò mTLS proxy (Service Mesh).
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được khái niệm Sidecar.
-- 1đ: Nêu được container phụ chạy cùng container chính nhưng thiếu ý chia sẻ Volume đĩa.
-- 3đ: Trình bày hoàn chỉnh định nghĩa Sidecar, cơ chế chia sẻ Volume/Network và ứng dụng thu thập log.
-
-**Câu hỏi đào sâu:** (Sidecar container khác InitContainer ở điểm cốt lõi nào? — InitContainer chạy xong và kết thúc trước khi container chính chạy; Sidecar container chạy liên tục song song cùng container chính).
-
----
-
-### Câu 8 — ★★★
-**Hỏi:** Tác dụng của chỉ thị `imagePullPolicy: IfNotPresent` khi biên soạn Pod spec là gì?
-
-**Đáp án chuẩn:** Chỉ thị `IfNotPresent` ra lệnh cho Kubelet kiểm tra xem ảnh container đã có sẵn trên đĩa cục bộ của Worker Node chưa. Nếu đã có thì sử dụng ngay, chỉ thực hiện kéo (pull) ảnh từ Registry về khi ổ đĩa Node chưa có bản ảnh đó.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ tác dụng của policy.
-- 1đ: Nêu được không kéo ảnh nhưng không rõ điều kiện "nếu đĩa đã có".
-- 3đ: Trình bày chuẩn xác cơ chế tối ưu thời gian khởi động Pod và tiết kiệm băng thông của `IfNotPresent`.
-
-**Câu hỏi đào sâu:** (Nếu tag của ảnh là `:latest` thì mặc định `imagePullPolicy` sẽ là gì? — Mặc định sẽ là `Always`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Ý nghĩa của cờ `readOnlyRootFilesystem: true` trong SecurityContext là gì và bẫy hay gặp khi ứng dụng cần ghi file tạm là gì?
-
-**Đáp án chuẩn:** Cờ này khóa toàn bộ hệ thống tệp gốc của container ở chế độ chỉ đọc, ngăn kẻ tấn công ghi mã độc vào đĩa. Bẫy hay gặp là ứng dụng (như Java/Node.js) bị crash do không ghi được tệp tạm vào `/tmp`. Cách xử lý là mount một volume `emptyDir` vào `/tmp`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết ý nghĩa cờ.
-- 1đ: Nêu được khóa ổ đĩa chỉ đọc nhưng không biết cách xử lý khi app cần ghi file tạm `/tmp`.
-- 3đ: Phân tích tác dụng bảo mật và giải pháp mount `emptyDir` giải quyết bẫy ghi file tạm.
-
-**Câu hỏi đào sâu:** (Volume `emptyDir` có bị khóa chỉ đọc khi đặt `readOnlyRootFilesystem: true` không? — Không, volume mount riêng vẫn cho phép ghi bình thường).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Làm thế nào để kiểm tra danh sách toàn bộ biến môi trường thực tế đang chạy bên trong một Pod từ terminal?
-
-**Đáp án chuẩn:** Sử dụng câu lệnh `kubectl exec <pod-name> -n <namespace> -- env`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh exec.
-- 1đ: Nêu được `kubectl exec` nhưng quên cờ `-- env`.
-- 3đ: Trình bày chuẩn xác câu lệnh `kubectl exec` kết hợp lệnh Linux `env`.
-
-**Câu hỏi đào sâu:** (Nếu Pod có 2 container thì câu lệnh exec phải bổ sung cờ gì? — Bổ sung cờ `-c <container-name>`).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Tại sao người viết ứng dụng Cloud Native lại cần khai báo đầy đủ cả 2 trường `requests` và `limits` cho RAM và CPU?
-
-**Đáp án chuẩn:** Trường `requests` giúp Kubernetes Scheduler tìm Node có đủ tài nguyên trống để xếp lịch Pod. Trường `limits` thiết lập trần tối đa container được dùng, ngăn không cho container bị rò rỉ bộ nhớ (memory leak) chiếm sạch tài nguyên của Node gây ảnh hưởng các Pod khác.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa requests và limits.
-- 1đ: Nêu được xin tài nguyên và giới hạn nhưng chưa giải thích vai trò của Scheduler và bảo vệ Node.
-- 3đ: Phân tích thấu đáo vai trò của `requests` với Scheduler và `limits` với cờ OOMKill/CFS Throttling.
-
-**Câu hỏi đào sâu:** (Chuyện gì xảy ra khi container vượt quá `memory.limits`? — Container sẽ bị Linux Kernel tiêu diệt ngay lập tức do lỗi OOMKilled).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Cờ lệnh imperative nào là vũ khí quan trọng nhất giúp bạn tạo nhanh khung tệp YAML cho các câu hỏi CKAD?
-
-**Đáp án chuẩn:** Cờ lệnh `--dry-run=client -o yaml` (ví dụ: `kubectl run app --image=nginx --dry-run=client -o yaml > app.yaml`).
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ cờ dry-run.
-- 1đ: Nêu được dry-run nhưng gõ thiếu client hoặc -o yaml.
-- 3đ: Trình bày cú pháp chính xác và ứng dụng tốc độ cao trong bài thi CKAD.
-
-**Câu hỏi đào sâu:** (Cờ `--dry-run=client` có gửi request tới API Server không? — Không, nó xử lý hoàn toàn cục bộ ở cờ kubectl client).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1080,28 +1171,6 @@ CKA dành cho Quản trị viên hạ tầng (SysAdmin/DevOps), tập trung vào
 2. **"Mọi ứng dụng chuẩn Cloud Native trên Kubernetes phải tuân thủ nguyên tắc Stateless, tách biệt cấu hình khỏi code qua ConfigMap/Secret, và bảo vệ bởi SecurityContext."**
 3. **"Khả năng quan sát ứng dụng (Application Observability) thông qua bộ đôi Readiness và Liveness Probes là mắt xích bắt buộc để đảm bảo hệ thống đạt độ sẵn sàng cao không bị gián đoạn dịch vụ."**
 4. **"Thành thục các mẫu thiết kế Pod đa container (Sidecar Pattern) giúp mở rộng chức năng ứng dụng mà không cần sửa đổi mã nguồn chính."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm vững tư duy CKAD và sẵn sàng làm các bài lab ứng dụng |
-| **29 – 36 điểm** | Xuất sắc | Thành thục tư duy Lập trình viên Cloud Native chuẩn quốc tế |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết bản kê khai Pod YAML hoàn chỉnh chứa SecurityContext `runAsNonRoot: true`, `readinessProbe` HTTP và nạp biến từ ConfigMap.
-- **BTVN 2:** Thực hành viết Pod đa container Sidecar đọc log và test lại bằng `kubectl logs <pod> -c sidecar`.
-- **BTVN 3:** So sánh điểm giống và khác nhau giữa `ConfigMap` và `Secret` về cơ chế lưu trữ và bảo mật trên K8s.
-- **BTVN 4 (Chuẩn bị cho Buổi 32 — Định nghĩa và đóng gói Container):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Sự khác nhau giữa hai chỉ thị `ENTRYPOINT` và `CMD` trong tệp Dockerfile là gì?
-  2. Tại sao việc tối ưu kích thước ảnh container (dùng Alpine / Distroless) lại là yêu cầu bắt buộc trong CKAD?
-  3. Cờ `--command` và `--args` trong Kubernetes YAML ghi đè chỉ thị nào của Dockerfile?
 
 ---
 
@@ -1368,14 +1437,15 @@ kubectl logs <pod-name> -c sidecar -n <ns>
 envFrom: [{secretRef: {name: db-pass}}]
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 02] Thiết Kế & Đóng Gói Container Chuẩn Production: Dockerfile Đa Tầng, Entrypoint vs Command & Ảnh Mỏng](ckad-02-02-dinh-nghia-va-dong-goi-container.html).
+
 {% endraw %}

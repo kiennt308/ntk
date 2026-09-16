@@ -433,24 +433,6 @@ graph TD
 | Official Docs: Checking API Access | Kubernetes v1.35 | Kiểm tra phân quyền với kubectl auth can-i |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Tổng quan kiến trúc RBAC và 3 thành phần chính: Subject, Role, Binding | 12 phút |
-| §5 | Phân biệt `Role` (Namespace) và `ClusterRole` (Cluster) | 12 phút |
-| §6 | Cấu trúc bộ 3 quy tắc phễu RBAC: `apiGroups`, `resources`, `verbs` | 10 phút |
-| §7 | Kiểm thử phân quyền an toàn với `kubectl auth can-i` | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -763,24 +745,11 @@ rm -f /tmp/can-i-get-pods.txt /tmp/can-i-del-pods.txt /tmp/can-i-get-nodes.txt /
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-10/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Chuẩn bị Namespace và tạo `Role` trong phạm vi Namespace | 30 phút |
-| L4 | Bước 2 — Tạo `RoleBinding` và thực hành `kubectl auth can-i` | 30 phút |
-| L5 | Bước 3 — Tạo `ClusterRole` và `ClusterRoleBinding` cấp Cụm | 30 phút |
-| L6 | Bước 4 — Tái sử dụng `ClusterRole` qua `RoleBinding` trong Namespace `prod` | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -794,246 +763,347 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày 3 thành phần ngôi bắt buộc để tạo thành một phân quyền RBAC hoàn chỉnh trong Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hoạt động theo cơ chế <b style="color: var(--accent-primary);">Mặc định từ chối (Default Deny)</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mọi tài khoản User, Group hay ServiceAccount vừa được tạo ra sẽ có <b style="color: var(--accent-primary);">đúng 0% quyền hạn</b> (không thể gõ bất kỳ lệnh <code>kubectl</code> nào hay gọi bất kỳ API nào).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Một thao tác chỉ được API Server chấp thuận khi và chỉ khi có ít nhất một quy tắc (Rule) trong RoleBinding hoặc ClusterRoleBinding cho phép rõ ràng thao tác đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Subject (Chủ thể):</b> Ai xin cấp quyền? (<code>User</code>, <code>Group</code>, hoặc <code>ServiceAccount</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Role / ClusterRole (Vai trò):</b> Được làm gì? (Tập hợp các quy tắc Rules: <code>apiGroups</code>, <code>resources</code>, <code>verbs</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3. RoleBinding / ClusterRoleBinding (Chiếc cầu nối):</b> Phép gắn Subject với Role tương ứng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 3 thành phần.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được Role và User nhưng thiếu thành phần Binding nối lại.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chuẩn xác 3 ngôi: Subject + Role + Binding và vai trò từng ngôi.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl create rolebinding</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu tạo Role và Subject nhưng quên tạo Binding thì điều gì xảy ra? *(Đáp án: Subject hoàn toàn không có quyền hạn nào đối với Role đó).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo mặc định cho phép xem tất cả.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời từ chối nhưng không giải thích được con số 0% quyền hạn mặc định và cơ chế cần gán Binding rõ ràng (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế Default Deny (0% quyền mặc định) và vai trò của RoleBinding.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu cờ <code>--authorization-mode=RBAC</code> trên API Server.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu 1 User được gán 2 RoleBinding (1 Role cho xem Pod, 1 Role từ chối xem Pod) thì User đó có xem được Pod không? *(Đáp án: Có xem được, vì RBAC Kubernetes chỉ có Deny mặc định chứ không có Explicit Deny rule).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Phân biệt sự khác nhau về phạm vi tác động giữa <code>Role</code> và <code>ClusterRole</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Role</code>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phạm vi tác động giới hạn trong <b style="color: var(--accent-primary);">đúng 1 Namespace cụ thể</b> (Namespaced resource).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ phân quyền được cho các tài nguyên nằm trong Namespace đó (Pods, Deployments, Services, ConfigMaps).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ClusterRole</code>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phạm vi tác động trên <b style="color: var(--accent-primary);">toàn bộ Cụm</b> (Cluster-scoped).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân quyền cho các tài nguyên cấp Cụm (Non-namespaced resources: <code>nodes</code>, <code>persistentvolumes</code>, <code>namespaces</code>) HOẶC phân quyền trên tất cả các Namespace.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Role và ClusterRole giống hệt nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Role trong Namespace còn ClusterRole trên cluster nhưng không nêu được ví dụ tài nguyên Non-namespaced (<code>nodes</code>, <code>pvs</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác phạm vi 1 Namespace của Role vs toàn Cụm & Non-namespaced của ClusterRole.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lệnh <code>kubectl api-resources --namespaced=false</code> để xem tài nguyên cấp cụm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào dùng để liệt kê tất cả các tài nguyên cấp Cụm (Non-namespaced)? *(Đáp án: kubectl api-resources --namespaced=false).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Điều gì xảy ra khi ta gán một <code>ClusterRole</code> cho User thông qua đối tượng <code>RoleBinding</code> trong Namespace <code>dev</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• User đó <b style="color: var(--accent-primary);">CHỈ có quyền hạn trên tài nguyên nằm trong đúng Namespace <code>dev</code> đó</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>RoleBinding</code> đóng vai trò là phễu lọc bóp hẹp phạm vi của <code>ClusterRole</code> về đúng 1 Namespace chỉ định.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ứng dụng:</b> Đây là kỹ thuật tái sử dụng mẫu ClusterRole chuẩn sẵn có của Kubernetes (như ClusterRole <code>view</code>, <code>edit</code>, <code>admin</code>) cho từng đội ngũ trong từng Namespace mà không cần tạo lại nhiều Role trùng lặp.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo User sẽ có quyền trên toàn bộ Cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời User xem được trong dev nhưng không giải thích được kỹ thuật tái sử dụng ClusterRole view/edit/admin.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò phễu lọc của RoleBinding bóp hẹp ClusterRole về 1 Namespace duy nhất.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl create rolebinding ... --clusterrole=view -n dev</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu ClusterRole đó chứa quyền xem <code>nodes</code> mà gán bằng <code>RoleBinding</code> trong Namespace <code>dev</code> thì User có xem được <code>nodes</code> không? *(Đáp án: Không, vì nodes là tài nguyên cấp Cụm không nằm trong Namespace dev).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Bộ 3 trường thông tin bắt buộc trong một quy tắc phễu RBAC Rule (<code>spec.rules[]</code>) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>apiGroups</code>: Nhóm API chứa tài nguyên (ví dụ: <code>""</code> cho tài nguyên lõi, <code>"apps"</code> cho Deployments, <code>"batch"</code> cho Jobs).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>resources</code>: Loại tài nguyên dạng số nhiều (ví dụ: <code>pods</code>, <code>deployments</code>, <code>services</code>, <code>secrets</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>verbs</code>: Các động từ đại diện cho hành động được phép (ví dụ: <code>get</code>, <code>list</code>, <code>watch</code>, <code>create</code>, <code>update</code>, <code>patch</code>, <code>delete</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 3 trường.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được resources và verbs nhưng thiếu <code>apiGroups</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác bộ 3 trường <code>apiGroups</code>, <code>resources</code>, <code>verbs</code> và ví dụ cụ thể.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra sự khác biệt giữa <code>apiGroups: [""]</code> (core) và <code>apiGroups: ["apps"]</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Với tài nguyên lõi như <code>Pods</code> và <code>Services</code> thì trường <code>apiGroups</code> phải khai báo như thế nào? *(Đáp án: Khai báo chuỗi rỗng <code>""</code> trong mảng <code>apiGroups: [""]</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Nguyên tắc tối thiểu quyền (Principle of Least Privilege) khuyên gì về việc sử dụng ký tự đại diện <code>*</code> trong RBAC trên môi trường sản xuất?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tuyệt đối **TRÁNH sử dụng ký tự đại diện <code>*</code>** trong trường <code>verbs</code> hoặc <code>resources</code> trên môi trường sản xuất (trừ tài khoản quản trị tối cao <code>cluster-admin</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do:</b> Ký tự <code>*</code> cấp toàn quyền tạo, sửa, xoá và can thiệp bảo mật. Nếu danh tính User hoặc ServiceAccount bị lộ, kẻ tấn công sẽ có toàn quyền phá hoại hoặc leo thang đặc quyền.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực hành đúng:</b> Chỉ liệt kê chính xác các <code>verbs</code> cần thiết (ví dụ: chỉ gán <code>verbs: ["get", "list"]</code> cho tài khoản xem) và chỉ chỉ định đúng <code>resources</code> cần sử dụng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo dùng <code>*</code> cho tiện không sao cả.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời nên hạn chế dùng <code>*</code> nhưng không giải thích được rủi ro leo thang đặc quyền và xoá ứng dụng (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác nguyên tắc Least Privilege và nguy cơ an ninh khi dùng wildcard <code>*</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc phân quyền cụ thể từng subresource như <code>pods/log</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để cấp quyền cho User chỉ được xem log của Pod mà không được exec vào Pod? *(Đáp án: Khai báo <code>resources: ["pods", "pods/log"]</code> và không cấp <code>pods/exec</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Lệnh <code>kubectl auth can-i <verb> <resource></code> giúp người quản trị giải quyết vấn đề gì trong vận hành?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>kubectl auth can-i</code> cho phép quản trị viên <b style="color: var(--accent-primary);">kiểm thử phân quyền giả lập (Permission Dry-run)</b> của bất kỳ danh tính nào (<code>--as=<user></code>, <code>--as-group=<group></code>) ngay lập tức mà <b style="color: var(--accent-primary);">KHÔNG cần phải tráo đổi tệp Kubeconfig</b> hay chuyển context thủ công.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• API Server sẽ đối soát các RoleBinding hiện có và trả về kết quả khẳng định <b style="color: var(--accent-primary);"><code>yes</code></b> (được phép) hoặc <b style="color: var(--accent-primary);"><code>no</code></b> (bị cấm).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo lệnh này dùng để cấp quyền cho User.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được kiểm tra quyền nhưng không giải thích được tính năng giả lập <code>--as</code> giúp test không cần đổi Kubeconfig.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc kiểm thử phân quyền giả lập với <code>--as</code> và kết quả yes/no.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl auth can-i --list</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Hai cờ nào được dùng trong lệnh <code>can-i</code> để giả lập danh tính User và Group khác? *(Đáp án: Cờ <code>--as=<username></code> và cờ <code>--as-group=<groupname></code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh <code>kubectl auth can-i --list</code> mang lại giá trị gì khi kiểm tra an ninh hệ thống?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>kubectl auth can-i --list --as=<user> -n <namespace></code> hiển thị toàn bộ <b style="color: var(--accent-primary);">bảng ma trận quyền hạn đầy đủ</b> (bao gồm <code>Resources</code>, <code>Non-Resource URLs</code>, <code>Resource Names</code>, <code>API Groups</code>, <code>Verbs</code>) mà danh tính đó đang sở hữu trong Namespace chỉ định.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giá trị:</b> Giúp quản trị viên kiểm tra nhanh toàn cảnh bức tranh phân quyền, lập tức phát hiện các lỗ hổng dư thừa quyền hạn (như vô tình được cấp <code>delete</code> hoặc wildcard <code>*</code>) để thu hồi kịp thời.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo lệnh này dùng để xem danh sách User trong cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời xem danh sách quyền nhưng không nêu được các cột trong ma trận quyền hạn và phát hiện dư thừa quyền.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc in ma trận quyền hạn toàn cảnh giúp phát hiện lỗ hổng RBAC.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kết quả bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có thể dùng <code>auth can-i --list</code> để xem quyền hạn cấp Cụm không? *(Đáp án: Có, bằng cách không truyền cờ <code>-n <namespace></code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Phân biệt sự khác nhau giữa <code>User</code> và <code>ServiceAccount</code> trong trường <code>subjects[]</code> của RBAC Binding.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>User</code> (Con người):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đại diện cho con người (kỹ sư DevOps, quản trị viên).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• KHÔNG có đối tượng API trong etcd; xác thực qua X.509 Certificate (<code>CN</code>/<code>O</code>) hoặc OIDC/Token ngoài.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ServiceAccount</code> (Máy / Pod):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đại diện cho tiến trình/ứng dụng chạy bên trong Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• LÀ một đối tượng API Kubernetes lưu trong etcd (<code>kind: ServiceAccount</code>), có Namespace rõ ràng và được nạp token vào Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo User và ServiceAccount hoàn toàn giống nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được User cho con người còn ServiceAccount cho Pod nhưng không nêu được việc ServiceAccount là API object trong etcd còn User thì không.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác User (con người, x509/OIDC, không có DB API) vs ServiceAccount (Pod/máy, API object trong etcd).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ cấu trúc YAML <code>subjects[0].kind: ServiceAccount</code> có <code>namespace</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trong tệp YAML RoleBinding, khi gán cho ServiceAccount thì trường nào là bắt buộc trong <code>subjects</code> mà User không cần? *(Đáp án: Trường <code>namespace</code> chỉ định ServiceAccount thuộc Namespace nào).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao khai báo <code>resources: ["deployments"]</code> và <code>apiGroups: [""]</code> trong tệp Role lại bị lỗi khi áp dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>Deployments</code> thuộc nhóm API <b style="color: var(--accent-primary);"><code>apps</code></b> (<code>apps/v1</code>), KHÔNG thuộc nhóm API lõi (core API <code>""</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai báo <code>apiGroups: [""]</code> chỉ đúng cho các tài nguyên lõi v1 như <code>pods</code>, <code>services</code>, <code>configmaps</code>, <code>secrets</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khắc phục:</b> Bắt buộc phải khai báo <code>apiGroups: ["apps"]</code> đối với resource <code>deployments</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo deployments không cần apiGroups.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được sai apiGroup nhưng không nhớ Deployments thuộc group <code>apps</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác Deployments thuộc group <code>apps</code> còn <code>""</code> dành cho core v1 resources.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu thêm ví dụ <code>jobs</code> thuộc group <code>batch</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao biết một đối tượng API thuộc <code>apiGroup</code> nào? *(Đáp án: Dùng lệnh <code>kubectl api-resources</code> để xem cột APIVERSION/APIGROUP).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao không nên dùng <code>ClusterRoleBinding</code> cấp <code>ClusterRole cluster-admin</code> cho các ứng dụng Web / Microservices chạy trong Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ClusterRole cluster-admin</code> chứa toàn bộ quyền wildcard <code>verbs: ["*"]</code> và <code>resources: ["*"]</code> trên toàn bộ Cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu ứng dụng Web bị lỗ hổng bảo mật (như RCE, SQL Injection), kẻ tấn công chiếm được Pod Web sẽ đọc được ServiceAccount Token trong Pod và ngay lập tức <b style="color: var(--accent-primary);">có quyền quản trị tối cao xoá sạch toàn bộ cụm Kubernetes</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc:</b> Chỉ cấp RoleBinding vừa đủ quyền trong Namespace cho ServiceAccount của Pod (Least Privilege).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cấp <code>cluster-admin</code> cho Pod là bình thường.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời nguy hiểm nhưng không phân tích được kịch bản Pod bị hack dẫn tới leo thang chiếm toàn cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác kịch bản Pod Web bị hack dùng ServiceAccount Token leo thang quản trị toàn cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng các sự cố an ninh thực tế CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để ngăn không cho Pod tự động nạp ServiceAccount Token nếu Pod không cần gọi API Server? *(Đáp án: Đặt cờ <code>automountServiceAccountToken: false</code> trong spec của Pod).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do quên RoleBinding, 1 âm thầm do khai báo sai apiGroups) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Quên tạo RoleBinding):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Viết Role rất chi tiết, áp dụng thành công nhưng User gõ lệnh vẫn dính <code>Forbidden</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Chạy <code>kubectl auth can-i get pods --as=username</code> báo <code>no</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Tạo <code>RoleBinding</code> gắn User với Role đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Khai báo sai <code>apiGroups</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* RoleBinding đã tạo, xem trong Role thấy ghi resource <code>deployments</code>, nhưng User vẫn không get được Deployment.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Đọc kỹ YAML Role thấy <code>apiGroups: [""]</code> thay vì <code>apiGroups: ["apps"]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa <code>apiGroups: ["apps"]</code> trong tệp YAML Role.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân quên Binding và sai apiGroups (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi tạo Role/RoleBinding bằng lệnh <code>kubectl create</code>, cờ nào giúp tránh sai sót syntax YAML? *(Đáp án: Dùng cờ <code>--dry-run=client -o yaml</code>).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Trình bày 3 thành phần ngôi bắt buộc để tạo thành một phân quyền RBAC hoàn chỉnh trong Kubernetes.
-
-**Đáp án chuẩn:**
-- **1. Subject (Chủ thể):** Ai xin cấp quyền? (`User`, `Group`, hoặc `ServiceAccount`).
-- **2. Role / ClusterRole (Vai trò):** Được làm gì? (Tập hợp các quy tắc Rules: `apiGroups`, `resources`, `verbs`).
-- **3. RoleBinding / ClusterRoleBinding (Chiếc cầu nối):** Phép gắn Subject với Role tương ứng.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 3 thành phần.
-- **1đ:** Nêu được Role và User nhưng thiếu thành phần Binding nối lại.
-- **2đ:** Trình bày chuẩn xác 3 ngôi: Subject + Role + Binding và vai trò từng ngôi.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl create rolebinding`.
-
-**Câu hỏi đào sâu:** Nếu tạo Role và Subject nhưng quên tạo Binding thì điều gì xảy ra? *(Đáp án: Subject hoàn toàn không có quyền hạn nào đối với Role đó).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau về phạm vi tác động giữa `Role` và `ClusterRole`.
-
-**Đáp án chuẩn:**
-- `Role`:
-  - Phạm vi tác động giới hạn trong **đúng 1 Namespace cụ thể** (Namespaced resource).
-  - Chỉ phân quyền được cho các tài nguyên nằm trong Namespace đó (Pods, Deployments, Services, ConfigMaps).
-- `ClusterRole`:
-  - Phạm vi tác động trên **toàn bộ Cụm** (Cluster-scoped).
-  - Phân quyền cho các tài nguyên cấp Cụm (Non-namespaced resources: `nodes`, `persistentvolumes`, `namespaces`) HOẶC phân quyền trên tất cả các Namespace.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Role và ClusterRole giống hệt nhau.
-- **1đ:** Trả lời Role trong Namespace còn ClusterRole trên cluster nhưng không nêu được ví dụ tài nguyên Non-namespaced (`nodes`, `pvs`).
-- **2đ:** Giải thích chuẩn xác phạm vi 1 Namespace của Role vs toàn Cụm & Non-namespaced của ClusterRole.
-- **3đ:** Trả lời xuất sắc, chỉ ra lệnh `kubectl api-resources --namespaced=false` để xem tài nguyên cấp cụm.
-
-**Câu hỏi đào sâu:** Lệnh nào dùng để liệt kê tất cả các tài nguyên cấp Cụm (Non-namespaced)? *(Đáp án: kubectl api-resources --namespaced=false).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Điều gì xảy ra khi ta gán một `ClusterRole` cho User thông qua đối tượng `RoleBinding` trong Namespace `dev`?
-
-**Đáp án chuẩn:**
-- User đó **CHỈ có quyền hạn trên tài nguyên nằm trong đúng Namespace `dev` đó**.
-- `RoleBinding` đóng vai trò là phễu lọc bóp hẹp phạm vi của `ClusterRole` về đúng 1 Namespace chỉ định.
-- **Ứng dụng:** Đây là kỹ thuật tái sử dụng mẫu ClusterRole chuẩn sẵn có của Kubernetes (như ClusterRole `view`, `edit`, `admin`) cho từng đội ngũ trong từng Namespace mà không cần tạo lại nhiều Role trùng lặp.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo User sẽ có quyền trên toàn bộ Cụm.
-- **1đ:** Trả lời User xem được trong dev nhưng không giải thích được kỹ thuật tái sử dụng ClusterRole view/edit/admin.
-- **2đ:** Giải thích chuẩn xác vai trò phễu lọc của RoleBinding bóp hẹp ClusterRole về 1 Namespace duy nhất.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl create rolebinding ... --clusterrole=view -n dev`.
-
-**Câu hỏi đào sâu:** Nếu ClusterRole đó chứa quyền xem `nodes` mà gán bằng `RoleBinding` trong Namespace `dev` thì User có xem được `nodes` không? *(Đáp án: Không, vì nodes là tài nguyên cấp Cụm không nằm trong Namespace dev).*
-
----
-
-### Câu 5 — ★★
-
-**Hỏi:** Bộ 3 trường thông tin bắt buộc trong một quy tắc phễu RBAC Rule (`spec.rules[]`) là gì?
-
-**Đáp án chuẩn:**
-1. `apiGroups`: Nhóm API chứa tài nguyên (ví dụ: `""` cho tài nguyên lõi, `"apps"` cho Deployments, `"batch"` cho Jobs).
-2. `resources`: Loại tài nguyên dạng số nhiều (ví dụ: `pods`, `deployments`, `services`, `secrets`).
-3. `verbs`: Các động từ đại diện cho hành động được phép (ví dụ: `get`, `list`, `watch`, `create`, `update`, `patch`, `delete`).
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 3 trường.
-- **1đ:** Nêu được resources và verbs nhưng thiếu `apiGroups`.
-- **2đ:** Giải thích chuẩn xác bộ 3 trường `apiGroups`, `resources`, `verbs` và ví dụ cụ thể.
-- **3đ:** Trả lời xuất sắc, chỉ ra sự khác biệt giữa `apiGroups: [""]` (core) và `apiGroups: ["apps"]`.
-
-**Câu hỏi đào sâu:** Với tài nguyên lõi như `Pods` và `Services` thì trường `apiGroups` phải khai báo như thế nào? *(Đáp án: Khai báo chuỗi rỗng `""` trong mảng `apiGroups: [""]`).*
-
----
-
-### Câu 6 — 🔥
-
-**Hỏi:** Nguyên tắc tối thiểu quyền (Principle of Least Privilege) khuyên gì về việc sử dụng ký tự đại diện `*` trong RBAC trên môi trường sản xuất?
-
-**Đáp án chuẩn:**
-- Tuyệt đối **TRÁNH sử dụng ký tự đại diện `*`** trong trường `verbs` hoặc `resources` trên môi trường sản xuất (trừ tài khoản quản trị tối cao `cluster-admin`).
-- **Lý do:** Ký tự `*` cấp toàn quyền tạo, sửa, xoá và can thiệp bảo mật. Nếu danh tính User hoặc ServiceAccount bị lộ, kẻ tấn công sẽ có toàn quyền phá hoại hoặc leo thang đặc quyền.
-- **Thực hành đúng:** Chỉ liệt kê chính xác các `verbs` cần thiết (ví dụ: chỉ gán `verbs: ["get", "list"]` cho tài khoản xem) và chỉ chỉ định đúng `resources` cần sử dụng.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo dùng `*` cho tiện không sao cả.
-- **1đ:** Trả lời nên hạn chế dùng `*` nhưng không giải thích được rủi ro leo thang đặc quyền và xoá ứng dụng (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác nguyên tắc Least Privilege và nguy cơ an ninh khi dùng wildcard `*`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc phân quyền cụ thể từng subresource như `pods/log`.
-
-**Câu hỏi đào sâu:** Làm sao để cấp quyền cho User chỉ được xem log của Pod mà không được exec vào Pod? *(Đáp án: Khai báo `resources: ["pods", "pods/log"]` và không cấp `pods/exec`).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Lệnh `kubectl auth can-i <verb> <resource>` giúp người quản trị giải quyết vấn đề gì trong vận hành?
-
-**Đáp án chuẩn:**
-- Lệnh `kubectl auth can-i` cho phép quản trị viên **kiểm thử phân quyền giả lập (Permission Dry-run)** của bất kỳ danh tính nào (`--as=<user>`, `--as-group=<group>`) ngay lập tức mà **KHÔNG cần phải tráo đổi tệp Kubeconfig** hay chuyển context thủ công.
-- API Server sẽ đối soát các RoleBinding hiện có và trả về kết quả khẳng định **`yes`** (được phép) hoặc **`no`** (bị cấm).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo lệnh này dùng để cấp quyền cho User.
-- **1đ:** Nói được kiểm tra quyền nhưng không giải thích được tính năng giả lập `--as` giúp test không cần đổi Kubeconfig.
-- **2đ:** Giải thích chuẩn xác việc kiểm thử phân quyền giả lập với `--as` và kết quả yes/no.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl auth can-i --list`.
-
-**Câu hỏi đào sâu:** Hai cờ nào được dùng trong lệnh `can-i` để giả lập danh tính User và Group khác? *(Đáp án: Cờ `--as=<username>` và cờ `--as-group=<groupname>`).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Lệnh `kubectl auth can-i --list` mang lại giá trị gì khi kiểm tra an ninh hệ thống?
-
-**Đáp án chuẩn:**
-- Lệnh `kubectl auth can-i --list --as=<user> -n <namespace>` hiển thị toàn bộ **bảng ma trận quyền hạn đầy đủ** (bao gồm `Resources`, `Non-Resource URLs`, `Resource Names`, `API Groups`, `Verbs`) mà danh tính đó đang sở hữu trong Namespace chỉ định.
-- **Giá trị:** Giúp quản trị viên kiểm tra nhanh toàn cảnh bức tranh phân quyền, lập tức phát hiện các lỗ hổng dư thừa quyền hạn (như vô tình được cấp `delete` hoặc wildcard `*`) để thu hồi kịp thời.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo lệnh này dùng để xem danh sách User trong cụm.
-- **1đ:** Trả lời xem danh sách quyền nhưng không nêu được các cột trong ma trận quyền hạn và phát hiện dư thừa quyền.
-- **2đ:** Giải thích chuẩn xác việc in ma trận quyền hạn toàn cảnh giúp phát hiện lỗ hổng RBAC.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kết quả bài lab.
-
-**Câu hỏi đào sâu:** Có thể dùng `auth can-i --list` để xem quyền hạn cấp Cụm không? *(Đáp án: Có, bằng cách không truyền cờ `-n <namespace>`).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau giữa `User` và `ServiceAccount` trong trường `subjects[]` của RBAC Binding.
-
-**Đáp án chuẩn:**
-- `User` (Con người):
-  - Đại diện cho con người (kỹ sư DevOps, quản trị viên).
-  - KHÔNG có đối tượng API trong etcd; xác thực qua X.509 Certificate (`CN`/`O`) hoặc OIDC/Token ngoài.
-- `ServiceAccount` (Máy / Pod):
-  - Đại diện cho tiến trình/ứng dụng chạy bên trong Pod.
-  - LÀ một đối tượng API Kubernetes lưu trong etcd (`kind: ServiceAccount`), có Namespace rõ ràng và được nạp token vào Pod.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo User và ServiceAccount hoàn toàn giống nhau.
-- **1đ:** Nói được User cho con người còn ServiceAccount cho Pod nhưng không nêu được việc ServiceAccount là API object trong etcd còn User thì không.
-- **2đ:** Phân biệt chuẩn xác User (con người, x509/OIDC, không có DB API) vs ServiceAccount (Pod/máy, API object trong etcd).
-- **3đ:** Trả lời xuất sắc, minh hoạ cấu trúc YAML `subjects[0].kind: ServiceAccount` có `namespace`.
-
-**Câu hỏi đào sâu:** Trong tệp YAML RoleBinding, khi gán cho ServiceAccount thì trường nào là bắt buộc trong `subjects` mà User không cần? *(Đáp án: Trường `namespace` chỉ định ServiceAccount thuộc Namespace nào).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Tại sao khai báo `resources: ["deployments"]` và `apiGroups: [""]` trong tệp Role lại bị lỗi khi áp dụng?
-
-**Đáp án chuẩn:**
-- Vì `Deployments` thuộc nhóm API **`apps`** (`apps/v1`), KHÔNG thuộc nhóm API lõi (core API `""`).
-- Khai báo `apiGroups: [""]` chỉ đúng cho các tài nguyên lõi v1 như `pods`, `services`, `configmaps`, `secrets`.
-- **Khắc phục:** Bắt buộc phải khai báo `apiGroups: ["apps"]` đối với resource `deployments`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo deployments không cần apiGroups.
-- **1đ:** Nói được sai apiGroup nhưng không nhớ Deployments thuộc group `apps`.
-- **2đ:** Giải thích chuẩn xác Deployments thuộc group `apps` còn `""` dành cho core v1 resources.
-- **3đ:** Trả lời xuất sắc, nêu thêm ví dụ `jobs` thuộc group `batch`.
-
-**Câu hỏi đào sâu:** Làm sao biết một đối tượng API thuộc `apiGroup` nào? *(Đáp án: Dùng lệnh `kubectl api-resources` để xem cột APIVERSION/APIGROUP).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Tại sao không nên dùng `ClusterRoleBinding` cấp `ClusterRole cluster-admin` cho các ứng dụng Web / Microservices chạy trong Pod?
-
-**Đáp án chuẩn:**
-- `ClusterRole cluster-admin` chứa toàn bộ quyền wildcard `verbs: ["*"]` và `resources: ["*"]` trên toàn bộ Cụm.
-- Nếu ứng dụng Web bị lỗ hổng bảo mật (như RCE, SQL Injection), kẻ tấn công chiếm được Pod Web sẽ đọc được ServiceAccount Token trong Pod và ngay lập tức **có quyền quản trị tối cao xoá sạch toàn bộ cụm Kubernetes**.
-- **Quy tắc:** Chỉ cấp RoleBinding vừa đủ quyền trong Namespace cho ServiceAccount của Pod (Least Privilege).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo cấp `cluster-admin` cho Pod là bình thường.
-- **1đ:** Trả lời nguy hiểm nhưng không phân tích được kịch bản Pod bị hack dẫn tới leo thang chiếm toàn cụm.
-- **2đ:** Phân tích chuẩn xác kịch bản Pod Web bị hack dùng ServiceAccount Token leo thang quản trị toàn cụm.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng các sự cố an ninh thực tế CKS.
-
-**Câu hỏi đào sâu:** Làm sao để ngăn không cho Pod tự động nạp ServiceAccount Token nếu Pod không cần gọi API Server? *(Đáp án: Đặt cờ `automountServiceAccountToken: false` trong spec của Pod).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do quên RoleBinding, 1 âm thầm do khai báo sai apiGroups) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Quên tạo RoleBinding):**
-   - *Triệu chứng:* Viết Role rất chi tiết, áp dụng thành công nhưng User gõ lệnh vẫn dính `Forbidden`.
-   - *Phát hiện:* Chạy `kubectl auth can-i get pods --as=username` báo `no`.
-   - *Khắc phục:* Tạo `RoleBinding` gắn User với Role đó.
-2. **Chế độ hỏng 2 (Âm thầm - Khai báo sai `apiGroups`):**
-   - *Triệu chứng:* RoleBinding đã tạo, xem trong Role thấy ghi resource `deployments`, nhưng User vẫn không get được Deployment.
-   - *Phát hiện:* Đọc kỹ YAML Role thấy `apiGroups: [""]` thay vì `apiGroups: ["apps"]`.
-   - *Khắc phục:* Sửa `apiGroups: ["apps"]` trong tệp YAML Role.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân quên Binding và sai apiGroups (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.
-
-**Câu hỏi đào sâu:** Khi tạo Role/RoleBinding bằng lệnh `kubectl create`, cờ nào giúp tránh sai sót syntax YAML? *(Đáp án: Dùng cờ `--dry-run=client -o yaml`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Kubernetes RBAC hoạt động theo cơ chế Mặc định từ chối (Default Deny - 0% quyền mặc định); phép ghép RBAC chuẩn bắt buộc gồm đủ 3 ngôi: Subject + Role + Binding."*
+2. *"<code>Role</code> chỉ tác động trong 1 Namespace chỉ định; <code>ClusterRole</code> tác động trên toàn Cụm và các tài nguyên cấp Cụm (Non-namespaced resources như <code>nodes</code>, <code>pvs</code>)."*
+3. *"Gán a <code>ClusterRole</code> chuẩn (như <code>view</code>) qua <code>RoleBinding</code> trong Namespace <code>dev</code> giúp tái sử dụng mẫu Role và bóp hẹp quyền hạn về đúng 1 Namespace <code>dev</code> đó."*
+4. *"Mỗi quy tắc RBAC Rule gồm 3 trường <code>apiGroups</code>, <code>resources</code>, <code>verbs</code>; tuân thủ tuyệt đối nguyên tắc tối thiểu quyền (Least Privilege), cấm dùng cờ wildcard <code>*</code> bừa bãi."*
+5. *"Lệnh <code>kubectl auth can-i <verb> <resource> --as=<user> -n <ns></code> là công cụ duy nhất kiểm thử phân quyền giả lập nhanh và chính xác 100% mà không cần tráo Kubeconfig."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1044,40 +1114,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Gán a `ClusterRole` chuẩn (như `view`) qua `RoleBinding` trong Namespace `dev` giúp tái sử dụng mẫu Role và bóp hẹp quyền hạn về đúng 1 Namespace `dev` đó."*
 4. *"Mỗi quy tắc RBAC Rule gồm 3 trường `apiGroups`, `resources`, `verbs`; tuân thủ tuyệt đối nguyên tắc tối thiểu quyền (Least Privilege), cấm dùng cờ wildcard `*` bừa bãi."*
 5. *"Lệnh `kubectl auth can-i <verb> <resource> --as=<user> -n <ns>` là công cụ duy nhất kiểm thử phân quyền giả lập nhanh và chính xác 100% mà không cần tráo Kubeconfig."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Cơ chế Default Deny (0% quyền mặc định) (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | 3 thành phần ngôi bắt buộc: Subject + Role + Binding |
-| Câu 3 | ★★★ | 3 | | Phân biệt Role (1 NS) vs ClusterRole (Cụm & Non-namespaced) |
-| Câu 4 | ★★★ | 3 | | Gán ClusterRole bằng RoleBinding bóp hẹp về 1 Namespace |
-| Câu 5 | ★★ | 3 | | Bộ 3 trường RBAC Rule (`apiGroups`, `resources`, `verbs`) |
-| Câu 6 | 🔥 | 3 | | Nguyên tắc Least Privilege tránh wildcard `*` (trần 1đ nếu thiếu) |
-| Câu 7 | ★★★ | 3 | | Kiểm thử phân quyền giả lập bằng `kubectl auth can-i --as` |
-| Câu 8 | ★★★ | 3 | | Xem ma trận quyền hạn toàn cảnh với `kubectl auth can-i --list` |
-| Câu 9 | ★★★ | 3 | | Phân biệt User (con người, x509) vs ServiceAccount (Pod, etcd) |
-| Câu 10 | ★★★ | 3 | | Sửa lỗi `apiGroups` cho Deployments (`apps` vs `""`) |
-| Câu 11 | ★★★ | 3 | | Nguy cơ an ninh khi gán `cluster-admin` cho Pod Web |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (quên RoleBinding & sai apiGroups) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động quét tất cả các RoleBinding trong cụm và cảnh báo bất kỳ Binding nào đang gán ClusterRole `cluster-admin` cho ServiceAccount.
-2. **BTVN 2:** Thực hành tạo `Role` `secret-reader` chỉ cho phép đọc đúng 1 Secret tên `db-password` qua trường `resourceNames: ["db-password"]`.
-3. **BTVN 3:** Sử dụng `kubectl auth can-i --list --as=dev-user` trích xuất danh sách tất cả các hành động mà `dev-user` được phép làm trong Namespace `prod`.
-4. **BTVN 4 — Chuẩn bị cho Buổi 11 (`buoi-11-serviceaccount-va-token`):**
-   - *Câu 1:* Đối tượng `ServiceAccount` khác gì đối tượng `User` và được lưu trữ ở đâu trong cụm?
-   - *Câu 2:* Cơ chế chiếu token (Bound ServiceAccount Token Volume / `TokenRequest` API) nạp JWT token vào Pod tại thư mục nào?
-   - *Câu 3:* Cờ `automountServiceAccountToken: false` trong spec của Pod dùng để làm gì?
-
-> **Đoạn kết nối Buổi 11:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 11 — buổi học chuyên sâu về quản lý danh tính cho ứng dụng ServiceAccount, cơ chế tự động xoay vòng token an toàn `TokenRequest` API v1.35 và bảo mật danh tính Pod trên môi trường sản xuất.
 
 ---
 
@@ -1331,15 +1367,15 @@ kubectl auth can-i <verb> <resource> --as=<username> -n <namespace>
 kubectl auth can-i --list --as=<username> -n <namespace>
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 11] ServiceAccount & Token Bảo Mật: Projected Volume, TokenRequest API & Chống Thất Thoát Token](cka-11-11-serviceaccount-va-token.html).
+
 {% endraw %}

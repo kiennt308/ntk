@@ -468,7 +468,7 @@ Vì Namespace <code>kube-system</code> chứa các Pods hạ tầng (như CNI, k
               capabilities:
                 drop:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
-      ```
+```
 </div>
 </details>
 
@@ -481,24 +481,6 @@ Vì Namespace <code>kube-system</code> chứa các Pods hạ tầng (như CNI, k
 | Pod Security Standards | `https://kubernetes.io/docs/concepts/security/pod-security-standards/` | Tài liệu chuẩn 3 cấp độ PSS |
 | Pod Security Admission | `https://kubernetes.io/docs/concepts/security/pod-security-admission/` | Tài liệu chuẩn PSA admission labels |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Tổng quan PSS (Privileged/Baseline/Restricted) | 12 phút | 12 phút |
-| §5. Cơ chế PSA (Enforce/Warn/Audit) | 12 phút | 12 phút |
-| §6. Cấu hình Nhãn & Pod Restricted | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật & Migration | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -552,7 +534,7 @@ graph TD
     
     EnforcePath -->|"Vi phạm: Root / Privileged"| Block[REJECT 403 Forbidden]
     EnforcePath -->|"Đạt Restricted PSS"| Allow[ACCEPT Pod Created]
-```yaml
+```
 
 ---
 
@@ -563,25 +545,25 @@ graph TD
 ```bash
 kubectl create namespace lab52
 kubectl label ns lab52 pod-security.kubernetes.io/warn=restricted pod-security.kubernetes.io/warn-version=latest
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab52`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra nhãn `warn: restricted`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/warn}' | grep -qx restricted && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra nhãn `warn-version: latest`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/warn-version}' | grep -qx latest && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```yaml
+```
 
 ---
 
@@ -601,13 +583,13 @@ spec:
     - name: app
       image: nginx:alpine
 EOF
-```bash
+```
 
 **CHECKPOINT 4 — Áp dụng `bad-pod.yaml` vào Namespace `lab52` (Kiểm chứng cảnh báo `warn`).**
 
 ```bash
 kubectl apply -f /tmp/bad-pod.yaml 2>&1 | grep -i "warning" >/dev/null && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```yaml
+```
 
 ---
 
@@ -619,25 +601,25 @@ kubectl apply -f /tmp/bad-pod.yaml 2>&1 | grep -i "warning" >/dev/null && echo "
 kubectl delete pod bad-pod -n lab52 --force --grace-period=0 2>/dev/null || true
 
 kubectl label ns lab52 pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=latest --overwrite
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra nhãn `enforce: restricted`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/enforce}' | grep -qx restricted && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra nhãn `enforce-version: latest`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/enforce-version}' | grep -qx latest && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Xác minh API Server CHẶN THẲNG Pod vi phạm.**
 
 ```bash
 kubectl apply -f /tmp/bad-pod.yaml 2>&1 | grep -q "forbidden" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+```
 
 ---
 
@@ -667,32 +649,32 @@ spec:
           drop:
             - ALL
 EOF
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra thuộc tính `allowPrivilegeEscalation: false` trong `/tmp/good-pod.yaml`.**
 
 ```bash
 grep -q "allowPrivilegeEscalation: false" /tmp/good-pod.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 ### Thao tác 4.2: Triển khai Pod `good-pod` vào Namespace `lab52`
 
 ```bash
 kubectl apply -f /tmp/good-pod.yaml
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra Pod `good-pod` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod good-pod -n lab52 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+```
 
 **CHECKPOINT 10 — Xác minh `capabilities.drop: ["ALL"]` trong Pod `good-pod`.**
 
 ```bash
 kubectl get pod good-pod -n lab52 -o jsonpath='{.spec.containers[0].securityContext.capabilities.drop[0]}' | grep -qx ALL && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```yaml
+```
 
 ---
 
@@ -703,19 +685,19 @@ kubectl get pod good-pod -n lab52 -o jsonpath='{.spec.containers[0].securityCont
 ```bash
 kubectl create namespace lab52-baseline
 kubectl label ns lab52-baseline pod-security.kubernetes.io/enforce=baseline --overwrite
-```bash
+```
 
 **CHECKPOINT 11 — Kiểm tra nhãn `enforce: baseline`.**
 
 ```bash
 kubectl get ns lab52-baseline -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/enforce}' | grep -qx baseline && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Tra cứu danh sách nhãn PSA tất cả các Namespace.**
 
 ```bash
 kubectl get ns -L pod-security.kubernetes.io/enforce | grep -q "lab52" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -726,13 +708,13 @@ kubectl get ns -L pod-security.kubernetes.io/enforce | grep -q "lab52" && echo "
 ```bash
 kubectl delete namespace lab52 lab52-baseline
 rm -f /tmp/bad-pod.yaml /tmp/good-pod.yaml
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/bad-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -778,26 +760,11 @@ test ! -f /tmp/bad-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOI
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Warn label | 15 phút | 15 phút |
-| L4. Bước 2: Bad Pod & Warn check | 25 phút | 25 phút |
-| L5. Bước 3: Enforce label & Block check | 25 phút | 25 phút |
-| L6. Bước 4: Good Pod Restricted PSS | 25 phút | 25 phút |
-| L7. Bước 5: Baseline Namespace & List labels | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -805,215 +772,333 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân biệt ý nghĩa hoạt động của 3 chế độ kiểm soát Pod Security Admission (PSA): <code>enforce</code>, <code>warn</code>, và <code>audit</code> trên Namespace?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>privileged</code>: Không giới hạn, cho phép Pod chạy với đặc quyền tối cao (CNI, Storage).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>baseline</code>: Ngăn chặn các lỗ hổng leo thang nguy hiểm cao (cấm privileged, hostNetwork, hostPID).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>restricted</code>: Thắt chặt bảo mật tối đa, ép buộc chạy non-root, cấm leo thang đặc quyền và yêu cầu Seccomp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>enforce</code>: CHẶN THẲNG các Pod vi phạm không cho tạo, trả về lỗi <code>403 Forbidden</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>warn</code>: Vẫn cho phép tạo Pod, nhưng in ra thông điệp CẢNH BÁO trực tiếp trên terminal.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>audit</code>: Vẫn cho phép tạo Pod, âm thầm ghi vết vi phạm vào Audit Logs của cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa 3 chế độ enforce, warn, audit.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được enforce chặn warn cảnh báo nhưng quên chế độ audit.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế hoạt động và kịch bản phối hợp cả 3 chế độ trên Namespace.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có thể khai báo đồng thời cả 3 chế độ <code>enforce</code>, <code>warn</code>, và <code>audit</code> trên cùng 1 Namespace không? — Có, hoàn toàn khai báo đồng thời được bằng cách gán 3 nhãn tương ứng).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 3 cấp độ PSS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được privileged nới lỏng restricted thắt chặt nhưng chưa rõ mức baseline.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo mục tiêu kiểm soát an ninh của cả 3 cấp độ PSS.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Cấp độ PSS nào được khuyến nghị áp dụng cho các microservices ứng dụng Production? — Cấp độ <code>restricted</code>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Bộ 4 thuộc tính <code>securityContext</code> bắt buộc phải khai báo trong Pod manifest để vượt qua được rào chắn PSA cấp độ <code>restricted</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>runAsNonRoot: true</code> (dưới <code>spec.securityContext</code>)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>seccompProfile.type: RuntimeDefault</code> (dưới <code>spec.securityContext</code>)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>allowPrivilegeEscalation: false</code> (dưới <code>containers[x].securityContext</code>)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>capabilities.drop: ["ALL"]</code> (dưới <code>containers[x].securityContext</code>)</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được các thuộc tính bắt buộc của Restricted PSS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 thuộc tính (non-root và seccomp).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% tên và vị trí khai báo của cả 4 thuộc tính.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thuộc tính <code>allowPrivilegeEscalation: false</code> phải được khai báo dưới cấp Pod hay cấp Container? — Phải được khai báo dưới cấp Container <code>securityContext</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Nhãn <code>pod-security.kubernetes.io/enforce-version: "v1.30"</code> (hoặc <code>"latest"</code>) đóng vai trò gì trong việc quản lý chính sách an ninh Namespace?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nhãn <code>enforce-version</code> dùng để cố định phiên bản của tiêu chuẩn bảo mật PSS. Điều này giúp ngăn ngừa rủi ro việc nâng cấp Kubernetes cluster tự động bổ sung thêm quy tắc mới làm rớt các Pods đang vận hành bình thường.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết vai trò nhãn enforce-version.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cố định phiên bản nhưng chưa rõ rủi ro khi upgrade K8s cluster.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò bảo toàn tính ổn định hệ thống của nhãn <code>enforce-version</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu không khai báo nhãn <code>enforce-version</code> thì PSA lấy phiên bản nào làm mặc định? — Lấy phiên bản của Kube-APIServer hiện tại làm mặc định).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Quy trình 2 bước khuyến nghị để dịch chuyển chính sách PSA (Policy Migration) cho một Namespace Production đang chạy là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bước 1: Gán nhãn <code>pod-security.kubernetes.io/warn: restricted</code> để phát hiện các Pods vi phạm hiện tại qua dòng cảnh báo mà không làm ngắt kết nối dịch vụ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bước 2: Biên soạn lại Pod manifest của các ứng dụng vi phạm tuân thủ chuẩn <code>restricted</code>, sau đó mới chuyển nhãn sang <code>pod-security.kubernetes.io/enforce: restricted</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Đột ngột gán nhãn enforce ngay lập tức trên Production.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gán warn trước nhưng chưa rõ bước cập nhật Pod spec trước khi enforce.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo quy trình 2 bước dịch chuyển chính sách an toàn không làm rớt dịch vụ.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao việc đột ngột gán nhãn <code>enforce: restricted</code> trên Production lại gây rủi ro ngưng trệ hệ thống? — Vì khi Deployment thực hiện rolling update hoặc Pod restart, Pod mới bị chặn 100% làm dịch vụ rớt).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cú pháp lệnh CLI <code>kubectl</code> chuẩn để gán nhãn PSA cưỡng chế mức <code>restricted</code> cho Namespace <code>prod</code> và nạp đè nhãn cũ là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl label --overwrite ns prod pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=latest</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh gán nhãn PSA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng nhãn nhưng quên cờ <code>--overwrite</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% cú pháp lệnh <code>kubectl label --overwrite</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--overwrite</code> đóng vai trò gì? — Cho phép nạp đè giá trị nhãn mới nếu Namespace đó đã có sẵn nhãn PSA từ trước).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Điều gì xảy ra nếu bạn cố tình áp nhãn <code>pod-security.kubernetes.io/enforce: restricted</code> cho Namespace <code>kube-system</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Các Pods hạ tầng trong <code>kube-system</code> (như CNI CoreDNS, kube-proxy, Storage Drivers) bắt buộc phải chạy quyền <code>privileged</code> hoặc <code>hostNetwork</code> sẽ bị chặn khi restart, dẫn đến việc làm tê liệt toàn bộ cụm Kubernetes.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng gán restricted cho kube-system là tốt.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được làm rớt Pod nhưng chưa rõ các Pods hạ tầng cần đặc quyền hostNetwork/privileged.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do Namespace hệ thống <code>kube-system</code> phải giữ ở mức <code>privileged</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cấp độ PSS nào bắt buộc phải duy trì cho Namespace <code>kube-system</code>? — Cấp độ <code>privileged</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cách đọc và xử lý nhanh nhất khi gõ lệnh <code>kubectl apply</code> bị API Server trả về lỗi <code>Forbidden</code> do vi phạm PSA?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Đọc trực tiếp thông điệp lỗi in trên terminal tại các cụm từ vi phạm (ví dụ: <code>allowPrivilegeEscalation != false</code>, <code>unrestricted capabilities</code>), sau đó mở Pod manifest bổ sung đúng các thuộc tính <code>securityContext</code> mà API Server yêu cầu.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách đọc log lỗi PSA từ terminal.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được mở pod spec sửa nhưng chưa rõ cách đối soát cụ thể các từ khóa vi phạm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo quy trình đọc từ khóa vi phạm và bổ sung thuộc tính securityContext tương ứng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thuộc tính <code>capabilities.drop</code> phải chứa giá trị nào để đạt chuẩn <code>restricted</code>? — Giá trị <code>["ALL"]</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Pod Security Admission (PSA) thay thế tính năng đã bị xoá bỏ PodSecurityPolicy (PSP) thế nào về mặt kiến trúc và trải nghiệm quản trị?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">PSP cũ phụ thuộc vào RBAC phức tạp, khó gỡ lỗi và gây overhead cho API Server. PSA mới tích hợp trực tiếp vào Admission Controller, quản trị đơn giản 100% qua các nhãn Namespace (<code>labels</code>), giúp phân quyền theo tầng Namespace dễ dàng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết PSP là tính năng cũ đã bị gỡ bỏ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được PSA mới hơn dùng nhãn nhưng chưa so sánh kiến trúc RBAC vs Admission Controller.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ưu điểm của PSA đơn giản hóa quản trị qua Namespace labels so với PSP cũ.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Từ phiên bản Kubernetes nào PodSecurityPolicy (PSP) chính thức bị gỡ bỏ? — Từ phiên bản Kubernetes <code>v1.25</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cờ <code>allowPrivilegeEscalation: false</code> trong <code>containers[x].securityContext</code> đóng vai trò gì trong việc phòng thủ container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>allowPrivilegeEscalation: false</code> cấm tiến trình trong container nhận thêm các đặc quyền cao hơn tiến trình mẹ (chống các công cụ <code>setuid</code> hoặc <code>sudo</code>), ngăn chặn kẻ tấn công thực hiện kỹ thuật leo thang đặc quyền trong container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tác dụng cờ allowPrivilegeEscalation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cấm leo thang nhưng chưa rõ ngăn chặn setuid/sudo.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò triệt tiêu kỹ thuật leo thang đặc quyền của <code>allowPrivilegeEscalation: false</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container chạy dưới quyền user thường (UID 10001) nhưng để <code>allowPrivilegeEscalation: true</code> thì có rủi ro gì? — Kẻ tấn công có thể lợi dụng file nhị phân có bit setuid để leo lên root trong container).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của một Pod hoàn chỉnh tuân thủ 100% tiêu chuẩn <code>restricted</code> PSS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: secure-pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">securityContext:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">runAsNonRoot: true</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">runAsUser: 10001</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">seccompProfile:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">type: RuntimeDefault</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: nginx:alpine</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">securityContext:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">allowPrivilegeEscalation: false</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">capabilities:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">drop:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc thiếu 1 trong 4 thuộc tính PSS restricted.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng non-root và seccomp nhưng thiếu allowPrivilegeEscalation false.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Pod Restricted PSS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Pod có thêm <code>readOnlyRootFilesystem: true</code> thì bảo mật tăng thêm thế nào? — Giúp vô hiệu hóa hoàn toàn khả năng ghi mã độc vào hệ thống tệp root của container).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Pod Security Admission (PSA) chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Áp nhãn <code>pod-security.kubernetes.io/enforce=restricted</code> cho các Namespace Microservices Production.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Luôn chỉ định <code>enforce-version=latest</code> (hoặc phiên bản v1.30) để cố định quy chuẩn PSS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai báo đủ 4 thuộc tính PSS restricted: <code>runAsNonRoot</code>, <code>seccompProfile</code>, <code>allowPrivilegeEscalation: false</code>, <code>capabilities.drop: ["ALL"]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Áp dụng quy trình Migration 2 bước: gán nhãn <code>warn</code> cảnh báo trước khi bật <code>enforce</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng PSA CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 53 là gì? — Học về <code>Admission Controller và OPA Gatekeeper CKS: ValidatingAdmissionPolicy, Kyverno & Webhooks</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Phân biệt ý nghĩa hoạt động của 3 chế độ kiểm soát Pod Security Admission (PSA): `enforce`, `warn`, và `audit` trên Namespace?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:**
-- `enforce`: CHẶN THẲNG các Pod vi phạm không cho tạo, trả về lỗi `403 Forbidden`.
-- `warn`: Vẫn cho phép tạo Pod, nhưng in ra thông điệp CẢNH BÁO trực tiếp trên terminal.
-- `audit`: Vẫn cho phép tạo Pod, âm thầm ghi vết vi phạm vào Audit Logs của cụm.
+1. <b style="color: var(--accent-primary);">"Áp đặt chính sách an toàn Pod bằng Pod Security Admission qua nhãn <code>pod-security.kubernetes.io/enforce=restricted</code>."</b>
+2. <b style="color: var(--accent-primary);">"Luôn đi kèm nhãn <code>enforce-version=latest</code> để cố định phiên bản tiêu chuẩn PSS tránh ảnh hưởng khi nâng cấp cụm."</b>
+3. <b style="color: var(--accent-primary);">"Khai báo đủ 4 thuộc tính Restricted PSS: <code>runAsNonRoot</code>, <code>seccompProfile</code>, <code>allowPrivilegeEscalation: false</code>, và <code>drop ALL caps</code>."</b>
+4. <b style="color: var(--accent-primary);">"Thực hiện dịch chuyển an toàn theo 2 bước: gán nhãn <code>warn</code> thử nghiệm trước khi bật <code>enforce</code> cưỡng chế."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa 3 chế độ enforce, warn, audit.
-- 1đ: Nêu được enforce chặn warn cảnh báo nhưng quên chế độ audit.
-- 3đ: Phân tích chuẩn xác cơ chế hoạt động và kịch bản phối hợp cả 3 chế độ trên Namespace.
-
-**Câu hỏi đào sâu:** (Có thể khai báo đồng thời cả 3 chế độ `enforce`, `warn`, và `audit` trên cùng 1 Namespace không? — Có, hoàn toàn khai báo đồng thời được bằng cách gán 3 nhãn tương ứng).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Bộ 4 thuộc tính `securityContext` bắt buộc phải khai báo trong Pod manifest để vượt qua được rào chắn PSA cấp độ `restricted` là gì?
-
-**Đáp án chuẩn:**
-1. `runAsNonRoot: true` (dưới `spec.securityContext`)
-2. `seccompProfile.type: RuntimeDefault` (dưới `spec.securityContext`)
-3. `allowPrivilegeEscalation: false` (dưới `containers[x].securityContext`)
-4. `capabilities.drop: ["ALL"]` (dưới `containers[x].securityContext`)
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được các thuộc tính bắt buộc của Restricted PSS.
-- 1đ: Nêu được 2 thuộc tính (non-root và seccomp).
-- 3đ: Trình bày chính xác 100% tên và vị trí khai báo của cả 4 thuộc tính.
-
-**Câu hỏi đào sâu:** (Thuộc tính `allowPrivilegeEscalation: false` phải được khai báo dưới cấp Pod hay cấp Container? — Phải được khai báo dưới cấp Container `securityContext`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Nhãn `pod-security.kubernetes.io/enforce-version: "v1.30"` (hoặc `"latest"`) đóng vai trò gì trong việc quản lý chính sách an ninh Namespace?
-
-**Đáp án chuẩn:** Nhãn `enforce-version` dùng để cố định phiên bản của tiêu chuẩn bảo mật PSS. Điều này giúp ngăn ngừa rủi ro việc nâng cấp Kubernetes cluster tự động bổ sung thêm quy tắc mới làm rớt các Pods đang vận hành bình thường.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết vai trò nhãn enforce-version.
-- 1đ: Nêu được cố định phiên bản nhưng chưa rõ rủi ro khi upgrade K8s cluster.
-- 3đ: Phân tích chuẩn xác vai trò bảo toàn tính ổn định hệ thống của nhãn `enforce-version`.
-
-**Câu hỏi đào sâu:** (Nếu không khai báo nhãn `enforce-version` thì PSA lấy phiên bản nào làm mặc định? — Lấy phiên bản của Kube-APIServer hiện tại làm mặc định).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Quy trình 2 bước khuyến nghị để dịch chuyển chính sách PSA (Policy Migration) cho một Namespace Production đang chạy là gì?
-
-**Đáp án chuẩn:**
-- Bước 1: Gán nhãn `pod-security.kubernetes.io/warn: restricted` để phát hiện các Pods vi phạm hiện tại qua dòng cảnh báo mà không làm ngắt kết nối dịch vụ.
-- Bước 2: Biên soạn lại Pod manifest của các ứng dụng vi phạm tuân thủ chuẩn `restricted`, sau đó mới chuyển nhãn sang `pod-security.kubernetes.io/enforce: restricted`.
-
-**Tiêu chí chấm:**
-- 0đ: Đột ngột gán nhãn enforce ngay lập tức trên Production.
-- 1đ: Nêu được gán warn trước nhưng chưa rõ bước cập nhật Pod spec trước khi enforce.
-- 3đ: Phân tích thấu đáo quy trình 2 bước dịch chuyển chính sách an toàn không làm rớt dịch vụ.
-
-**Câu hỏi đào sâu:** (Tại sao việc đột ngột gán nhãn `enforce: restricted` trên Production lại gây rủi ro ngưng trệ hệ thống? — Vì khi Deployment thực hiện rolling update hoặc Pod restart, Pod mới bị chặn 100% làm dịch vụ rớt).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Cú pháp lệnh CLI `kubectl` chuẩn để gán nhãn PSA cưỡng chế mức `restricted` cho Namespace `prod` và nạp đè nhãn cũ là gì?
-
-**Đáp án chuẩn:** `kubectl label --overwrite ns prod pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=latest`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh gán nhãn PSA.
-- 1đ: Nêu đúng nhãn nhưng quên cờ `--overwrite`.
-- 3đ: Trình bày chính xác 100% cú pháp lệnh `kubectl label --overwrite`.
-
-**Câu hỏi đào sâu:** (Cờ `--overwrite` đóng vai trò gì? — Cho phép nạp đè giá trị nhãn mới nếu Namespace đó đã có sẵn nhãn PSA từ trước).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Điều gì xảy ra nếu bạn cố tình áp nhãn `pod-security.kubernetes.io/enforce: restricted` cho Namespace `kube-system`?
-
-**Đáp án chuẩn:** Các Pods hạ tầng trong `kube-system` (như CNI CoreDNS, kube-proxy, Storage Drivers) bắt buộc phải chạy quyền `privileged` hoặc `hostNetwork` sẽ bị chặn khi restart, dẫn đến việc làm tê liệt toàn bộ cụm Kubernetes.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng gán restricted cho kube-system là tốt.
-- 1đ: Nêu được làm rớt Pod nhưng chưa rõ các Pods hạ tầng cần đặc quyền hostNetwork/privileged.
-- 3đ: Phân tích chuẩn xác lý do Namespace hệ thống `kube-system` phải giữ ở mức `privileged`.
-
-**Câu hỏi đào sâu:** (Cấp độ PSS nào bắt buộc phải duy trì cho Namespace `kube-system`? — Cấp độ `privileged`).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cách đọc và xử lý nhanh nhất khi gõ lệnh `kubectl apply` bị API Server trả về lỗi `Forbidden` do vi phạm PSA?
-
-**Đáp án chuẩn:** Đọc trực tiếp thông điệp lỗi in trên terminal tại các cụm từ vi phạm (ví dụ: `allowPrivilegeEscalation != false`, `unrestricted capabilities`), sau đó mở Pod manifest bổ sung đúng các thuộc tính `securityContext` mà API Server yêu cầu.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách đọc log lỗi PSA từ terminal.
-- 1đ: Nêu được mở pod spec sửa nhưng chưa rõ cách đối soát cụ thể các từ khóa vi phạm.
-- 3đ: Phân tích thấu đáo quy trình đọc từ khóa vi phạm và bổ sung thuộc tính securityContext tương ứng.
-
-**Câu hỏi đào sâu:** (Thuộc tính `capabilities.drop` phải chứa giá trị nào để đạt chuẩn `restricted`? — Giá trị `["ALL"]`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Pod Security Admission (PSA) thay thế tính năng đã bị xoá bỏ PodSecurityPolicy (PSP) thế nào về mặt kiến trúc và trải nghiệm quản trị?
-
-**Đáp án chuẩn:** PSP cũ phụ thuộc vào RBAC phức tạp, khó gỡ lỗi và gây overhead cho API Server. PSA mới tích hợp trực tiếp vào Admission Controller, quản trị đơn giản 100% qua các nhãn Namespace (`labels`), giúp phân quyền theo tầng Namespace dễ dàng.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết PSP là tính năng cũ đã bị gỡ bỏ.
-- 1đ: Nêu được PSA mới hơn dùng nhãn nhưng chưa so sánh kiến trúc RBAC vs Admission Controller.
-- 3đ: Phân tích chuẩn xác ưu điểm của PSA đơn giản hóa quản trị qua Namespace labels so với PSP cũ.
-
-**Câu hỏi đào sâu:** (Từ phiên bản Kubernetes nào PodSecurityPolicy (PSP) chính thức bị gỡ bỏ? — Từ phiên bản Kubernetes `v1.25`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Cờ `allowPrivilegeEscalation: false` trong `containers[x].securityContext` đóng vai trò gì trong việc phòng thủ container?
-
-**Đáp án chuẩn:** Cờ `allowPrivilegeEscalation: false` cấm tiến trình trong container nhận thêm các đặc quyền cao hơn tiến trình mẹ (chống các công cụ `setuid` hoặc `sudo`), ngăn chặn kẻ tấn công thực hiện kỹ thuật leo thang đặc quyền trong container.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tác dụng cờ allowPrivilegeEscalation.
-- 1đ: Nêu được cấm leo thang nhưng chưa rõ ngăn chặn setuid/sudo.
-- 3đ: Phân tích chuẩn xác vai trò triệt tiêu kỹ thuật leo thang đặc quyền của `allowPrivilegeEscalation: false`.
-
-**Câu hỏi đào sâu:** (Nếu container chạy dưới quyền user thường (UID 10001) nhưng để `allowPrivilegeEscalation: true` thì có rủi ro gì? — Kẻ tấn công có thể lợi dụng file nhị phân có bit setuid để leo lên root trong container).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một Pod hoàn chỉnh tuân thủ 100% tiêu chuẩn `restricted` PSS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: secure-pod
-  namespace: prod
-spec:
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 10001
-    seccompProfile:
-      type: RuntimeDefault
-  containers:
-    - name: app
-      image: nginx:alpine
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc thiếu 1 trong 4 thuộc tính PSS restricted.
-- 1đ: Nêu đúng non-root và seccomp nhưng thiếu allowPrivilegeEscalation false.
-- 3đ: Viết chuẩn xác 100% bản kê khai Pod Restricted PSS.
-
-**Câu hỏi đào sâu:** (Nếu Pod có thêm `readOnlyRootFilesystem: true` thì bảo mật tăng thêm thế nào? — Giúp vô hiệu hóa hoàn toàn khả năng ghi mã độc vào hệ thống tệp root của container).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Pod Security Admission (PSA) chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-1. Áp nhãn `pod-security.kubernetes.io/enforce=restricted` cho các Namespace Microservices Production.
-2. Luôn chỉ định `enforce-version=latest` (hoặc phiên bản v1.30) để cố định quy chuẩn PSS.
-3. Khai báo đủ 4 thuộc tính PSS restricted: `runAsNonRoot`, `seccompProfile`, `allowPrivilegeEscalation: false`, `capabilities.drop: ["ALL"]`.
-4. Áp dụng quy trình Migration 2 bước: gán nhãn `warn` cảnh báo trước khi bật `enforce`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng PSA CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 53 là gì? — Học về `Admission Controller và OPA Gatekeeper CKS: ValidatingAdmissionPolicy, Kyverno & Webhooks`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1023,28 +1108,6 @@ spec:
 2. **"Luôn đi kèm nhãn `enforce-version=latest` để cố định phiên bản tiêu chuẩn PSS tránh ảnh hưởng khi nâng cấp cụm."**
 3. **"Khai báo đủ 4 thuộc tính Restricted PSS: `runAsNonRoot`, `seccompProfile`, `allowPrivilegeEscalation: false`, và `drop ALL caps`."**
 4. **"Thực hiện dịch chuyển an toàn theo 2 bước: gán nhãn `warn` thử nghiệm trước khi bật `enforce` cưỡng chế."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Pod Security Admission |
-| **29 – 36 điểm** | Xuất sắc | Thành thục khung tiêu chuẩn PSS và chính sách kiểm soát PSA |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết script Bash tự động gán nhãn `enforce: restricted` cho tất cả các Namespace hiện có (loại trừ `kube-system`).
-- **BTVN 2:** Thực hành quy trình Migration 2 bước từ `warn: restricted` sang `enforce: restricted` cho một ứng dụng NodeJS.
-- **BTVN 3:** So sánh điểm khác biệt giữa Pod Security Admission (tích hợp sẵn) và OPA Gatekeeper (công cụ mở rộng 3rd party).
-- **BTVN 4 (Chuẩn bị cho Buổi 53 — Admission Controller và OPA Gatekeeper CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Admission Controllers (Dynamic Admission Webhooks: MutatingWebhook & ValidatingWebhook) trong K8s đóng vai trò gì?
-  2. OPA Gatekeeper và Kyverno giúp mở rộng khả năng kiểm soát chính sách (Policy Enforcement) như thế nào so với PSA?
-  3. Khái niệm `ValidatingAdmissionPolicy` (tính năng CEL validation tích hợp sẵn trong K8s 1.30) là gì?
 
 ---
 
@@ -1105,7 +1168,7 @@ Chẩn đoán và sửa Deployment `payment-dep` trong Namespace `staging` bị 
 ```bash
 kubectl create ns staging --dry-run=client -o yaml | kubectl apply -f -
 kubectl label ns staging pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=latest --overwrite
-```bash
+```
 </div>
 </details>
 
@@ -1118,7 +1181,7 @@ kubectl label ns staging pod-security.kubernetes.io/enforce=restricted pod-secur
 ```bash
 kubectl create ns finance --dry-run=client -o yaml | kubectl apply -f -
 kubectl label ns finance pod-security.kubernetes.io/warn=restricted pod-security.kubernetes.io/audit=restricted --overwrite
-```bash
+```
 </div>
 </details>
 
@@ -1152,7 +1215,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/unsafe-pod.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1193,7 +1256,7 @@ spec:
               drop:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
 EOF
-```yaml
+```
 
 ---
 </div>
@@ -1264,7 +1327,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1290,16 +1353,17 @@ spec:
         capabilities:
           drop:
             - ALL
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 08] Kiểm Soát Nhập Cụm Bằng Admission Controllers & OPA Gatekeeper: Validating Webhooks & Constraint Templates](cks-08-08-admission-controller-va-opa.html).
+
 {% endraw %}

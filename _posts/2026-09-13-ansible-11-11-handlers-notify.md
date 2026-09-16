@@ -182,8 +182,6 @@ Một sàn giao dịch tiền điện tử triển khai đợt cập nhật ch�
 Tuy nhiên ở Task 4 (chạy lệnh kiểm tra cấu hình mạng phụ), một lỗi sai cú pháp xảy ra khiến Task 4 bị `FAILED`. Do không cấu hình `force_handlers: true`, Ansible lập tức dừng Playbook và **hủy bỏ luôn lệnh restart Nginx**.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-- File chứng chỉ SSL mới đã nằm trên đĩa cứng máy đích nhưng tiến trình Nginx daemon vẫn đang chạy với chứng chỉ SSL cũ trong bộ nhớ RAM.
-- 4 giờ sau đó, chứng chỉ SSL cũ hết hạn, hàng triệu người dùng bị trình duyệt chặn truy cập với cảnh báo bảo mật nguy hiểm (**SSL Certificate Expired**), gây thiệt hại nghiêm trọng về doanh thu và uy tín doanh nghiệp.
 
 ```diff
 --- site.yml (Vulnerable Handler Setup)
@@ -196,6 +194,10 @@ Tuy nhiên ở Task 4 (chạy lệnh kiểm tra cấu hình mạng phụ), một
 +  force_handlers: true # Sửa: Bắt buộc chạy handler kể cả khi task sau bị lỗi
    tasks:
 ```
+
+- File chứng chỉ SSL mới đã nằm trên đĩa cứng máy đích nhưng tiến trình Nginx daemon vẫn đang chạy với chứng chỉ SSL cũ trong bộ nhớ RAM.
+- 4 giờ sau đó, chứng chỉ SSL cũ hết hạn, hàng triệu người dùng bị trình duyệt chặn truy cập với cảnh báo bảo mật nguy hiểm (**SSL Certificate Expired**), gây thiệt hại nghiêm trọng về doanh thu và uy tín doanh nghiệp.
+
 
 ```mermaid
 flowchart TD
@@ -652,37 +654,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Event-driven & Deduplication:** Handler chỉ chạy khi có task notify báo `CHANGED`, và chỉ chạy đúng 1 lần duy nhất ở cuối Play.
-2. **Ưu tiên Reload hơn Restart:** Dùng `state: reloaded` cho Web/DB handlers để đạt chuẩn Zero-downtime Graceful Reload.
-3. **Luôn bật `force_handlers: true`:** Bảo vệ hệ thống khỏi sự cố lệch pha cấu hình khi Playbook gặp lỗi ở task sau.
-4. **Khai thác `listen` cho nhóm dịch vụ:** Sử dụng topic pub/sub để khởi động lại cụm microservices phụ thuộc đồng thời.
-5. **Xả hàng đợi với `flush_handlers`:** Ép handler chạy ngay tại chỗ khi task tiếp theo cần kiểm tra trạng thái dịch vụ (Health check).
-
-```mermaid
-mindmap
-  root((Handlers & Notify Mastery))
-    Core Architecture
-      Event-driven execution
-      Trigger on CHANGED only
-      Deduplication queue
-      Execution at end of Play
-    Advanced Features
-      listen topic Pub/Sub
-      meta: flush_handlers in-flight
-      when conditionals in handlers
-      Chained handlers notification
-    Enterprise Reliability
-      force_handlers: true
-      state: reloaded zero downtime
-      Idempotency run 2 handler silent
-      docker exec PID inspection
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 12: Jinja2 Templates: Biến Động, Cấu Trúc Điều Khiển If/For & Bộ Lọc Filters Nâng Cao](ansible-12-12-templates-jinja2.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 12] Làm Chủ Jinja2 Templates: Biến Động, Cấu Trúc If/For, Filters Nâng Cao & Kiểm Định Validate](ansible-12-12-templates-jinja2.html).
+
 {% endraw %}

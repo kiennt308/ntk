@@ -440,24 +440,6 @@ graph TD
 | Official Kubernetes Docs: Declarative Management with Kustomize | Kubernetes v1.35 | Cấu hình Base & Overlays, kustomization.yaml và kubectl -k |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Tổng quan bài toán quản lý bản kê khai và hai hướng tiếp cận | 12 phút |
-| §5 | Kiến trúc Helm v3, cấu trúc Chart và các lệnh quản lý Release | 12 phút |
-| §6 | Cú pháp template Helm (Go templates, `.Values`, `.Release`) | 10 phút |
-| §7 | Kiến trúc Kustomize (Base, Overlays, `kubectl -k`) | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -860,24 +842,11 @@ rm -f /tmp/rendered-helm.yaml /tmp/helm-history.txt /tmp/kustomize-deploy.txt /t
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-13/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Xây dựng Helm Chart tùy biến và render mẫu với `helm template` | 30 phút |
-| L4 | Bước 2 — Thao tác quản lý vòng đời Helm Release (Cài đặt, Nâng cấp, Rollback) | 30 phút |
-| L5 | Bước 3 — Xây dựng dự án Kustomize Base và Overlays | 30 phút |
-| L6 | Bước 4 — Thực thi Kustomize bằng `kubectl apply -k` và kiểm thử | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -891,250 +860,347 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tiller trong kiến trúc Helm v2 có vai trò gì và tại sao bị xóa bỏ hoàn toàn từ phiên bản Helm v3?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Helm (Triết lý Templating):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sử dụng mẫu Go template (<code>{{ .Values.<key> }}</code>) để đè các tham số đầu vào từ <code>values.yaml</code> vào bản kê khai.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp cho đóng gói, chia sẻ và phân phối ứng dụng phức tạp cho cộng đồng (như Nginx Ingress, Prometheus, Cert-Manager).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kustomize (Triết lý Declarative Overlay Patches):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không sử dụng bất kỳ cú pháp template nào; giữ nguyên bản kê khai YAML thuần chuẩn Kubernetes.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân tách cấu hình theo mô hình <code>base/</code> (dùng chung) và <code>overlays/<env>/</code> (vá cấu hình đè cho từng môi trường).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp quản lý mã nguồn ứng dụng nội bộ công ty (In-house microservices) để tránh "rừng template" rối rắm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò ở v2:</b> Tiller là một thành phần server-side (Static Pod/Deployment) chạy bên trong cụm Kubernetes v2, chịu trách nhiệm nhận yêu cầu từ Helm CLI và trực tiếp tạo/sửa tài nguyên với API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do bị xóa ở v3:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lỗ hổng bảo mật rủi ro cao:</b> Tiller thường được cấp quyền <code>cluster-admin</code> tối cao. Bất kỳ ai có quyền kết nối tới Tiller đều có thể chiếm toàn bộ cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vi phạm RBAC:</b> Tiller qua mặt các chính sách RBAC cá nhân của người dùng gõ lệnh.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Helm v3:</b> Chuyển sang kiến trúc <b style="color: var(--accent-primary);">Client-Only (Tillerless)</b>, Helm CLI gọi trực tiếp API Server qua chứng chỉ Kubeconfig và phân quyền RBAC của người gõ lệnh.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Helm v3 vẫn cần Tiller.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Tiller bị xóa do bảo mật nhưng không giải thích được vấn đề quyền <code>cluster-admin</code> thừa thải và việc chuyển sang architecture Client-Only.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò cũ của Tiller và 2 lý do an ninh khiến Helm v3 chuyển sang Tillerless.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với cơ chế lưu vết Release dưới dạng Secret trong Namespace.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trong Helm v3, thông tin các bản Release (Revisions) được lưu trữ ở đâu trong cụm? *(Đáp án: Lưu dưới dạng các đối tượng Secret nằm trong đúng Namespace triển khai Release đó).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Helm và Kustomize giống hệt nhau.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Helm dùng template còn Kustomize dùng file nhưng không phân biệt được phạm vi ứng dụng công đồng vs microservice nội bộ (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác triết lý Go Templating của Helm vs Overlay Patches của Kustomize và trường hợp sử dụng phù hợp.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra Kustomize được tích hợp sẵn trong <code>kubectl -k</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi nào nên kết hợp cả Helm và Kustomize trong cùng một dự án? *(Đáp án: Dùng Helm render tệp YAML trước, sau đó dùng Kustomize đè patch nhỏ cho môi trường đặc thù).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Trình bày 3 phần tử tối thiểu bắt buộc phải có trong thư mục của một Helm Chart chuẩn.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Chart.yaml</code>: Tệp chứa thông tin metadata của gói (như <code>name</code>, <code>version</code>, <code>appVersion</code>, <code>description</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>values.yaml</code>: Tệp chứa tất cả các giá trị cấu hình mặc định nạp vào template.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>templates/</code>: Thư mục chứa các tệp mẫu Go template (như <code>deployment.yaml</code>, <code>service.yaml</code>) sẽ được biên dịch thành tài nguyên Kubernetes API.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 3 phần tử.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>values.yaml</code> và <code>templates/</code> nhưng thiếu <code>Chart.yaml</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 3 phần tử <code>Chart.yaml</code>, <code>values.yaml</code>, <code>templates/</code> và vai trò từng phần tử.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>helm create <chart-name></code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tệp <code>NOTES.txt</code> nằm trong thư mục <code>templates/</code> có tác dụng gì? *(Đáp án: In ra hướng dẫn truy cập dịch vụ cho người dùng ngay sau khi gõ lệnh <code>helm install</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Lệnh nào giúp kiểm tra danh sách toàn bộ các Helm Release đang được cài đặt trong một Namespace?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Câu lệnh chuẩn:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>helm list -n <namespace></code> (hoặc <code>helm ls -n <namespace></code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu muốn xem toàn bộ các Release trên tất cả các Namespace trong cụm, truyền cờ <code>-A</code> (hoặc <code>--all-namespaces</code>):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>helm list -A</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo gõ <code>kubectl get helm</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>helm list</code> nhưng quên cờ <code>-n <namespace></code> hoặc <code>-A</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lệnh <code>helm list -n <namespace></code> và cờ xem tất cả namespace <code>-A</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ các trạng thái của Release (<code>DEPLOYED</code>, <code>FAILED</code>, <code>PENDING_INSTALL</code>).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Các trạng thái chính của một Helm Release in ra trong cột STATUS của <code>helm list</code> là gì? *(Đáp án: <code>DEPLOYED</code>, <code>FAILED</code>, <code>PENDING_INSTALL</code>, <code>UNINSTALLED</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Lệnh nào được sử dụng để khôi phục ứng dụng ngay lập tức về một phiên bản Release cũ khi bản nâng cấp bị lỗi?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Câu lệnh chuẩn:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>helm rollback <release-name> <revision-number> -n <namespace></code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b> Helm đọc lại Secret chứa cấu hình của Revision tương ứng trong lịch sử (<code>helm history</code>), biên dịch và áp dụng lại trạng thái YAML cũ. Hạ thời gian phục hồi dịch vụ MTTR xuống chỉ còn vài giây mà không cần tìm tệp YAML cũ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo đập đi cài lại Release mới.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được <code>helm rollback</code> nhưng thiếu tham số <code>revision-number</code> và không giải thích được cơ chế đọc Secret lịch sử (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lệnh <code>helm rollback <release> <revision></code> và việc hạ MTTR xuống vài giây nhờ đọc Secret lịch sử.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>helm history</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào dùng để xem danh sách tất cả các Revision lịch sử của một Release? *(Đáp án: Lệnh <code>helm history <release-name> -n <namespace></code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cú pháp nào được dùng trong tệp Helm template để lấy giá trị từ tệp <code>values.yaml</code> và các biến mặc định của Release?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lấy từ <code>values.yaml</code>: <code>{{ .Values.<key-path> }}</code> (ví dụ <code>{{ .Values.image.tag }}</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lấy tên Release: <code>{{ .Release.Name }}</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lấy tên Chart: <code>{{ .Chart.Name }}</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lấy Namespace: <code>{{ .Release.Namespace }}</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lưu ý:</b> Dấu chấm <code>.</code> ở đầu thể hiện đối tượng gốc (Root Context) trong Go template.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo viết <code>$Values.tag</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được <code>.Values</code> nhưng thiếu ngoặc nhọn kép <code>{{ }}</code> hoặc quên dấu chấm <code>.</code> ở đầu.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cú pháp <code>{{ .Values.<key> }}</code> và các đối tượng mặc định <code>.Release.Name</code>, <code>.Chart.Name</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng các hàm template như <code>quote</code>, <code>default</code>, <code>upper</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Dấu gạch đứng <code>|</code> trong Helm template (ví dụ <code>{{ .Values.name | quote }}</code>) đóng vai trò gì? *(Đáp án: Là pipeline truyền giá trị qua hàm xử lý, giống gạch đứng pipe trong Bash).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Lệnh <code>helm template</code> mang lại lợi ích gì trong quy trình phát triển và kiểm thử Helm Chart?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>helm template <release-name> <chart-dir> -f <values-file></code> thực hiện <b style="color: var(--accent-primary);">biên dịch thử (Render Dry-run)</b> toàn bộ các tệp template thành tài nguyên YAML thuần và in ra màn hình terminal.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích:</b> Giúp kỹ sư phát hiện sớm các lỗi cú pháp Go template, trỏ sai biến <code>.Values</code>, hoặc lệch thụt lùi space YAML <b style="color: var(--accent-primary);">mà KHÔNG tạo bất kỳ tài nguyên nào trên cụm thật</b> (0% ảnh hưởng tới cụm đang chạy).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo lệnh này dùng để cài đặt Chart vào cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được xem tệp YAML nhưng không giải thích được lợi ích kiểm thử dry-run 0% ảnh hưởng tới cụm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác lợi ích biên dịch dry-run kiểm tra cú pháp YAML trước khi install/upgrade.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc pipe output qua <code>kubectl apply --dry-run=client</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có thể lưu output của lệnh <code>helm template</code> ra tệp YAML để apply thủ công bằng <code>kubectl apply -f</code> được không? *(Đáp án: Hoàn toàn được).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Kustomize được tích hợp vào <code>kubectl</code> thông qua cờ nào và làm sao để áp dụng cấu hình Kustomize trực tiếp lên cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kustomize được tích hợp trực tiếp vào <code>kubectl</code> qua cờ <b style="color: var(--accent-primary);"><code>-k</code></b> (hoặc <code>--kustomize</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh áp dụng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl apply -k <path-to-directory></code> (chỉ định đường dẫn thư mục chứa tệp <code>kustomization.yaml</code>, ví dụ <code>kubectl apply -k overlays/dev</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lưu ý:</b> Không dùng cờ <code>-f</code> vì <code>-f</code> dành cho tệp YAML đơn lẻ, còn <code>-k</code> dành cho thư mục Kustomize.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo dùng <code>kubectl apply -f</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời cờ <code>-k</code> nhưng không nhấn mạnh đường dẫn truyền vào phải là THƯ MỤC chứa <code>kustomization.yaml</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cờ <code>-k</code> và lệnh <code>kubectl apply -k <directory></code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl kustomize <dir></code> để render dry-run.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào dùng để render tệp YAML của Kustomize ra terminal mà không apply? *(Đáp án: Lệnh <code>kubectl kustomize <directory></code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Mô hình cấu trúc thư mục tiêu chuẩn của một dự án Kustomize gồm 2 cấp thư mục nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Thư mục <code>base/</code> (Nền tảng):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chứa tất cả các bản kê khai YAML gốc dùng chung (Deployment, Service, ConfigMap) và tệp <code>kustomization.yaml</code> khai báo tài nguyên.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Thư mục <code>overlays/<env>/</code> (Đè môi trường):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chứa các thư mục con cho từng môi trường (như <code>overlays/dev/</code>, <code>overlays/prod/</code>). Mỗi thư mục overlay chứa tệp <code>kustomization.yaml</code> để chỉ định đường dẫn về <code>../../base</code>, đính kèm các tệp patch vá lỗi, đổi <code>namePrefix</code>, <code>namespace</code>, hoặc <code>replicas</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo để tất cả file YAML chung 1 thư mục.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>base</code> và <code>overlays</code> nhưng không giải thích được cơ chế overlay trỏ về base bằng <code>../../base</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 cấp thư mục <code>base/</code> (gốc) và <code>overlays/<env>/</code> (đè) kèm cơ chế tham chiếu.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng quy tắc DRY trong quản lý cấu hình.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trường nào trong <code>kustomization.yaml</code> của overlay dùng để trỏ về thư mục base? *(Đáp án: Trường <code>resources: - ../../base</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tính năng <code>configMapGenerator</code> trong Kustomize mang lại giá trị gì cho việc cập nhật cấu hình của Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b> <code>configMapGenerator</code> tự động tạo đối tượng ConfigMap và <b style="color: var(--accent-primary);">đính thêm chuỗi hash ngẫu nhiên vào đuôi tên ConfigMap</b> (ví dụ <code>app-config-8f7g6h5d</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giá trị:</b> Khi nội dung tệp cấu hình thay đổi, chuỗi hash mới được sinh ra. Việc tên ConfigMap thay đổi làm Pod spec trong Deployment thay đổi theo, từ đó <b style="color: var(--accent-primary);">kích hoạt quá trình Rolling Update tự động tạo Pod mới mang cấu hình cập nhật</b>, giải quyết triệt để sự cố kẹt cache cấu hình cũ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo configMapGenerator chỉ dùng để gõ cho nhanh.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được tạo hash nhưng không giải thích được cơ chế kích hoạt Rolling Update tự động làm mới Pod khi sửa config.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc tự động đính chuỗi hash vào tên ConfigMap giúp kích hoạt Deployment Rolling Update tự động.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, so sánh với việc sửa ConfigMap thuần không đổi tên.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu muốn tắt tính năng tự động thêm chuỗi hash vào tên ConfigMap của Kustomize thì khai báo cờ nào? *(Đáp án: Khai báo <code>generatorOptions: disableNameSuffixHash: true</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cờ <code>--reuse-values</code> trong lệnh <code>helm upgrade</code> có tác dụng gì khi nâng cấp một Release?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mặc định, khi chạy <code>helm upgrade <release> <chart> -f new-values.yaml</code>, Helm sẽ <b style="color: var(--accent-primary);">xóa bỏ tất cả các giá trị cũ</b> không xuất hiện trong <code>new-values.yaml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi truyền cờ <b style="color: var(--accent-primary);"><code>--reuse-values</code></b>, Helm sẽ <b style="color: var(--accent-primary);">giữ nguyên toàn bộ các giá trị cấu hình của phiên bản Release hiện tại</b>, và chỉ ghi đè những giá trị nào được chỉ định mới trong cờ <code>--set</code> hoặc file values mới.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cờ này dùng để rollback.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được giữ giá trị cũ nhưng không giải thích được hành vi mặc định xóa giá trị cũ của <code>helm upgrade</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác việc bảo toàn giá trị cũ của <code>--reuse-values</code> so với hành vi mặc định của <code>helm upgrade</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kịch bản nâng cấp 1 biến duy nhất trên production.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu muốn đè 1 biến duy nhất từ CLI mà vẫn giữ values cũ thì gõ lệnh gì? *(Đáp án: <code>helm upgrade <release> <chart> --reuse-values --set replicaCount=5</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do dính FAILED release vì không test helm template, 1 âm thầm do quên cờ -k khi apply Kustomize) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Dính FAILED release do sai syntax YAML):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Chạy <code>helm install</code> trực tiếp, bị lỗi syntax YAML giữa chừng, Release bị kẹt ở trạng thái <code>FAILED</code> hoặc <code>PENDING_INSTALL</code>, không thể re-install trùng tên.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Chạy <code>helm list -A</code> thấy status <code>FAILED</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Luôn chạy <code>helm template</code> render test trước; dọn dẹp bằng <code>helm uninstall <release></code> rồi cài lại.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Quên cờ <code>-k</code> khi apply Kustomize):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Gõ <code>kubectl apply -f overlays/dev</code>, API Server báo lỗi hoặc chỉ apply tệp kustomization.yaml dưới dạng unhandled object, các tài nguyên trong base hoàn toàn không được tạo.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Chạy <code>kubectl get deploy</code> không thấy Deployment dev nào được tạo.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Gõ đúng lệnh <code>kubectl apply -k overlays/dev</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu helm template dry-run và gõ nhầm -f thay vì -k (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi một Release bị kẹt ở <code>PENDING_INSTALL</code>, lệnh nào giúp xóa hoàn toàn Release đó để làm lại? *(Đáp án: Lệnh <code>helm uninstall <release-name> -n <namespace></code>).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Tiller trong kiến trúc Helm v2 có vai trò gì và tại sao bị xóa bỏ hoàn toàn từ phiên bản Helm v3?
-
-**Đáp án chuẩn:**
-- **Vai trò ở v2:** Tiller là một thành phần server-side (Static Pod/Deployment) chạy bên trong cụm Kubernetes v2, chịu trách nhiệm nhận yêu cầu từ Helm CLI và trực tiếp tạo/sửa tài nguyên với API Server.
-- **Lý do bị xóa ở v3:**
-  1. **Lỗ hổng bảo mật rủi ro cao:** Tiller thường được cấp quyền `cluster-admin` tối cao. Bất kỳ ai có quyền kết nối tới Tiller đều có thể chiếm toàn bộ cụm.
-  2. **Vi phạm RBAC:** Tiller qua mặt các chính sách RBAC cá nhân của người dùng gõ lệnh.
-- **Helm v3:** Chuyển sang kiến trúc **Client-Only (Tillerless)**, Helm CLI gọi trực tiếp API Server qua chứng chỉ Kubeconfig và phân quyền RBAC của người gõ lệnh.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Helm v3 vẫn cần Tiller.
-- **1đ:** Trả lời Tiller bị xóa do bảo mật nhưng không giải thích được vấn đề quyền `cluster-admin` thừa thải và việc chuyển sang architecture Client-Only.
-- **2đ:** Giải thích chuẩn xác vai trò cũ của Tiller và 2 lý do an ninh khiến Helm v3 chuyển sang Tillerless.
-- **3đ:** Trả lời xuất sắc, liên hệ với cơ chế lưu vết Release dưới dạng Secret trong Namespace.
-
-**Câu hỏi đào sâu:** Trong Helm v3, thông tin các bản Release (Revisions) được lưu trữ ở đâu trong cụm? *(Đáp án: Lưu dưới dạng các đối tượng Secret nằm trong đúng Namespace triển khai Release đó).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Trình bày 3 phần tử tối thiểu bắt buộc phải có trong thư mục của một Helm Chart chuẩn.
-
-**Đáp án chuẩn:**
-1. `Chart.yaml`: Tệp chứa thông tin metadata của gói (như `name`, `version`, `appVersion`, `description`).
-2. `values.yaml`: Tệp chứa tất cả các giá trị cấu hình mặc định nạp vào template.
-3. `templates/`: Thư mục chứa các tệp mẫu Go template (như `deployment.yaml`, `service.yaml`) sẽ được biên dịch thành tài nguyên Kubernetes API.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 3 phần tử.
-- **1đ:** Nêu được `values.yaml` và `templates/` nhưng thiếu `Chart.yaml`.
-- **2đ:** Giải thích chuẩn xác 3 phần tử `Chart.yaml`, `values.yaml`, `templates/` và vai trò từng phần tử.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `helm create <chart-name>`.
-
-**Câu hỏi đào sâu:** Tệp `NOTES.txt` nằm trong thư mục `templates/` có tác dụng gì? *(Đáp án: In ra hướng dẫn truy cập dịch vụ cho người dùng ngay sau khi gõ lệnh `helm install`).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Lệnh nào giúp kiểm tra danh sách toàn bộ các Helm Release đang được cài đặt trong một Namespace?
-
-**Đáp án chuẩn:**
-- Câu lệnh chuẩn:
-  `helm list -n <namespace>` (hoặc `helm ls -n <namespace>`).
-- Nếu muốn xem toàn bộ các Release trên tất cả các Namespace trong cụm, truyền cờ `-A` (hoặc `--all-namespaces`):
-  `helm list -A`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo gõ `kubectl get helm`.
-- **1đ:** Nêu được `helm list` nhưng quên cờ `-n <namespace>` hoặc `-A`.
-- **2đ:** Giải thích chuẩn xác lệnh `helm list -n <namespace>` và cờ xem tất cả namespace `-A`.
-- **3đ:** Trả lời xuất sắc, minh hoạ các trạng thái của Release (`DEPLOYED`, `FAILED`, `PENDING_INSTALL`).
-
-**Câu hỏi đào sâu:** Các trạng thái chính của một Helm Release in ra trong cột STATUS của `helm list` là gì? *(Đáp án: `DEPLOYED`, `FAILED`, `PENDING_INSTALL`, `UNINSTALLED`).*
-
----
-
-### Câu 5 — 🔥
-
-**Hỏi:** Lệnh nào được sử dụng để khôi phục ứng dụng ngay lập tức về một phiên bản Release cũ khi bản nâng cấp bị lỗi?
-
-**Đáp án chuẩn:**
-- Câu lệnh chuẩn:
-  `helm rollback <release-name> <revision-number> -n <namespace>`
-- **Cơ chế:** Helm đọc lại Secret chứa cấu hình của Revision tương ứng trong lịch sử (`helm history`), biên dịch và áp dụng lại trạng thái YAML cũ. Hạ thời gian phục hồi dịch vụ MTTR xuống chỉ còn vài giây mà không cần tìm tệp YAML cũ.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo đập đi cài lại Release mới.
-- **1đ:** Nói được `helm rollback` nhưng thiếu tham số `revision-number` và không giải thích được cơ chế đọc Secret lịch sử (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác lệnh `helm rollback <release> <revision>` và việc hạ MTTR xuống vài giây nhờ đọc Secret lịch sử.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `helm history`.
-
-**Câu hỏi đào sâu:** Lệnh nào dùng để xem danh sách tất cả các Revision lịch sử của một Release? *(Đáp án: Lệnh `helm history <release-name> -n <namespace>`).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Cú pháp nào được dùng trong tệp Helm template để lấy giá trị từ tệp `values.yaml` và các biến mặc định của Release?
-
-**Đáp án chuẩn:**
-- Lấy từ `values.yaml`: `{{ .Values.<key-path> }}` (ví dụ `{{ .Values.image.tag }}`).
-- Lấy tên Release: `{{ .Release.Name }}`.
-- Lấy tên Chart: `{{ .Chart.Name }}`.
-- Lấy Namespace: `{{ .Release.Namespace }}`.
-- **Lưu ý:** Dấu chấm `.` ở đầu thể hiện đối tượng gốc (Root Context) trong Go template.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo viết `$Values.tag`.
-- **1đ:** Nói được `.Values` nhưng thiếu ngoặc nhọn kép `{{ }}` hoặc quên dấu chấm `.` ở đầu.
-- **2đ:** Giải thích chuẩn xác cú pháp `{{ .Values.<key> }}` và các đối tượng mặc định `.Release.Name`, `.Chart.Name`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng các hàm template như `quote`, `default`, `upper`.
-
-**Câu hỏi đào sâu:** Dấu gạch đứng `|` trong Helm template (ví dụ `{{ .Values.name | quote }}`) đóng vai trò gì? *(Đáp án: Là pipeline truyền giá trị qua hàm xử lý, giống gạch đứng pipe trong Bash).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Lệnh `helm template` mang lại lợi ích gì trong quy trình phát triển và kiểm thử Helm Chart?
-
-**Đáp án chuẩn:**
-- Lệnh `helm template <release-name> <chart-dir> -f <values-file>` thực hiện **biên dịch thử (Render Dry-run)** toàn bộ các tệp template thành tài nguyên YAML thuần và in ra màn hình terminal.
-- **Lợi ích:** Giúp kỹ sư phát hiện sớm các lỗi cú pháp Go template, trỏ sai biến `.Values`, hoặc lệch thụt lùi space YAML **mà KHÔNG tạo bất kỳ tài nguyên nào trên cụm thật** (0% ảnh hưởng tới cụm đang chạy).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo lệnh này dùng để cài đặt Chart vào cụm.
-- **1đ:** Nói được xem tệp YAML nhưng không giải thích được lợi ích kiểm thử dry-run 0% ảnh hưởng tới cụm.
-- **2đ:** Phân tích chuẩn xác lợi ích biên dịch dry-run kiểm tra cú pháp YAML trước khi install/upgrade.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc pipe output qua `kubectl apply --dry-run=client`.
-
-**Câu hỏi đào sâu:** Có thể lưu output của lệnh `helm template` ra tệp YAML để apply thủ công bằng `kubectl apply -f` được không? *(Đáp án: Hoàn toàn được).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Kustomize được tích hợp vào `kubectl` thông qua cờ nào và làm sao để áp dụng cấu hình Kustomize trực tiếp lên cụm?
-
-**Đáp án chuẩn:**
-- Kustomize được tích hợp trực tiếp vào `kubectl` qua cờ **`-k`** (hoặc `--kustomize`).
-- **Câu lệnh áp dụng:**
-  `kubectl apply -k <path-to-directory>` (chỉ định đường dẫn thư mục chứa tệp `kustomization.yaml`, ví dụ `kubectl apply -k overlays/dev`).
-- **Lưu ý:** Không dùng cờ `-f` vì `-f` dành cho tệp YAML đơn lẻ, còn `-k` dành cho thư mục Kustomize.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo dùng `kubectl apply -f`.
-- **1đ:** Trả lời cờ `-k` nhưng không nhấn mạnh đường dẫn truyền vào phải là THƯ MỤC chứa `kustomization.yaml`.
-- **2đ:** Giải thích chuẩn xác cờ `-k` và lệnh `kubectl apply -k <directory>`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl kustomize <dir>` để render dry-run.
-
-**Câu hỏi đào sâu:** Lệnh nào dùng để render tệp YAML của Kustomize ra terminal mà không apply? *(Đáp án: Lệnh `kubectl kustomize <directory>`).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Mô hình cấu trúc thư mục tiêu chuẩn của một dự án Kustomize gồm 2 cấp thư mục nào?
-
-**Đáp án chuẩn:**
-- **1. Thư mục `base/` (Nền tảng):**
-  Chứa tất cả các bản kê khai YAML gốc dùng chung (Deployment, Service, ConfigMap) và tệp `kustomization.yaml` khai báo tài nguyên.
-- **2. Thư mục `overlays/<env>/` (Đè môi trường):**
-  Chứa các thư mục con cho từng môi trường (như `overlays/dev/`, `overlays/prod/`). Mỗi thư mục overlay chứa tệp `kustomization.yaml` để chỉ định đường dẫn về `../../base`, đính kèm các tệp patch vá lỗi, đổi `namePrefix`, `namespace`, hoặc `replicas`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo để tất cả file YAML chung 1 thư mục.
-- **1đ:** Nêu được `base` và `overlays` nhưng không giải thích được cơ chế overlay trỏ về base bằng `../../base`.
-- **2đ:** Giải thích chuẩn xác 2 cấp thư mục `base/` (gốc) và `overlays/<env>/` (đè) kèm cơ chế tham chiếu.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng quy tắc DRY trong quản lý cấu hình.
-
-**Câu hỏi đào sâu:** Trường nào trong `kustomization.yaml` của overlay dùng để trỏ về thư mục base? *(Đáp án: Trường `resources: - ../../base`).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Tính năng `configMapGenerator` trong Kustomize mang lại giá trị gì cho việc cập nhật cấu hình của Pod?
-
-**Đáp án chuẩn:**
-- **Cơ chế:** `configMapGenerator` tự động tạo đối tượng ConfigMap và **đính thêm chuỗi hash ngẫu nhiên vào đuôi tên ConfigMap** (ví dụ `app-config-8f7g6h5d`).
-- **Giá trị:** Khi nội dung tệp cấu hình thay đổi, chuỗi hash mới được sinh ra. Việc tên ConfigMap thay đổi làm Pod spec trong Deployment thay đổi theo, từ đó **kích hoạt quá trình Rolling Update tự động tạo Pod mới mang cấu hình cập nhật**, giải quyết triệt để sự cố kẹt cache cấu hình cũ.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo configMapGenerator chỉ dùng để gõ cho nhanh.
-- **1đ:** Nói được tạo hash nhưng không giải thích được cơ chế kích hoạt Rolling Update tự động làm mới Pod khi sửa config.
-- **2đ:** Giải thích chuẩn xác việc tự động đính chuỗi hash vào tên ConfigMap giúp kích hoạt Deployment Rolling Update tự động.
-- **3đ:** Trả lời xuất sắc, so sánh với việc sửa ConfigMap thuần không đổi tên.
-
-**Câu hỏi đào sâu:** Nếu muốn tắt tính năng tự động thêm chuỗi hash vào tên ConfigMap của Kustomize thì khai báo cờ nào? *(Đáp án: Khai báo `generatorOptions: disableNameSuffixHash: true`).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Cờ `--reuse-values` trong lệnh `helm upgrade` có tác dụng gì khi nâng cấp một Release?
-
-**Đáp án chuẩn:**
-- Mặc định, khi chạy `helm upgrade <release> <chart> -f new-values.yaml`, Helm sẽ **xóa bỏ tất cả các giá trị cũ** không xuất hiện trong `new-values.yaml`.
-- Khi truyền cờ **`--reuse-values`**, Helm sẽ **giữ nguyên toàn bộ các giá trị cấu hình của phiên bản Release hiện tại**, và chỉ ghi đè những giá trị nào được chỉ định mới trong cờ `--set` hoặc file values mới.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo cờ này dùng để rollback.
-- **1đ:** Nói được giữ giá trị cũ nhưng không giải thích được hành vi mặc định xóa giá trị cũ của `helm upgrade`.
-- **2đ:** Phân tích chuẩn xác việc bảo toàn giá trị cũ của `--reuse-values` so với hành vi mặc định của `helm upgrade`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kịch bản nâng cấp 1 biến duy nhất trên production.
-
-**Câu hỏi đào sâu:** Nếu muốn đè 1 biến duy nhất từ CLI mà vẫn giữ values cũ thì gõ lệnh gì? *(Đáp án: `helm upgrade <release> <chart> --reuse-values --set replicaCount=5`).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do dính FAILED release vì không test helm template, 1 âm thầm do quên cờ -k khi apply Kustomize) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Dính FAILED release do sai syntax YAML):**
-   - *Triệu chứng:* Chạy `helm install` trực tiếp, bị lỗi syntax YAML giữa chừng, Release bị kẹt ở trạng thái `FAILED` hoặc `PENDING_INSTALL`, không thể re-install trùng tên.
-   - *Phát hiện:* Chạy `helm list -A` thấy status `FAILED`.
-   - *Khắc phục:* Luôn chạy `helm template` render test trước; dọn dẹp bằng `helm uninstall <release>` rồi cài lại.
-2. **Chế độ hỏng 2 (Âm thầm - Quên cờ `-k` khi apply Kustomize):**
-   - *Triệu chứng:* Gõ `kubectl apply -f overlays/dev`, API Server báo lỗi hoặc chỉ apply tệp kustomization.yaml dưới dạng unhandled object, các tài nguyên trong base hoàn toàn không được tạo.
-   - *Phát hiện:* Chạy `kubectl get deploy` không thấy Deployment dev nào được tạo.
-   - *Khắc phục:* Gõ đúng lệnh `kubectl apply -k overlays/dev`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu helm template dry-run và gõ nhầm -f thay vì -k (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi một Release bị kẹt ở `PENDING_INSTALL`, lệnh nào giúp xóa hoàn toàn Release đó để làm lại? *(Đáp án: Lệnh `helm uninstall <release-name> -n <namespace>`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Helm là trình quản lý gói (Package Manager) dựa trên triết lý Go Templating phù hợp đóng gói ứng dụng phức tạp; Helm v3 hoàn toàn Tillerless và tuân thủ nghiêm ngặt Kubeconfig RBAC."*
+2. *"Kustomize là công cụ tùy biến bản kê khai khai báo (Declarative Overlay Patches) không dùng template, tích hợp sẵn vào <code>kubectl -k</code> dựa trên mô hình <code>base/</code> và <code>overlays/</code> giúp áp dụng nguyên tắc DRY."*
+3. *"Tệp <code>Chart.yaml</code>, <code>values.yaml</code>, và thư mục <code>templates/</code> là 3 phần tử tối thiểu bắt buộc tạo thành một Helm Chart chuẩn."*
+4. *"Sử dụng <code>helm rollback <release> <revision></code> giúp hạ thời gian phục hồi dịch vụ MTTR xuống vài giây khi bản nâng cấp mới bị sự cố."*
+5. *"Tính năng <code>configMapGenerator</code> của Kustomize tự động sinh chuỗi hash đổi tên ConfigMap, kích hoạt Deployment tự động Rolling Update làm mới Pod khi cấu hình thay đổi."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1145,40 +1211,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Tệp `Chart.yaml`, `values.yaml`, và thư mục `templates/` là 3 phần tử tối thiểu bắt buộc tạo thành một Helm Chart chuẩn."*
 4. *"Sử dụng `helm rollback <release> <revision>` giúp hạ thời gian phục hồi dịch vụ MTTR xuống vài giây khi bản nâng cấp mới bị sự cố."*
 5. *"Tính năng `configMapGenerator` của Kustomize tự động sinh chuỗi hash đổi tên ConfigMap, kích hoạt Deployment tự động Rolling Update làm mới Pod khi cấu hình thay đổi."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Triết lý Templating Helm vs Overlay Patches Kustomize (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Kiến trúc Helm v3 Tillerless bảo mật qua Kubeconfig RBAC |
-| Câu 3 | ★★★ | 3 | | 3 phần tử tối thiểu của Helm Chart (`Chart.yaml`, `values.yaml`, `templates/`) |
-| Câu 4 | ★★★ | 3 | | Lệnh `helm list -n <ns>` xem danh sách các Release |
-| Câu 5 | 🔥 | 3 | | Lệnh `helm rollback <release> <revision>` hạ MTTR (trần 1đ nếu thiếu) |
-| Câu 6 | ★★★ | 3 | | Cú pháp `{{ .Values.<key> }}` và các đối tượng mặc định |
-| Câu 7 | ★★★ | 3 | | Lệnh `helm template` render dry-run kiểm tra YAML 0% ảnh hưởng |
-| Câu 8 | ★★★ | 3 | | Lệnh `kubectl apply -k <directory>` thực thi Kustomize |
-| Câu 9 | ★★★ | 3 | | 2 cấp thư mục tiêu chuẩn `base/` và `overlays/<env>/` |
-| Câu 10 | ★★★ | 3 | | `configMapGenerator` đính hash tự động trigger Pod Rolling Update |
-| Câu 11 | ★★★ | 3 | | Cờ `--reuse-values` bảo toàn giá trị cũ khi `helm upgrade` |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (kẹt FAILED release & gõ nhầm -f thay vì -k) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các Helm Release trong cụm và phát hiện bất kỳ Release nào đang ở trạng thái `FAILED`.
-2. **BTVN 2:** Thực hành đóng gói một Helm Chart thành tệp nén `.tgz` bằng lệnh `helm package ./mychart` và kiểm tra thông tin bằng `helm show chart`.
-3. **BTVN 3:** Xây dựng một dự án Kustomize hoàn chỉnh cho ứng dụng WordPress gồm `base/` và 2 overlays `overlays/staging/`, `overlays/production/`.
-4. **BTVN 4 — Chuẩn bị cho Buổi 14 (`buoi-14-pod-va-vong-doi`):**
-   - *Câu 1:* Vòng đời của một Pod Kubernetes trải qua những trạng thái (Phases) chính nào (`Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`)?
-   - *Câu 2:* Khái niệm `initContainers` khác gì `containers` thông thường về thứ tự khởi chạy và điều kiện hoàn thành?
-   - *Câu 3:* Trình bày 3 chính sách khởi động lại `restartPolicy` (`Always`, `OnFailure`, `Never`) và ảnh hưởng của nó tới Pod.
-
-> **Đoạn kết nối Buổi 14:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 14 — buổi học đi sâu vào cơ chế bên trong của Pod, vòng đời khởi tạo `initContainers`, các chính sách `restartPolicy` và cơ chế kết thúc êm đẹp (Graceful Shutdown) đối tượng khối làm việc lõi trong CKA và CKAD.
 
 ---
 
@@ -1468,15 +1500,15 @@ kubectl kustomize <directory-path>
 kubectl apply -k <directory-path>
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 14] Vòng Đời Của Pod (Pod Lifecycle): InitContainer, RestartPolicy, Liveness vs Readiness & Graceful Shutdown](cka-14-14-pod-va-vong-doi.html).
+
 {% endraw %}

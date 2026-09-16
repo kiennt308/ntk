@@ -565,10 +565,11 @@ Dự án Capstone này trang bị cho bạn 100% kiến thức trọng tâm củ
 
 ---
 
-## Tổng Kết
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
 Dự án Capstone đã đưa bạn từ một kỹ sư làm quen với các khái niệm GitOps cơ bản trở thành một **Kiến trúc sư Nền tảng GitOps Cấp cao (Principal Platform Architect)**. Bạn đã làm chủ khả năng thiết kế, bảo vệ và vận hành các hệ thống phân phối phần mềm khổng lồ, an toàn tuyệt đối và có khả năng phục hồi thần tốc.
 
 > [!TIP]
-> **Bài tiếp theo:** [Bài 25: Tổng Hợp 100+ Câu Hỏi Phỏng Vấn Argo CD & GitOps Chuyên Sâu](argocd-25-25-tong-hop-cau-hoi-phong-van-argo-cd-gitops-chuyen-sau-24-buoi.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Hoàn thành chuỗi bài học và thử sức với chuyên đề tổng kết: [[Bài 25] Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Argo CD & GitOps Chuyên Sâu (24 Chuyên Đề)](argocd-25-25-tong-hop-cau-hoi-phong-van-argo-cd-gitops-chuyen-sau-24-buoi.html).
 {% endraw %}

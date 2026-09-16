@@ -45,7 +45,7 @@ Các cuộc tấn công chuỗi cung ứng khét tiếng như **SolarWinds** (m�
 2. **SBOM (Software Bill of Materials)**: Danh mục toàn bộ thành phần phần mềm máy đọc được.
 3. **Sigstore Cosign**: Cơ chế ký số mật mã học cho OCI Artifacts, chứng minh tính bất biến và xác thực danh tính người phát hành.
 
-```
+```text
        QUY TRÌNH KÝ SỐ VÀ XÁC THỰC NGUỒN GỐC PHẦN MỀM (Sigstore & SLSA)
 
   [ GitLab CI Runner ] ──► 1. Biên dịch Binary & Đóng gói Image
@@ -212,7 +212,7 @@ verify_container_signature:
 
 > **Bối Cảnh**: Nhóm triển khai áp dụng chính sách Kyverno Policy trên Kubernetes Production bắt buộc mọi Image phải có chữ ký Cosign. Tuy nhiên, sau khi release phiên bản mới, toàn bộ các Pod mới deploy đều bị từ chối với mã lỗi `Error: Admission webhook "check-image-signature" denied the request: no valid signatures found`.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -275,7 +275,7 @@ verify_container_signature:
 - Đóng gói Image và tự động sinh SBOM CycloneDX bằng Syft.
 - Ký số Image, đính kèm SBOM Attestation và xác minh tính toàn vẹn độc lập.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB KÝ SỐ COSIGN TRÊN GITLAB CI
 
     [ Go Microservice ] ──► [ Build Image: app:v1.0.0 ]
@@ -590,7 +590,7 @@ cosign verify --key cosign.pub registry.gitlab.corp.internal/security/supply-cha
 
 ### 7.2. Sơ Đồ Tư Duy Chuỗi Cung Ứng Phần Mềm An Toàn (Mindmap)
 
-```
+```text
                      BẢO MẬT CHUỖI CUNG ỨNG PHẦN MỀM (SLSA & COSIGN)
                                            │
         ┌──────────────────────────────────┼──────────────────────────────────┐

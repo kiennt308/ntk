@@ -98,7 +98,7 @@ Jinja2 cung cấp cú pháp điều khiển lập trình mạnh mẽ bên trong 
 
 Dưới đây là kiến trúc phân phối cấu hình Load Balancer Nginx hoàn chỉnh bằng Jinja2 Template kết hợp vòng lặp upstream servers, rẽ nhánh SSL và kiểm định cú pháp `nginx -t`:
 
-```
+```text
 templates/
 └── nginx_vhost.conf.j2    # File mẫu Jinja2
 site.yml                   # Playbook điều phối
@@ -187,8 +187,6 @@ server {
 Một kỹ sư DevOps triển khai cấu hình Nginx Vhost mới cho hệ thống thương mại điện tử bằng module `template`. Trong file mẫu `.j2`, kỹ sư vô tình bỏ quên dấu đóng ngoặc nhọn `}` ở khối `location /` và không khai báo tham số `validate:`. Kịch bản thực thi ghi đè file lỗi xuống 20 máy chủ Production và gửi lệnh reload Nginx.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-- Nginx daemon gặp lỗi cú pháp `nginx: [emerg] unexpected end of file, expecting "}"` khi nạp file `/etc/nginx/conf.d/vhost.conf`.
-- Mặc dù Nginx không chết ngay lập tức ở lần reload đầu tiên, nhưng khi máy chủ tự động khởi động lại sau bản vá bảo mật kernel ban đêm, dịch vụ Nginx từ chối khởi động lại toàn bộ, gây ra đợt downtime kéo dài **50 phút** vào đầu giờ sáng.
 
 ```diff
 --- templates/vhost.conf.j2 (Syntax Error Missing Bracket)
@@ -200,6 +198,10 @@ Một kỹ sư DevOps triển khai cấu hình Nginx Vhost mới cho hệ thốn
 +    }
  }
 ```
+
+- Nginx daemon gặp lỗi cú pháp `nginx: [emerg] unexpected end of file, expecting "}"` khi nạp file `/etc/nginx/conf.d/vhost.conf`.
+- Mặc dù Nginx không chết ngay lập tức ở lần reload đầu tiên, nhưng khi máy chủ tự động khởi động lại sau bản vá bảo mật kernel ban đêm, dịch vụ Nginx từ chối khởi động lại toàn bộ, gây ra đợt downtime kéo dài **50 phút** vào đầu giờ sáng.
+
 
 ```mermaid
 flowchart TD
@@ -701,41 +703,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Render trên Control Node:** Toàn bộ quá trình biên dịch Jinja2 diễn ra trên Control Node trước khi gửi file qua SSH.
-2. **Luôn bật Validate:** Khai báo `validate: '<check_cmd> %s'` để ngăn chặn 100% rủi ro ghi đè file cấu hình lỗi.
-3. **Khai thác Logic linh hoạt:** Kết hợp `{% for %}` sinh danh sách cluster và `{% if %}` bật tắt tính năng động.
-4. **Sử dụng Filters an toàn:** Dùng `default()`, `join()`, `to_nice_yaml` để chuẩn hóa và phòng vệ biến undefined.
-5. **Dấu vết Header chuẩn:** Luôn chèn header chú thích ở đầu template để chống trôi cấu hình (Anti-drift).
-
-```mermaid
-mindmap
-  root((Jinja2 Templates Mastery))
-    Architecture
-      Render on Control Node
-      Jinja2 Compiler Engine
-      Target distribution via SSH
-      SHA256 Idempotency Check
-    Jinja2 Syntax
-      Variables interpolation
-      Control statements if and for
-      loop.index and loop.last
-      raw / endraw escaping
-    Filters & Transforms
-      default fallback values
-      join array to string
-      to_nice_json and to_nice_yaml
-    Production Safety
-      validate with percent-s
-      backup timestamp protection
-      Zero downtime reload handler
-      docker exec ground truth
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 13: Xử Lý Lỗi & Khối Lệnh Nâng Cao: Blocks, Rescue, Always & Ignore_errors](ansible-13-13-blocks-error-handling.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 13] Xử Lý Lỗi Chuyên Sâu Với Blocks: block, rescue, always & Cơ Chế Try-Catch-Finally Trong Hạ Tầng](ansible-13-13-blocks-error-handling.html).
+
 {% endraw %}

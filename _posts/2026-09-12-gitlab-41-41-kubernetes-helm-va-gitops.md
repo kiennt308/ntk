@@ -47,7 +47,7 @@ Kiến trúc này bộc lộ 3 nhược điểm lớn trong môi trường Enter
 
 > **Giải pháp là kiến trúc "Pull-based GitOps": Mã nguồn khai báo trên Git là "Single Source of Truth" duy nhất. Một Agent nội bộ (GitLab Agent for Kubernetes / ArgoCD / Flux) chạy bên trong cụm cluster sẽ liên tục lắng nghe thay đổi trên Git và "kéo" (Pull) trạng thái mong muốn về, tự động đồng bộ và triệt tiêu mọi sai lệch cấu hình.**
 
-```
+```text
        SO SÁNH MÔ HÌNH PUSH-BASED VÀ PULL-BASED GITOPS
 
   [ MÔ HÌNH TRUYỀN THỐNG: PUSH-BASED ]
@@ -181,7 +181,7 @@ deploy_to_kubernetes:
 
 > **Bối Cảnh**: Trong một sự cố nghẽn mạng vào nửa đêm, kỹ sư On-call đã dùng lệnh `kubectl scale deployment payment-api --replicas=20` trực tiếp trên cluster để cứu vãn tình thế. Tuy nhiên, chỉ 30 giây sau, số lượng replicas bị tự động giảm tụt lùi về lại `3` khiến hệ thống tiếp tục sập, do ArgoCD/GitLab Agent phát hiện sai lệch và tự động đè lại giá trị `replicas: 3` đang ghi trên Git.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -226,7 +226,7 @@ deploy_to_kubernetes:
 - Xác thực kết nối gRPC thành công hai chiều.
 - Viết pipeline GitLab CI sử dụng CI/CD Tunnel để deploy ứng dụng và kiểm tra tính sẵn sàng.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB GITLAB AGENT FOR KUBERNETES
 
      [ 1. GitLab UI: Đăng ký Agent ] ──► Nhận Agent Token
@@ -521,7 +521,7 @@ git push origin main
 
 ### 7.2. Sơ Đồ Tư Duy Kubernetes CD & GitOps (Mindmap)
 
-```
+```text
                        KUBERNETES CD & GITOPS ENTERPRISE
                                        │
         ┌──────────────────────────────┼──────────────────────────────┐

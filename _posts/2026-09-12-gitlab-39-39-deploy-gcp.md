@@ -44,7 +44,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 > **Một Pipeline CD chuẩn mực trên GCP kết hợp Workload Identity Federation (loại bỏ hoàn toàn tệp khóa JSON nguy hiểm), nạp image vào Artifact Registry, và thực thi chiến lược Canary Deployment mượt mà trên Cloud Run hoặc GKE.**
 
-```
+```text
        QUY TRÌNH PHÂN PHỐI ỨNG DỤNG LÊN GOOGLE CLOUD (GCP)
 
   [ GitLab CI Runner ] ── 1. Workload Identity Federation ──► [ GCP STS OAuth2 Session ]
@@ -241,7 +241,7 @@ promote_to_100_percent:
 
 > **Bối Cảnh**: Một ứng dụng Node.js được deploy lên Google Cloud Run. Vào thời điểm có đợt Flash Sale, Cloud Run tự động co giãn từ 5 containers lên **250 containers trong vòng 30 giây**. Hậu quả là 250 containers đồng loạt mở kết nối khiến máy chủ Cloud SQL PostgreSQL bị cạn kiệt Connection Pool và toàn bộ hệ thống trả về mã lỗi HTTP 503.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -281,7 +281,7 @@ promote_to_100_percent:
 - Viết pipeline GitLab CI tự động đóng gói và deploy lên Google Cloud Run.
 - Thực hiện kiểm tra cơ chế phân chia lưu lượng Traffic Splitting 10% Canary và chuyển giao 100%.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB DEPLOY GOOGLE CLOUD RUN CANARY
 
      [ Go Microservice ] ──► [ Build & Push to Artifact Registry ]
@@ -575,7 +575,7 @@ done
 
 ### 7.2. Sơ Đồ Tư Duy Triển Khai Ứng Dụng Lên GCP (Mindmap)
 
-```
+```text
                        PHÂN PHỐI ỨNG DỤNG LÊN GOOGLE CLOUD PLATFORM
                                             │
         ┌───────────────────────────────────┼───────────────────────────────────┐

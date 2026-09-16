@@ -466,24 +466,6 @@ graph TD
 | Official Docs: Jobs & CronJobs | Kubernetes v1.35 | Quản lý Job batch, completions, parallelism và concurrencyPolicy |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Đối tượng `DaemonSet`: Chạy agent thu thập log/metric trên 100% các Node | 12 phút |
-| §5 | Đối tượng `StatefulSet`: Định danh mạng cố định, Headless Service & `volumeClaimTemplates` | 12 phút |
-| §6 | Đối tượng `Job` & `CronJob`: Tác vụ lô, `completions`, `parallelism` và `concurrencyPolicy` | 10 phút |
-| §7 | Đưa vào cụm thật | 4 phút |
-| §8 | Bẫy hay gặp | 4 phút |
-| §9 | Tóm tắt | 2 phút |
-| §10 | Câu hỏi tự kiểm tra | 7 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -931,24 +913,11 @@ rm -f /tmp/sts-pvc.txt /tmp/sts-pods.txt /tmp/job-succeeded.txt /tmp/cron-policy
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-16/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khởi tạo DaemonSet `node-exporter` chạy agent trên 100% các Node | 30 phút |
-| L4 | Bước 2 — Khởi tạo Headless Service và StatefulSet `mysql-sts` có đĩa PVC độc lập | 30 phút |
-| L5 | Bước 3 — Tạo Job `batch-calc` xử lý lô với `completions` và `parallelism` | 30 phút |
-| L6 | Bước 4 — Tạo CronJob `db-backup` với `concurrencyPolicy: Forbid` và kiểm thử | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -962,263 +931,358 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Làm thế nào để cấu hình cho một <code>DaemonSet</code> Pod chạy được trên node Control Plane đang có Taint <code>NoSchedule</code> bảo vệ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Deployment</code> (Ứng dụng không trạng thái):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Quản lý các ứng dụng Web/Microservices không trạng thái (Stateless).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tạo Pod:* Số lượng Pods do cờ <code>replicas</code> quy định, Pods mang tên ngẫu nhiên (như <code>web-8f7g-2x9z</code>), có thể tạo trên bất kỳ Node nào.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>DaemonSet</code> (Tiến trình nền hạ tầng):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Thu thập log (<code>Fluentd</code>), monitoring agent (<code>Prometheus Node Exporter</code>), CNI plugin mạng (<code>Calico</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tạo Pod:* Đảm bảo <b style="color: var(--accent-primary);">mỗi Node chạy đúng 1 bản sao Pod</b>; Node mới gia nhập tự động có Pod.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>StatefulSet</code> (Ứng dụng có trạng thái):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Quản lý các cụm cơ sở dữ liệu có trạng thái (MySQL, PostgreSQL, MongoDB, Redis).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tạo Pod:* Pods mang tên chỉ số đếm cố định (<code>pod-0</code>, <code>pod-1</code>), đi kèm đĩa PVC riêng (<code>volumeClaimTemplates</code>) và Headless Service.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân:</b> Mặc định node Control Plane bị gắn Taint <code>node-role.kubernetes.io/control-plane:NoSchedule</code> để ngăn Pod thông thường nhảy vào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách cấu hình:</b> Bổ sung khối <b style="color: var(--accent-primary);"><code>tolerations</code></b> tương ứng vào <code>spec.template.spec</code> của DaemonSet để bỏ qua vết nhơ này:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">tolerations:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• key: node-role.kubernetes.io/control-plane</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">operator: Exists</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">effect: NoSchedule</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giá trị:</b> Giúp agent DaemonSet thu thập đủ log/metric trên <b style="color: var(--accent-primary);">100% các Node</b> trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo gõ <code>kubectl uncordon</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được thêm toleration nhưng không nhớ key vết nhơ <code>node-role.kubernetes.io/control-plane</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc khai báo <code>tolerations</code> vết nhơ control-plane trong Pod spec của DaemonSet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra chỉ số <code>DESIRED</code> và <code>NUMBER_READY</code> của DaemonSet sau khi thêm tolerations.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu không thêm tolerations này thì cột CURRENT/READY trong <code>kubectl get ds</code> sẽ báo như thế nào? *(Đáp án: Thiếu 1 Pod trên node Control Plane, ví dụ DESIRED: 3 nhưng CURRENT: 2).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 3 đối tượng này giống hệt nhau.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tên nhưng không phân biệt được cách tạo Pod ngẫu nhiên vs 1 Pod/Node vs Pod tên chỉ số đếm đĩa riêng (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác sự khác nhau về mục đích sử dụng và cơ chế tạo Pod của 3 đối tượng <code>Deployment</code>, <code>DaemonSet</code>, <code>StatefulSet</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng các ứng dụng thực tế sản xuất.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu muốn chạy đúng 1 Pod agent thu thập log trên tất cả các Worker Nodes thì dùng đối tượng nào? *(Đáp án: Dùng đối tượng <code>DaemonSet</code>).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Trình bày quy tắc đặt tên Pod và thứ tự khởi tạo / ngắt Pod của đối tượng <code>StatefulSet</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc đặt tên Pod:</b> Pods do StatefulSet quản lý sở hữu định danh chuỗi số đếm cố định bắt đầu từ <b style="color: var(--accent-primary);">0</b> theo công thức <code><statefulset-name>-<index></code> (ví dụ <code>mysql-sts-0</code>, <code>mysql-sts-1</code>, <code>mysql-sts-2</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thứ tự khởi tạo (Ordered Creation):</b> StatefulSet khởi tạo Pod theo đúng thứ tự tăng dần (Pod 0 phải ở trạng thái <code>Running</code> và <code>Ready</code> hẳn thì Pod 1 mới được bắt đầu khởi tạo).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thứ tự ngắt / xoá (Ordered Termination):</b> Khi giảm replicas hoặc xoá StatefulSet, các Pods bị ngắt theo thứ tự <b style="color: var(--accent-primary);">ngược lại</b> (Pod 2 bị xoá trước, sau đó mới tới Pod 1, và cuối cùng mới tới Pod 0 Master).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo StatefulSet tạo Pods ngẫu nhiên cùng một lúc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được tên <code>mysql-0</code> nhưng không giải thích được thứ tự khởi tạo tăng dần 0->1->2 và xoá ngược lại 2->1->0.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác quy tắc đặt tên chỉ số đếm và thứ tự khởi tạo / ngắt Pod nghiêm ngặt của StatefulSet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, giải thích lý do bảo vệ tính toàn vẹn của cụm Database Master-Slave.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Muốn StatefulSet khởi tạo tất cả các Pods cùng lúc không cần theo thứ tự thì cấu hình cờ gì? *(Đáp án: Khai báo <code>spec.podManagementPolicy: Parallel</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span><code>Headless Service</code> là gì? Giá trị nào của <code>clusterIP</code> tạo nên Headless Service và vai trò của nó với StatefulSet là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Định nghĩa:</b> <code>Headless Service</code> là một Service trong Kubernetes <b style="color: var(--accent-primary);">không gán địa chỉ IP ảo ảo (Virtual ClusterIP)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách tạo:</b> Khai báo <b style="color: var(--accent-primary);"><code>spec.clusterIP: None</code></b> trong file YAML Service.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò với StatefulSet:</b> Headless Service không thực hiện load balancing ngẫu nhiên, mà trả về A record địa chỉ IP thực của từng Pod. Nó tạo ra tên miền DNS nội bộ cố định cho từng Pod theo định dạng:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code><pod-name>.<service-name>.<namespace>.svc.cluster.local</code> (ví dụ <code>mysql-sts-0.mysql-service.dev.svc.cluster.local</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp các ứng dụng gọi điện trực tiếp cho node Master hoặc Slave cần tìm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Headless Service là Service không có port.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được <code>clusterIP: None</code> nhưng không giải thích được vai trò tạo tên miền DNS cố định <code><pod-name>.<service-name></code> cho từng Pod (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>clusterIP: None</code> và vai trò cung cấp A record DNS cố định cho từng Pod StatefulSet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>nslookup</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trường nào trong StatefulSet spec dùng để trỏ tới tên của Headless Service? *(Đáp án: Trường <code>spec.serviceName</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mảng <code>volumeClaimTemplates</code> trong StatefulSet mang lại lợi ích gì so với việc khai báo <code>volumes</code> thông thường ở cấp Pod spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khai báo <code>volumes</code> thông thường:</b> Tất cả các bản sao Pods do Controller tạo ra sẽ <b style="color: var(--accent-primary);">dùng CHUNG đúng 1 tệp PVC/PV</b>. Nếu dùng cho Database, 2 Pod Master và Slave sẽ ghi đè lên cùng 1 đĩa đĩa cứng gây <b style="color: var(--accent-primary);">hỏng dữ liệu (Data Corruption)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mảng <code>volumeClaimTemplates</code>:</b> Tự động sinh ra một <b style="color: var(--accent-primary);">tệp PVC độc lập riêng biệt duy nhất cho MỖI Pod</b> theo chỉ số đếm (ví dụ <code>data-mysql-sts-0</code>, <code>data-mysql-sts-1</code>). Kể cả khi Pod bị reschedule sang Node khác, đĩa PVC tương ứng vẫn tự động gắn lại đúng Pod mang chỉ số đếm đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 cách khai báo giống hệt nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được tạo đĩa riêng nhưng không giải thích được hậu quả Data Corruption khi dùng <code>volumes</code> thường (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế tự sinh PVC độc lập duy nhất cho từng Pod của <code>volumeClaimTemplates</code> vs nguy cơ hỏng data của <code>volumes</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra việc PVC không bị xoá khi delete StatefulSet.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi bạn gõ <code>kubectl delete statefulset mysql-sts</code> thì các đĩa PVC do <code>volumeClaimTemplates</code> tạo ra có bị xoá tự động không? Vì sao? *(Đáp án: KHÔNG bị xoá, nhằm bảo vệ dữ liệu sản xuất không bị mất ngoài ý muốn).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao khai báo <code>restartPolicy: Always</code> trong Pod spec của đối tượng <code>Job</code> lại bị API Server từ chối lệnh <code>apply</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bản chất của Job:</b> Đối tượng <code>Job</code> được thiết kế dành riêng cho các tác vụ lô ngắn hạn (Batch Workloads). Job chỉ hoàn thành khi các Pod bên trong chạy <b style="color: var(--accent-primary);">hoàn tất công việc và thoát với <code>exit code 0</code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mẫu thuẫn với <code>Always</code>:</b> Chính sách <code>restartPolicy: Always</code> bắt Kubelet phải <b style="color: var(--accent-primary);">luôn tự động khởi động lại container</b> kể cả khi nó vừa kết thúc thành công <code>exit code 0</code>. Điều này vi phạm bản chất chạy 1 lần dừng lại của Job.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Yêu cầu bắt buộc:</b> Pod spec trong Job BẮT BUỘC phải khai báo <code>restartPolicy: OnFailure</code> hoặc <code>Never</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Job cho phép để <code>restartPolicy: Always</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời bị từ chối nhưng không giải thích được mâu thuẫn giữa bản chất chạy đến hoàn thành (exit 0 dừng) của Job vs hành vi restart liên tục của <code>Always</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác bản chất của Job và lý do API Server bắt buộc <code>restartPolicy: OnFailure</code> / <code>Never</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ lỗi schema validation khi apply.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Sự khác nhau giữa <code>restartPolicy: OnFailure</code> và <code>Never</code> trong Job là gì? *(Đáp án: <code>OnFailure</code> restart lại container trong cùng 1 Pod cũ; <code>Never</code> tạo ra 1 Pod hoàn toàn mới khi bị lỗi).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Ý nghĩa của hai tham số <code>completions</code> và <code>parallelism</code> trong <code>Job</code> spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>spec.completions</code> (Chỉ tiêu hoàn thành):</b> Quy định <b style="color: var(--accent-primary);">tổng số lần (số Pods)</b> bắt buộc phải chạy hoàn tất thành công (<code>exit code 0</code>) thì đối tượng Job mới được đánh dấu là hoàn thành.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>spec.parallelism</code> (Số Pod chạy song song):</b> Quy định <b style="color: var(--accent-primary);">số lượng Pods tối đa được phép chạy đồng thời song song</b> tại cùng một thời điểm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ví dụ:</b> <code>completions: 10</code>, <code>parallelism: 2</code> -> Job sẽ chạy tổng cộng 10 lần Pod thành công, nhưng tại mỗi thời điểm chỉ có tối đa 2 Pods chạy song song (chia làm 5 đợt chạy).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ 2 tham số này.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời completions là hoàn thành, parallelism là song song nhưng không nêu được ví dụ phối hợp chia đợt chạy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>completions</code> (tổng chỉ tiêu) và <code>parallelism</code> (số Pod song song tối đa) kèm ví dụ cụ thể.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với việc xử lý hàng chờ Queue (Work Queue).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tham số <code>spec.backoffLimit</code> trong Job spec dùng để làm gì? *(Đáp án: Quy định số lần tối đa Job cho phép Pods thử lại bị crash exit 1 trước khi đánh dấu Job bị FAILED).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trình bày ý nghĩa của 3 giá trị thuộc tính <code>concurrencyPolicy</code> (<code>Allow</code>, <code>Forbid</code>, <code>Replace</code>) trong <code>CronJob</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Căn nguyên:</b> Khi đến giờ chạy lịch Cron mới (ví dụ 5 phút/lần) mà <b style="color: var(--accent-primary);">Job cũ của lần chạy trước vẫn chưa hoàn thành</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3 chính sách:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Allow</code> (Mặc định):</b> Cho phép Job mới khởi tạo và <b style="color: var(--accent-primary);">chạy song song</b> cùng lúc với Job cũ đang chạy dở. (Nguy cơ dồn ứ Pods gây tràn RAM cụm).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Forbid</code> (Bỏ qua):</b> <b style="color: var(--accent-primary);">Bỏ qua không cho chạy Job mới</b>; Job cũ giữ nguyên tiếp tục chạy cho tới khi xong. (An toàn nhất cho hạ tầng).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Replace</code> (Thay thế):</b> <b style="color: var(--accent-primary);">Tiêu diệt (kill) ngay lập tức Job cũ</b> đang chạy dở để khởi tạo Job mới thế chỗ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ 3 chính sách.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 3 tên nhưng không giải thích được hành vi khi Job cũ chưa xong của <code>Allow</code>, <code>Forbid</code>, <code>Replace</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 3 chính sách <code>Allow</code> (song song), <code>Forbid</code> (bỏ qua), <code>Replace</code> (tiêu diệt cũ) và rủi ro vận hành.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, khuyến nghị dùng <code>Forbid</code> cho các script backup DB.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao với các script sao lưu dữ liệu (Database Backup CronJob) người ta luôn cài <code>concurrencyPolicy: Forbid</code>? *(Đáp án: Tránh việc 2 script backup chạy đè lên nhau gây nghẽn I/O đĩa và hỏng file backup).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Thuộc tính <code>successfulJobsHistoryLimit</code> và <code>failedJobsHistoryLimit</code> trong <code>CronJob</code> spec có vai trò gì và giá trị mặc định là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò:</b> Quy định số lượng đối tượng Job cũ đã hoàn thành (<code>successful</code>) hoặc bị lỗi (<code>failed</code>) được giữ lại trong cụm để người quản trị kiểm tra log và status.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giá trị mặc định:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>successfulJobsHistoryLimit</code>: Mặc định giữ <b style="color: var(--accent-primary);">3</b> Jobs.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>failedJobsHistoryLimit</code>: Mặc định giữ <b style="color: var(--accent-primary);">1</b> Job.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b> Tự động dọn dẹp các Job cũ đã chạy xong để tránh làm rác namespace và bộ nhớ etcd.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ 2 thuộc tính này.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời giới hạn lịch sử nhưng không nhớ con số mặc định 3 (successful) và 1 (failed).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò dọn dẹp etcd và con số mặc định 3/1.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách xem log của Job cũ qua <code>kubectl logs job/<job-name></code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu đặt <code>successfulJobsHistoryLimit: 0</code> thì chuyện gì xảy ra sau khi CronJob chạy xong 1 lượt? *(Đáp án: Đối tượng Job bị xoá lập tức, bạn không thể dùng <code>kubectl logs</code> xem lại kết quả chạy được nữa).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp biểu thức cron <code>"*/10 * * * *"</code> trong <code>CronJob</code> spec có ý nghĩa như thế nào và giải thích 5 trường trong biểu thức cron.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu trúc 5 trường:</b> <code>[Phút] [Giờ] [Ngày trong tháng] [Tháng] [Ngày trong tuần]</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường 1 (<code>*/10</code>): Phút (Lặp lại mỗi 10 phút).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường 2 (<code>*</code>): Giờ (Mọi giờ trong ngày).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường 3 (<code>*</code>): Ngày trong tháng (Mọi ngày).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường 4 (<code>*</code>): Tháng (Mọi tháng).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường 5 (<code>*</code>): Ngày trong tuần (Mọi thứ từ Chủ nhật tới Thứ 7).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• **Ý nghĩa biểu thức <code>"*/10 * * * *"</code>:<b style="color: var(--accent-primary);"> Tự động kích hoạt Job chạy </b>10 phút một lần, liên tục 24/7**.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Đọc sai cú pháp cron.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được 10 phút một lần nhưng không giải thích được 5 trường vị trí Phút, Giờ, Ngày, Tháng, Thứ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác ý nghĩa 10 phút/lần và 5 trường vị trí của biểu thức cron.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ biểu thức <code>"0 2 * * *"</code> (chạy 2h00 sáng mỗi ngày).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Biểu thức cron <code>"0 0 * * 0"</code> nghĩa là gì? *(Đáp án: Chạy vào đúng 00h00 đêm Chủ nhật hàng tuần).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao không thể sử dụng cờ <code>kubectl scale</code> đối với đối tượng <code>DaemonSet</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên lý của DaemonSet:</b> Số lượng Pods do DaemonSet quản lý <b style="color: var(--accent-primary);">phụ thuộc 100% vào số lượng Node trong cụm</b> (hoặc số Node thoả mãn <code>nodeSelector</code> / <code>tolerations</code>). Mỗi Node chạy đúng 1 Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Sự vô lý của <code>scale</code>:</b> Lệnh <code>kubectl scale</code> dùng để tăng/giảm số <code>replicas</code> cố định (như scale từ 2 lên 5 Pods). Việc ép DaemonSet chạy 5 Pods trên cụm 3 Node là vi phạm nguyên tắc thiết kế 1 Pod/Node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thông báo:</b> API Server từ chối cờ <code>scale</code> cho DaemonSet. Muốn tăng số Pod DaemonSet phải thêm Node mới vào cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>kubectl scale ds</code> chạy bình thường.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được không scale được nhưng không giải thích được nguyên lý số Pod phụ thuộc 100% vào số Node của DaemonSet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lý do API Server từ chối cờ scale cho DaemonSet do nguyên tắc 1 Pod/Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách giới hạn DaemonSet qua <code>nodeSelector</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để loại bỏ DaemonSet Pod khỏi 1 Node cụ thể mà không cần xoá DaemonSet? *(Đáp án: Thêm Taint mới lên Node đó mà DaemonSet không có toleration, hoặc sửa <code>nodeSelector</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do dồn ứ hàng trăm Pods CronJob vì để Allow, 1 âm thầm do 2 Pod DB ghi chung 1 đĩa vì khai báo volumes thường) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Dồn ứ hàng trăm Pods CronJob do để <code>concurrencyPolicy: Allow</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Script backup DB bị treo, CronJob cứ 5 phút lại tạo 1 Job mới, tích tụ hàng trăm Pods chạy song song làm cạn kiệt CPU/RAM của cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl get pods</code> thấy hàng chục Pods backup đang <code>Running</code> cùng lúc; xem CronJob spec thấy <code>concurrencyPolicy: Allow</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa CronJob spec sang <code>concurrencyPolicy: Forbid</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Hỏng dữ liệu Database do khai báo <code>volumes</code> thường thay vì <code>volumeClaimTemplates</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* StatefulSet tạo xong, Pod Master và Slave cùng mount ghi vào đúng 1 đĩa PVC chung, làm hỏng tệp dữ liệu đĩa (Data Corruption).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Đọc StatefulSet spec thấy dùng khối <code>spec.template.spec.volumes</code> thay vì <code>spec.volumeClaimTemplates</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Khai báo đĩa qua mảng <code>volumeClaimTemplates</code> để mỗi Pod tự sinh PVC riêng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân <code>Allow</code> dồn ứ Pods và <code>volumes</code> thường gây Data Corruption (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi một CronJob bị treo dồn ứ nhiều Pods, câu lệnh nào giúp xoá nhanh tất cả các Job cũ đang treo? *(Đáp án: Lệnh <code>kubectl delete job -l app=<cron-label></code>).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Làm thế nào để cấu hình cho một `DaemonSet` Pod chạy được trên node Control Plane đang có Taint `NoSchedule` bảo vệ?
-
-**Đáp án chuẩn:**
-- **Nguyên nhân:** Mặc định node Control Plane bị gắn Taint `node-role.kubernetes.io/control-plane:NoSchedule` để ngăn Pod thông thường nhảy vào.
-- **Cách cấu hình:** Bổ sung khối **`tolerations`** tương ứng vào `spec.template.spec` của DaemonSet để bỏ qua vết nhơ này:
-```yaml
-tolerations:
-- key: node-role.kubernetes.io/control-plane
-  operator: Exists
-  effect: NoSchedule
-```
-- **Giá trị:** Giúp agent DaemonSet thu thập đủ log/metric trên **100% các Node** trong cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo gõ `kubectl uncordon`.
-- **1đ:** Nói được thêm toleration nhưng không nhớ key vết nhơ `node-role.kubernetes.io/control-plane`.
-- **2đ:** Giải thích chuẩn xác việc khai báo `tolerations` vết nhơ control-plane trong Pod spec của DaemonSet.
-- **3đ:** Trả lời xuất sắc, chỉ ra chỉ số `DESIRED` và `NUMBER_READY` của DaemonSet sau khi thêm tolerations.
-
-**Câu hỏi đào sâu:** Nếu không thêm tolerations này thì cột CURRENT/READY trong `kubectl get ds` sẽ báo như thế nào? *(Đáp án: Thiếu 1 Pod trên node Control Plane, ví dụ DESIRED: 3 nhưng CURRENT: 2).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Trình bày quy tắc đặt tên Pod và thứ tự khởi tạo / ngắt Pod của đối tượng `StatefulSet`.
-
-**Đáp án chuẩn:**
-- **Quy tắc đặt tên Pod:** Pods do StatefulSet quản lý sở hữu định danh chuỗi số đếm cố định bắt đầu từ **0** theo công thức `<statefulset-name>-<index>` (ví dụ `mysql-sts-0`, `mysql-sts-1`, `mysql-sts-2`).
-- **Thứ tự khởi tạo (Ordered Creation):** StatefulSet khởi tạo Pod theo đúng thứ tự tăng dần (Pod 0 phải ở trạng thái `Running` và `Ready` hẳn thì Pod 1 mới được bắt đầu khởi tạo).
-- **Thứ tự ngắt / xoá (Ordered Termination):** Khi giảm replicas hoặc xoá StatefulSet, các Pods bị ngắt theo thứ tự **ngược lại** (Pod 2 bị xoá trước, sau đó mới tới Pod 1, và cuối cùng mới tới Pod 0 Master).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo StatefulSet tạo Pods ngẫu nhiên cùng một lúc.
-- **1đ:** Nói được tên `mysql-0` nhưng không giải thích được thứ tự khởi tạo tăng dần 0->1->2 và xoá ngược lại 2->1->0.
-- **2đ:** Phân tích chuẩn xác quy tắc đặt tên chỉ số đếm và thứ tự khởi tạo / ngắt Pod nghiêm ngặt của StatefulSet.
-- **3đ:** Trả lời xuất sắc, giải thích lý do bảo vệ tính toàn vẹn của cụm Database Master-Slave.
-
-**Câu hỏi đào sâu:** Muốn StatefulSet khởi tạo tất cả các Pods cùng lúc không cần theo thứ tự thì cấu hình cờ gì? *(Đáp án: Khai báo `spec.podManagementPolicy: Parallel`).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** `Headless Service` là gì? Giá trị nào của `clusterIP` tạo nên Headless Service và vai trò của nó với StatefulSet là gì?
-
-**Đáp án chuẩn:**
-- **Định nghĩa:** `Headless Service` là một Service trong Kubernetes **không gán địa chỉ IP ảo ảo (Virtual ClusterIP)**.
-- **Cách tạo:** Khai báo **`spec.clusterIP: None`** trong file YAML Service.
-- **Vai trò với StatefulSet:** Headless Service không thực hiện load balancing ngẫu nhiên, mà trả về A record địa chỉ IP thực của từng Pod. Nó tạo ra tên miền DNS nội bộ cố định cho từng Pod theo định dạng:
-  `<pod-name>.<service-name>.<namespace>.svc.cluster.local` (ví dụ `mysql-sts-0.mysql-service.dev.svc.cluster.local`).
-  Giúp các ứng dụng gọi điện trực tiếp cho node Master hoặc Slave cần tìm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Headless Service là Service không có port.
-- **1đ:** Nói được `clusterIP: None` nhưng không giải thích được vai trò tạo tên miền DNS cố định `<pod-name>.<service-name>` cho từng Pod (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác `clusterIP: None` và vai trò cung cấp A record DNS cố định cho từng Pod StatefulSet.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `nslookup`.
-
-**Câu hỏi đào sâu:** Trường nào trong StatefulSet spec dùng để trỏ tới tên của Headless Service? *(Đáp án: Trường `spec.serviceName`).*
-
----
-
-### Câu 5 — 🔥
-
-**Hỏi:** Mảng `volumeClaimTemplates` trong StatefulSet mang lại lợi ích gì so với việc khai báo `volumes` thông thường ở cấp Pod spec?
-
-**Đáp án chuẩn:**
-- **Khai báo `volumes` thông thường:** Tất cả các bản sao Pods do Controller tạo ra sẽ **dùng CHUNG đúng 1 tệp PVC/PV**. Nếu dùng cho Database, 2 Pod Master và Slave sẽ ghi đè lên cùng 1 đĩa đĩa cứng gây **hỏng dữ liệu (Data Corruption)**.
-- **Mảng `volumeClaimTemplates`:** Tự động sinh ra một **tệp PVC độc lập riêng biệt duy nhất cho MỖI Pod** theo chỉ số đếm (ví dụ `data-mysql-sts-0`, `data-mysql-sts-1`). Kể cả khi Pod bị reschedule sang Node khác, đĩa PVC tương ứng vẫn tự động gắn lại đúng Pod mang chỉ số đếm đó.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 cách khai báo giống hệt nhau.
-- **1đ:** Nói được tạo đĩa riêng nhưng không giải thích được hậu quả Data Corruption khi dùng `volumes` thường (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác cơ chế tự sinh PVC độc lập duy nhất cho từng Pod của `volumeClaimTemplates` vs nguy cơ hỏng data của `volumes`.
-- **3đ:** Trả lời xuất sắc, chỉ ra việc PVC không bị xoá khi delete StatefulSet.
-
-**Câu hỏi đào sâu:** Khi bạn gõ `kubectl delete statefulset mysql-sts` thì các đĩa PVC do `volumeClaimTemplates` tạo ra có bị xoá tự động không? Vì sao? *(Đáp án: KHÔNG bị xoá, nhằm bảo vệ dữ liệu sản xuất không bị mất ngoài ý muốn).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Tại sao khai báo `restartPolicy: Always` trong Pod spec của đối tượng `Job` lại bị API Server từ chối lệnh `apply`?
-
-**Đáp án chuẩn:**
-- **Bản chất của Job:** Đối tượng `Job` được thiết kế dành riêng cho các tác vụ lô ngắn hạn (Batch Workloads). Job chỉ hoàn thành khi các Pod bên trong chạy **hoàn tất công việc và thoát với `exit code 0`**.
-- **Mẫu thuẫn với `Always`:** Chính sách `restartPolicy: Always` bắt Kubelet phải **luôn tự động khởi động lại container** kể cả khi nó vừa kết thúc thành công `exit code 0`. Điều này vi phạm bản chất chạy 1 lần dừng lại của Job.
-- **Yêu cầu bắt buộc:** Pod spec trong Job BẮT BUỘC phải khai báo `restartPolicy: OnFailure` hoặc `Never`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Job cho phép để `restartPolicy: Always`.
-- **1đ:** Trả lời bị từ chối nhưng không giải thích được mâu thuẫn giữa bản chất chạy đến hoàn thành (exit 0 dừng) của Job vs hành vi restart liên tục của `Always`.
-- **2đ:** Phân tích chuẩn xác bản chất của Job và lý do API Server bắt buộc `restartPolicy: OnFailure` / `Never`.
-- **3đ:** Trả lời xuất sắc, minh hoạ lỗi schema validation khi apply.
-
-**Câu hỏi đào sâu:** Sự khác nhau giữa `restartPolicy: OnFailure` và `Never` trong Job là gì? *(Đáp án: `OnFailure` restart lại container trong cùng 1 Pod cũ; `Never` tạo ra 1 Pod hoàn toàn mới khi bị lỗi).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Ý nghĩa của hai tham số `completions` và `parallelism` trong `Job` spec là gì?
-
-**Đáp án chuẩn:**
-- **`spec.completions` (Chỉ tiêu hoàn thành):** Quy định **tổng số lần (số Pods)** bắt buộc phải chạy hoàn tất thành công (`exit code 0`) thì đối tượng Job mới được đánh dấu là hoàn thành.
-- **`spec.parallelism` (Số Pod chạy song song):** Quy định **số lượng Pods tối đa được phép chạy đồng thời song song** tại cùng một thời điểm.
-- **Ví dụ:** `completions: 10`, `parallelism: 2` -> Job sẽ chạy tổng cộng 10 lần Pod thành công, nhưng tại mỗi thời điểm chỉ có tối đa 2 Pods chạy song song (chia làm 5 đợt chạy).
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ 2 tham số này.
-- **1đ:** Trả lời completions là hoàn thành, parallelism là song song nhưng không nêu được ví dụ phối hợp chia đợt chạy.
-- **2đ:** Giải thích chuẩn xác `completions` (tổng chỉ tiêu) và `parallelism` (số Pod song song tối đa) kèm ví dụ cụ thể.
-- **3đ:** Trả lời xuất sắc, liên hệ với việc xử lý hàng chờ Queue (Work Queue).
-
-**Câu hỏi đào sâu:** Tham số `spec.backoffLimit` trong Job spec dùng để làm gì? *(Đáp án: Quy định số lần tối đa Job cho phép Pods thử lại bị crash exit 1 trước khi đánh dấu Job bị FAILED).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Trình bày ý nghĩa của 3 giá trị thuộc tính `concurrencyPolicy` (`Allow`, `Forbid`, `Replace`) trong `CronJob`.
-
-**Đáp án chuẩn:**
-- **Căn nguyên:** Khi đến giờ chạy lịch Cron mới (ví dụ 5 phút/lần) mà **Job cũ của lần chạy trước vẫn chưa hoàn thành**.
-- **3 chính sách:**
-  1. **`Allow` (Mặc định):** Cho phép Job mới khởi tạo và **chạy song song** cùng lúc với Job cũ đang chạy dở. (Nguy cơ dồn ứ Pods gây tràn RAM cụm).
-  2. **`Forbid` (Bỏ qua):** **Bỏ qua không cho chạy Job mới**; Job cũ giữ nguyên tiếp tục chạy cho tới khi xong. (An toàn nhất cho hạ tầng).
-  3. **`Replace` (Thay thế):** **Tiêu diệt (kill) ngay lập tức Job cũ** đang chạy dở để khởi tạo Job mới thế chỗ.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ 3 chính sách.
-- **1đ:** Nêu được 3 tên nhưng không giải thích được hành vi khi Job cũ chưa xong của `Allow`, `Forbid`, `Replace`.
-- **2đ:** Giải thích chuẩn xác 3 chính sách `Allow` (song song), `Forbid` (bỏ qua), `Replace` (tiêu diệt cũ) và rủi ro vận hành.
-- **3đ:** Trả lời xuất sắc, khuyến nghị dùng `Forbid` cho các script backup DB.
-
-**Câu hỏi đào sâu:** Tại sao với các script sao lưu dữ liệu (Database Backup CronJob) người ta luôn cài `concurrencyPolicy: Forbid`? *(Đáp án: Tránh việc 2 script backup chạy đè lên nhau gây nghẽn I/O đĩa và hỏng file backup).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Thuộc tính `successfulJobsHistoryLimit` và `failedJobsHistoryLimit` trong `CronJob` spec có vai trò gì và giá trị mặc định là bao nhiêu?
-
-**Đáp án chuẩn:**
-- **Vai trò:** Quy định số lượng đối tượng Job cũ đã hoàn thành (`successful`) hoặc bị lỗi (`failed`) được giữ lại trong cụm để người quản trị kiểm tra log và status.
-- **Giá trị mặc định:**
-  - `successfulJobsHistoryLimit`: Mặc định giữ **3** Jobs.
-  - `failedJobsHistoryLimit`: Mặc định giữ **1** Job.
-- **Ý nghĩa:** Tự động dọn dẹp các Job cũ đã chạy xong để tránh làm rác namespace và bộ nhớ etcd.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ 2 thuộc tính này.
-- **1đ:** Trả lời giới hạn lịch sử nhưng không nhớ con số mặc định 3 (successful) và 1 (failed).
-- **2đ:** Giải thích chuẩn xác vai trò dọn dẹp etcd và con số mặc định 3/1.
-- **3đ:** Trả lời xuất sắc, chỉ ra cách xem log của Job cũ qua `kubectl logs job/<job-name>`.
-
-**Câu hỏi đào sâu:** Nếu đặt `successfulJobsHistoryLimit: 0` thì chuyện gì xảy ra sau khi CronJob chạy xong 1 lượt? *(Đáp án: Đối tượng Job bị xoá lập tức, bạn không thể dùng `kubectl logs` xem lại kết quả chạy được nữa).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Cú pháp biểu thức cron `"*/10 * * * *"` trong `CronJob` spec có ý nghĩa như thế nào và giải thích 5 trường trong biểu thức cron.
-
-**Đáp án chuẩn:**
-- **Cấu trúc 5 trường:** `[Phút] [Giờ] [Ngày trong tháng] [Tháng] [Ngày trong tuần]`
-  1. Trường 1 (`*/10`): Phút (Lặp lại mỗi 10 phút).
-  2. Trường 2 (`*`): Giờ (Mọi giờ trong ngày).
-  3. Trường 3 (`*`): Ngày trong tháng (Mọi ngày).
-  4. Trường 4 (`*`): Tháng (Mọi tháng).
-  5. Trường 5 (`*`): Ngày trong tuần (Mọi thứ từ Chủ nhật tới Thứ 7).
-- **Ý nghĩa biểu thức `"*/10 * * * *"`:** Tự động kích hoạt Job chạy **10 phút một lần, liên tục 24/7**.
-
-**Tiêu chí chấm:**
-- **0đ:** Đọc sai cú pháp cron.
-- **1đ:** Nói được 10 phút một lần nhưng không giải thích được 5 trường vị trí Phút, Giờ, Ngày, Tháng, Thứ.
-- **2đ:** Giải thích chuẩn xác ý nghĩa 10 phút/lần và 5 trường vị trí của biểu thức cron.
-- **3đ:** Trả lời xuất sắc, minh hoạ biểu thức `"0 2 * * *"` (chạy 2h00 sáng mỗi ngày).
-
-**Câu hỏi đào sâu:** Biểu thức cron `"0 0 * * 0"` nghĩa là gì? *(Đáp án: Chạy vào đúng 00h00 đêm Chủ nhật hàng tuần).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Tại sao không thể sử dụng cờ `kubectl scale` đối với đối tượng `DaemonSet`?
-
-**Đáp án chuẩn:**
-- **Nguyên lý của DaemonSet:** Số lượng Pods do DaemonSet quản lý **phụ thuộc 100% vào số lượng Node trong cụm** (hoặc số Node thoả mãn `nodeSelector` / `tolerations`). Mỗi Node chạy đúng 1 Pod.
-- **Sự vô lý của `scale`:** Lệnh `kubectl scale` dùng để tăng/giảm số `replicas` cố định (như scale từ 2 lên 5 Pods). Việc ép DaemonSet chạy 5 Pods trên cụm 3 Node là vi phạm nguyên tắc thiết kế 1 Pod/Node.
-- **Thông báo:** API Server từ chối cờ `scale` cho DaemonSet. Muốn tăng số Pod DaemonSet phải thêm Node mới vào cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `kubectl scale ds` chạy bình thường.
-- **1đ:** Nói được không scale được nhưng không giải thích được nguyên lý số Pod phụ thuộc 100% vào số Node của DaemonSet.
-- **2đ:** Giải thích chuẩn xác lý do API Server từ chối cờ scale cho DaemonSet do nguyên tắc 1 Pod/Node.
-- **3đ:** Trả lời xuất sắc, chỉ ra cách giới hạn DaemonSet qua `nodeSelector`.
-
-**Câu hỏi đào sâu:** Làm sao để loại bỏ DaemonSet Pod khỏi 1 Node cụ thể mà không cần xoá DaemonSet? *(Đáp án: Thêm Taint mới lên Node đó mà DaemonSet không có toleration, hoặc sửa `nodeSelector`).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do dồn ứ hàng trăm Pods CronJob vì để Allow, 1 âm thầm do 2 Pod DB ghi chung 1 đĩa vì khai báo volumes thường) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Dồn ứ hàng trăm Pods CronJob do để `concurrencyPolicy: Allow`):**
-   - *Triệu chứng:* Script backup DB bị treo, CronJob cứ 5 phút lại tạo 1 Job mới, tích tụ hàng trăm Pods chạy song song làm cạn kiệt CPU/RAM của cụm.
-   - *Phát hiện:* Gõ `kubectl get pods` thấy hàng chục Pods backup đang `Running` cùng lúc; xem CronJob spec thấy `concurrencyPolicy: Allow`.
-   - *Khắc phục:* Sửa CronJob spec sang `concurrencyPolicy: Forbid`.
-2. **Chế độ hỏng 2 (Âm thầm - Hỏng dữ liệu Database do khai báo `volumes` thường thay vì `volumeClaimTemplates`):**
-   - *Triệu chứng:* StatefulSet tạo xong, Pod Master và Slave cùng mount ghi vào đúng 1 đĩa PVC chung, làm hỏng tệp dữ liệu đĩa (Data Corruption).
-   - *Phát hiện:* Đọc StatefulSet spec thấy dùng khối `spec.template.spec.volumes` thay vì `spec.volumeClaimTemplates`.
-   - *Khắc phục:* Khai báo đĩa qua mảng `volumeClaimTemplates` để mỗi Pod tự sinh PVC riêng.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân `Allow` dồn ứ Pods và `volumes` thường gây Data Corruption (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi một CronJob bị treo dồn ứ nhiều Pods, câu lệnh nào giúp xoá nhanh tất cả các Job cũ đang treo? *(Đáp án: Lệnh `kubectl delete job -l app=<cron-label>`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"DaemonSet đảm bảo đúng 1 Pod agent trên mỗi Node; bắt buộc bổ sung <code>tolerations</code> để agent chạy được trên 100% các Node kể cả Control Plane."*
+2. *"StatefulSet quản lý các ứng dụng có trạng thái (Database) với định danh mạng chuỗi số đếm cố định (<code>pod-0</code>, <code>pod-1</code>) và thứ tự khởi tạo/ngắt nghiêm ngặt."*
+3. *"StatefulSet bắt buộc đi kèm <code>Headless Service</code> (<code>clusterIP: None</code>) để tạo DNS cố định và <code>volumeClaimTemplates</code> để sinh đĩa PVC độc lập cho từng Pod."*
+4. *"Pod spec của đối tượng <code>Job</code> bắt buộc phải có <code>restartPolicy: OnFailure</code> hoặc <code>Never</code>; không được phép dùng <code>Always</code>."*
+5. *"Khai báo <code>concurrencyPolicy: Forbid</code> trong CronJob giúp ngăn ngừa rủi ro dồn ứ Pods trùng lặp khi tác vụ bị treo."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1229,40 +1293,6 @@ tolerations:
 3. *"StatefulSet bắt buộc đi kèm `Headless Service` (`clusterIP: None`) để tạo DNS cố định và `volumeClaimTemplates` để sinh đĩa PVC độc lập cho từng Pod."*
 4. *"Pod spec của đối tượng `Job` bắt buộc phải có `restartPolicy: OnFailure` hoặc `Never`; không được phép dùng `Always`."*
 5. *"Khai báo `concurrencyPolicy: Forbid` trong CronJob giúp ngăn ngừa rủi ro dồn ứ Pods trùng lặp khi tác vụ bị treo."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Phân biệt Deployment (Stateless) vs DaemonSet (1 Pod/Node) vs StatefulSet (Database đĩa riêng) (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Tolerations vết nhơ `control-plane` cho DaemonSet |
-| Câu 3 | ★★★ | 3 | | StatefulSet đặt tên chỉ số đếm (`pod-0`) và thứ tự khởi tạo 0->1->2 |
-| Câu 4 | ★★★ | 3 | | Headless Service `clusterIP: None` và vai trò tạo DNS cố định |
-| Câu 5 | 🔥 | 3 | | `volumeClaimTemplates` sinh PVC riêng vs `volumes` thường hỏng data (trần 1đ nếu thiếu) |
-| Câu 6 | ★★★ | 3 | | Mâu thuẫn giữa `restartPolicy: Always` vs bản chất của Job |
-| Câu 7 | ★★★ | 3 | | Tham số `completions` (tổng chỉ tiêu) và `parallelism` (số Pod song song) |
-| Câu 8 | ★★★ | 3 | | 3 giá trị `concurrencyPolicy` (`Allow`, `Forbid`, `Replace`) trong CronJob |
-| Câu 9 | ★★★ | 3 | | Giới hạn `successfulJobsHistoryLimit` (3) và `failedJobsHistoryLimit` (1) |
-| Câu 10 | ★★★ | 3 | | Cấu trúc 5 trường biểu thức Cron `"*/10 * * * *"` |
-| Câu 11 | ★★★ | 3 | | Lý do API Server từ chối cờ `kubectl scale` với DaemonSet |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (CronJob Allow dồn ứ Pods & volumes thường hỏng data) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các StatefulSet trong cụm và trích xuất danh sách các PVC đang gắn với từng Pod StatefulSet.
-2. **BTVN 2:** Thực hành tạo DaemonSet thu thập log `fluentd`, bổ sung toleration Control Plane và kiểm tra số Pod Ready khớp với số Node trong cụm.
-3. **BTVN 3:** Xây dựng CronJob chạy script Python tính toán báo cáo 10 phút/lần với `concurrencyPolicy: Forbid` và `successfulJobsHistoryLimit: 2`.
-4. **BTVN 4 — Chuẩn bị cho Buổi 17 (`buoi-17-scheduler-va-rang-buoc-dat-pod`):**
-   - *Câu 1:* Kubernetes Scheduler phân bổ Pod vào Node dựa trên những bước xử lý chính nào (`Filtering` / `NodeResourcesFit` & `Scoring`)?
-   - *Câu 2:* Phân biệt sự khác nhau giữa `nodeSelector`, `nodeAffinity` (`required` vs `preferred`), `podAffinity` và `podAntiAffinity`.
-   - *Câu 3:* Cơ chế `Taints` (Vết nhơ trên Node) và `Tolerations` (Sự dung thứ trên Pod) phối hợp với nhau như thế nào để đuổi/hút Pod?
-
-> **Đoạn kết nối Buổi 17:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 17 — buổi học chuyên sâu về bộ lập lịch Kubernetes Scheduler, các kỹ thuật điều hướng đặt Pod nâng cao (`nodeSelector`, `nodeAffinity`, `podAntiAffinity`, `Taints` & `Tolerations`) để kiểm soát chính xác vị trí Pod chạy trên hạ tầng trong CKA và CKAD.
 
 ---
 
@@ -1613,15 +1643,15 @@ kubectl get cronjob <cronjob-name> -n <namespace> -o jsonpath='{.spec.concurrenc
 kubectl create cronjob <cron-name> --schedule="*/5 * * * *" --image=<image> -n <namespace> -- <command>
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 17] Kube-Scheduler & Ràng Buộc Đặt Pod: NodeSelector, NodeAffinity, PodAntiAffinity, Taints & Tolerations](cka-17-17-scheduler-va-rang-buoc-dat-pod.html).
+
 {% endraw %}

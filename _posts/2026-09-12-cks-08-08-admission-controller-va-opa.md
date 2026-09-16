@@ -463,7 +463,7 @@ Chính sách đó KHÔNG CÓ HIỆU LỰC, API Server sẽ không kiểm duyệt
         validations:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• expression: "has(object.metadata.labels) && 'owner' in object.metadata.labels"</div>
             message: "Pod bắt buộc phải có nhãn 'owner'!"
-      ```
+```
 </div>
 </details>
 
@@ -476,24 +476,6 @@ Chính sách đó KHÔNG CÓ HIỆU LỰC, API Server sẽ không kiểm duyệt
 | Validating Admission Policy | `https://kubernetes.io/docs/concepts/security/validating-admission-policy/` | Tài liệu chuẩn CEL Policy K8s |
 | OPA Gatekeeper Documentation | `https://open-policy-agent.github.io/gatekeeper/website/docs/` | Tài liệu chuẩn OPA Gatekeeper |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Luồng Request & Admission Arch | 12 phút | 12 phút |
-| §5. Biên soạn ValidatingAdmissionPolicy CEL | 12 phút | 12 phút |
-| §6. PolicyBinding & OPA Gatekeeper | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -545,7 +527,7 @@ graph TD
     PolicyEngine -->|"Biểu thức CEL: 'owner' in labels"| CheckLabels{"Có nhãn owner?"}
     CheckLabels -.->|"No: false"| Block[REJECT 403 Forbidden: Pod bắt buộc phải có nhãn owner]
     CheckLabels -->|"Yes: true"| Allow[ACCEPT Pod Created in Namespace lab53]
-```yaml
+```
 
 ---
 
@@ -572,19 +554,19 @@ spec:
     - expression: "has(object.metadata.labels) && 'owner' in object.metadata.labels"
       message: "LỖI AN NINH: Pod bắt buộc phải có nhãn 'owner'!"
 EOF
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab53`.**
 
 ```bash
 kubectl get ns lab53 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/policy-check-owner.yaml`.**
 
 ```bash
 grep -q "check-owner-policy" /tmp/policy-check-owner.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+```
 
 ---
 
@@ -606,32 +588,32 @@ spec:
       matchLabels:
         kubernetes.io/metadata.name: lab53
 EOF
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra tệp `/tmp/binding-check-owner.yaml`.**
 
 ```bash
 grep -q "check-owner-binding" /tmp/binding-check-owner.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+```
 
 ### Thao tác 2.2: Apply Policy và Binding vào cụm Kubernetes
 
 ```bash
 kubectl apply -f /tmp/policy-check-owner.yaml 2>/dev/null || true
 kubectl apply -f /tmp/binding-check-owner.yaml 2>/dev/null || true
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra lệnh apply Policy/Binding.**
 
 ```bash
 test -f /tmp/policy-check-owner.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra tệp policy ready.**
 
 ```bash
 test -f /tmp/binding-check-owner.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```yaml
+```
 
 ---
 
@@ -651,19 +633,19 @@ spec:
     - name: app
       image: nginx:alpine
 EOF
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra tệp `/tmp/pod-no-owner.yaml`.**
 
 ```bash
 test -f /tmp/pod-no-owner.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm chứng thử nghiệm apply Pod vi phạm.**
 
 ```bash
 test -f /tmp/pod-no-owner.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+```
 
 ---
 
@@ -687,26 +669,26 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-with-owner.yaml
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra nhãn `owner: devteam` trong `/tmp/pod-with-owner.yaml`.**
 
 ```bash
 grep -q "owner: devteam" /tmp/pod-with-owner.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra Pod `pod-with-owner` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod pod-with-owner -n lab53 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+```
 
 **CHECKPOINT 10 — Xác minh nhãn `owner` qua jsonpath.**
 
 ```bash
 kubectl get pod pod-with-owner -n lab53 -o jsonpath='{.metadata.labels.owner}' | grep -qx devteam && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```yaml
+```
 
 ---
 
@@ -731,19 +713,19 @@ spec:
     - expression: "object.spec.containers.all(c, c.image.startsWith('myregistry.io/'))"
       message: "LỖI AN NINH: Ảnh container bắt buộc phải lấy từ myregistry.io/!"
 EOF
-```bash
+```
 
 **CHECKPOINT 11 — Kiểm tra tệp `/tmp/policy-check-image.yaml`.**
 
 ```bash
 grep -q "check-image-policy" /tmp/policy-check-image.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Trích xuất tệp policy sẵn sàng.**
 
 ```bash
 test -f /tmp/policy-check-image.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -754,13 +736,13 @@ test -f /tmp/policy-check-image.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo 
 ```bash
 kubectl delete namespace lab53
 rm -f /tmp/policy-check-owner.yaml /tmp/binding-check-owner.yaml /tmp/pod-no-owner.yaml /tmp/pod-with-owner.yaml /tmp/policy-check-image.yaml
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/policy-check-owner.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -806,26 +788,11 @@ test ! -f /tmp/policy-check-owner.yaml && echo "CHECKPOINT 13 — ĐẠT" || ech
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & CEL Policy | 15 phút | 15 phút |
-| L4. Bước 2: PolicyBinding & Apply | 25 phút | 25 phút |
-| L5. Bước 3: Test Bad Pod & Block check | 25 phút | 25 phút |
-| L6. Bước 4: Good Pod with owner label | 25 phút | 25 phút |
-| L7. Bước 5: Image Registry Policy | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -833,205 +800,325 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span><code>ValidatingAdmissionPolicy</code> (CEL) trong Kubernetes 1.30+ đóng vai trò gì và ưu điểm vượt trội của nó so với External Webhook là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>MutatingAdmissionWebhook</code> <b style="color: var(--accent-primary);">CHẠY TRƯỚC</b>: Cho phép sửa đổi, bổ sung các thuộc tính mặc định vào đối tượng (như chèn sidecar container hay gán nhãn tự động).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ValidatingAdmissionWebhook</code> <b style="color: var(--accent-primary);">CHẠY SAU</b>: Soi chiếu bản kê khai hoàn chỉnh cuối cùng và CHẶN request (trả về lỗi <code>403 Forbidden</code>) nếu vi phạm chính sách an ninh.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>ValidatingAdmissionPolicy</code> cho phép biên soạn các chính sách kiểm duyệt hợp lệ trực tiếp bằng ngôn ngữ biểu thức CEL. Ưu điểm: Chạy trực tiếp trong tiến trình API Server nên tốc độ phản hồi cực nhanh (vài ms), không bị trễ mạng và không cần duy trì service webhook bên ngoài.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tính năng ValidatingAdmissionPolicy CEL.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng CEL nhưng chưa làm rõ việc chạy in-process không bị latency mạng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò và ưu điểm về hiệu năng in-process của <code>ValidatingAdmissionPolicy</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Biểu thức CEL trong <code>ValidatingAdmissionPolicy</code> bắt buộc phải trả về kiểu dữ liệu nào? — Bắt buộc trả về kiểu dữ liệu <b style="color: var(--accent-primary);">Boolean</b> (<code>true</code> cho phép, <code>false</code> chặn)).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết thứ tự Mutating vs Validating.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái sửa 1 cái kiểm tra nhưng nhầm lẫn thứ tự chạy.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo luồng xử lý của API Server: Mutating chạy trước, Validating chạy sau.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tại sao Mutating phải chạy trước Validating? — Để giai đoạn Validating kiểm duyệt bản kê khai cuối cùng hoàn chỉnh nhất sau khi đã được chèn/sửa thuộc tính mặc định).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao nên dùng hàm <code>has(object.metadata.labels)</code> trước khi kiểm tra một nhãn cụ thể trong biểu thức CEL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Để tránh lỗi Null Pointer Exception khi đối tượng Pod tạo mới không khai báo khối metadata labels. Hàm <code>has()</code> đảm bảo khối <code>labels</code> tồn tại trước khi đối soát phím label bên trong.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết tác dụng của hàm <code>has()</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kiểm tra tồn tại nhưng chưa làm rõ việc chống lỗi Null Pointer Exception khi đọc khối metadata.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò bảo an logic biểu thức CEL của hàm <code>has()</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Biểu thức CEL chuẩn để kiểm tra Pod có nhãn <code>owner</code> là gì? — <code>has(object.metadata.labels) && 'owner' in object.metadata.labels</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Vai trò của đối tượng <code>ValidatingAdmissionPolicyBinding</code> trong kiến trúc CEL Policy là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>ValidatingAdmissionPolicyBinding</code> dùng để liên kết chính sách (<code>ValidatingAdmissionPolicy</code>) với các tài nguyên hoặc Namespace mục tiêu, đồng thời khai báo hành động khi vi phạm (<code>validationActions: [Deny]</code> hoặc <code>[Warn]</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết đối tượng ValidatingAdmissionPolicyBinding.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được liên kết policy nhưng quên thuộc tính validationActions.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác vai trò liên kết và khai báo hành động Deny/Warn của PolicyBinding.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điều gì xảy ra nếu tạo ValidatingAdmissionPolicy mà không tạo PolicyBinding? — Chính sách đó không có hiệu lực, API Server không kiểm duyệt bất kỳ request nào).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Kiến trúc 2 thành phần CRD của OPA Gatekeeper: <code>ConstraintTemplate</code> và <code>Constraint</code> hoạt động như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ConstraintTemplate</code>: Định nghĩa mã nguồn luật kiểm duyệt bằng ngôn ngữ Rego và khai báo cấu hình tham số đầu vào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Constraint</code>: Là bản thể hiện (instance) của ConstraintTemplate, dùng để chỉ định các tài nguyên hoặc Namespace cụ thể bị áp đặt luật.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa ConstraintTemplate và Constraint.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được OPA dùng Rego nhưng chưa làm rõ mối quan hệ giữa Template vs Instance Constraint.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo mối quan hệ giữa ConstraintTemplate (luật Rego) và Constraint (áp đối tượng).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ngôn ngữ lập trình được OPA Gatekeeper sử dụng để viết logic kiểm duyệt là gì? — Ngôn ngữ <b style="color: var(--accent-primary);">Rego</b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cú pháp biểu thức CEL chuẩn để kiểm tra 100% các container trong Pod phải sử dụng ảnh từ registry tin cậy <code>myregistry.io/</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">expression: "object.spec.containers.all(c, c.image.startsWith('myregistry.io/'))"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết viết biểu thức CEL lọc container image.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được hàm startsWith nhưng sai cú pháp <code>.all()</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% biểu thức CEL lặp mảng containers bằng <code>.all()</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hàm <code>.all()</code> trong CEL có ý nghĩa gì? — Đảm bảo TẤT CẢ các phần tử container trong mảng <code>containers</code> phải thỏa mãn điều kiện bên trong).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự khác nhau giữa Kyverno Policy Engine và OPA Gatekeeper trong việc áp đặt chính sách an ninh K8s là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kyverno sử dụng cú pháp <b style="color: var(--accent-primary);">YAML thuần</b> tích hợp tự nhiên với Kubernetes, dễ đọc dễ viết mà không cần học ngôn ngữ mới. OPA Gatekeeper sử dụng ngôn ngữ <b style="color: var(--accent-primary);">Rego</b> mạnh mẽ linh hoạt hơn nhưng có độ dốc học tập (learning curve) cao hơn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được Kyverno và OPA Gatekeeper.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả hai là công cụ policy nhưng chưa rõ YAML thuần vs Rego.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt về cú pháp YAML thuần của Kyverno vs Rego của OPA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ nào trong K8s 1.30+ được thiết kế để thay thế cả Kyverno và OPA cho các chính sách validation đơn giản? — Tính năng tích hợp sẵn <code>ValidatingAdmissionPolicy</code> CEL).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cờ thuộc tính nào trong file manifest Static Pod <code>kube-apiserver.yaml</code> được dùng để bật/tắt các plugin Admission Controller?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>--enable-admission-plugins</code> (ví dụ <code>--enable-admission-plugins=NodeRestriction,PodSecurity,ValidatingAdmissionPolicy</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ bật plugin admission trên apiserver.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được admission plugins nhưng gõ sai tên cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác cờ <code>--enable-admission-plugins</code> và ví dụ plugin đi kèm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Plugin admission nào luôn được khuyến nghị giữ nguyên để bảo vệ Node không bị sửa đổi bởi Kubelet? — Plugin <code>NodeRestriction</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Phản hồi từ API Server khi một request tạo Pod bị <code>ValidatingAdmissionPolicy</code> từ chối chứa các thông tin quan trọng nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">API Server trả về mã lỗi <b style="color: var(--accent-primary);"><code>403 Forbidden</code></b>, tên của <code>ValidatingAdmissionPolicy</code> vi phạm, và chuỗi thông điệp cảnh báo <b style="color: var(--accent-primary);"><code>message</code></b> được định nghĩa trong tệp policy (ví dụ <code>message: "Pod bắt buộc phải có nhãn owner!"</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết thông tin phản hồi khi bị deny.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lỗi 403 nhưng quên chuỗi thông điệp message.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác các thông tin trong phản hồi HTTP 403 Forbidden của API Server.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để thay đổi chế độ từ CHẶN (Deny) sang chỉ CẢNH BÁO (Warn) trong Binding? — Đổi <code>validationActions: [Deny]</code> thành <code>validationActions: [Warn]</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao không nên viết một biểu thức CEL phức tạp thực hiện quá nhiều thao tác kiểm tra trong cùng một <code>ValidatingAdmissionPolicy</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Để đảm bảo tính mô-đun hóa, dễ quản lý, dễ gỡ lỗi và in ra thông điệp cảnh báo <code>message</code> chính xác cho từng lỗi vi phạm riêng biệt.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng gom hết vào 1 policy là tốt.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được khó đọc nhưng chưa rõ việc in message cảnh báo chính xác từng lỗi.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên tắc tách biệt các tệp Policy theo từng quy tắc an ninh.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khuyến nghị chia nhỏ policy ra sao? — Mỗi tệp Policy chỉ kiểm tra 1 quy tắc cụ thể như <code>check-owner-label</code>, <code>check-image-registry</code>, <code>deny-latest-tag</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của một tệp <code>ValidatingAdmissionPolicy</code> hoàn chỉnh cấm Pods sử dụng tag ảnh <code>:latest</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: admissionregistration.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: ValidatingAdmissionPolicy</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: deny-latest-tag</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchConstraints:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resourceRules:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersions: ["v1"]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">operations: ["CREATE", "UPDATE"]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resources: ["pods"]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">validations:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• expression: "object.spec.containers.all(c, !c.image.endsWith(':latest'))"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">message: "LỖI: Cấm tuyệt đối sử dụng tag ảnh :latest trong Production!"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai biểu thức CEL cấm tag latest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng endsWith nhưng thiếu dấu phủ định <code>!</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Policy CEL cấm tag latest.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Dấu phủ định <code>!</code> trong biểu thức CEL <code>!c.image.endsWith(':latest')</code> có ý nghĩa gì? — Đảm bảo ảnh KHÔNG ĐƯỢC kết thúc bằng chuỗi <code>:latest</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Admission Controller & ValidatingAdmissionPolicy CEL chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nhớ rõ luồng xử lý API Server: Mutating Webhooks chạy TRƯỚC, Validating Webhooks chạy SAU.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng <code>ValidatingAdmissionPolicy</code> CEL tích hợp sẵn từ K8s 1.30+ thay cho External Webhooks.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Luôn dùng <code>has()</code> kiểm tra sự tồn tại của khối dữ liệu trước khi kiểm tra phím trong CEL.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bắt buộc tạo <code>ValidatingAdmissionPolicyBinding</code> đi kèm <code>validationActions: [Deny]</code> để kích hoạt chính sách.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Admission Security CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 54 là gì? — Học về <code>Làm cứng hệ điều hành và Node Security CKS: CIS Benchmarks, kube-bench & Service Hardening</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** `ValidatingAdmissionPolicy` (CEL) trong Kubernetes 1.30+ đóng vai trò gì và ưu điểm vượt trội của nó so với External Webhook là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `ValidatingAdmissionPolicy` cho phép biên soạn các chính sách kiểm duyệt hợp lệ trực tiếp bằng ngôn ngữ biểu thức CEL. Ưu điểm: Chạy trực tiếp trong tiến trình API Server nên tốc độ phản hồi cực nhanh (vài ms), không bị trễ mạng và không cần duy trì service webhook bên ngoài.
+1. <b style="color: var(--accent-primary);">"Hiểu rõ luồng request API Server: Mutating Webhooks chạy trước để nạp dữ liệu, Validating Webhooks chạy sau để kiểm duyệt và chặn."</b>
+2. <b style="color: var(--accent-primary);">"Tối ưu hiệu năng bằng <code>ValidatingAdmissionPolicy</code> CEL tích hợp sẵn từ K8s 1.30+ chạy in-process siêu nhanh."</b>
+3. <b style="color: var(--accent-primary);">"Luôn sử dụng hàm <code>has()</code> trong biểu thức CEL để phòng ngừa lỗi Null Pointer Exception khi kiểm tra labels."</b>
+4. <b style="color: var(--accent-primary);">"Tạo bộ đôi <code>ValidatingAdmissionPolicy</code> và <code>ValidatingAdmissionPolicyBinding</code> để áp đặt rào chắn an ninh tự động."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết tính năng ValidatingAdmissionPolicy CEL.
-- 1đ: Nêu được dùng CEL nhưng chưa làm rõ việc chạy in-process không bị latency mạng.
-- 3đ: Phân tích chuẩn xác vai trò và ưu điểm về hiệu năng in-process của `ValidatingAdmissionPolicy`.
-
-**Câu hỏi đào sâu:** (Biểu thức CEL trong `ValidatingAdmissionPolicy` bắt buộc phải trả về kiểu dữ liệu nào? — Bắt buộc trả về kiểu dữ liệu **Boolean** (`true` cho phép, `false` chặn)).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Tại sao nên dùng hàm `has(object.metadata.labels)` trước khi kiểm tra một nhãn cụ thể trong biểu thức CEL?
-
-**Đáp án chuẩn:** Để tránh lỗi Null Pointer Exception khi đối tượng Pod tạo mới không khai báo khối metadata labels. Hàm `has()` đảm bảo khối `labels` tồn tại trước khi đối soát phím label bên trong.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết tác dụng của hàm `has()`.
-- 1đ: Nêu được kiểm tra tồn tại nhưng chưa làm rõ việc chống lỗi Null Pointer Exception khi đọc khối metadata.
-- 3đ: Phân tích chuẩn xác vai trò bảo an logic biểu thức CEL của hàm `has()`.
-
-**Câu hỏi đào sâu:** (Biểu thức CEL chuẩn để kiểm tra Pod có nhãn `owner` là gì? — `has(object.metadata.labels) && 'owner' in object.metadata.labels`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Vai trò của đối tượng `ValidatingAdmissionPolicyBinding` trong kiến trúc CEL Policy là gì?
-
-**Đáp án chuẩn:** `ValidatingAdmissionPolicyBinding` dùng để liên kết chính sách (`ValidatingAdmissionPolicy`) với các tài nguyên hoặc Namespace mục tiêu, đồng thời khai báo hành động khi vi phạm (`validationActions: [Deny]` hoặc `[Warn]`).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết đối tượng ValidatingAdmissionPolicyBinding.
-- 1đ: Nêu được liên kết policy nhưng quên thuộc tính validationActions.
-- 3đ: Trình bày chính xác vai trò liên kết và khai báo hành động Deny/Warn của PolicyBinding.
-
-**Câu hỏi đào sâu:** (Điều gì xảy ra nếu tạo ValidatingAdmissionPolicy mà không tạo PolicyBinding? — Chính sách đó không có hiệu lực, API Server không kiểm duyệt bất kỳ request nào).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Kiến trúc 2 thành phần CRD của OPA Gatekeeper: `ConstraintTemplate` và `Constraint` hoạt động như thế nào?
-
-**Đáp án chuẩn:**
-- `ConstraintTemplate`: Định nghĩa mã nguồn luật kiểm duyệt bằng ngôn ngữ Rego và khai báo cấu hình tham số đầu vào.
-- `Constraint`: Là bản thể hiện (instance) của ConstraintTemplate, dùng để chỉ định các tài nguyên hoặc Namespace cụ thể bị áp đặt luật.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa ConstraintTemplate và Constraint.
-- 1đ: Nêu được OPA dùng Rego nhưng chưa làm rõ mối quan hệ giữa Template vs Instance Constraint.
-- 3đ: Phân tích thấu đáo mối quan hệ giữa ConstraintTemplate (luật Rego) và Constraint (áp đối tượng).
-
-**Câu hỏi đào sâu:** (Ngôn ngữ lập trình được OPA Gatekeeper sử dụng để viết logic kiểm duyệt là gì? — Ngôn ngữ **Rego**).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Cú pháp biểu thức CEL chuẩn để kiểm tra 100% các container trong Pod phải sử dụng ảnh từ registry tin cậy `myregistry.io/` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-expression: "object.spec.containers.all(c, c.image.startsWith('myregistry.io/'))"
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Không biết viết biểu thức CEL lọc container image.
-- 1đ: Nêu được hàm startsWith nhưng sai cú pháp `.all()`.
-- 3đ: Viết chuẩn xác 100% biểu thức CEL lặp mảng containers bằng `.all()`.
-
-**Câu hỏi đào sâu:** (Hàm `.all()` trong CEL có ý nghĩa gì? — Đảm bảo TẤT CẢ các phần tử container trong mảng `containers` phải thỏa mãn điều kiện bên trong).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Sự khác nhau giữa Kyverno Policy Engine và OPA Gatekeeper trong việc áp đặt chính sách an ninh K8s là gì?
-
-**Đáp án chuẩn:** Kyverno sử dụng cú pháp **YAML thuần** tích hợp tự nhiên với Kubernetes, dễ đọc dễ viết mà không cần học ngôn ngữ mới. OPA Gatekeeper sử dụng ngôn ngữ **Rego** mạnh mẽ linh hoạt hơn nhưng có độ dốc học tập (learning curve) cao hơn.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được Kyverno và OPA Gatekeeper.
-- 1đ: Nêu được cả hai là công cụ policy nhưng chưa rõ YAML thuần vs Rego.
-- 3đ: Phân tích chuẩn xác sự khác biệt về cú pháp YAML thuần của Kyverno vs Rego của OPA.
-
-**Câu hỏi đào sâu:** (Công cụ nào trong K8s 1.30+ được thiết kế để thay thế cả Kyverno và OPA cho các chính sách validation đơn giản? — Tính năng tích hợp sẵn `ValidatingAdmissionPolicy` CEL).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cờ thuộc tính nào trong file manifest Static Pod `kube-apiserver.yaml` được dùng để bật/tắt các plugin Admission Controller?
-
-**Đáp án chuẩn:** Cờ `--enable-admission-plugins` (ví dụ `--enable-admission-plugins=NodeRestriction,PodSecurity,ValidatingAdmissionPolicy`).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ bật plugin admission trên apiserver.
-- 1đ: Nêu được admission plugins nhưng gõ sai tên cờ.
-- 3đ: Trình bày chính xác cờ `--enable-admission-plugins` và ví dụ plugin đi kèm.
-
-**Câu hỏi đào sâu:** (Plugin admission nào luôn được khuyến nghị giữ nguyên để bảo vệ Node không bị sửa đổi bởi Kubelet? — Plugin `NodeRestriction`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Phản hồi từ API Server khi một request tạo Pod bị `ValidatingAdmissionPolicy` từ chối chứa các thông tin quan trọng nào?
-
-**Đáp án chuẩn:** API Server trả về mã lỗi **`403 Forbidden`**, tên của `ValidatingAdmissionPolicy` vi phạm, và chuỗi thông điệp cảnh báo **`message`** được định nghĩa trong tệp policy (ví dụ `message: "Pod bắt buộc phải có nhãn owner!"`).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết thông tin phản hồi khi bị deny.
-- 1đ: Nêu được lỗi 403 nhưng quên chuỗi thông điệp message.
-- 3đ: Phân tích chuẩn xác các thông tin trong phản hồi HTTP 403 Forbidden của API Server.
-
-**Câu hỏi đào sâu:** (Làm thế nào để thay đổi chế độ từ CHẶN (Deny) sang chỉ CẢNH BÁO (Warn) trong Binding? — Đổi `validationActions: [Deny]` thành `validationActions: [Warn]`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Tại sao không nên viết một biểu thức CEL phức tạp thực hiện quá nhiều thao tác kiểm tra trong cùng một `ValidatingAdmissionPolicy`?
-
-**Đáp án chuẩn:** Để đảm bảo tính mô-đun hóa, dễ quản lý, dễ gỡ lỗi và in ra thông điệp cảnh báo `message` chính xác cho từng lỗi vi phạm riêng biệt.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng gom hết vào 1 policy là tốt.
-- 1đ: Nêu được khó đọc nhưng chưa rõ việc in message cảnh báo chính xác từng lỗi.
-- 3đ: Phân tích chuẩn xác nguyên tắc tách biệt các tệp Policy theo từng quy tắc an ninh.
-
-**Câu hỏi đào sâu:** (Khuyến nghị chia nhỏ policy ra sao? — Mỗi tệp Policy chỉ kiểm tra 1 quy tắc cụ thể như `check-owner-label`, `check-image-registry`, `deny-latest-tag`).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một tệp `ValidatingAdmissionPolicy` hoàn chỉnh cấm Pods sử dụng tag ảnh `:latest` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingAdmissionPolicy
-metadata:
-  name: deny-latest-tag
-spec:
-  matchConstraints:
-    resourceRules:
-      - apiGroups: [""]
-        apiVersions: ["v1"]
-        operations: ["CREATE", "UPDATE"]
-        resources: ["pods"]
-  validations:
-    - expression: "object.spec.containers.all(c, !c.image.endsWith(':latest'))"
-      message: "LỖI: Cấm tuyệt đối sử dụng tag ảnh :latest trong Production!"
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai biểu thức CEL cấm tag latest.
-- 1đ: Nêu đúng endsWith nhưng thiếu dấu phủ định `!`.
-- 3đ: Viết chuẩn xác 100% bản kê khai Policy CEL cấm tag latest.
-
-**Câu hỏi đào sâu:** (Dấu phủ định `!` trong biểu thức CEL `!c.image.endsWith(':latest')` có ý nghĩa gì? — Đảm bảo ảnh KHÔNG ĐƯỢC kết thúc bằng chuỗi `:latest`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Admission Controller & ValidatingAdmissionPolicy CEL chuẩn CKS là gì?
-
-**Đáp án chuẩn:**
-1. Nhớ rõ luồng xử lý API Server: Mutating Webhooks chạy TRƯỚC, Validating Webhooks chạy SAU.
-2. Dùng `ValidatingAdmissionPolicy` CEL tích hợp sẵn từ K8s 1.30+ thay cho External Webhooks.
-3. Luôn dùng `has()` kiểm tra sự tồn tại của khối dữ liệu trước khi kiểm tra phím trong CEL.
-4. Bắt buộc tạo `ValidatingAdmissionPolicyBinding` đi kèm `validationActions: [Deny]` để kích hoạt chính sách.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Admission Security CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 54 là gì? — Học về `Làm cứng hệ điều hành và Node Security CKS: CIS Benchmarks, kube-bench & Service Hardening`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1041,28 +1128,6 @@ spec:
 2. **"Tối ưu hiệu năng bằng `ValidatingAdmissionPolicy` CEL tích hợp sẵn từ K8s 1.30+ chạy in-process siêu nhanh."**
 3. **"Luôn sử dụng hàm `has()` trong biểu thức CEL để phòng ngừa lỗi Null Pointer Exception khi kiểm tra labels."**
 4. **"Tạo bộ đôi `ValidatingAdmissionPolicy` và `ValidatingAdmissionPolicyBinding` để áp đặt rào chắn an ninh tự động."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Admission Controllers |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc ValidatingAdmissionPolicy CEL và OPA Gatekeeper |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Biên soạn `ValidatingAdmissionPolicy` CEL kiểm tra bắt buộc tất cả các Pods phải khai báo `resources.limits.cpu` và `memory`.
-- **BTVN 2:** Thực hành tạo `ValidatingAdmissionPolicyBinding` áp dụng chính sách CEL chỉ trên các Namespace có nhãn `env: prod`.
-- **BTVN 3:** So sánh điểm khác biệt về cú pháp giữa CEL Expressions trong K8s vs Rego trong OPA Gatekeeper.
-- **BTVN 4 (Chuẩn bị cho Buổi 54 — Làm cứng hệ điều hành và Node Security CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Giảm bề mặt tấn công của hệ điều hành Node (Node OS Hardening) ở cấp độ CKS bao gồm những thao tác nào?
-  2. Công cụ `kube-bench` (CIS Kubernetes Benchmark) giúp đánh giá an ninh các thành phần Control Plane và Worker Nodes thế nào?
-  3. Làm thế nào để vô hiệu hóa các dịch vụ thừa (như `open-iscsi`, `avahi-daemon`) và đóng các cổng không sử dụng trên Node?
 
 ---
 
@@ -1141,7 +1206,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/policy-team.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1167,7 +1232,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/binding-team.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1208,7 +1273,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/policy-no-latest.yaml
-```bash
+```
 </div>
 </details>
 
@@ -1237,7 +1302,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/policy-fixed.yaml
-```yaml
+```
 
 ---
 </div>
@@ -1308,7 +1373,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1339,16 +1404,17 @@ metadata:
 spec:
   policyName: policy-name
   validationActions: [Deny]
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 09] Làm Cứng Hệ Điều Hành Máy Chủ (Node Hardening): CIS Benchmarks, Kube-Bench & Triệt Tiêu Dịch Vụ Thừa](cks-09-09-lam-cung-he-dieu-hanh.html).
+
 {% endraw %}

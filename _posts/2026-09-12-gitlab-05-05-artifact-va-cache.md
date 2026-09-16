@@ -882,8 +882,10 @@ echo "Lab 05 storage resources cleaned up successfully."
     </ol>
     <p><b>Phân loại chi tiết</b>:</p>
     <ul>
-      <li><code>node_modules/</code> & <code>~/.m2/repository</code>: Dừng ở Câu 2 $ightarrow$ <b>Cache</b> (Tái tạo được từ lockfile).</li>
-      <li><code>junit.xml</code> & <code>sbom.cdx.json</code>: Dừng ở Câu 3 $ightarrow$ <b>Artifacts</b> (Reviewer và Security Auditor cần kiểm chứng qua API).</li>
+      <li><code>node_modules/</code> & <code>~/.m2/repository</code>: Dừng ở Câu 2 $
+ightarrow$ <b>Cache</b> (Tái tạo được từ lockfile).</li>
+      <li><code>junit.xml</code> & <code>sbom.cdx.json</code>: Dừng ở Câu 3 $
+ightarrow$ <b>Artifacts</b> (Reviewer và Security Auditor cần kiểm chứng qua API).</li>
     </ul>
   </div>
 </details>
@@ -900,7 +902,8 @@ echo "Lab 05 storage resources cleaned up successfully."
     </div>
     <p><b>Quy trình 5 nhịp chuẩn hóa</b>:</p>
     <ol>
-      <li><b>Nhịp 1: Đo lường kích thước Artifacts qua API</b>: Gọi <code>GET /projects/:id/jobs/:id/artifacts</code>. Nếu trả về <code>HTTP 404</code> hoặc dung lượng chỉ vài trăm bytes $ightarrow$ Hợp đồng Artifacts bị rỗng.</li>
+      <li><b>Nhịp 1: Đo lường kích thước Artifacts qua API</b>: Gọi <code>GET /projects/:id/jobs/:id/artifacts</code>. Nếu trả về <code>HTTP 404</code> hoặc dung lượng chỉ vài trăm bytes $
+ightarrow$ Hợp đồng Artifacts bị rỗng.</li>
       <li><b>Nhịp 2: Kiểm tra sự tồn tại của Upstream Job</b>: Kiểm tra xem job build có bị <code>rules</code> loại bỏ khỏi DAG tại $t_0$ hay không.</li>
       <li><b>Nhịp 3: Đối soát Trace Log tìm cảnh báo</b>: Tìm dòng <code>WARNING: No matching files</code> trong job trace của bước build.</li>
       <li><b>Nhịp 4: Kiểm tra xung đột Cache</b>: Kiểm tra xem job deploy có đang vô tình restore lại <code>dist/</code> cũ từ cache thông qua <code>cache:paths</code> hay không.</li>

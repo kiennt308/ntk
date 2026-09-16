@@ -231,9 +231,11 @@ graph TD
 <span class="badge badge--rose">🕒 06:15 AM</span> Ngay sau khi bản phát hành Spring Boot mới được deploy lên môi trường Production Java 17, hệ thống xử lý giao dịch bị crash hàng loạt với ngoại lệ `java.lang.NoSuchMethodError: java.lang.String.stripIndent()`, dù toàn bộ pipeline CI/CD trước đó đều xanh 100%.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Production Pods liên tục crashloop với thông báo lỗi runtime thiếu phương thức:
 
 ```text
+
+Production Pods liên tục crashloop với thông báo lỗi runtime thiếu phương thức:
+
 2026-09-12 06:15:32.410 ERROR [payments-service] [main] o.s.boot.SpringApplication: Application run failed
 java.lang.NoSuchMethodError: 'java.lang.String java.lang.String.stripIndent()'
     at com.corp.payments.util.TemplateRenderer.render(TemplateRenderer.java:45)

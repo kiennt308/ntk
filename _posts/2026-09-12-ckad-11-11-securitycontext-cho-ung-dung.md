@@ -490,24 +490,6 @@ Thuộc tính <code>runAsUser</code>.
 | Configure a Security Context for a Pod | `https://kubernetes.io/docs/tasks/configure-pod-container/security-context/` | Tài liệu chuẩn K8s SecurityContext |
 | Pod Security Standards (PSS) | `https://kubernetes.io/docs/concepts/security/pod-security-standards/` | Tài liệu chuẩn K8s Pod Security Standards |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Phân biệt SecurityContext cấp Pod và Container | 12 phút | 12 phút |
-| §5. Cơ chế Non-root và Read-Only FS | 12 phút | 12 phút |
-| §6. Quản lý Capabilities và fsGroup | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -860,26 +842,11 @@ test ! -f /tmp/lab41-sec.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKP
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & runAsNonRoot fail | 15 phút | 15 phút |
-| L4. Bước 2: runAsUser 1000 | 25 phút | 25 phút |
-| L5. Bước 3: Read-Only FS & emptyDir | 25 phút | 25 phút |
-| L6. Bước 4: Capabilities drop & add | 25 phút | 25 phút |
-| L7. Bước 5: fsGroup volume | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -887,192 +854,315 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Điều gì xảy ra khi bạn bật cờ <code>runAsNonRoot: true</code> cho một Pod chạy ảnh Docker mặc định là root (<code>USER root</code>) mà không khai báo <code>runAsUser</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>securityContext</code> ở cấp Pod áp dụng chung cho tất cả các container bên trong Pod (bao gồm <code>runAsUser</code>, <code>runAsGroup</code>, <code>fsGroup</code>). <code>securityContext</code> ở cấp Container áp dụng riêng và ghi đè cấp Pod, chứa các thuộc tính riêng của container (như <code>readOnlyRootFilesystem</code>, <code>capabilities</code>, <code>allowPrivilegeEscalation</code>).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kubelet sẽ kiểm tra UID mặc định của ảnh và phát hiện nó chạy bằng root (UID 0). Kubelet lập tức từ chối khởi chạy container và phát ra lỗi <code>CreateContainerConfigError</code> với thông điệp <code>container has runAsNonRoot and image will run as root</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng Kubelet tự động đổi UID thành 1000.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Pod bị lỗi nhưng không giải thích được cơ chế kiểm tra UID 0 của Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác thông điệp lỗi và lý do Kubelet chặn container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cách khắc phục triệt để lỗi này là gì? — Thêm thuộc tính <code>runAsUser: 1000</code> (hoặc UID khác 0) vào <code>securityContext</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 cấp securityContext.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Pod là chung, Container là riêng nhưng nhầm lẫn các thuộc tính hỗ trợ.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác thuộc tính nào thuộc Pod-level và thuộc tính nào thuộc Container-level.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu cấp Pod khai báo <code>runAsUser: 1000</code> nhưng container A khai báo <code>runAsUser: 2000</code> thì container A sẽ chạy dưới UID nào? — Chạy dưới UID 2000 do container-level ghi đè pod-level).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao bật cờ <code>readOnlyRootFilesystem: true</code> lại là giải pháp bảo mật quan trọng và cần kết hợp với <code>emptyDir</code> volume thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bật <code>readOnlyRootFilesystem: true</code> sẽ khóa toàn bộ đĩa gốc container thành chỉ đọc, triệt tiêu khả năng hacker ghi đè binary hoặc tải mã độc vào đĩa. Tuy nhiên, ứng dụng cần ghi file tạm (như <code>/tmp</code> hay <code>/var/log</code>) nên bắt buộc phải mount một <code>emptyDir</code> volume vào các đường dẫn tạm đó để ứng dụng không bị crash.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được lý do phải dùng emptyDir đi kèm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được khóa đĩa nhưng quên ý mount emptyDir vào các thư mục ghi tạm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo khả năng chống ghi đè mã độc và giải pháp mount emptyDir cho tệp tạm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu bật <code>readOnlyRootFilesystem: true</code> mà không mount <code>emptyDir</code> vào <code>/tmp</code> thì chuyện gì xảy ra? — Ứng dụng sẽ bị crash ngay khi khởi động do lỗi <code>Read-only file system</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ý nghĩa của cờ <code>allowPrivilegeEscalation: false</code> trong container <code>securityContext</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ này cấm các tiến trình con bên trong container tự nâng quyền root thông qua việc thực thi các file binary có thuộc tính <code>suid</code> hoặc <code>sgid</code> (như lệnh <code>sudo</code> hay <code>ping</code>). Nó kích hoạt thuộc tính <code>no_new_privs</code> ở cấp Linux Kernel.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ allowPrivilegeEscalation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cấm leo quyền nhưng không làm rõ cơ chế chặn file suid/sgid của kernel.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế chặn file suid và thuộc tính <code>no_new_privs</code> của kernel.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container chạy non-root nhưng <code>allowPrivilegeEscalation: true</code> thì có rủi ro gì? — Kẻ tấn công có thể lợi dụng file binary suid bị lỗi để leo từ non-root lên root).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tại sao quy chuẩn bảo mật Cloud Native lại yêu cầu khai báo <code>capabilities.drop: ["ALL"]</code> ở tất cả các container Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì tiến trình container mặc định được Linux cấp sẵn 30+ capabilities kernel (như <code>CAP_NET_RAW</code>, <code>CAP_CHOWN</code>, <code>CAP_MKNOD</code>). Việc tước bỏ toàn bộ 100% quyền mặc định qua <code>drop: ["ALL"]</code> giúp áp dụng triệt để nguyên tắc đặc quyền tối thiểu (Least Privilege) và chống tấn công Container Escape.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết ý nghĩa của drop ALL capabilities.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tước quyền nhưng chưa rõ nguyên tắc đặc quyền tối thiểu và chống Container Escape.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo việc tước bỏ 30+ Linux capabilities mặc định để gia cố bảo mật container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu sau khi <code>drop: ["ALL"]</code> mà ứng dụng Web non-root cần mở port 80 thì phải bổ sung cờ gì? — Thêm <code>capabilities.add: ["NET_BIND_SERVICE"]</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao tài khoản non-root (UID 1000) mặc định lại không thể bind mở cổng TCP 80, và giải pháp <code>NET_BIND_SERVICE</code> giải quyết vấn đề này ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Mặc định trên Linux, chỉ có tài khoản root (UID 0) mới có quyền mở các cổng TCP dưới 1024 (Privileged Ports). <code>capabilities.add: ["NET_BIND_SERVICE"]</code> cấp duy nhất đặc quyền mở cổng dưới 1024 cho tài khoản non-root mà KHÔNG CẦN phải trao toàn bộ quyền root nguy hiểm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng non-root tự do mở mọi port.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được port 80 cần root nhưng chưa rõ cơ chế bổ sung capability NET_BIND_SERVICE.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác giới hạn port dưới 1024 của Linux và giải pháp cấp quyền NET_BIND_SERVICE.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu ứng dụng đổi sang bind cổng 8080 thay vì cổng 80 thì có cần cờ <code>NET_BIND_SERVICE</code> không? — Không cần, cổng 8080 > 1024 nên non-root mở tự do).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cờ thuộc tính <code>fsGroup: 2000</code> trong Pod <code>securityContext</code> giải quyết bài toán phân quyền nào khi mount Volume?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khi mount một Volume (như PVC hay ConfigMap), tệp tin mặc định có thể thuộc sở hữu của root (<code>UID 0</code>). Nếu Pod chạy non-root (<code>UID 1000</code>), ứng dụng sẽ bị lỗi <code>Permission denied</code>. Khai báo <code>fsGroup: 2000</code> bắt Kubelet tự động chown đổi quyền sở hữu của tất cả các tệp trong Volume cho GID 2000.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm fsGroup với runAsGroup.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được đổi quyền nhưng chưa làm rõ việc Kubelet tự động chown các tệp trong Volume mount.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò của <code>fsGroup</code> trong việc giải quyết lỗi Permission denied khi mount Volume cho non-root user.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>fsGroup</code> được khai báo ở cấp Pod spec hay cấp Container spec? — Khai báo ở cấp Pod spec).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn để khai báo một container chạy non-root UID 1001, đĩa Read-Only, cấm leo quyền và drop ALL capabilities là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">securityContext:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">runAsNonRoot: true</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">runAsUser: 1001</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">readOnlyRootFilesystem: true</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">allowPrivilegeEscalation: false</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">capabilities:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">drop: ["ALL"]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai thụt lề hoặc nhầm vị trí cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng 2-3 cờ nhưng thiếu drop ALL hoặc readOnlyRootFilesystem.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác tuyệt đối khối YAML spec bảo mật container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chữ <code>ALL</code> trong <code>capabilities.drop</code> phải viết thế nào? — Bắt buộc viết in hoa toàn bộ <code>"ALL"</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao chạy container bằng tài khoản root (<code>UID 0</code>) lại bị coi là một rủi ro bảo mật nghiêm trọng trong Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì nếu hacker khai thác được một lỗ hổng trong ứng dụng và thực hiện tấn công thoát khỏi rào chắn container (Container Escape), họ sẽ sở hữu ngay toàn bộ quyền root của Node host bên dưới và chiếm toàn bộ cụm Kubernetes.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng chạy root trong container không ảnh hưởng tới Node host.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được nguy hiểm nhưng chưa giải thích được kịch bản Container Escape chiếm Node host.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo kịch bản tấn công Container Escape chiếm quyền kiểm soát Node host từ UID 0.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tiêu chuẩn bảo mật Pod Security Standards (PSS) mức nào yêu cầu bắt buộc cấm chạy root? — Mức <code>Restricted</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp gõ lệnh CLI <code>kubectl exec</code> nào dùng để kiểm tra UID và GID thực tế đang chạy của tiến trình bên trong Pod <code>my-pod</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl exec my-pod -n <namespace> -- id</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ lệnh id.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu lệnh whoami thay vì lệnh id.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>kubectl exec ... -- id</code> hiển thị đủ uid, gid và groups.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào xem danh sách capabilities thực tế của tiến trình container? — Lệnh <code>kubectl exec ... -- capsh --print</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi một Pod chứa 2 container (<code>web</code> và <code>sidecar</code>), nếu chỉ khai báo <code>securityContext</code> ở cấp Pod thì 2 container sẽ hoạt động thế nào về phân quyền?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cả 2 container sẽ cùng kế thừa toàn bộ cấu hình cấp Pod (như cùng chạy UID <code>runAsUser</code> và nhóm <code>runAsGroup</code> đã định nghĩa ở cấp Pod).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng cấp Pod chỉ áp dụng cho container đầu tiên.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả 2 cùng dùng nhưng không làm rõ cơ chế kế thừa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế kế thừa Pod-level securityContext cho tất cả các container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container <code>sidecar</code> muốn chạy UID khác với container <code>web</code> thì phải làm thế nào? — Khai báo <code>runAsUser</code> riêng trong <code>securityContext</code> của container <code>sidecar</code> để ghi đè).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để xây dựng một bản kê khai Pod chuẩn bảo mật cao nhất (Hardened Pod Manifest) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>runAsNonRoot: true</code> kết hợp <code>runAsUser: 1000</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>readOnlyRootFilesystem: true</code> kết hợp <code>emptyDir</code> mount vào <code>/tmp</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>allowPrivilegeEscalation: false</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>capabilities.drop: ["ALL"]</code> và chỉ <code>add</code> quyền tối cần thiết.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2-3 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng gia cố bảo mật Pod.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 42 là gì? — Học về <code>ResourceQuota</code>, <code>LimitRange</code> và xử lý ca "Quota chặn âm thầm" làm Pod kẹt Pending).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Điều gì xảy ra khi bạn bật cờ `runAsNonRoot: true` cho một Pod chạy ảnh Docker mặc định là root (`USER root`) mà không khai báo `runAsUser`?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Kubelet sẽ kiểm tra UID mặc định của ảnh và phát hiện nó chạy bằng root (UID 0). Kubelet lập tức từ chối khởi chạy container và phát ra lỗi `CreateContainerConfigError` với thông điệp `container has runAsNonRoot and image will run as root`.
+1. <b style="color: var(--accent-primary);">"Thực thi nguyên tắc đặc quyền tối thiểu bằng cách bắt buộc cờ <code>runAsNonRoot: true</code> và chỉ định UID non-root cho mọi Pod Production."</b>
+2. <b style="color: var(--accent-primary);">"Bật <code>readOnlyRootFilesystem: true</code> kết hợp <code>emptyDir</code> cho thư mục tạm là lá chắn vững chắc chống lại hành vi ghi đè mã độc vào đĩa gốc container."</b>
+3. <b style="color: var(--accent-primary);">"Luôn khai báo <code>capabilities.drop: ['ALL']</code> để tước bỏ 100% đặc quyền kernel mặc định, và chỉ <code>add</code> lại quyền <code>NET_BIND_SERVICE</code> khi cần mở port dưới 1024."</b>
+4. <b style="color: var(--accent-primary);">"Dùng <code>fsGroup</code> trong Pod securityContext để tự động phân quyền truy cập Volume cho tài khoản non-root, triệt tiêu lỗi Permission denied."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Cho rằng Kubelet tự động đổi UID thành 1000.
-- 1đ: Nêu được Pod bị lỗi nhưng không giải thích được cơ chế kiểm tra UID 0 của Kubelet.
-- 3đ: Trình bày chính xác thông điệp lỗi và lý do Kubelet chặn container.
-
-**Câu hỏi đào sâu:** (Cách khắc phục triệt để lỗi này là gì? — Thêm thuộc tính `runAsUser: 1000` (hoặc UID khác 0) vào `securityContext`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Tại sao bật cờ `readOnlyRootFilesystem: true` lại là giải pháp bảo mật quan trọng và cần kết hợp với `emptyDir` volume thế nào?
-
-**Đáp án chuẩn:** Bật `readOnlyRootFilesystem: true` sẽ khóa toàn bộ đĩa gốc container thành chỉ đọc, triệt tiêu khả năng hacker ghi đè binary hoặc tải mã độc vào đĩa. Tuy nhiên, ứng dụng cần ghi file tạm (như `/tmp` hay `/var/log`) nên bắt buộc phải mount một `emptyDir` volume vào các đường dẫn tạm đó để ứng dụng không bị crash.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được lý do phải dùng emptyDir đi kèm.
-- 1đ: Nêu được khóa đĩa nhưng quên ý mount emptyDir vào các thư mục ghi tạm.
-- 3đ: Phân tích thấu đáo khả năng chống ghi đè mã độc và giải pháp mount emptyDir cho tệp tạm.
-
-**Câu hỏi đào sâu:** (Nếu bật `readOnlyRootFilesystem: true` mà không mount `emptyDir` vào `/tmp` thì chuyện gì xảy ra? — Ứng dụng sẽ bị crash ngay khi khởi động do lỗi `Read-only file system`).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Ý nghĩa của cờ `allowPrivilegeEscalation: false` trong container `securityContext` là gì?
-
-**Đáp án chuẩn:** Cờ này cấm các tiến trình con bên trong container tự nâng quyền root thông qua việc thực thi các file binary có thuộc tính `suid` hoặc `sgid` (như lệnh `sudo` hay `ping`). Nó kích hoạt thuộc tính `no_new_privs` ở cấp Linux Kernel.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ allowPrivilegeEscalation.
-- 1đ: Nêu được cấm leo quyền nhưng không làm rõ cơ chế chặn file suid/sgid của kernel.
-- 3đ: Trình bày chuẩn xác cơ chế chặn file suid và thuộc tính `no_new_privs` của kernel.
-
-**Câu hỏi đào sâu:** (Nếu container chạy non-root nhưng `allowPrivilegeEscalation: true` thì có rủi ro gì? — Kẻ tấn công có thể lợi dụng file binary suid bị lỗi để leo từ non-root lên root).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Tại sao quy chuẩn bảo mật Cloud Native lại yêu cầu khai báo `capabilities.drop: ["ALL"]` ở tất cả các container Production?
-
-**Đáp án chuẩn:** Vì tiến trình container mặc định được Linux cấp sẵn 30+ capabilities kernel (như `CAP_NET_RAW`, `CAP_CHOWN`, `CAP_MKNOD`). Việc tước bỏ toàn bộ 100% quyền mặc định qua `drop: ["ALL"]` giúp áp dụng triệt để nguyên tắc đặc quyền tối thiểu (Least Privilege) và chống tấn công Container Escape.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết ý nghĩa của drop ALL capabilities.
-- 1đ: Nêu được tước quyền nhưng chưa rõ nguyên tắc đặc quyền tối thiểu và chống Container Escape.
-- 3đ: Phân tích thấu đáo việc tước bỏ 30+ Linux capabilities mặc định để gia cố bảo mật container.
-
-**Câu hỏi đào sâu:** (Nếu sau khi `drop: ["ALL"]` mà ứng dụng Web non-root cần mở port 80 thì phải bổ sung cờ gì? — Thêm `capabilities.add: ["NET_BIND_SERVICE"]`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Tại sao tài khoản non-root (UID 1000) mặc định lại không thể bind mở cổng TCP 80, và giải pháp `NET_BIND_SERVICE` giải quyết vấn đề này ra sao?
-
-**Đáp án chuẩn:** Mặc định trên Linux, chỉ có tài khoản root (UID 0) mới có quyền mở các cổng TCP dưới 1024 (Privileged Ports). `capabilities.add: ["NET_BIND_SERVICE"]` cấp duy nhất đặc quyền mở cổng dưới 1024 cho tài khoản non-root mà KHÔNG CẦN phải trao toàn bộ quyền root nguy hiểm.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng non-root tự do mở mọi port.
-- 1đ: Nêu được port 80 cần root nhưng chưa rõ cơ chế bổ sung capability NET_BIND_SERVICE.
-- 3đ: Phân tích chuẩn xác giới hạn port dưới 1024 của Linux và giải pháp cấp quyền NET_BIND_SERVICE.
-
-**Câu hỏi đào sâu:** (Nếu ứng dụng đổi sang bind cổng 8080 thay vì cổng 80 thì có cần cờ `NET_BIND_SERVICE` không? — Không cần, cổng 8080 > 1024 nên non-root mở tự do).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cờ thuộc tính `fsGroup: 2000` trong Pod `securityContext` giải quyết bài toán phân quyền nào khi mount Volume?
-
-**Đáp án chuẩn:** Khi mount một Volume (như PVC hay ConfigMap), tệp tin mặc định có thể thuộc sở hữu của root (`UID 0`). Nếu Pod chạy non-root (`UID 1000`), ứng dụng sẽ bị lỗi `Permission denied`. Khai báo `fsGroup: 2000` bắt Kubelet tự động chown đổi quyền sở hữu của tất cả các tệp trong Volume cho GID 2000.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm fsGroup với runAsGroup.
-- 1đ: Nêu được đổi quyền nhưng chưa làm rõ việc Kubelet tự động chown các tệp trong Volume mount.
-- 3đ: Phân tích thấu đáo vai trò của `fsGroup` trong việc giải quyết lỗi Permission denied khi mount Volume cho non-root user.
-
-**Câu hỏi đào sâu:** (Cờ `fsGroup` được khai báo ở cấp Pod spec hay cấp Container spec? — Khai báo ở cấp Pod spec).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn để khai báo một container chạy non-root UID 1001, đĩa Read-Only, cấm leo quyền và drop ALL capabilities là gì?
-
-**Đáp án chuẩn:**
-```yaml
-securityContext:
-  runAsNonRoot: true
-  runAsUser: 1001
-  readOnlyRootFilesystem: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop: ["ALL"]
-```
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai thụt lề hoặc nhầm vị trí cờ.
-- 1đ: Nêu đúng 2-3 cờ nhưng thiếu drop ALL hoặc readOnlyRootFilesystem.
-- 3đ: Viết chuẩn xác tuyệt đối khối YAML spec bảo mật container.
-
-**Câu hỏi đào sâu:** (Chữ `ALL` trong `capabilities.drop` phải viết thế nào? — Bắt buộc viết in hoa toàn bộ `"ALL"`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao chạy container bằng tài khoản root (`UID 0`) lại bị coi là một rủi ro bảo mật nghiêm trọng trong Kubernetes?
-
-**Đáp án chuẩn:** Vì nếu hacker khai thác được một lỗ hổng trong ứng dụng và thực hiện tấn công thoát khỏi rào chắn container (Container Escape), họ sẽ sở hữu ngay toàn bộ quyền root của Node host bên dưới và chiếm toàn bộ cụm Kubernetes.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng chạy root trong container không ảnh hưởng tới Node host.
-- 1đ: Nêu được nguy hiểm nhưng chưa giải thích được kịch bản Container Escape chiếm Node host.
-- 3đ: Phân tích thấu đáo kịch bản tấn công Container Escape chiếm quyền kiểm soát Node host từ UID 0.
-
-**Câu hỏi đào sâu:** (Tiêu chuẩn bảo mật Pod Security Standards (PSS) mức nào yêu cầu bắt buộc cấm chạy root? — Mức `Restricted`).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Cú pháp gõ lệnh CLI `kubectl exec` nào dùng để kiểm tra UID và GID thực tế đang chạy của tiến trình bên trong Pod `my-pod`?
-
-**Đáp án chuẩn:** `kubectl exec my-pod -n <namespace> -- id`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ lệnh id.
-- 1đ: Nêu lệnh whoami thay vì lệnh id.
-- 3đ: Trình bày chính xác lệnh `kubectl exec ... -- id` hiển thị đủ uid, gid và groups.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào xem danh sách capabilities thực tế của tiến trình container? — Lệnh `kubectl exec ... -- capsh --print`).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Khi một Pod chứa 2 container (`web` và `sidecar`), nếu chỉ khai báo `securityContext` ở cấp Pod thì 2 container sẽ hoạt động thế nào về phân quyền?
-
-**Đáp án chuẩn:** Cả 2 container sẽ cùng kế thừa toàn bộ cấu hình cấp Pod (như cùng chạy UID `runAsUser` và nhóm `runAsGroup` đã định nghĩa ở cấp Pod).
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng cấp Pod chỉ áp dụng cho container đầu tiên.
-- 1đ: Nêu được cả 2 cùng dùng nhưng không làm rõ cơ chế kế thừa.
-- 3đ: Phân tích chuẩn xác cơ chế kế thừa Pod-level securityContext cho tất cả các container.
-
-**Câu hỏi đào sâu:** (Nếu container `sidecar` muốn chạy UID khác với container `web` thì phải làm thế nào? — Khai báo `runAsUser` riêng trong `securityContext` của container `sidecar` để ghi đè).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để xây dựng một bản kê khai Pod chuẩn bảo mật cao nhất (Hardened Pod Manifest) là gì?
-
-**Đáp án chuẩn:**
-1. `runAsNonRoot: true` kết hợp `runAsUser: 1000`.
-2. `readOnlyRootFilesystem: true` kết hợp `emptyDir` mount vào `/tmp`.
-3. `allowPrivilegeEscalation: false`.
-4. `capabilities.drop: ["ALL"]` và chỉ `add` quyền tối cần thiết.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2-3 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng gia cố bảo mật Pod.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 42 là gì? — Học về `ResourceQuota`, `LimitRange` và xử lý ca "Quota chặn âm thầm" làm Pod kẹt Pending).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1082,28 +1172,6 @@ securityContext:
 2. **"Bật `readOnlyRootFilesystem: true` kết hợp `emptyDir` cho thư mục tạm là lá chắn vững chắc chống lại hành vi ghi đè mã độc vào đĩa gốc container."**
 3. **"Luôn khai báo `capabilities.drop: ['ALL']` để tước bỏ 100% đặc quyền kernel mặc định, và chỉ `add` lại quyền `NET_BIND_SERVICE` khi cần mở port dưới 1024."**
 4. **"Dùng `fsGroup` trong Pod securityContext để tự động phân quyền truy cập Volume cho tài khoản non-root, triệt tiêu lỗi Permission denied."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các thiết lập Application SecurityContext CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục gia cố bảo mật container Pod Hardening Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp YAML Pod spec gia cố bảo mật hoàn chỉnh chứa đủ 4 yếu tố Pod Hardening.
-- **BTVN 2:** Thực hành chạy công cụ `kubesec` hoặc `trivy` kiểm tra điểm số bảo mật của tệp Pod YAML trước và sau khi áp dụng SecurityContext.
-- **BTVN 3:** So sánh sự khác nhau về quyền hạn giữa cờ `privileged: true` (cấm tuyệt đối trên Prod) và việc dùng `capabilities.add`.
-- **BTVN 4 (Chuẩn bị cho Buổi 42 — ResourceQuota và LimitRange):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Sự khác nhau giữa `ResourceQuota` (giới hạn tài nguyên ở cấp Namespace) và `LimitRange` (giới hạn ở cấp Pod/Container) là gì?
-  2. Sự cố "Quota chặn âm thầm" xảy ra khi nào và tại sao Pod bị kẹt ở trạng thái `Pending` không được Schedule?
-  3. Lệnh CLI nào dùng để kiểm tra mức tài nguyên quota đã tiêu thụ trong Namespace (`kubectl get resourcequota`, `kubectl describe quota`)?
 
 ---
 
@@ -1367,14 +1435,15 @@ securityContext:
     add: ["NET_BIND_SERVICE"]
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 12] Quản Lý Tài Nguyên Đa Ứng Dụng: ResourceQuota, LimitRange & Khắc Phục Hiện Tượng Quota Chặn Âm Thầm](ckad-12-12-resource-quota-limitrange.html).
+
 {% endraw %}

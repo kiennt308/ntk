@@ -461,24 +461,6 @@ graph TD
 | Official Docs: Taints and Tolerations | Kubernetes v1.35 | Quản lý Taints trên Node và Tolerations trên Pod spec |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Quy trình lập lịch 2 giai đoạn: Lọc (Filtering) và Chấm điểm (Scoring) | 12 phút |
-| §5 | Chọn Node chủ động: `nodeSelector` vs `nodeAffinity` (Luật cứng vs Luật mềm) | 12 phút |
-| §6 | Phân bố Pod theo vùng miền: `podAffinity` & `podAntiAffinity` (`topologyKey`) | 10 phút |
-| §7 | Node chủ động xua đuổi: Taints (`NoSchedule`, `NoExecute`) & Tolerations | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -929,24 +911,11 @@ rm -f /tmp/ns-node.txt /tmp/anti-nodes.txt /tmp/direct-node.txt
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-17/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Dán nhãn Node và gán Pod chính xác bằng `nodeSelector` | 30 phút |
-| L4 | Bước 2 — Cấu hình `nodeAffinity` luật cứng vs luật mềm và `podAntiAffinity` | 30 phút |
-| L5 | Bước 3 — Quản lý Taints trên Node và khai báo `tolerations` trên Pod | 30 phút |
-| L6 | Bước 4 — Bypass Scheduler với `spec.nodeName` và kiểm thử | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -960,261 +929,358 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thao tác khai báo <code>spec.nodeName</code> trong Pod spec có tác dụng gì và nó ảnh hưởng thế nào đến Kube-Scheduler?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giai đoạn 1 — Filtering (Lọc điều kiện / Predicates):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kube-Scheduler kiểm tra tất cả các Node trong cụm để <b style="color: var(--accent-primary);">loại bỏ 100% các Node không đủ điều kiện</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các tiêu chí lọc bao gồm: Đủ CPU/RAM request không (<code>NodeResourcesFit</code>), Node có dính Taint không (<code>NodeLifecycle</code>), nhãn <code>nodeSelector</code> / <code>nodeAffinity</code> có khớp không (<code>NodeName</code> / <code>NodePorts</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giai đoạn 2 — Scoring (Chấm điểm / Priorities):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Scheduler tính toán điểm số từ <b style="color: var(--accent-primary);">0 đến 10</b> cho các Node còn sót lại sau vòng Lọc.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các tiêu chí chấm điểm bao gồm: Trọng số <code>weight</code> của <code>nodeAffinity</code> / <code>podAffinity</code>, mức độ cân bằng tài nguyên RAM/CPU.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kết quả:</b> Node đạt tổng điểm số cao nhất sẽ được chọn làm nơi gán Pod. Nếu có nhiều Node bằng điểm, chọn ngẫu nhiên 1 Node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Khai báo trực tiếp tên Node cứng (ví dụ <code>spec.nodeName: worker-01</code>) trong Pod spec.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ảnh hưởng đến Kube-Scheduler:</b> Thao tác này <b style="color: var(--accent-primary);">bỏ qua hoàn toàn (Bypass) 100% quy trình lập lịch</b> của Kube-Scheduler. Scheduler không thực hiện Filtering hay Scoring gì cả. Kubelet trên Node tương ứng nhận lệnh và khởi chạy Pod ngay lập tức.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lưu ý:</b> Pod vẫn sẽ chạy trên Node đó bất kể Node dính Taint <code>NoSchedule</code> hay hết tài nguyên CPU/RAM.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>spec.nodeName</code> vẫn cần Kube-Scheduler chấm điểm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời gán Node trực tiếp nhưng không khẳng định được việc bypass 100% Kube-Scheduler.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc bypass 100% Kube-Scheduler của <code>spec.nodeName</code> và Kubelet chạy Pod trực tiếp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra trường hợp ứng dụng khi Kube-Scheduler bị sập.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh <code>kubectl get pod -o wide</code> có hiển thị tên Node khi gán <code>nodeName</code> không? *(Đáp án: Có, tên Node được hiển thị ngay lập tức kể cả khi Pod chưa <code>Running</code>).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Scheduler gán Pod ngẫu nhiên không qua giai đoạn nào.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được Lọc và Chấm điểm nhưng không phân biệt được vai trò loại bỏ Node không đủ điều kiện vs chấm điểm từ 0-10 (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác quy trình 2 bước Filtering (Lọc) và Scoring (Chấm điểm 0-10) kèm các tiêu chí chính.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng thông báo <code>FailedScheduling</code> trong <code>kubectl describe</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu ở vòng Filtering mà tất cả các Node đều bị loại bỏ thì Pod sẽ ở trạng thái nào? *(Đáp án: Pod bị kẹt ở trạng thái <code>Pending</code> với sự cố <code>FailedScheduling</code>).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Phân biệt sự khác nhau giữa <code>nodeSelector</code> và <code>nodeAffinity</code> trong việc chọn Node cho Pod.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>nodeSelector</code> (Bộ chọn nhãn đơn giản):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ hỗ trợ so sánh khớp cặp nhãn <b style="color: var(--accent-primary);">key-value đơn giản</b> (dạng phép <code>AND</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không hỗ trợ các toán tử logic linh hoạt hay luật mềm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>nodeAffinity</code> (Ràng buộc thân thiện Node):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hỗ trợ các biểu thức toán tử logic phức tạp: <b style="color: var(--accent-primary);"><code>In</code>, <code>NotIn</code>, <code>Exists</code>, <code>DoesNotExist</code>, <code>Gt</code>, <code>Lt</code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân chia thành 2 loại: Luật cứng (<code>required</code>) và Luật mềm (<code>preferred</code> với trọng số <code>weight: 1-100</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 cái như nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được nodeAffinity phức tạp hơn nhưng không nêu được 6 toán tử logic và sự phân chia Luật cứng vs Luật mềm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>nodeSelector</code> (key-value đơn giản) vs <code>nodeAffinity</code> (toán tử logic + luật cứng/luật mềm).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng cấu hình YAML Pod spec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu muốn chọn các Node thuộc Zone <code>us-east-1a</code> HOẶC <code>us-east-1b</code> thì dùng <code>nodeSelector</code> hay <code>nodeAffinity</code>? *(Đáp án: Bắt buộc dùng <code>nodeAffinity</code> với toán tử <code>In: ["us-east-1a", "us-east-1b"]</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>So sánh cơ chế hoạt động của <code>requiredDuringSchedulingIgnoredDuringExecution</code> và <code>preferredDuringSchedulingIgnoredDuringExecution</code> trong <code>nodeAffinity</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>requiredDuringScheduling...</code> (Luật cứng - Mandatory):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Kube-Scheduler <b style="color: var(--accent-primary);">BẮT BUỘC</b> phải chọn Node thoả mãn điều kiện.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Hệ quả:* Nếu không có Node nào trong cụm thoả mãn, Pod sẽ bị kẹt ở trạng thái <b style="color: var(--accent-primary);"><code>Pending</code></b> vĩnh viễn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>preferredDuringScheduling...</code> (Luật mềm - Best-effort):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Kube-Scheduler <b style="color: var(--accent-primary);">ƯU TIÊN</b> chọn Node thoả mãn dựa trên điểm cộng trọng số <code>weight</code> từ <b style="color: var(--accent-primary);">1 đến 100</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Hệ quả:* Nếu không có Node nào thoả mãn, Pod <b style="color: var(--accent-primary);">vẫn được gán vào Node thường</b> khác để chạy bình thường.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa vế <code>IgnoredDuringExecution</code>:</b> Khi Pod đang <code>Running</code>, nếu nhãn Node bị xoá/thay đổi thì Pod vẫn <b style="color: var(--accent-primary);">tiếp tục chạy bình thường</b> mà không bị đuổi.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 cái đều làm Pod dính Pending khi không có Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời required là bắt buộc còn preferred là ưu tiên nhưng không giải thích được dải weight 1-100 và vế <code>IgnoredDuringExecution</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác Luật cứng <code>required</code> (kẹt Pending) vs Luật mềm <code>preferred</code> (weight 1-100, chạy Node khác) và vế <code>IgnoredDuringExecution</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ kịch bản ứng dụng AI vs Web App.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu vế đằng sau thay bằng <code>RequiredDuringExecution</code> thì chuyện gì xảy ra khi nhãn Node bị đổi lúc Pod đang chạy? *(Đáp án: Pod sẽ bị Kubelet tiêu diệt/trục xuất ngay lập tức khi nhãn Node thay đổi).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trọng số <code>weight</code> trong <code>nodeAffinity</code> luật mềm có dải giá trị từ bao nhiêu đến bao nhiêu và nó được Kube-Scheduler sử dụng như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Dải giá trị:</b> <code>weight</code> nhận giá trị số nguyên nằm trong khoảng từ <b style="color: var(--accent-primary);">1 đến 100</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách sử dụng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong giai đoạn Chấm điểm (Scoring Phase), nếu một Node thoả mãn biểu thức <code>preference</code> trong luật mềm, Scheduler sẽ lấy giá trị <code>weight</code> này nhân với hệ số thuật toán để cộng trực tiếp vào tổng điểm của Node đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Node có tổng điểm cao nhất sẽ thắng cuộc. Trọng số càng cao (gần 100) thì mức độ ưu tiên càng lớn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo weight từ 1 đến 10.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời weight từ 1 đến 100 nhưng không giải thích được việc cộng điểm trong giai đoạn Scoring.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác dải giá trị 1-100 và cơ chế cộng điểm cho Node trong giai đoạn Scoring.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ việc kết hợp nhiều quy tắc preferred với weight khác nhau.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có thể khai báo nhiều quy tắc <code>preferred</code> với các <code>weight</code> khác nhau (như 80 và 50) trong cùng 1 Pod spec được không? *(Đáp án: Hoàn toàn được, Scheduler sẽ cộng dồn điểm của các quy tắc thoả mãn).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Kỹ thuật <code>podAntiAffinity</code> với <code>topologyKey: kubernetes.io/hostname</code> mang lại lợi ích gì cho tính sẵn sàng cao (HA) của ứng dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b> Khai báo <code>podAntiAffinity</code> bảo Kube-Scheduler: *"Không được gán Pod này vào Node nào đã chứa một Pod khác có cùng label"*. Với <code>topologyKey: kubernetes.io/hostname</code>, ranh giới phân tách chính là từng Worker Node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích HA:</b> Đảm bảo <b style="color: var(--accent-primary);">mỗi Worker Node chỉ chạy tối đa 1 bản sao Pod</b> thuộc ứng dụng đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chống SPOF:</b> Loại bỏ hoàn toàn rủi ro điểm sập đơn lẻ (Single Point of Failure). Nếu 1 Worker Node bị cháy đĩa cứng hoặc đứt mạng, các Pods trên các Worker Nodes khác vẫn duy trì 100% lưu lượng dịch vụ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo podAntiAffinity dùng để gom Pods vào 1 Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời phân tán Pods nhưng không giải thích được vai trò của <code>topologyKey: kubernetes.io/hostname</code> và việc chống SPOF.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế phân tán 1 Pod/Node qua <code>topologyKey: kubernetes.io/hostname</code> và lợi ích chống SPOF.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, so sánh luật cứng <code>required</code> vs luật mềm <code>preferred</code> trong podAntiAffinity.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu cụm chỉ có 3 Worker Nodes mà bạn deploy 5 bản sao Pods với <code>podAntiAffinity</code> luật cứng (<code>required</code>) thì điều gì xảy ra? *(Đáp án: 3 Pods lên 3 Nodes, 2 Pods còn lại bị kẹt ở <code>Pending</code> do hết Node thoả mãn).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Khi nào người ta nên sử dụng <code>podAffinity</code> để co-locate 2 Pods nằm cùng 1 Node hoặc cùng 1 Zone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trường hợp sử dụng:</b> Khi 2 ứng dụng microservices có <b style="color: var(--accent-primary);">tần suất giao tiếp mạng cực kỳ dày đặc và nhạy cảm với độ trễ (Latency-sensitive)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ví dụ tiêu chuẩn:</b> Co-locate Pod <code>Web Frontend / API Server</code> nằm chung Node với Pod <code>Redis Cache</code> hoặc <code>In-Memory DB</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích:</b> Dữ liệu truyền giữa 2 Pods trên cùng 1 Node qua giao tiếp mạng Loopback/IPC nội bộ, <b style="color: var(--accent-primary);">hạ độ trễ mạng xuống < 1ms</b>, tránh việc gói tin phải đi qua switch/router mạng giữa 2 máy chủ vật lý.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo podAffinity dùng để chống sập Node.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời gom 2 Pods vào 1 Node nhưng không nêu được ví dụ Web App & Redis Cache và lợi ích hạ độ trễ < 1ms.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác kịch bản co-locate Web App & Cache để hạ latency < 1ms qua giao tiếp Loopback nội bộ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra việc dùng <code>topologyKey: topology.kubernetes.io/zone</code> để co-locate cùng Zone.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Rủi ro của việc dùng <code>podAffinity</code> gom Web App và Redis Cache nằm chung 1 Node là gì? *(Đáp án: Nếu Node đó bị sập thì cả Web App và Cache trên Node đó đều bị ảnh hưởng cùng lúc).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh nào dùng để gán vết nhơ Taint lên một Node và câu lệnh nào dùng để xoá Taint đó?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Gán Taint lên Node:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl taint nodes <node-name> <key>=<value>:<Effect></code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">*(Ví dụ: <code>kubectl taint nodes worker-01 dedicated=special:NoSchedule</code>)*</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Xoá Taint khỏi Node:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl taint nodes <node-name> <key>=<value>:<Effect>-</code> (Bổ sung thêm <b style="color: var(--accent-primary);">dấu trừ <code>-</code> ở cuối cùng</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">*(Ví dụ: <code>kubectl taint nodes worker-01 dedicated=special:NoSchedule-</code>)*</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo dùng <code>kubectl label nodes</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được lệnh gán Taint nhưng quên cú pháp thêm dấu trừ <code>-</code> ở cuối khi xoá Taint.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cú pháp gán Taint và xoá Taint (thêm dấu trừ <code>-</code> ở cuối).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc kiểm tra <code>kubectl describe node</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có thể gán Taint mà không cần <code><value></code> (chỉ có <code><key>:<Effect></code>) được không? *(Đáp án: Hoàn toàn được, ví dụ <code>kubectl taint nodes worker-01 dedicated:NoSchedule</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Trình bày sự khác nhau về mức độ tác động của 3 hiệu ứng Taint Effect: <code>NoSchedule</code>, <code>PreferNoSchedule</code>, và <code>NoExecute</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. <code>NoSchedule</code> (Chặn lập lịch mới):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tác động:* Pods MỚI nếu không có toleration sẽ <b style="color: var(--accent-primary);">KHÔNG ĐƯỢC phép gán vào Node</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Pods đang chạy:* Các Pods ĐANG CHẠY trên Node vẫn tiếp tục chạy bình thường mà không bị ảnh hưởng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. <code>PreferNoSchedule</code> (Hạn chế lập lịch mới):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tác động:* Scheduler sẽ <b style="color: var(--accent-primary);">CỐ GẮNG HẠN CHẾ</b> gán Pods mới không có toleration vào Node, nhưng nếu không còn Node nào khác thì vẫn gán vào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3. <code>NoExecute</code> (Trục xuất lập tức):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tác động:* Chặn Pods mới VÀ <b style="color: var(--accent-primary);">TRỤC XUẤT (KILL) TẤT CẢ các Pods ĐANG CHẠY</b> trên Node ngay lập tức nếu Pods đó không có toleration phù hợp.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 3 hiệu ứng Taint giống hệt nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời NoSchedule chặn Pod mới còn NoExecute đuổi Pod cũ nhưng không phân biệt được Pods mới vs Pods đang chạy của từng hiệu ứng (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 3 hiệu ứng <code>NoSchedule</code> (chặn Pod mới), <code>PreferNoSchedule</code> (hạn chế), <code>NoExecute</code> (trục xuất Pods đang chạy).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra thuộc tính <code>tolerationSeconds</code> đi kèm <code>NoExecute</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Hiệu ứng nào trong 3 cái trên nguy hiểm nhất đối với ứng dụng production đang chạy? *(Đáp án: Hiệu ứng <code>NoExecute</code> vì nó lập tức tiêu diệt các Pods đang chạy trên Node).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cấu hình <code>tolerations</code> trên Pod cần những thuộc tính nào để khớp hoàn toàn với một Taint trên Node? Khi nào nên dùng <code>operator: Exists</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Các thuộc tính cần thiết:</b> Khối <code>tolerations</code> cần các trường: <code>key</code>, <code>operator</code> (<code>Equal</code> hoặc <code>Exists</code>), <code>value</code> (nếu operator là Equal), và <code>effect</code> (<code>NoSchedule</code> / <code>NoExecute</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khi nào dùng <code>operator: Exists</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng khi muốn dung thứ cho <b style="color: var(--accent-primary);">MỌI giá trị <code>value</code></b> của một <code>key</code> Taint bất kỳ mà không cần quan tâm value cụ thể là gì.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đặc biệt, nếu để <code>operator: Exists</code> và KHÔNG khai báo <code>key</code>, Pod sẽ dung thứ cho <b style="color: var(--accent-primary);">TẤT CẢ các Taints</b> tồn tại trên mọi Node trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết thuộc tính tolerations.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được key, value, effect nhưng không giải thích được sự khác nhau giữa <code>operator: Equal</code> vs <code>operator: Exists</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác các thuộc tính tolerations và vai trò dung thứ mọi value của <code>operator: Exists</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra tolerations của DaemonSet Pods trong namespace kube-system.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu Taint trên Node là <code>key1=val1:NoSchedule</code> mà Pod khai báo toleration <code>key1=val1:NoExecute</code> thì Pod có được gán vào Node không? *(Đáp án: KHÔNG, vì <code>effect</code> không khớp nhau).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cờ <code>--overwrite</code> trong lệnh <code>kubectl label nodes</code> được sử dụng trong kịch bản nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kịch bản sử dụng:</b> Khi bạn muốn <b style="color: var(--accent-primary);">thay đổi hoặc ghi đè giá trị mới</b> lên một nhãn Key đã tồn tại từ trước trên Node (ví dụ Node đã có nhãn <code>disktype=hdd</code>, bạn muốn chuyển thành <code>disktype=ssd</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nếu không dùng <code>--overwrite</code>:</b> Lệnh <code>kubectl label nodes worker-01 disktype=ssd</code> sẽ bị API Server từ chối và báo lỗi: <code>error: 'disktype' already has a value (hdd), and --overwrite is false</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cờ <code>--overwrite</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dùng để ghi đè nhãn nhưng không giải thích được lỗi API Server bắn ra khi thiếu cờ này.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác kịch bản ghi đè giá trị nhãn đã tồn tại và thông báo lỗi nếu thiếu <code>--overwrite</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với thao tác đổi nhãn Node trong bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào dùng để xoá hoàn toàn một nhãn <code>disktype</code> khỏi Node? *(Đáp án: Lệnh <code>kubectl label nodes worker-01 disktype-</code> với dấu trừ ở cuối).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do dính Pending vì dùng nodeAffinity luật cứng với nhãn sai, 1 âm thầm do sập cả app vì để 3 Pods chung 1 Node) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Pod dính <code>Pending</code> do <code>nodeAffinity</code> luật cứng <code>required</code> với nhãn không tồn tại):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Pod được apply xong nằm trơ trọi ở trạng thái <code>Pending</code> vĩnh viễn, không có bất kỳ container nào được tạo.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl describe pod</code> thấy sự cố <code>0/3 nodes are available: 3 node(s) didn't match Pod's node affinity/selector</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa lại nhãn đúng trên Node (<code>kubectl label nodes</code>) hoặc chuyển <code>nodeAffinity</code> sang dạng luật mềm <code>preferred</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Sập toàn bộ trang web do 3 bản sao Pods dồn chung vào 1 Worker Node):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Hệ thống đang chạy êm đẹp, đột nhiên <code>worker-01</code> bị sập đĩa cứng làm toàn bộ 3 bản sao Pods sập theo, gây gián đoạn trang web 100%.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Chạy <code>kubectl get pods -o wide</code> thấy cả 3 Pods đều nằm trên <code>worker-01</code> do thiếu <code>podAntiAffinity</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Bổ sung khối <code>podAntiAffinity</code> với <code>topologyKey: kubernetes.io/hostname</code> vào Deployment spec để phân tán Pods.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân <code>required</code> với nhãn sai và thiếu <code>podAntiAffinity</code> (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi một Pod dính <code>Pending</code> do <code>FailedScheduling</code>, câu lệnh nào giúp kỹ sư phát hiện nguyên nhân trong 3 giây? *(Đáp án: Lệnh <code>kubectl describe pod <pod-name></code>).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Thao tác khai báo `spec.nodeName` trong Pod spec có tác dụng gì và nó ảnh hưởng thế nào đến Kube-Scheduler?
-
-**Đáp án chuẩn:**
-- **Tác dụng:** Khai báo trực tiếp tên Node cứng (ví dụ `spec.nodeName: worker-01`) trong Pod spec.
-- **Ảnh hưởng đến Kube-Scheduler:** Thao tác này **bỏ qua hoàn toàn (Bypass) 100% quy trình lập lịch** của Kube-Scheduler. Scheduler không thực hiện Filtering hay Scoring gì cả. Kubelet trên Node tương ứng nhận lệnh và khởi chạy Pod ngay lập tức.
-- **Lưu ý:** Pod vẫn sẽ chạy trên Node đó bất kể Node dính Taint `NoSchedule` hay hết tài nguyên CPU/RAM.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `spec.nodeName` vẫn cần Kube-Scheduler chấm điểm.
-- **1đ:** Trả lời gán Node trực tiếp nhưng không khẳng định được việc bypass 100% Kube-Scheduler.
-- **2đ:** Giải thích chuẩn xác việc bypass 100% Kube-Scheduler của `spec.nodeName` và Kubelet chạy Pod trực tiếp.
-- **3đ:** Trả lời xuất sắc, chỉ ra trường hợp ứng dụng khi Kube-Scheduler bị sập.
-
-**Câu hỏi đào sâu:** Lệnh `kubectl get pod -o wide` có hiển thị tên Node khi gán `nodeName` không? *(Đáp án: Có, tên Node được hiển thị ngay lập tức kể cả khi Pod chưa `Running`).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau giữa `nodeSelector` và `nodeAffinity` trong việc chọn Node cho Pod.
-
-**Đáp án chuẩn:**
-- **`nodeSelector` (Bộ chọn nhãn đơn giản):**
-  - Chỉ hỗ trợ so sánh khớp cặp nhãn **key-value đơn giản** (dạng phép `AND`).
-  - Không hỗ trợ các toán tử logic linh hoạt hay luật mềm.
-- **`nodeAffinity` (Ràng buộc thân thiện Node):**
-  - Hỗ trợ các biểu thức toán tử logic phức tạp: **`In`, `NotIn`, `Exists`, `DoesNotExist`, `Gt`, `Lt`**.
-  - Phân chia thành 2 loại: Luật cứng (`required`) và Luật mềm (`preferred` với trọng số `weight: 1-100`).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 cái như nhau.
-- **1đ:** Nói được nodeAffinity phức tạp hơn nhưng không nêu được 6 toán tử logic và sự phân chia Luật cứng vs Luật mềm.
-- **2đ:** Giải thích chuẩn xác `nodeSelector` (key-value đơn giản) vs `nodeAffinity` (toán tử logic + luật cứng/luật mềm).
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng cấu hình YAML Pod spec.
-
-**Câu hỏi đào sâu:** Nếu muốn chọn các Node thuộc Zone `us-east-1a` HOẶC `us-east-1b` thì dùng `nodeSelector` hay `nodeAffinity`? *(Đáp án: Bắt buộc dùng `nodeAffinity` với toán tử `In: ["us-east-1a", "us-east-1b"]`).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** So sánh cơ chế hoạt động của `requiredDuringSchedulingIgnoredDuringExecution` và `preferredDuringSchedulingIgnoredDuringExecution` trong `nodeAffinity`.
-
-**Đáp án chuẩn:**
-- **`requiredDuringScheduling...` (Luật cứng - Mandatory):**
-  - *Cơ chế:* Kube-Scheduler **BẮT BUỘC** phải chọn Node thoả mãn điều kiện.
-  - *Hệ quả:* Nếu không có Node nào trong cụm thoả mãn, Pod sẽ bị kẹt ở trạng thái **`Pending`** vĩnh viễn.
-- **`preferredDuringScheduling...` (Luật mềm - Best-effort):**
-  - *Cơ chế:* Kube-Scheduler **ƯU TIÊN** chọn Node thoả mãn dựa trên điểm cộng trọng số `weight` từ **1 đến 100**.
-  - *Hệ quả:* Nếu không có Node nào thoả mãn, Pod **vẫn được gán vào Node thường** khác để chạy bình thường.
-- **Ý nghĩa vế `IgnoredDuringExecution`:** Khi Pod đang `Running`, nếu nhãn Node bị xoá/thay đổi thì Pod vẫn **tiếp tục chạy bình thường** mà không bị đuổi.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 cái đều làm Pod dính Pending khi không có Node.
-- **1đ:** Trả lời required là bắt buộc còn preferred là ưu tiên nhưng không giải thích được dải weight 1-100 và vế `IgnoredDuringExecution`.
-- **2đ:** Giải thích chuẩn xác Luật cứng `required` (kẹt Pending) vs Luật mềm `preferred` (weight 1-100, chạy Node khác) và vế `IgnoredDuringExecution`.
-- **3đ:** Trả lời xuất sắc, minh hoạ kịch bản ứng dụng AI vs Web App.
-
-**Câu hỏi đào sâu:** Nếu vế đằng sau thay bằng `RequiredDuringExecution` thì chuyện gì xảy ra khi nhãn Node bị đổi lúc Pod đang chạy? *(Đáp án: Pod sẽ bị Kubelet tiêu diệt/trục xuất ngay lập tức khi nhãn Node thay đổi).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Trọng số `weight` trong `nodeAffinity` luật mềm có dải giá trị từ bao nhiêu đến bao nhiêu và nó được Kube-Scheduler sử dụng như thế nào?
-
-**Đáp án chuẩn:**
-- **Dải giá trị:** `weight` nhận giá trị số nguyên nằm trong khoảng từ **1 đến 100**.
-- **Cách sử dụng:**
-  - Trong giai đoạn Chấm điểm (Scoring Phase), nếu một Node thoả mãn biểu thức `preference` trong luật mềm, Scheduler sẽ lấy giá trị `weight` này nhân với hệ số thuật toán để cộng trực tiếp vào tổng điểm của Node đó.
-  - Node có tổng điểm cao nhất sẽ thắng cuộc. Trọng số càng cao (gần 100) thì mức độ ưu tiên càng lớn.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo weight từ 1 đến 10.
-- **1đ:** Trả lời weight từ 1 đến 100 nhưng không giải thích được việc cộng điểm trong giai đoạn Scoring.
-- **2đ:** Giải thích chuẩn xác dải giá trị 1-100 và cơ chế cộng điểm cho Node trong giai đoạn Scoring.
-- **3đ:** Trả lời xuất sắc, minh hoạ việc kết hợp nhiều quy tắc preferred với weight khác nhau.
-
-**Câu hỏi đào sâu:** Có thể khai báo nhiều quy tắc `preferred` với các `weight` khác nhau (như 80 và 50) trong cùng 1 Pod spec được không? *(Đáp án: Hoàn toàn được, Scheduler sẽ cộng dồn điểm của các quy tắc thoả mãn).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Kỹ thuật `podAntiAffinity` với `topologyKey: kubernetes.io/hostname` mang lại lợi ích gì cho tính sẵn sàng cao (HA) của ứng dụng?
-
-**Đáp án chuẩn:**
-- **Cơ chế:** Khai báo `podAntiAffinity` bảo Kube-Scheduler: *"Không được gán Pod này vào Node nào đã chứa một Pod khác có cùng label"*. Với `topologyKey: kubernetes.io/hostname`, ranh giới phân tách chính là từng Worker Node.
-- **Lợi ích HA:** Đảm bảo **mỗi Worker Node chỉ chạy tối đa 1 bản sao Pod** thuộc ứng dụng đó.
-- **Chống SPOF:** Loại bỏ hoàn toàn rủi ro điểm sập đơn lẻ (Single Point of Failure). Nếu 1 Worker Node bị cháy đĩa cứng hoặc đứt mạng, các Pods trên các Worker Nodes khác vẫn duy trì 100% lưu lượng dịch vụ.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo podAntiAffinity dùng để gom Pods vào 1 Node.
-- **1đ:** Trả lời phân tán Pods nhưng không giải thích được vai trò của `topologyKey: kubernetes.io/hostname` và việc chống SPOF.
-- **2đ:** Giải thích chuẩn xác cơ chế phân tán 1 Pod/Node qua `topologyKey: kubernetes.io/hostname` và lợi ích chống SPOF.
-- **3đ:** Trả lời xuất sắc, so sánh luật cứng `required` vs luật mềm `preferred` trong podAntiAffinity.
-
-**Câu hỏi đào sâu:** Nếu cụm chỉ có 3 Worker Nodes mà bạn deploy 5 bản sao Pods với `podAntiAffinity` luật cứng (`required`) thì điều gì xảy ra? *(Đáp án: 3 Pods lên 3 Nodes, 2 Pods còn lại bị kẹt ở `Pending` do hết Node thoả mãn).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Khi nào người ta nên sử dụng `podAffinity` để co-locate 2 Pods nằm cùng 1 Node hoặc cùng 1 Zone?
-
-**Đáp án chuẩn:**
-- **Trường hợp sử dụng:** Khi 2 ứng dụng microservices có **tần suất giao tiếp mạng cực kỳ dày đặc và nhạy cảm với độ trễ (Latency-sensitive)**.
-- **Ví dụ tiêu chuẩn:** Co-locate Pod `Web Frontend / API Server` nằm chung Node với Pod `Redis Cache` hoặc `In-Memory DB`.
-- **Lợi ích:** Dữ liệu truyền giữa 2 Pods trên cùng 1 Node qua giao tiếp mạng Loopback/IPC nội bộ, **hạ độ trễ mạng xuống < 1ms**, tránh việc gói tin phải đi qua switch/router mạng giữa 2 máy chủ vật lý.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo podAffinity dùng để chống sập Node.
-- **1đ:** Trả lời gom 2 Pods vào 1 Node nhưng không nêu được ví dụ Web App & Redis Cache và lợi ích hạ độ trễ < 1ms.
-- **2đ:** Giải thích chuẩn xác kịch bản co-locate Web App & Cache để hạ latency < 1ms qua giao tiếp Loopback nội bộ.
-- **3đ:** Trả lời xuất sắc, chỉ ra việc dùng `topologyKey: topology.kubernetes.io/zone` để co-locate cùng Zone.
-
-**Câu hỏi đào sâu:** Rủi ro của việc dùng `podAffinity` gom Web App và Redis Cache nằm chung 1 Node là gì? *(Đáp án: Nếu Node đó bị sập thì cả Web App và Cache trên Node đó đều bị ảnh hưởng cùng lúc).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Lệnh nào dùng để gán vết nhơ Taint lên một Node và câu lệnh nào dùng để xoá Taint đó?
-
-**Đáp án chuẩn:**
-- **Gán Taint lên Node:**
-  `kubectl taint nodes <node-name> <key>=<value>:<Effect>`
-  *(Ví dụ: `kubectl taint nodes worker-01 dedicated=special:NoSchedule`)*
-- **Xoá Taint khỏi Node:**
-  `kubectl taint nodes <node-name> <key>=<value>:<Effect>-` (Bổ sung thêm **dấu trừ `-` ở cuối cùng**).
-  *(Ví dụ: `kubectl taint nodes worker-01 dedicated=special:NoSchedule-`)*
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo dùng `kubectl label nodes`.
-- **1đ:** Nêu được lệnh gán Taint nhưng quên cú pháp thêm dấu trừ `-` ở cuối khi xoá Taint.
-- **2đ:** Giải thích chuẩn xác cú pháp gán Taint và xoá Taint (thêm dấu trừ `-` ở cuối).
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc kiểm tra `kubectl describe node`.
-
-**Câu hỏi đào sâu:** Có thể gán Taint mà không cần `<value>` (chỉ có `<key>:<Effect>`) được không? *(Đáp án: Hoàn toàn được, ví dụ `kubectl taint nodes worker-01 dedicated:NoSchedule`).*
-
----
-
-### Câu 9 — 🔥
-
-**Hỏi:** Trình bày sự khác nhau về mức độ tác động của 3 hiệu ứng Taint Effect: `NoSchedule`, `PreferNoSchedule`, và `NoExecute`.
-
-**Đáp án chuẩn:**
-- **1. `NoSchedule` (Chặn lập lịch mới):**
-  - *Tác động:* Pods MỚI nếu không có toleration sẽ **KHÔNG ĐƯỢC phép gán vào Node**.
-  - *Pods đang chạy:* Các Pods ĐANG CHẠY trên Node vẫn tiếp tục chạy bình thường mà không bị ảnh hưởng.
-- **2. `PreferNoSchedule` (Hạn chế lập lịch mới):**
-  - *Tác động:* Scheduler sẽ **CỐ GẮNG HẠN CHẾ** gán Pods mới không có toleration vào Node, nhưng nếu không còn Node nào khác thì vẫn gán vào.
-- **3. `NoExecute` (Trục xuất lập tức):**
-  - *Tác động:* Chặn Pods mới VÀ **TRỤC XUẤT (KILL) TẤT CẢ các Pods ĐANG CHẠY** trên Node ngay lập tức nếu Pods đó không có toleration phù hợp.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 3 hiệu ứng Taint giống hệt nhau.
-- **1đ:** Trả lời NoSchedule chặn Pod mới còn NoExecute đuổi Pod cũ nhưng không phân biệt được Pods mới vs Pods đang chạy của từng hiệu ứng (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác 3 hiệu ứng `NoSchedule` (chặn Pod mới), `PreferNoSchedule` (hạn chế), `NoExecute` (trục xuất Pods đang chạy).
-- **3đ:** Trả lời xuất sắc, chỉ ra thuộc tính `tolerationSeconds` đi kèm `NoExecute`.
-
-**Câu hỏi đào sâu:** Hiệu ứng nào trong 3 cái trên nguy hiểm nhất đối với ứng dụng production đang chạy? *(Đáp án: Hiệu ứng `NoExecute` vì nó lập tức tiêu diệt các Pods đang chạy trên Node).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Cấu hình `tolerations` trên Pod cần những thuộc tính nào để khớp hoàn toàn với một Taint trên Node? Khi nào nên dùng `operator: Exists`?
-
-**Đáp án chuẩn:**
-- **Các thuộc tính cần thiết:** Khối `tolerations` cần các trường: `key`, `operator` (`Equal` hoặc `Exists`), `value` (nếu operator là Equal), và `effect` (`NoSchedule` / `NoExecute`).
-- **Khi nào dùng `operator: Exists`:**
-  - Dùng khi muốn dung thứ cho **MỌI giá trị `value`** của một `key` Taint bất kỳ mà không cần quan tâm value cụ thể là gì.
-  - Đặc biệt, nếu để `operator: Exists` và KHÔNG khai báo `key`, Pod sẽ dung thứ cho **TẤT CẢ các Taints** tồn tại trên mọi Node trong cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết thuộc tính tolerations.
-- **1đ:** Nêu được key, value, effect nhưng không giải thích được sự khác nhau giữa `operator: Equal` vs `operator: Exists`.
-- **2đ:** Giải thích chuẩn xác các thuộc tính tolerations và vai trò dung thứ mọi value của `operator: Exists`.
-- **3đ:** Trả lời xuất sắc, chỉ ra tolerations của DaemonSet Pods trong namespace kube-system.
-
-**Câu hỏi đào sâu:** Nếu Taint trên Node là `key1=val1:NoSchedule` mà Pod khai báo toleration `key1=val1:NoExecute` thì Pod có được gán vào Node không? *(Đáp án: KHÔNG, vì `effect` không khớp nhau).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Cờ `--overwrite` trong lệnh `kubectl label nodes` được sử dụng trong kịch bản nào?
-
-**Đáp án chuẩn:**
-- **Kịch bản sử dụng:** Khi bạn muốn **thay đổi hoặc ghi đè giá trị mới** lên một nhãn Key đã tồn tại từ trước trên Node (ví dụ Node đã có nhãn `disktype=hdd`, bạn muốn chuyển thành `disktype=ssd`).
-- **Nếu không dùng `--overwrite`:** Lệnh `kubectl label nodes worker-01 disktype=ssd` sẽ bị API Server từ chối và báo lỗi: `error: 'disktype' already has a value (hdd), and --overwrite is false`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ cờ `--overwrite`.
-- **1đ:** Trả lời dùng để ghi đè nhãn nhưng không giải thích được lỗi API Server bắn ra khi thiếu cờ này.
-- **2đ:** Giải thích chuẩn xác kịch bản ghi đè giá trị nhãn đã tồn tại và thông báo lỗi nếu thiếu `--overwrite`.
-- **3đ:** Trả lời xuất sắc, liên hệ với thao tác đổi nhãn Node trong bài lab.
-
-**Câu hỏi đào sâu:** Lệnh nào dùng để xoá hoàn toàn một nhãn `disktype` khỏi Node? *(Đáp án: Lệnh `kubectl label nodes worker-01 disktype-` với dấu trừ ở cuối).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do dính Pending vì dùng nodeAffinity luật cứng với nhãn sai, 1 âm thầm do sập cả app vì để 3 Pods chung 1 Node) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Pod dính `Pending` do `nodeAffinity` luật cứng `required` với nhãn không tồn tại):**
-   - *Triệu chứng:* Pod được apply xong nằm trơ trọi ở trạng thái `Pending` vĩnh viễn, không có bất kỳ container nào được tạo.
-   - *Phát hiện:* Gõ `kubectl describe pod` thấy sự cố `0/3 nodes are available: 3 node(s) didn't match Pod's node affinity/selector`.
-   - *Khắc phục:* Sửa lại nhãn đúng trên Node (`kubectl label nodes`) hoặc chuyển `nodeAffinity` sang dạng luật mềm `preferred`.
-2. **Chế độ hỏng 2 (Âm thầm - Sập toàn bộ trang web do 3 bản sao Pods dồn chung vào 1 Worker Node):**
-   - *Triệu chứng:* Hệ thống đang chạy êm đẹp, đột nhiên `worker-01` bị sập đĩa cứng làm toàn bộ 3 bản sao Pods sập theo, gây gián đoạn trang web 100%.
-   - *Phát hiện:* Chạy `kubectl get pods -o wide` thấy cả 3 Pods đều nằm trên `worker-01` do thiếu `podAntiAffinity`.
-   - *Khắc phục:* Bổ sung khối `podAntiAffinity` với `topologyKey: kubernetes.io/hostname` vào Deployment spec để phân tán Pods.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân `required` với nhãn sai và thiếu `podAntiAffinity` (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi một Pod dính `Pending` do `FailedScheduling`, câu lệnh nào giúp kỹ sư phát hiện nguyên nhân trong 3 giây? *(Đáp án: Lệnh `kubectl describe pod <pod-name>`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Kube-Scheduler chọn Node qua 2 giai đoạn: Lọc (Filtering — loại Node không đủ điều kiện) và Chấm điểm (Scoring — chấm 0-10 chọn Node cao điểm nhất)."*
+2. *"<code>spec.nodeName</code> gán cứng Pod vào Node chỉ định, bypass 100% quy trình lập lịch của Kube-Scheduler."*
+3. *"<code>nodeAffinity</code> phân chia thành luật cứng <code>required</code> (kẹt Pending nếu không có Node) và luật mềm <code>preferred</code> (ưu tiên theo <code>weight: 1-100</code>)."*
+4. *"<code>podAntiAffinity</code> với <code>topologyKey: kubernetes.io/hostname</code> đảm bảo các bản sao Pod phân tán trên các Node khác nhau, loại bỏ điểm sập đơn lẻ SPOF."*
+5. *"Taint gắn trên Node (<code>NoSchedule</code>, <code>PreferNoSchedule</code>, <code>NoExecute</code>) còn Toleration gắn trên Pod; Taint <code>NoExecute</code> trục xuất lập tức các Pods đang chạy không có toleration."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1225,40 +1291,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"`nodeAffinity` phân chia thành luật cứng `required` (kẹt Pending nếu không có Node) và luật mềm `preferred` (ưu tiên theo `weight: 1-100`)."*
 4. *"`podAntiAffinity` với `topologyKey: kubernetes.io/hostname` đảm bảo các bản sao Pod phân tán trên các Node khác nhau, loại bỏ điểm sập đơn lẻ SPOF."*
 5. *"Taint gắn trên Node (`NoSchedule`, `PreferNoSchedule`, `NoExecute`) còn Toleration gắn trên Pod; Taint `NoExecute` trục xuất lập tức các Pods đang chạy không có toleration."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Quy trình 2 giai đoạn Filtering (Lọc) & Scoring (Chấm điểm) (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Thao tác `spec.nodeName` bypass 100% Kube-Scheduler |
-| Câu 3 | ★★★ | 3 | | Phân biệt `nodeSelector` (key-value) vs `nodeAffinity` (toán tử logic) |
-| Câu 4 | ★★★ | 3 | | So sánh `nodeAffinity` luật cứng `required` vs luật mềm `preferred` |
-| Câu 5 | ★★★ | 3 | | Dải trọng số `weight: 1-100` trong `nodeAffinity` luật mềm |
-| Câu 6 | ★★★ | 3 | | `podAntiAffinity` với `topologyKey: kubernetes.io/hostname` chống SPOF |
-| Câu 7 | ★★★ | 3 | | `podAffinity` co-locate Web App & Cache hạ latency < 1ms |
-| Câu 8 | ★★★ | 3 | | Lệnh gán Taint và xoá Taint (thêm dấu trừ `-` ở cuối) |
-| Câu 9 | 🔥 | 3 | | 3 hiệu ứng Taint Effect (`NoSchedule`, `PreferNoSchedule`, `NoExecute`) (trần 1đ nếu thiếu) |
-| Câu 10 | ★★★ | 3 | | Thuộc tính `tolerations` và vai trò của `operator: Exists` |
-| Câu 11 | ★★★ | 3 | | Cờ `--overwrite` trong `kubectl label nodes` |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (nodeAffinity luật cứng sai nhãn & dồn 3 Pods vào 1 Node) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các Pods trong cụm và trích xuất danh sách các Pods đang bị kẹt ở trạng thái `Pending` do `FailedScheduling`.
-2. **BTVN 2:** Thực hành dán nhãn `zone=us-east-1a` cho `worker-01` và `zone=us-east-1b` cho `worker-02`, sau đó viết 1 Deployment có `nodeAffinity` dạng `preferred` ưu tiên `zone-1a`.
-3. **BTVN 3:** Gán Taint `maintenance=true:NoExecute` lên `worker-01` và quan sát hành vi Kubelet trục xuất các Pods đang chạy sang Worker Node khác.
-4. **BTVN 4 — Chuẩn bị cho Buổi 18 (`buoi-18-tai-nguyen-qos-va-throttling`):**
-   - *Câu 1:* Phân biệt sự khác nhau giữa tài nguyên yêu cầu `resources.requests` và giới hạn tối đa `resources.limits` (CPU và Memory).
-   - *Câu 2:* Ba lớp chất lượng dịch vụ QoS Classes (`Guaranteed`, `Burstable`, `BestEffort`) trong Kubernetes được Kubelet phân loại dựa trên quy tắc nào?
-   - *Câu 3:* Hiện tượng CFS Throttling đối với CPU khác với hiện tượng OOMKilled đối với Memory như thế nào về tác động lên container?
-
-> **Đoạn kết nối Buổi 18:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 18 — buổi học quản lý tài nguyên tính toán (CPU/RAM), phân loại lớp chất lượng dịch vụ QoS Classes, cơ chế bị bóp hiệu năng CPU Throttling và cơ chế tiêu diệt OOMKilled trong CKA và CKAD.
 
 ---
 
@@ -1591,15 +1623,15 @@ kubectl describe nodes | grep -iE "Name:|Taints:"
 kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.spec.nodeName}'
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 18] Quản Trị Tài Nguyên Điện Toán: Requests, Limits, QoS Classes (Guaranteed/Burstable), CFS Throttling & OOMKill](cka-18-18-tai-nguyen-qos-va-throttling.html).
+
 {% endraw %}

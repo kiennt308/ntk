@@ -439,24 +439,6 @@ graph TD
 | Official Docs: Certificate Signing Requests | Kubernetes v1.35 | Cấp cert người dùng qua CSR API |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Hạ tầng PKI Kubernetes: 3 cây CA và các cặp khóa | 12 phút |
-| §5 | Giải mã tệp Kubeconfig: Cluster, User, Context | 12 phút |
-| §6 | Quy trình tạo User bằng X.509 Cert và CSR API | 10 phút |
-| §7 | Kiểm tra và gia hạn chứng chỉ với `kubeadm certs` | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -869,24 +851,11 @@ rm -f /tmp/pki-files.txt /tmp/root-ca-info.txt /tmp/apiserver-cert-info.txt /tmp
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-07/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khảo sát thư mục `/etc/kubernetes/pki/` và 3 cây CA độc lập | 30 phút |
-| L4 | Bước 2 — Giải mã tệp Kubeconfig và thực hành chuyển đổi Context | 30 phút |
-| L5 | Bước 3 — Tạo User `dev-user` mới bằng OpenSSL và CSR API | 30 phút |
-| L6 | Bước 4 — Kiểm tra hạn chứng chỉ và gia hạn bằng `kubeadm certs renew` | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -900,248 +869,348 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cặp khóa <code>sa.key</code> và <code>sa.pub</code> phục vụ mục đích gì trong Kubernetes? Có phải chứng chỉ x509 không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chứa <b style="color: var(--accent-primary);">3 cây CA độc lập</b>:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>Root CA</code> (<code>ca.crt</code>, <code>ca.key</code>): CA tối cao ký duyệt chứng chỉ cho API Server, Kubelet client/server và admin Kubeconfig.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>Front Proxy CA</code> (<code>front-proxy-ca.crt</code>, <code>front-proxy-ca.key</code>): CA riêng phục vụ xác thực người dùng khi truy cập qua Aggregated API Server (như metrics-server).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>etcd CA</code> (<code>etcd/ca.crt</code>, <code>etcd/ca.key</code>): CA riêng bảo vệ giao tiếp TLS giữa các node etcd và giữa etcd với API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cặp khóa <code>sa.key</code> và <code>sa.pub</code> <b style="color: var(--accent-primary);">KHÔNG phải là chứng chỉ x509</b> (không có tệp <code>.crt</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nó là cặp khóa mã hoá asymmetric <b style="color: var(--accent-primary);">RSA Key Pair</b> dùng riêng cho cơ chế xác thực ServiceAccount Token.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b> API Server sử dụng <code>sa.key</code> (private key) để ký chữ ký số vào các ServiceAccount JWT Bearer Token. Khi Pod gửi token tới, API Server/ServiceAccount Controller sử dụng <code>sa.pub</code> (public key) để xác minh chữ ký mà không cần gọi tới CA.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Nhầm lẫn <code>sa.key</code> là chứng chỉ SSL/TLS x509.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời cho ServiceAccount nhưng không nêu được đây là RSA key pair dùng ký JWT token.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chính xác RSA Key Pair ký và xác thực ServiceAccount JWT token.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu định dạng token nạp vào Pod tại <code>/var/run/secrets/kubernetes.io/serviceaccount/token</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu tệp <code>sa.key</code> bị mất thì điều gì xảy ra? *(Đáp án: API Server không thể tạo và ký mới các ServiceAccount Token cho Pod).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo chỉ có 1 CA duy nhất cho toàn bộ cụm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được có nhiều CA nhưng không chỉ ra đủ 3 cây CA (Root CA, Front Proxy CA, etcd CA) (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chính xác 3 cây CA độc lập và vai trò cô lập bề mặt tấn công.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu đường dẫn các file <code>.crt</code> và cảnh báo nguy cơ nếu lộ tệp <code>ca.key</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao không nên dùng chung Root CA cho etcd? *(Đáp án: Để cô lập etcd; nếu API Server bị tấn công lộ CA thì hacker vẫn không thể truy cập thẳng etcd database).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Giải mã 3 phần chính cấu thành nên một tệp Kubeconfig chuẩn: <code>clusters</code>, <code>users</code>, <code>contexts</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. <code>clusters</code>:</b> Khai báo thông tin API Server (địa chỉ URL <code>server: https://...</code> và chứng chỉ CA root <code>certificate-authority-data</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. <code>users</code>:</b> Khai báo danh tính xác thực (chứng chỉ <code>client-certificate-data</code> và khóa riêng <code>client-key-data</code> hoặc token).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3. <code>contexts</code>:</b> Tổ hợp ghép nối 1 <code>cluster</code> + 1 <code>user</code> + 1 <code>namespace</code> mặc định.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường <code>current-context</code> chỉ định context nào đang được <code>kubectl</code> sử dụng mặc định.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 3 mảng dữ liệu trong Kubeconfig.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 3 tên mảng nhưng không giải thích được mảng <code>contexts</code> là phép ghép nối giữa cluster và user.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác vai trò của 3 mảng <code>clusters</code>, <code>users</code>, <code>contexts</code> và <code>current-context</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl config set-context</code> và <code>kubectl config use-context</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao xem toàn bộ file Kubeconfig đã giải mã chuỗi base64 cert data? *(Đáp án: Dùng lệnh kubectl config view --raw).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cờ <code>--embed-certs=true</code> có tác dụng gì khi xuất tệp Kubeconfig di động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <code>--embed-certs=true</code> chỉ thị cho <code>kubectl</code> đọc nội dung chứng chỉ/key trên đĩa, mã hoá thành <b style="color: var(--accent-primary);">chuỗi base64</b> và nhúng trực tiếp vào các trường <code>certificate-authority-data</code>, <code>client-certificate-data</code>, <code>client-key-data</code> của file Kubeconfig.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Giúp tệp Kubeconfig trở nên độc lập và di động 100%. Khi copy file Kubeconfig sang laptop cá nhân của kỹ sư, <code>kubectl</code> không bị lỗi do gãy đường dẫn file cert gốc (<code>/etc/kubernetes/pki/...</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cờ này dùng để mã hoá mật khẩu user.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời nhúng cert nhưng không giải thích được mã hoá base64 và việc tránh gãy đường dẫn file.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế mã hoá base64 nhúng cert giúp Kubeconfig di động.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra sự khác biệt giữa <code>client-certificate</code> (path) và <code>client-certificate-data</code> (base64).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu không mở cờ <code>--embed-certs=true</code> thì trong file Kubeconfig sẽ xuất hiện trường tên là gì? *(Đáp án: Xuất hiện trường client-certificate chứa đường dẫn file đĩa).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Kubernetes xác thực danh tính người dùng dựa vào đâu? Hai trường <code>CN</code> và <code>O</code> trong chứng chỉ X.509 đại diện cho thông tin gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubernetes xác thực danh tính người dùng dựa trên <b style="color: var(--accent-primary);">X.509 Client Certificate</b> được ký bởi Root CA của cụm (Kubernetes KHÔNG có đối tượng API <code>User</code> lưu trong etcd).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa 2 trường:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>CN</code> (Common Name): Đại diện cho <b style="color: var(--accent-primary);">Username</b> (Tên người dùng, ví dụ <code>dev-user</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>O</code> (Organization): Đại diện cho <b style="color: var(--accent-primary);">Group</b> (Nhóm người dùng, ví dụ <code>developers</code>, <code>system:masters</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Kubernetes tạo User bằng lệnh <code>kubectl create user</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dựa vào X.509 cert nhưng nhầm lẫn giữa <code>CN</code> và <code>O</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>CN</code> = Username, <code>O</code> = Group và cơ chế không có DB User.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng chuỗi <code>-subj "/CN=john/O=devs"</code> trong lệnh OpenSSL.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nhóm <code>O=system:masters</code> có đặc quyền gì trong cụm Kubernetes? *(Đáp án: Được gán mặc định quyền cluster-admin tối cao qua ClusterRoleBinding system:masters).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Trình bày quy trình 4 bước cấp User mới cho nhà phát triển bằng Kubernetes CSR API.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 1 (Kỹ sư):</b> Dùng OpenSSL tạo Khóa riêng (<code>user.key</code>) và tệp yêu cầu ký chứng chỉ (<code>user.csr</code>) chứa <code>/CN=username/O=groupname</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 2 (Kỹ sư):</b> Mã hoá base64 tệp CSR và tạo đối tượng API <code>CertificateSigningRequest</code> nộp lên cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 3 (Quản trị viên):</b> Kiểm tra đơn và chạy lệnh <code>kubectl certificate approve <csr-name></code> để duyệt đơn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 4 (Kỹ sư/Quản trị viên):</b> Trích xuất Client Cert đã được Root CA ký từ trường <code>.status.certificate</code> của CSR và nhúng vào tệp Kubeconfig di động.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được các bước tạo cert hoặc bảo nộp cert trực tiếp vào etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tạo cert và approve nhưng thiếu bước tạo đối tượng API <code>CertificateSigningRequest</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chính xác quy trình 4 bước chuẩn qua CSR API.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu được trường <code>signerName: kubernetes.io/kube-apiserver-client</code> trong YAML CSR.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao quy trình này lại an toàn hơn việc gửi tệp <code>user.csr</code> cho Admin tự dùng <code>ca.key</code> để ký offline? *(Đáp án: Vì kỹ sư tự gửi CSR qua API Server audit log; Admin duyệt qua kubectl mà không cần chạm vào ca.key).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Lệnh <code>kubectl certificate approve</code> làm nhiệm vụ gì trong quy trình CSR?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>kubectl certificate approve</code> thay đổi trạng thái đối tượng <code>CertificateSigningRequest</code> từ <code>Pending</code> sang <code>Approved</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ngay sau khi được approve, <b style="color: var(--accent-primary);">Kube-Controller-Manager</b> (chạy CSRSigningController) sẽ sử dụng tệp khóa riêng <code>ca.key</code> của Root CA để ký vào tệp CSR, tạo ra chứng chỉ X.509 Client Certificate chính thức và ghi ngược vào trường <code>.status.certificate</code> của đối tượng CSR.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo lệnh này dùng để tạo user trong etcd.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời duyệt đơn nhưng không nêu được vai trò của Controller Manager dùng <code>ca.key</code> ký cert.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chính xác sự thay đổi trạng thái <code>Approved</code> và hành động ký cert của Controller Manager.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu lệnh từ chối tương ứng là <code>kubectl certificate deny</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu quản trị viên muốn từ chối một đơn CSR thì dùng lệnh gì? *(Đáp án: Chạy lệnh kubectl certificate deny <csr-name>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Thời hạn sử dụng mặc định của chứng chỉ Control Plane do <code>kubeadm</code> tạo ra là bao lâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chứng chỉ lá (Leaf Certificates) của Control Plane (API Server, Kubelet client, etcd client) do <code>kubeadm</code> tạo ra có thời hạn sử dụng mặc định là <b style="color: var(--accent-primary);">đúng 1 năm (365 ngày)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Lưu ý:* Riêng chứng chỉ Root CA (<code>ca.crt</code>) có thời hạn là <b style="color: var(--accent-primary);">10 năm (3650 ngày)</b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo chứng chỉ có thời hạn vĩnh viễn hoặc 100 năm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời 1 năm nhưng nhầm lẫn chứng chỉ Root CA cũng là 1 năm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 1 năm (365 ngày) cho leaf certs và 10 năm cho Root CA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu hậu quả khi cert 1 năm bị hết hạn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Điều gì xảy ra đối với các Pod đang chạy khi chứng chỉ API Server 1 năm bị hết hạn? *(Đáp án: Pod đang chạy vẫn duy trì nhưng không thể thực hiện bất kỳ lệnh kubectl hay API call mới nào).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Bộ lệnh nào giúp kiểm tra ngày hết hạn chứng chỉ và gia hạn toàn bộ chứng chỉ Control Plane do <code>kubeadm</code> quản lý?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiểm tra ngày hết hạn:</b> <code>sudo kubeadm certs check-expiration</code> (hiển thị danh sách tất cả chứng chỉ, ngày hết hạn và số ngày còn lại).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Gia hạn toàn bộ chứng chỉ:</b> <code>sudo kubeadm certs renew all</code> (ký lại toàn bộ chứng chỉ leaf thêm 365 ngày).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Áp dụng chứng chỉ mới:</b> Bắt buộc chạy <code>sudo systemctl restart containerd kubelet</code> để các tiến trình nạp chứng chỉ mới từ đĩa vào bộ nhớ RAM.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết lệnh <code>kubeadm certs</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>kubeadm certs renew</code> nhưng không nhớ lệnh <code>check-expiration</code> (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chính xác bộ lệnh <code>check-expiration</code>, <code>renew all</code> và việc restart Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu lệnh gia hạn riêng lẻ từng chứng chỉ như <code>kubeadm certs renew apiserver</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh <code>kubeadm certs renew all</code> có tự động làm thay đổi dữ liệu etcd hay làm mất các Deployment/Pod không? *(Đáp án: Không, nó chỉ đổi file cert trên đĩa, dữ liệu etcd giữ nguyên 100%).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao sau khi chạy lệnh <code>kubeadm certs renew all</code> lại bắt buộc phải restart <code>kubelet</code> và containerd?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>kubeadm certs renew all</code> chỉ thực hiện thao tác <b style="color: var(--accent-primary);">ghi đè tệp chứng chỉ mới lên đĩa cứng</b> <code>/etc/kubernetes/pki/</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tiến trình <code>kubelet</code> và <code>kube-apiserver</code> đang chạy trong bộ nhớ RAM vẫn tiếp tục <b style="color: var(--accent-primary);">giữ và sử dụng chứng chỉ cũ</b> đã được nạp vào RAM lúc khởi động.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu không restart dịch vụ, sau khi chứng chỉ cũ hết hạn, Kubelet trong RAM vẫn dùng cert cũ và bị từ chối kết nối TLS Handshake. Việc restart giúp tiến trình nạp lại chứng chỉ mới từ đĩa vào RAM.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo restart để xoá Pod cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được để nạp lại cert nhưng không giải thích được sự khác biệt giữa cert trên đĩa cứng và cert trong RAM tiến trình.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc nạp chứng chỉ từ đĩa cứng vào bộ nhớ RAM của tiến trình Kubelet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với việc static pods (API Server) tự động restart khi file manifest/cert đổi.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Static Pod <code>kube-apiserver</code> có cần restart thủ công bằng <code>systemctl</code> không? *(Đáp án: Không, Kubelet tự phát hiện file cert đổi và tự restart Static Pod apiserver).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Phân biệt sự khác nhau giữa chứng chỉ Root CA (<code>ca.crt</code>) và chứng chỉ lá API Server (<code>apiserver.crt</code>).</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ca.crt</code> (Root CA):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đóng vai trò là <b style="color: var(--accent-primary);">Nhà chức trách ký duyệt (Self-signed Trust Anchor)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng để ký cấp chứng chỉ cho các thành phần khác. Thời hạn <b style="color: var(--accent-primary);">10 năm</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tệp <code>ca.key</code> chứa khóa riêng tối mật.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>apiserver.crt</code> (Leaf Certificate):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đóng vai trò là <b style="color: var(--accent-primary);">Chứng chỉ định danh máy chủ (Server Certificate)</b> cho API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Được ký bởi <code>ca.crt</code>. Thời hạn <b style="color: var(--accent-primary);">1 năm</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chứa danh sách IP và DNS Subject Alternative Names (SANs) của API Server.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo ca.crt và apiserver.crt là một.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời ca.crt là master còn apiserver.crt là node nhưng thiếu phân biệt Issuer/Subject và thời hạn 10 năm vs 1 năm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác Trust Anchor (10 năm) vs Leaf Server Cert (1 năm).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu trường SANs (Subject Alternative Names) trong <code>apiserver.crt</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu đổi IP của Control Plane node thì có cần ký lại <code>apiserver.crt</code> không? *(Đáp án: Có, vì IP mới phải được bổ sung vào danh sách SANs của apiserver.crt).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do thiếu --embed-certs, 1 âm thầm do quên restart dịch vụ sau renew) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Thiếu <code>--embed-certs=true</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Kubeconfig chạy rất tốt trên máy Control Plane, nhưng khi copy file sang máy cá nhân của kỹ sư thì <code>kubectl</code> báo <code>unable to read client-cert</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra file Kubeconfig thấy xuất hiện <code>client-certificate: /etc/...</code> thay vì <code>client-certificate-data: LS0t...</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Tạo lại Kubeconfig có cờ <code>--embed-certs=true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Quên restart Kubelet sau <code>certs renew</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Chạy <code>kubeadm certs renew all</code> báo thành công 100%, kiểm tra file trên đĩa thấy hạn mới. Nhưng đúng 24h sau cụm sập TLS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Đọc log Kubelet thấy lỗi <code>x509: certificate has expired</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Chạy <code>sudo systemctl restart kubelet containerd</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân cert path gãy vs cert RAM cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao kiểm tra ngày hết hạn của chứng chỉ mà Kubelet đang thực sự sử dụng trong RAM? *(Đáp án: Dùng OpenSSL kết nối trực tiếp tới cổng Kubelet 10250 hoặc API 6443 để đọc TLS cert).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Cặp khóa `sa.key` và `sa.pub` phục vụ mục đích gì trong Kubernetes? Có phải chứng chỉ x509 không?
-
-**Đáp án chuẩn:**
-- Cặp khóa `sa.key` và `sa.pub` **KHÔNG phải là chứng chỉ x509** (không có tệp `.crt`).
-- Nó là cặp khóa mã hoá asymmetric **RSA Key Pair** dùng riêng cho cơ chế xác thực ServiceAccount Token.
-- **Cơ chế:** API Server sử dụng `sa.key` (private key) để ký chữ ký số vào các ServiceAccount JWT Bearer Token. Khi Pod gửi token tới, API Server/ServiceAccount Controller sử dụng `sa.pub` (public key) để xác minh chữ ký mà không cần gọi tới CA.
-
-**Tiêu chí chấm:**
-- **0đ:** Nhầm lẫn `sa.key` là chứng chỉ SSL/TLS x509.
-- **1đ:** Trả lời cho ServiceAccount nhưng không nêu được đây là RSA key pair dùng ký JWT token.
-- **2đ:** Giải thích chính xác RSA Key Pair ký và xác thực ServiceAccount JWT token.
-- **3đ:** Trả lời xuất sắc, nêu định dạng token nạp vào Pod tại `/var/run/secrets/kubernetes.io/serviceaccount/token`.
-
-**Câu hỏi đào sâu:** Nếu tệp `sa.key` bị mất thì điều gì xảy ra? *(Đáp án: API Server không thể tạo và ký mới các ServiceAccount Token cho Pod).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Giải mã 3 phần chính cấu thành nên một tệp Kubeconfig chuẩn: `clusters`, `users`, `contexts`.
-
-**Đáp án chuẩn:**
-- **1. `clusters`:** Khai báo thông tin API Server (địa chỉ URL `server: https://...` và chứng chỉ CA root `certificate-authority-data`).
-- **2. `users`:** Khai báo danh tính xác thực (chứng chỉ `client-certificate-data` và khóa riêng `client-key-data` hoặc token).
-- **3. `contexts`:** Tổ hợp ghép nối 1 `cluster` + 1 `user` + 1 `namespace` mặc định.
-- Trường `current-context` chỉ định context nào đang được `kubectl` sử dụng mặc định.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 3 mảng dữ liệu trong Kubeconfig.
-- **1đ:** Nêu được 3 tên mảng nhưng không giải thích được mảng `contexts` là phép ghép nối giữa cluster và user.
-- **2đ:** Phân tích chính xác vai trò của 3 mảng `clusters`, `users`, `contexts` và `current-context`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl config set-context` và `kubectl config use-context`.
-
-**Câu hỏi đào sâu:** Làm sao xem toàn bộ file Kubeconfig đã giải mã chuỗi base64 cert data? *(Đáp án: Dùng lệnh kubectl config view --raw).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Cờ `--embed-certs=true` có tác dụng gì khi xuất tệp Kubeconfig di động?
-
-**Đáp án chuẩn:**
-- Cờ `--embed-certs=true` chỉ thị cho `kubectl` đọc nội dung chứng chỉ/key trên đĩa, mã hoá thành **chuỗi base64** và nhúng trực tiếp vào các trường `certificate-authority-data`, `client-certificate-data`, `client-key-data` của file Kubeconfig.
-- **Tác dụng:** Giúp tệp Kubeconfig trở nên độc lập và di động 100%. Khi copy file Kubeconfig sang laptop cá nhân của kỹ sư, `kubectl` không bị lỗi do gãy đường dẫn file cert gốc (`/etc/kubernetes/pki/...`).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo cờ này dùng để mã hoá mật khẩu user.
-- **1đ:** Trả lời nhúng cert nhưng không giải thích được mã hoá base64 và việc tránh gãy đường dẫn file.
-- **2đ:** Giải thích chuẩn xác cơ chế mã hoá base64 nhúng cert giúp Kubeconfig di động.
-- **3đ:** Trả lời xuất sắc, chỉ ra sự khác biệt giữa `client-certificate` (path) và `client-certificate-data` (base64).
-
-**Câu hỏi đào sâu:** Nếu không mở cờ `--embed-certs=true` thì trong file Kubeconfig sẽ xuất hiện trường tên là gì? *(Đáp án: Xuất hiện trường client-certificate chứa đường dẫn file đĩa).*
-
----
-
-### Câu 5 — ★★
-
-**Hỏi:** Kubernetes xác thực danh tính người dùng dựa vào đâu? Hai trường `CN` và `O` trong chứng chỉ X.509 đại diện cho thông tin gì?
-
-**Đáp án chuẩn:**
-- Kubernetes xác thực danh tính người dùng dựa trên **X.509 Client Certificate** được ký bởi Root CA của cụm (Kubernetes KHÔNG có đối tượng API `User` lưu trong etcd).
-- **Ý nghĩa 2 trường:**
-  - `CN` (Common Name): Đại diện cho **Username** (Tên người dùng, ví dụ `dev-user`).
-  - `O` (Organization): Đại diện cho **Group** (Nhóm người dùng, ví dụ `developers`, `system:masters`).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Kubernetes tạo User bằng lệnh `kubectl create user`.
-- **1đ:** Trả lời dựa vào X.509 cert nhưng nhầm lẫn giữa `CN` và `O`.
-- **2đ:** Giải thích chuẩn xác `CN` = Username, `O` = Group và cơ chế không có DB User.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng chuỗi `-subj "/CN=john/O=devs"` trong lệnh OpenSSL.
-
-**Câu hỏi đào sâu:** Nhóm `O=system:masters` có đặc quyền gì trong cụm Kubernetes? *(Đáp án: Được gán mặc định quyền cluster-admin tối cao qua ClusterRoleBinding system:masters).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Trình bày quy trình 4 bước cấp User mới cho nhà phát triển bằng Kubernetes CSR API.
-
-**Đáp án chuẩn:**
-- **Bước 1 (Kỹ sư):** Dùng OpenSSL tạo Khóa riêng (`user.key`) và tệp yêu cầu ký chứng chỉ (`user.csr`) chứa `/CN=username/O=groupname`.
-- **Bước 2 (Kỹ sư):** Mã hoá base64 tệp CSR và tạo đối tượng API `CertificateSigningRequest` nộp lên cụm.
-- **Bước 3 (Quản trị viên):** Kiểm tra đơn và chạy lệnh `kubectl certificate approve <csr-name>` để duyệt đơn.
-- **Bước 4 (Kỹ sư/Quản trị viên):** Trích xuất Client Cert đã được Root CA ký từ trường `.status.certificate` của CSR và nhúng vào tệp Kubeconfig di động.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được các bước tạo cert hoặc bảo nộp cert trực tiếp vào etcd.
-- **1đ:** Nêu được tạo cert và approve nhưng thiếu bước tạo đối tượng API `CertificateSigningRequest`.
-- **2đ:** Trình bày chính xác quy trình 4 bước chuẩn qua CSR API.
-- **3đ:** Trả lời xuất sắc, nêu được trường `signerName: kubernetes.io/kube-apiserver-client` trong YAML CSR.
-
-**Câu hỏi đào sâu:** Tại sao quy trình này lại an toàn hơn việc gửi tệp `user.csr` cho Admin tự dùng `ca.key` để ký offline? *(Đáp án: Vì kỹ sư tự gửi CSR qua API Server audit log; Admin duyệt qua kubectl mà không cần chạm vào ca.key).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Lệnh `kubectl certificate approve` làm nhiệm vụ gì trong quy trình CSR?
-
-**Đáp án chuẩn:**
-- Lệnh `kubectl certificate approve` thay đổi trạng thái đối tượng `CertificateSigningRequest` từ `Pending` sang `Approved`.
-- Ngay sau khi được approve, **Kube-Controller-Manager** (chạy CSRSigningController) sẽ sử dụng tệp khóa riêng `ca.key` của Root CA để ký vào tệp CSR, tạo ra chứng chỉ X.509 Client Certificate chính thức và ghi ngược vào trường `.status.certificate` của đối tượng CSR.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo lệnh này dùng để tạo user trong etcd.
-- **1đ:** Trả lời duyệt đơn nhưng không nêu được vai trò của Controller Manager dùng `ca.key` ký cert.
-- **2đ:** Giải thích chính xác sự thay đổi trạng thái `Approved` và hành động ký cert của Controller Manager.
-- **3đ:** Trả lời xuất sắc, nêu lệnh từ chối tương ứng là `kubectl certificate deny`.
-
-**Câu hỏi đào sâu:** Nếu quản trị viên muốn từ chối một đơn CSR thì dùng lệnh gì? *(Đáp án: Chạy lệnh kubectl certificate deny <csr-name>).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Thời hạn sử dụng mặc định của chứng chỉ Control Plane do `kubeadm` tạo ra là bao lâu?
-
-**Đáp án chuẩn:**
-- Chứng chỉ lá (Leaf Certificates) của Control Plane (API Server, Kubelet client, etcd client) do `kubeadm` tạo ra có thời hạn sử dụng mặc định là **đúng 1 năm (365 ngày)**.
-- *Lưu ý:* Riêng chứng chỉ Root CA (`ca.crt`) có thời hạn là **10 năm (3650 ngày)**.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo chứng chỉ có thời hạn vĩnh viễn hoặc 100 năm.
-- **1đ:** Trả lời 1 năm nhưng nhầm lẫn chứng chỉ Root CA cũng là 1 năm.
-- **2đ:** Giải thích chuẩn xác 1 năm (365 ngày) cho leaf certs và 10 năm cho Root CA.
-- **3đ:** Trả lời xuất sắc, nêu hậu quả khi cert 1 năm bị hết hạn.
-
-**Câu hỏi đào sâu:** Điều gì xảy ra đối với các Pod đang chạy khi chứng chỉ API Server 1 năm bị hết hạn? *(Đáp án: Pod đang chạy vẫn duy trì nhưng không thể thực hiện bất kỳ lệnh kubectl hay API call mới nào).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Bộ lệnh nào giúp kiểm tra ngày hết hạn chứng chỉ và gia hạn toàn bộ chứng chỉ Control Plane do `kubeadm` quản lý?
-
-**Đáp án chuẩn:**
-1. **Kiểm tra ngày hết hạn:** `sudo kubeadm certs check-expiration` (hiển thị danh sách tất cả chứng chỉ, ngày hết hạn và số ngày còn lại).
-2. **Gia hạn toàn bộ chứng chỉ:** `sudo kubeadm certs renew all` (ký lại toàn bộ chứng chỉ leaf thêm 365 ngày).
-3. **Áp dụng chứng chỉ mới:** Bắt buộc chạy `sudo systemctl restart containerd kubelet` để các tiến trình nạp chứng chỉ mới từ đĩa vào bộ nhớ RAM.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết lệnh `kubeadm certs`.
-- **1đ:** Nêu được `kubeadm certs renew` nhưng không nhớ lệnh `check-expiration` (dính trần 1đ).
-- **2đ:** Trình bày chính xác bộ lệnh `check-expiration`, `renew all` và việc restart Kubelet.
-- **3đ:** Trả lời xuất sắc, nêu lệnh gia hạn riêng lẻ từng chứng chỉ như `kubeadm certs renew apiserver`.
-
-**Câu hỏi đào sâu:** Lệnh `kubeadm certs renew all` có tự động làm thay đổi dữ liệu etcd hay làm mất các Deployment/Pod không? *(Đáp án: Không, nó chỉ đổi file cert trên đĩa, dữ liệu etcd giữ nguyên 100%).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Tại sao sau khi chạy lệnh `kubeadm certs renew all` lại bắt buộc phải restart `kubelet` và containerd?
-
-**Đáp án chuẩn:**
-- Lệnh `kubeadm certs renew all` chỉ thực hiện thao tác **ghi đè tệp chứng chỉ mới lên đĩa cứng** `/etc/kubernetes/pki/`.
-- Tiến trình `kubelet` và `kube-apiserver` đang chạy trong bộ nhớ RAM vẫn tiếp tục **giữ và sử dụng chứng chỉ cũ** đã được nạp vào RAM lúc khởi động.
-- Nếu không restart dịch vụ, sau khi chứng chỉ cũ hết hạn, Kubelet trong RAM vẫn dùng cert cũ và bị từ chối kết nối TLS Handshake. Việc restart giúp tiến trình nạp lại chứng chỉ mới từ đĩa vào RAM.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo restart để xoá Pod cũ.
-- **1đ:** Nói được để nạp lại cert nhưng không giải thích được sự khác biệt giữa cert trên đĩa cứng và cert trong RAM tiến trình.
-- **2đ:** Giải thích chuẩn xác việc nạp chứng chỉ từ đĩa cứng vào bộ nhớ RAM của tiến trình Kubelet.
-- **3đ:** Trả lời xuất sắc, liên hệ với việc static pods (API Server) tự động restart khi file manifest/cert đổi.
-
-**Câu hỏi đào sâu:** Static Pod `kube-apiserver` có cần restart thủ công bằng `systemctl` không? *(Đáp án: Không, Kubelet tự phát hiện file cert đổi và tự restart Static Pod apiserver).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau giữa chứng chỉ Root CA (`ca.crt`) và chứng chỉ lá API Server (`apiserver.crt`).
-
-**Đáp án chuẩn:**
-- `ca.crt` (Root CA):
-  - Đóng vai trò là **Nhà chức trách ký duyệt (Self-signed Trust Anchor)**.
-  - Dùng để ký cấp chứng chỉ cho các thành phần khác. Thời hạn **10 năm**.
-  - Tệp `ca.key` chứa khóa riêng tối mật.
-- `apiserver.crt` (Leaf Certificate):
-  - Đóng vai trò là **Chứng chỉ định danh máy chủ (Server Certificate)** cho API Server.
-  - Được ký bởi `ca.crt`. Thời hạn **1 năm**.
-  - Chứa danh sách IP và DNS Subject Alternative Names (SANs) của API Server.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo ca.crt và apiserver.crt là một.
-- **1đ:** Trả lời ca.crt là master còn apiserver.crt là node nhưng thiếu phân biệt Issuer/Subject và thời hạn 10 năm vs 1 năm.
-- **2đ:** Phân biệt chuẩn xác Trust Anchor (10 năm) vs Leaf Server Cert (1 năm).
-- **3đ:** Trả lời xuất sắc, nêu trường SANs (Subject Alternative Names) trong `apiserver.crt`.
-
-**Câu hỏi đào sâu:** Nếu đổi IP của Control Plane node thì có cần ký lại `apiserver.crt` không? *(Đáp án: Có, vì IP mới phải được bổ sung vào danh sách SANs của apiserver.crt).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do thiếu --embed-certs, 1 âm thầm do quên restart dịch vụ sau renew) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Thiếu `--embed-certs=true`):**
-   - *Triệu chứng:* Kubeconfig chạy rất tốt trên máy Control Plane, nhưng khi copy file sang máy cá nhân của kỹ sư thì `kubectl` báo `unable to read client-cert`.
-   - *Phát hiện:* Kiểm tra file Kubeconfig thấy xuất hiện `client-certificate: /etc/...` thay vì `client-certificate-data: LS0t...`.
-   - *Khắc phục:* Tạo lại Kubeconfig có cờ `--embed-certs=true`.
-2. **Chế độ hỏng 2 (Âm thầm - Quên restart Kubelet sau `certs renew`):**
-   - *Triệu chứng:* Chạy `kubeadm certs renew all` báo thành công 100%, kiểm tra file trên đĩa thấy hạn mới. Nhưng đúng 24h sau cụm sập TLS.
-   - *Phát hiện:* Đọc log Kubelet thấy lỗi `x509: certificate has expired`.
-   - *Khắc phục:* Chạy `sudo systemctl restart kubelet containerd`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân cert path gãy vs cert RAM cũ.
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.
-
-**Câu hỏi đào sâu:** Làm sao kiểm tra ngày hết hạn của chứng chỉ mà Kubelet đang thực sự sử dụng trong RAM? *(Đáp án: Dùng OpenSSL kết nối trực tiếp tới cổng Kubelet 10250 hoặc API 6443 để đọc TLS cert).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Thư mục <code>/etc/kubernetes/pki/</code> chứa 3 cây CA độc lập; tệp <code>sa.key/sa.pub</code> là RSA key pair dùng riêng để ký và xác thực ServiceAccount JWT token."*
+2. *"File Kubeconfig gồm 3 mảng <code>clusters</code>, <code>users</code>, <code>contexts</code>; bắt buộc dùng <code>--embed-certs=true</code> để nhúng dữ liệu cert base64 khi xuất file di động."*
+3. *"Kubernetes xác thực User qua X.509 Client Cert (<code>CN</code> = Username, <code>O</code> = Group); quy trình cấp user mới gồm 4 bước chuẩn qua CSR API và duyệt bằng <code>kubectl certificate approve</code>."*
+4. *"Toàn bộ chứng chỉ Control Plane có hạn 365 ngày; kiểm tra bằng <code>kubeadm certs check-expiration</code>, gia hạn bằng <code>kubeadm certs renew all</code> và restart Kubelet."*
+5. *"Sau khi gia hạn chứng chỉ bằng <code>kubeadm certs renew</code>, bắt buộc phải restart <code>kubelet</code> và containerd để tiến trình nạp chứng chỉ mới từ đĩa cứng vào bộ nhớ RAM."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1152,40 +1221,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Kubernetes xác thực User qua X.509 Client Cert (`CN` = Username, `O` = Group); quy trình cấp user mới gồm 4 bước chuẩn qua CSR API và duyệt bằng `kubectl certificate approve`."*
 4. *"Toàn bộ chứng chỉ Control Plane có hạn 365 ngày; kiểm tra bằng `kubeadm certs check-expiration`, gia hạn bằng `kubeadm certs renew all` và restart Kubelet."*
 5. *"Sau khi gia hạn chứng chỉ bằng `kubeadm certs renew`, bắt buộc phải restart `kubelet` và containerd để tiến trình nạp chứng chỉ mới từ đĩa cứng vào bộ nhớ RAM."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | 3 cây CA độc lập trong `/etc/kubernetes/pki/` (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Cặp khóa RSA `sa.key/sa.pub` ký ServiceAccount JWT |
-| Câu 3 | ★★★ | 3 | | Cấu trúc 3 mảng `clusters`, `users`, `contexts` |
-| Câu 4 | ★★★ | 3 | | Cờ `--embed-certs=true` mã hoá nhúng base64 |
-| Câu 5 | ★★ | 3 | | `CN` = Username, `O` = Group trong X.509 cert |
-| Câu 6 | ★★★ | 3 | | Quy trình cấp User 4 bước qua CSR API |
-| Câu 7 | ★★★ | 3 | | Lệnh `kubectl certificate approve` và Controller Manager ký |
-| Câu 8 | ★★★ | 3 | | Thời hạn chứng chỉ Control Plane 1 năm (365 ngày) |
-| Câu 9 | ★★★ | 3 | | Bộ lệnh `check-expiration` và `renew all` (trần 1đ nếu thiếu) |
-| Câu 10 | ★★★ | 3 | | Restart Kubelet để nạp cert mới từ đĩa vào RAM |
-| Câu 11 | ★★★ | 3 | | Phân biệt Root CA (10 năm) vs Leaf Cert (1 năm) |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (thiếu embed cert & quên restart Kubelet) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra xem tệp `ca.key` trong `/etc/kubernetes/pki/` có đúng phân quyền `0600` và thuộc sở hữu của `root` không.
-2. **BTVN 2:** Thực hành cấp tài khoản cho User `alice` thuộc nhóm `auditors` bằng CSR API, duyệt CSR và xuất file `alice.kubeconfig`.
-3. **BTVN 3:** Sử dụng OpenSSL kiểm tra ngày hết hạn chứng chỉ HTTPS của API Server thông qua cổng 6443 bằng câu lệnh: `openssl s_client -connect 127.0.0.1:6443 -showcerts`.
-4. **BTVN 4 — Chuẩn bị cho Buổi 08 (`buoi-08-nang-cap-cum-va-node`):**
-   - *Câu 1:* Công cụ `kubeadm upgrade plan` kiểm tra những gì trước khi nâng cấp cụm Kubernetes từ v1.34 lên v1.35?
-   - *Câu 2:* Phân biệt sự khác nhau giữa hai lệnh `kubectl cordon <node>` và `kubectl drain <node> --ignore-daemonsets`. Lệnh nào di tản Pod?
-   - *Câu 3:* Trình bày thứ tự 4 bước nâng cấp một Worker Node bằng `kubeadm upgrade node` và `apt install`.
-
-> **Đoạn kết nối Buổi 08:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 08 — buổi học thực hành quy trình nâng cấp cụm Kubernetes sản xuất từ phiên bản v1.34 lên v1.35 sử dụng `kubeadm`, `drain`, `cordon` mà không làm ngắt gián đoạn các ứng dụng đang phục vụ người dùng.
 
 ---
 
@@ -1444,15 +1479,15 @@ sudo kubeadm certs check-expiration
 sudo kubeadm certs renew all && sudo systemctl restart containerd kubelet
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 08] Chiến Lược Nâng Cấp Cụm Kubernetes Zero-Downtime: Drain, Cordon, Kubeadm Upgrade & Kubelet Sync](cka-08-08-nang-cap-cum-va-node.html).
+
 {% endraw %}

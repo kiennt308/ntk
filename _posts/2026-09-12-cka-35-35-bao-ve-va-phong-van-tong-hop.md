@@ -416,7 +416,7 @@ Trở thành <b style="color: var(--accent-primary);">Chuyên gia Hạ tầng Đ
   
 ```bash
       test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log
-      ```
+```
 </div>
 </details>
 
@@ -439,24 +439,6 @@ Trở thành <b style="color: var(--accent-primary);">Chuyên gia Hạ tầng Đ
 | CNCF Certification Directory | `https://www.cncf.io/certification/` | Trang chủ danh mục chứng chỉ CNCF (CKA, CKAD, CKS) |
 | Cloud Native Computing Foundation | `https://www.cncf.io/` | Tổ chức điện toán đám mây toàn cầu CNCF |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. 3-Step Capstone Defense Workflow | 12 phút | 12 phút |
-| §5. Triple-Certification Interview Reflexes (CKA+CKAD+CKS) | 12 phút | 12 phút |
-| §6. Senior Architect Matrix & Platform Engineering Career | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -510,7 +492,7 @@ graph TD
     CKASection & CKADSection & CKSSection -->|"5. Capstone Demo & Q&A"| DefenseSection[Live Capstone Demo & 36 Interview Q&As]
     DefenseSection -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tốt Nghiệp]
     GradeScript -->|"Score >= 80%: PASS"| SeniorWings[Senior Cloud Native Engineer Certified!]
-```yaml
+```
 
 ---
 
@@ -520,19 +502,19 @@ graph TD
 
 ```bash
 mkdir -p /tmp/graduation
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra tính đầy đủ của 72 thư mục buổi học.**
 
 ```bash
 test -d ntkk8s/buoi/buoi-72-bao-ve-va-phong-van-tong-hop && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/graduation`.**
 
 ```bash
 test -d /tmp/graduation && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+```
 
 ---
 
@@ -586,25 +568,25 @@ spec:
             containers:
               - image: "harbor.internal/*"
 EOF
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra kết quả phần CKA Tốc độ.**
 
 ```bash
 test -f /tmp/graduation/cka-res.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra kết quả phần CKAD Tốc độ.**
 
 ```bash
 test -f /tmp/graduation/ckad-res.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra kết quả phần CKS Tốc độ.**
 
 ```bash
 test -f /tmp/graduation/cks-res.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```yaml
+```
 
 ---
 
@@ -627,31 +609,31 @@ cat <<EOF > /tmp/graduation/interview-qa.txt
 6. [CKS] Kyverno Enforce: validationFailureAction: Enforce đi kèm exclude.namespaces: [kube-system].
 7. [CKS] Falco Rule: Đủ 5 thành tố rule, desc, condition, output, priority bắt exec shell.
 EOF
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra nhật ký Live Demo Capstone.**
 
 ```bash
 test -f /tmp/graduation/live-demo.log && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra phần Q&A CKA.**
 
 ```bash
 grep -q "CKA" /tmp/graduation/interview-qa.txt && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra phần Q&A CKAD.**
 
 ```bash
 grep -q "CKAD" /tmp/graduation/interview-qa.txt && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra phần Q&A CKS.**
 
 ```bash
 grep -q "CKS" /tmp/graduation/interview-qa.txt && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```yaml
+```
 
 ---
 
@@ -696,31 +678,31 @@ TỔNG ĐIỂM: 100 / 100
 HOÀN THÀNH 72/72 BUỔI HỌC (TỈ LỆ 100%)
 ĐÁNH GIÁ: PASS - CHÚC MỪNG BẠN ĐÃ TỐT NGHIỆP XUẤT SẮC KHÓA HỌC KUBERNETES CHUYÊN GIA!
 EOF
-```bash
+```
 
 **CHECKPOINT 10 — Kiểm tra tệp Bảng Năng lực Chuyên gia.**
 
 ```bash
 test -f /tmp/graduation/competency.md && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```bash
+```
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm Tốt nghiệp.**
 
 ```bash
 test -f /tmp/graduation/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Xác minh tổng điểm Bài thi Tốt nghiệp đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/graduation/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```bash
+```
 
 **CHECKPOINT 13 — Ghi nhận 100% hoàn thành trong `THEO-DOI-TIEN-DO.md`.**
 
 ```bash
 grep -q "72" ntkk8s/THEO-DOI-TIEN-DO.md && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -730,13 +712,13 @@ grep -q "72" ntkk8s/THEO-DOI-TIEN-DO.md && echo "CHECKPOINT 13 — ĐẠT" || ec
 
 ```bash
 rm -rf /tmp/graduation
-```bash
+```
 
 **CHECKPOINT 14 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -d /tmp/graduation && echo "CHECKPOINT 14 — ĐẠT" || echo "CHECKPOINT 14 — LỖI"
-```yaml
+```
 
 ---
 
@@ -782,25 +764,11 @@ test ! -d /tmp/graduation && echo "CHECKPOINT 14 — ĐẠT" || echo "CHECKPOINT
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: 72 Sessions Audit & Directory | 15 phút | 15 phút |
-| L4. Bước 2: CKA, CKAD & CKS Practical Speed Exam | 35 phút | 35 phút |
-| L5. Bước 3: Capstone Demo & Triple-Cert Q&A | 35 phút | 35 phút |
-| L6. Bước 4: Senior Architect Matrix & Auto-Grading | 25 phút | 25 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -808,219 +776,332 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Bộ 3 kỹ năng phản xạ CLI quan trọng nhất giúp hoàn thành 100% đề thi CKA tốc độ trong 90 phút?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CKA</b>: Điểm đỗ <b style="color: var(--accent-primary);"><code>66%</code></b> (Troubleshooting 30%, Cluster Arch 25%, Services 20%, Workloads 15%, Storage 10%).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CKAD</b>: Điểm đỗ <b style="color: var(--accent-primary);"><code>66%</code></b> (Config & Security 25%, Design 20%, Deployment 20%, Observability 20%, Services 15%).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CKS</b>: Điểm đỗ <b style="color: var(--accent-primary);"><code>67%</code></b> (Microservice Vuln 20%, Supply Chain 20%, Monitoring & Runtime 20%, Cluster Hardening 15%, System Hardening 15%, Cluster Setup 10%).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trích xuất dữ liệu</b>: Thành thục <code>jsonpath</code> và <code>-o custom-columns</code> trong 10 giây.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Sao lưu etcd</b>: Thuộc lòng lệnh <code>ETCDCTL_API=3 etcdctl snapshot save</code> với bộ 3 cờ TLS certs.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Gỡ lỗi Kubelet</b>: Áp dụng quy trình 3 bước <code>describe node</code> -> <code>systemctl status</code> -> <code>journalctl -u kubelet</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 3 kỹ năng phản xạ CKA.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được etcd backup nhưng thiếu jsonpath và journalctl log.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo bộ 3 kỹ năng phản xạ CLI tốc độ CKA.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để xem context cụm đang đứng ở đầu mỗi câu thi CKA? — Lệnh <code>kubectl config current-context</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ điểm đỗ và trọng số 3 chứng chỉ.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng điểm đỗ nhưng sai trọng số các miền.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% điểm đỗ và ma trận trọng số cả 3 chứng chỉ CKA, CKAD, CKS.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Thời gian thi thực hành của cả 3 bài thi CKA, CKAD, CKS do CNCF tổ chức là bao nhiêu phút? — Thời gian thi do CNCF quy định cho cả 3 bài thi là <b style="color: var(--accent-primary);"><code>120 phút</code></b>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Kỹ thuật sinh khung manifest imperatively siêu tốc cho Pod, Deployment, CronJob và ConfigMap trong bài thi CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl run nginx --image=nginx $do > pod.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl create deployment web --image=nginx --replicas=3 $do > deploy.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" $do -- date > cron.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl create configmap app-cm --from-literal=KEY=VALUE</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">*(Biến <code>$do</code> được định nghĩa: <code>export do="--dry-run=client -o yaml"</code>)*.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết sử dụng lệnh create/run imperatively.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được run nginx nhưng thiếu cờ dry-run và create cronjob.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác bộ lệnh <code>kubectl</code> imperatively sinh YAML siêu tốc CKAD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--previous</code> trong lệnh <code>kubectl logs</code> được dùng khi nào trong CKAD? — Dùng để <b style="color: var(--accent-primary);">đọc lại log của container vừa bị crash</b> trước đó).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Bộ rào chắn an ninh 4 lớp được kích hoạt trong bài thi CKS để bảo vệ từ Host Linux Kernel tới API Server?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Host Kernel</b>: AppArmor profiles (<code>apparmor_parser -r</code>) và Seccomp <code>RuntimeDefault</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Supply Chain</b>: Kyverno Allowed Registries policy (<code>Enforce</code>) và Image Digest <code>@sha256:</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">API Security</b>: Audit Logging mức <code>RequestResponse</code> cho Secrets.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Runtime Defense</b>: Falco Custom Rules (bắt exec terminal shell).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 lớp rào chắn CKS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 lớp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 100% bộ rào chắn an ninh 4 lớp CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh khôi phục khẩn cấp khi apiserver sập do gõ sai syntax Audit Policy là gì? — Lệnh <code>sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver.yaml</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cơ chế phối hợp giữa <code>ResourceQuota</code> và <code>LimitRange</code> trong môi trường vận hành nhiều đội (Multi-Tenant Enterprise Cluster)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>ResourceQuota</code> áp đặt <b style="color: var(--accent-primary);">tổng trần định ngạch CPU/RAM/Pod tối đa cho cả Namespace của đội</b>, còn <code>LimitRange</code> tự động <b style="color: var(--accent-primary);">chèn thông số requests/limits mặc định cho từng Pod đơn lẻ</b>, ngăn chặn 1 Pod ngốn sạch quota của đội hoặc làm sập Node.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa ResourceQuota và LimitRange.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng vai trò từng cái nhưng chưa giải thích cơ chế phối hợp trong Multi-tenant.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế phối hợp giữa ResourceQuota và LimitRange doanh nghiệp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để kiểm tra mức độ tiêu tốn Quota hiện tại của một Namespace? — Lệnh <code>kubectl get resourcequota -n <namespace></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Quy trình 4 bước ứng phó sự cố khẩn cấp (Incident Response Workflow) và cách biên soạn báo cáo Blameless Postmortem trong bài thi Game Day SRE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">4 bước ứng phó</b>: 1) Detect (Nhận diện), 2) Contain (Khoanh vùng), 3) Remediate (Khắc phục RCA), 4) Review (Đánh giá).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Báo cáo Postmortem</b>: Biên soạn tệp <code>/tmp/postmortem.md</code> đủ 6 phần (Summary, Impact, RCA, Timeline, Lessons, Action Items) tập trung cải tiến hệ thống theo văn hóa phi quy trách.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 bước Incident Response hoặc 6 phần Postmortem.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng 4 bước ứng phó nhưng thiếu cấu trúc báo cáo Postmortem.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo quy trình ứng phó sự cố SRE và cấu trúc tệp Blameless Postmortem.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao phần Action Items lại bắt buộc phải chỉ định người làm và thời hạn? — Để <b style="color: var(--accent-primary);">đảm bảo các giải pháp phòng ngừa sự cố tái diễn được thực thi triệt để</b> trong thực tế).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cấu trúc 3 Lớp Kiểm soát (3-Tier Governance Control) của Dự án Capstone Hạ tầng Kubernetes Doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lớp 1 (CKA 25%)</b>: Kiến trúc cụm, etcd snapshot backup & RBAC Namespace isolation.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lớp 2 (CKAD 35%)</b>: ResourceQuota, LimitRange, ConfigMap/Secret envFrom, Probes & Ingress TLS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lớp 3 (CKS 40%)</b>: Kyverno Allowed Registries Enforce, Seccomp, Audit Policy & Falco Rules.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu kiến trúc 3 Lớp Kiểm soát Capstone.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 lớp nhưng thiếu các thành phần kỹ thuật chi tiết của từng lớp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% cấu trúc 3 Lớp Kiểm soát Capstone Doanh nghiệp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tệp tài liệu giải trình kiến trúc Capstone được lưu tại đường dẫn nào? — Đường dẫn <b style="color: var(--accent-primary);">/tmp/capstone-defense.md</b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Quy trình 3 bước chuẩn trong buổi 40 phút Thuyết minh và Bảo vệ Dự án Capstone Tốt nghiệp trước Hội đồng Đánh giá?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thuyết trình bản vẽ kiến trúc (10m)</b>: Trình bày sơ đồ 3 lớp kiểm soát và giải trình quyết định thiết kế.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Live Terminal Demo (15m)</b>: Chạy trực tiếp các lệnh CLI chứng minh 3 lớp kiểm soát hoạt động 100% ổn định.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trả lời phản biện kỹ thuật (15m)</b>: Trả lời các câu hỏi về SPOF, DR recovery và Security Hardening của hội đồng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 3 bước bảo vệ Capstone.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy trình 3 bước thuyết minh và bảo vệ dự án Capstone Tốt nghiệp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lý do phần Live Terminal Demo lại quan trọng nhất trong buổi bảo vệ? — Vì chứng minh được <b style="color: var(--accent-primary);">nền tảng hạ tầng thực tế hoạt động 100% tin cậy</b>, không chỉ là mô hình lý thuyết trên giấy).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Kỹ năng phân tích nguyên nhân gốc rễ (Root Cause Analysis - RCA) khi gỡ 4 sự cố cấy sẵn (Kubelet crash, OOMKilled, Expired Certs, CoreDNS failure)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kubelet</b>: Soi log <code>journalctl</code> tìm lỗi syntax config.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">OOMKilled</b>: Đọc Exit Code 137, tăng <code>resources.limits.memory</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Certs</b>: Đọc log expired certs, chạy <code>kubeadm certs renew all</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CoreDNS</b>: Đọc log DNS, kiểm tra kết nối CNI và restart Deployment CoreDNS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết phân tích RCA 4 sự cố.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 sự cố.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên nhân gốc rễ và cách xử lý triệt để 4 sự cố cấy sẵn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ lệnh <code>journalctl</code> nào được dùng để ngắt màn hình Pager interactive? — Cờ <b style="color: var(--accent-primary);"><code>--no-pager</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Bảng Năng lực Chuyên gia (Senior Cloud Native Architect Matrix) và định hướng phát triển sự nghiệp Platform Engineering?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tốt nghiệp 72 buổi học khẳng định 5 nhóm năng lực cốt lõi:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Master CKA Cluster Architecture & Operations.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Master CKAD Application Delivery & Workloads.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Master CKS Security Hardening & Runtime Defense.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Master SRE Incident Response & Blameless Postmortem.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Master Enterprise Multi-Tenant Platform & GitOps Automation.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">-> Định hướng đảm nhận vị trí Senior Platform Engineer / Lead SRE.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được các nhóm năng lực cốt lõi.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 nhóm năng lực.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc Bảng Năng lực Chuyên gia và lộ trình sự nghiệp Platform Engineering.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sự khác biệt giữa DevOps Engineer và Platform Engineer là gì? — DevOps tập trung vào CI/CD pipeline cho 1 app, còn Platform Engineer <b style="color: var(--accent-primary);">dựng hạ tầng nền tảng tự phục vụ (Self-Service Infrastructure Platform)</b> cho toàn bộ doanh nghiệp).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp bash script chuẩn kiểm tra kết quả Bài thi Tốt nghiệp 72 Buổi đạt điểm PASS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```bash</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai câu lệnh kiểm tra results.log.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được grep PASS nhưng thiếu test -f.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% câu lệnh kiểm tra kết quả bài thi tốt nghiệp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điểm số tối thiểu để công nhận đỗ Bài thi Tốt nghiệp Tổng hợp là bao nhiêu? — Điểm số tối thiểu là <b style="color: var(--accent-primary);"><code>80 / 100 điểm</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để Tốt nghiệp Khóa học Kubernetes Chuyên gia và Chinh phục 3 Chứng chỉ CNCF Quốc tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hoàn thành trọn vẹn 100% 72 buổi học với 39/39 tiêu chuẩn kiểm tra <code>kiem-tra.sh</code> ĐẠT.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bảo vệ thành công Dự án Capstone 3 Lớp Kiểm soát trước Hội đồng Đánh giá Chuyên môn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Làm chủ bộ phản xạ phỏng vấn 36 câu hỏi nén toàn bộ kiến thức CKA, CKAD và CKS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tự tin đăng ký và chinh phục 3 chứng chỉ quốc tế chính thức do CNCF / Linux Foundation cấp.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc Vàng Tốt nghiệp Kubernetes Chuyên gia.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lời chúc cuối cùng dành cho bạn khi hoàn thành khoá học này là gì? — <b style="color: var(--accent-primary);">"CHÚC MỪNG BẠN ĐÃ TRỞ THÀNH CHUYÊN GIA HẠ TẦNG ĐÁM MÂY KUBERNETES CHUYÊN NGHIỆP!"</b>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Bộ 3 kỹ năng phản xạ CLI quan trọng nhất giúp hoàn thành 100% đề thi CKA tốc độ trong 90 phút?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:**
-1. **Trích xuất dữ liệu**: Thành thục `jsonpath` và `-o custom-columns` trong 10 giây.
-2. **Sao lưu etcd**: Thuộc lòng lệnh `ETCDCTL_API=3 etcdctl snapshot save` với bộ 3 cờ TLS certs.
-3. **Gỡ lỗi Kubelet**: Áp dụng quy trình 3 bước `describe node` -> `systemctl status` -> `journalctl -u kubelet`.
+1. <b style="color: var(--accent-primary);">"Tự hào hoàn thành 100% 72 buổi học Kubernetes Chuyên gia nâng cao."</b>
+2. <b style="color: var(--accent-primary);">"Làm chủ trọn vẹn tri thức và phản xạ thực chiến của cả 3 chứng chỉ CKA, CKAD và CKS."</b>
+3. <b style="color: var(--accent-primary);">"Xây dựng thành công nền tảng Kubernetes Doanh nghiệp tích hợp đủ 3 lớp kiểm soát Capstone."</b>
+4. <b style="color: var(--accent-primary);">"Sẵn sàng đảm nhận vai trò Senior Cloud-Native Platform Engineer và chinh phục các chứng chỉ CNCF quốc tế."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 3 kỹ năng phản xạ CKA.
-- 1đ: Nêu được etcd backup nhưng thiếu jsonpath và journalctl log.
-- 3đ: Phân tích thấu đáo bộ 3 kỹ năng phản xạ CLI tốc độ CKA.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để xem context cụm đang đứng ở đầu mỗi câu thi CKA? — Lệnh `kubectl config current-context`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Kỹ thuật sinh khung manifest imperatively siêu tốc cho Pod, Deployment, CronJob và ConfigMap trong bài thi CKAD?
-
-**Đáp án chuẩn:**
-- `kubectl run nginx --image=nginx $do > pod.yaml`
-- `kubectl create deployment web --image=nginx --replicas=3 $do > deploy.yaml`
-- `kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" $do -- date > cron.yaml`
-- `kubectl create configmap app-cm --from-literal=KEY=VALUE`
-*(Biến `$do` được định nghĩa: `export do="--dry-run=client -o yaml"`)*.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết sử dụng lệnh create/run imperatively.
-- 1đ: Nêu được run nginx nhưng thiếu cờ dry-run và create cronjob.
-- 3đ: Trình bày chuẩn xác bộ lệnh `kubectl` imperatively sinh YAML siêu tốc CKAD.
-
-**Câu hỏi đào sâu:** (Cờ `--previous` trong lệnh `kubectl logs` được dùng khi nào trong CKAD? — Dùng để **đọc lại log của container vừa bị crash** trước đó).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Bộ rào chắn an ninh 4 lớp được kích hoạt trong bài thi CKS để bảo vệ từ Host Linux Kernel tới API Server?
-
-**Đáp án chuẩn:**
-1. **Host Kernel**: AppArmor profiles (`apparmor_parser -r`) và Seccomp `RuntimeDefault`.
-2. **Supply Chain**: Kyverno Allowed Registries policy (`Enforce`) và Image Digest `@sha256:`.
-3. **API Security**: Audit Logging mức `RequestResponse` cho Secrets.
-4. **Runtime Defense**: Falco Custom Rules (bắt exec terminal shell).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 lớp rào chắn CKS.
-- 1đ: Nêu được 2 lớp.
-- 3đ: Phân tích chuẩn xác 100% bộ rào chắn an ninh 4 lớp CKS.
-
-**Câu hỏi đào sâu:** (Lệnh khôi phục khẩn cấp khi apiserver sập do gõ sai syntax Audit Policy là gì? — Lệnh `sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver.yaml`).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cơ chế phối hợp giữa `ResourceQuota` và `LimitRange` trong môi trường vận hành nhiều đội (Multi-Tenant Enterprise Cluster)?
-
-**Đáp án chuẩn:** `ResourceQuota` áp đặt **tổng trần định ngạch CPU/RAM/Pod tối đa cho cả Namespace của đội**, còn `LimitRange` tự động **chèn thông số requests/limits mặc định cho từng Pod đơn lẻ**, ngăn chặn 1 Pod ngốn sạch quota của đội hoặc làm sập Node.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa ResourceQuota và LimitRange.
-- 1đ: Nêu đúng vai trò từng cái nhưng chưa giải thích cơ chế phối hợp trong Multi-tenant.
-- 3đ: Phân tích chuẩn xác cơ chế phối hợp giữa ResourceQuota và LimitRange doanh nghiệp.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để kiểm tra mức độ tiêu tốn Quota hiện tại của một Namespace? — Lệnh `kubectl get resourcequota -n <namespace>`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Quy trình 4 bước ứng phó sự cố khẩn cấp (Incident Response Workflow) và cách biên soạn báo cáo Blameless Postmortem trong bài thi Game Day SRE?
-
-**Đáp án chuẩn:**
-- **4 bước ứng phó**: 1) Detect (Nhận diện), 2) Contain (Khoanh vùng), 3) Remediate (Khắc phục RCA), 4) Review (Đánh giá).
-- **Báo cáo Postmortem**: Biên soạn tệp `/tmp/postmortem.md` đủ 6 phần (Summary, Impact, RCA, Timeline, Lessons, Action Items) tập trung cải tiến hệ thống theo văn hóa phi quy trách.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 bước Incident Response hoặc 6 phần Postmortem.
-- 1đ: Nêu đúng 4 bước ứng phó nhưng thiếu cấu trúc báo cáo Postmortem.
-- 3đ: Phân tích thấu đáo quy trình ứng phó sự cố SRE và cấu trúc tệp Blameless Postmortem.
-
-**Câu hỏi đào sâu:** (Tại sao phần Action Items lại bắt buộc phải chỉ định người làm và thời hạn? — Để **đảm bảo các giải pháp phòng ngừa sự cố tái diễn được thực thi triệt để** trong thực tế).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cấu trúc 3 Lớp Kiểm soát (3-Tier Governance Control) của Dự án Capstone Hạ tầng Kubernetes Doanh nghiệp?
-
-**Đáp án chuẩn:**
-- **Lớp 1 (CKA 25%)**: Kiến trúc cụm, etcd snapshot backup & RBAC Namespace isolation.
-- **Lớp 2 (CKAD 35%)**: ResourceQuota, LimitRange, ConfigMap/Secret envFrom, Probes & Ingress TLS.
-- **Lớp 3 (CKS 40%)**: Kyverno Allowed Registries Enforce, Seccomp, Audit Policy & Falco Rules.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu kiến trúc 3 Lớp Kiểm soát Capstone.
-- 1đ: Nêu được 3 lớp nhưng thiếu các thành phần kỹ thuật chi tiết của từng lớp.
-- 3đ: Trình bày chuẩn xác 100% cấu trúc 3 Lớp Kiểm soát Capstone Doanh nghiệp.
-
-**Câu hỏi đào sâu:** (Tệp tài liệu giải trình kiến trúc Capstone được lưu tại đường dẫn nào? — Đường dẫn **/tmp/capstone-defense.md**).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Quy trình 3 bước chuẩn trong buổi 40 phút Thuyết minh và Bảo vệ Dự án Capstone Tốt nghiệp trước Hội đồng Đánh giá?
-
-**Đáp án chuẩn:**
-1. **Thuyết trình bản vẽ kiến trúc (10m)**: Trình bày sơ đồ 3 lớp kiểm soát và giải trình quyết định thiết kế.
-2. **Live Terminal Demo (15m)**: Chạy trực tiếp các lệnh CLI chứng minh 3 lớp kiểm soát hoạt động 100% ổn định.
-3. **Trả lời phản biện kỹ thuật (15m)**: Trả lời các câu hỏi về SPOF, DR recovery và Security Hardening của hội đồng.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 3 bước bảo vệ Capstone.
-- 1đ: Nêu được 2 bước.
-- 3đ: Phân tích chuẩn xác quy trình 3 bước thuyết minh và bảo vệ dự án Capstone Tốt nghiệp.
-
-**Câu hỏi đào sâu:** (Lý do phần Live Terminal Demo lại quan trọng nhất trong buổi bảo vệ? — Vì chứng minh được **nền tảng hạ tầng thực tế hoạt động 100% tin cậy**, không chỉ là mô hình lý thuyết trên giấy).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Kỹ năng phân tích nguyên nhân gốc rễ (Root Cause Analysis - RCA) khi gỡ 4 sự cố cấy sẵn (Kubelet crash, OOMKilled, Expired Certs, CoreDNS failure)?
-
-**Đáp án chuẩn:**
-- **Kubelet**: Soi log `journalctl` tìm lỗi syntax config.
-- **OOMKilled**: Đọc Exit Code 137, tăng `resources.limits.memory`.
-- **Certs**: Đọc log expired certs, chạy `kubeadm certs renew all`.
-- **CoreDNS**: Đọc log DNS, kiểm tra kết nối CNI và restart Deployment CoreDNS.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết phân tích RCA 4 sự cố.
-- 1đ: Nêu được 2 sự cố.
-- 3đ: Phân tích chuẩn xác nguyên nhân gốc rễ và cách xử lý triệt để 4 sự cố cấy sẵn.
-
-**Câu hỏi đào sâu:** (Cờ lệnh `journalctl` nào được dùng để ngắt màn hình Pager interactive? — Cờ **`--no-pager`**).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Bảng Năng lực Chuyên gia (Senior Cloud Native Architect Matrix) và định hướng phát triển sự nghiệp Platform Engineering?
-
-**Đáp án chuẩn:**
-Tốt nghiệp 72 buổi học khẳng định 5 nhóm năng lực cốt lõi:
-1. Master CKA Cluster Architecture & Operations.
-2. Master CKAD Application Delivery & Workloads.
-3. Master CKS Security Hardening & Runtime Defense.
-4. Master SRE Incident Response & Blameless Postmortem.
-5. Master Enterprise Multi-Tenant Platform & GitOps Automation.
--> Định hướng đảm nhận vị trí Senior Platform Engineer / Lead SRE.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được các nhóm năng lực cốt lõi.
-- 1đ: Nêu được 2 nhóm năng lực.
-- 3đ: Trình bày tự tin, mạch lạc Bảng Năng lực Chuyên gia và lộ trình sự nghiệp Platform Engineering.
-
-**Câu hỏi đào sâu:** (Sự khác biệt giữa DevOps Engineer và Platform Engineer là gì? — DevOps tập trung vào CI/CD pipeline cho 1 app, còn Platform Engineer **dựng hạ tầng nền tảng tự phục vụ (Self-Service Infrastructure Platform)** cho toàn bộ doanh nghiệp).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp bash script chuẩn kiểm tra kết quả Bài thi Tốt nghiệp 72 Buổi đạt điểm PASS là gì?
-
-**Đáp án chuẩn:**
-```bash
-test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai câu lệnh kiểm tra results.log.
-- 1đ: Nêu được grep PASS nhưng thiếu test -f.
-- 3đ: Viết chuẩn xác 100% câu lệnh kiểm tra kết quả bài thi tốt nghiệp.
-
-**Câu hỏi đào sâu:** (Điểm số tối thiểu để công nhận đỗ Bài thi Tốt nghiệp Tổng hợp là bao nhiêu? — Điểm số tối thiểu là **`80 / 100 điểm`**).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để Tốt nghiệp Khóa học Kubernetes Chuyên gia và Chinh phục 3 Chứng chỉ CNCF Quốc tế?
-
-**Đáp án chuẩn:**
-1. Hoàn thành trọn vẹn 100% 72 buổi học với 39/39 tiêu chuẩn kiểm tra `kiem-tra.sh` ĐẠT.
-2. Bảo vệ thành công Dự án Capstone 3 Lớp Kiểm soát trước Hội đồng Đánh giá Chuyên môn.
-3. Làm chủ bộ phản xạ phỏng vấn 36 câu hỏi nén toàn bộ kiến thức CKA, CKAD và CKS.
-4. Tự tin đăng ký và chinh phục 3 chứng chỉ quốc tế chính thức do CNCF / Linux Foundation cấp.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc Vàng Tốt nghiệp Kubernetes Chuyên gia.
-
-**Câu hỏi đào sâu:** (Lời chúc cuối cùng dành cho bạn khi hoàn thành khoá học này là gì? — **"CHÚC MỪNG BẠN ĐÃ TRỞ THÀNH CHUYÊN GIA HẠ TẦNG ĐÁM MÂY KUBERNETES CHUYÊN NGHIỆP!"**).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1030,28 +1111,6 @@ test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.lo
 2. **"Làm chủ trọn vẹn tri thức và phản xạ thực chiến của cả 3 chứng chỉ CKA, CKAD và CKS."**
 3. **"Xây dựng thành công nền tảng Kubernetes Doanh nghiệp tích hợp đủ 3 lớp kiểm soát Capstone."**
 4. **"Sẵn sàng đảm nhận vai trò Senior Cloud-Native Platform Engineer và chinh phục các chứng chỉ CNCF quốc tế."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ năng Tốt nghiệp 3 Chứng chỉ |
-| **29 – 36 điểm** | Xuất sắc | Thành thục 100% 72 buổi học, bảo vệ Capstone xuất sắc và tự tin đỗ CKA, CKAD, CKS quốc tế |
-
----
-
-## V5. Bài tập về nhà (TỐT NGHIỆP KHOÁ HỌC)
-
-- **BTVN 1 (Kế hoạch Đăng ký Thi Quốc tế CNCF):** Thiết lập lịch thi chính thức 3 chứng chỉ CKA, CKAD, CKS trên trang chủ CNCF / Linux Foundation trong vòng 30–60 ngày tới.
-- **BTVN 2 (Chuẩn bị Môi trường Thi Quốc tế):** Kiểm tra và chuẩn bị thiết bị cá nhân (Webcam sắc nét, Micro rõ tiếng, Phòng thi kín sạch sẽ không có tài liệu ngoài) đúng quy định thi trực tuyến do CNCF / PSI Proctoring giám sát.
-- **BTVN 3 (Ứng dụng Thực tế Doanh nghiệp):** Áp dụng bộ 72 buổi học Kubernetes này vào việc chuẩn hóa hạ tầng, tự động hóa GitOps và thắt chặt an ninh tại doanh nghiệp nơi bạn đang công tác.
-- **BTVN 4 (Chinh phục Sự nghiệp Platform Engineering):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Kế hoạch phát triển sự nghiệp cá nhân để trở thành Lead Platform Engineer trong 1-2 năm tới của bạn là gì?
-  2. Cách thức tham gia đóng góp và kết nối với cộng đồng mã nguồn mở Cloud Native (CNCF Community / Kubernetes Vietnam)?
-  3. Bạn sẽ duy trì thói quen cập nhật kiến thức mới từ các phiên bản Kubernetes phát hành định kỳ (K8s release cycles) ra sao?
 
 ---
 
@@ -1110,7 +1169,7 @@ Biên soạn tệp Bảng Năng lực Chuyên gia tại `/tmp/graduation/compete
   
 ```bash
 echo "CKA Task Passed: Pod IPs extracted & etcd snapshot saved to /tmp/etcd-backup.db" > /tmp/grad-cka.txt
-```bash
+```
 </div>
 </details>
 
@@ -1141,7 +1200,7 @@ spec:
               command: [/bin/sh, -c, date]
           restartPolicy: OnFailure
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1178,7 +1237,7 @@ rules:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• group: ""</div>
         resources: ["secrets"]
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1204,7 +1263,7 @@ CKA Ready (>90%), CKAD Ready (>90%), CKS Ready (>90%).
 ## 3. Career Path Statement
 Ready for Senior Cloud Native Architect & Lead Platform Engineer roles!
 EOF
-```yaml
+```
 
 ---
 
@@ -1273,7 +1332,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1288,16 +1347,17 @@ bash ntkk8s/buoi/kiem-tra-cheo.sh all
 
 # Graduation Success Check
 test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 01] Tư Duy Người Phát Triển Ứng Dụng Cloud Native: So Sánh Toàn Diện CKAD vs CKA](ckad-01-01-ckad-khac-cka-cho-nao.html).
+
 {% endraw %}

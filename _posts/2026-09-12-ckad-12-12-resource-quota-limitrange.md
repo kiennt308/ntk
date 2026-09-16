@@ -466,24 +466,6 @@ API Server từ chối tạo Pod và trả về lỗi <code>requests.memory is h
 | Resource Quotas Documentation | `https://kubernetes.io/docs/concepts/policy/resource-quotas/` | Tài liệu chuẩn K8s Resource Quotas |
 | Limit Ranges Documentation | `https://kubernetes.io/docs/concepts/policy/limit-range/` | Tài liệu chuẩn K8s Limit Ranges |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. ResourceQuota cấp Namespace | 12 phút | 12 phút |
-| §5. LimitRange cấp Container | 12 phút | 12 phút |
-| §6. Ca hỏng Quota chặn âm thầm và giải pháp | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -828,25 +810,11 @@ test ! -f /tmp/lab42-quota.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHEC
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & ResourceQuota | 15 phút | 15 phút |
-| L4. Bước 2: Tái hiện Quota chặn âm thầm | 25 phút | 25 phút |
-| L5. Bước 3: LimitRange tiêm mặc định | 25 phút | 25 phút |
-| L6. Bước 4: Vi phạm LimitRange & Quota | 25 phút | 25 phút |
-| L7. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -854,194 +822,317 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Nguyên nhân xảy ra ca hỏng "Quota chặn âm thầm" (Silent Quota Rejection) và thông điệp lỗi phổ biến trả về từ API Server là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>ResourceQuota</code> quản lý TỔNG TRẦN tài nguyên (CPU, RAM, số lượng Pods/Services) ở cấp Namespace nhằm chống việc 1 team dùng cạn cụm. <code>LimitRange</code> quản lý NGƯỠNG (min/max/default) ở cấp Container/Pod riêng lẻ nhằm chống việc 1 Pod duy nhất dùng cạn Quota của Namespace.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nguyên nhân do Namespace có <code>ResourceQuota</code> quản lý CPU/RAM nhưng tệp YAML Pod triển khai lại thiếu khối <code>resources.requests/limits</code>. API Server không thể tính toán để trừ Quota nên chặn ngay từ vòng gửi xe với lỗi <code>is forbidden: failed quota: ... must specify cpu for: ...</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết nguyên nhân ca hỏng Quota chặn âm thầm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được do thiếu tài nguyên nhưng chưa rõ thông điệp lỗi <code>must specify cpu</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế chặn từ vòng gửi xe của API Server và thông điệp lỗi.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Giải pháp lâu dài để không phải sửa thủ công từng tệp YAML là gì? — Triển khai một <code>LimitRange</code> tiêm giá trị <code>default</code>/<code>defaultRequest</code> tự động trong Namespace).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 2 đối tượng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Quota là tổng, LimitRange là riêng nhưng chưa rõ cấp tác động Namespace vs Container.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo phạm vi quản lý tổng trần Namespace vs ngưỡng riêng lẻ Container.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu một Namespace không có <code>LimitRange</code> nhưng có <code>ResourceQuota</code> thì Pod mới triển khai bắt buộc phải có điều kiện gì? — Bắt buộc phải khai báo đầy đủ <code>requests</code> và <code>limits</code>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác nhau giữa thuộc tính <code>default</code> và <code>defaultRequest</code> trong tệp cấu hình <code>LimitRange</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>default</code> định nghĩa giá trị <code>limits</code> tài nguyên mặc định cho container nếu không khai báo. <code>defaultRequest</code> định nghĩa giá trị <code>requests</code> tài nguyên mặc định cho container nếu không khai báo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa default và defaultRequest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 trong 2 thuộc tính.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác ánh xạ <code>default</code> -> <code>limits</code> và <code>defaultRequest</code> -> <code>requests</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container khai báo <code>requests</code> nhưng không khai báo <code>limits</code> thì <code>LimitRange</code> sẽ tiêm thêm thuộc tính nào? — Chỉ tiêm thêm thuộc tính <code>limits</code> từ giá trị <code>default</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ngưỡng <code>max</code> và <code>min</code> trong <code>LimitRange</code> kiểm soát điều gì ở container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>max</code> quy định trần tài nguyên CPU/RAM tối đa mà 1 container được phép xin. <code>min</code> quy định ngưỡng tài nguyên CPU/RAM tối thiểu mà 1 container bắt buộc phải xin. Nếu container khai báo vượt quá <code>max</code> hoặc nhỏ hơn <code>min</code>, API Server sẽ từ chối tạo Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu ý nghĩa min/max trong LimitRange.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lớn nhất nhỏ nhất nhưng chưa rõ cơ chế từ chối của API Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò chặn các container xin tài nguyên quá dị biệt.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container xin <code>requests.memory: 2Gi</code> nhưng <code>LimitRange</code> quy định <code>max.memory: 1Gi</code> thì lỗi gì xuất hiện? — Lỗi <code>requests.memory is higher than limitrange max</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu lệnh CLI nào dùng để xem bảng đối soát chi tiết giữa tài nguyên đã tiêu thụ (<code>Used</code>) và hạn ngạch tối đa (<code>Hard</code>) trong Namespace <code>prod</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl describe quota -n prod</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm với <code>kubectl get quota</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng describe quota nhưng quên chỉ định Namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác câu lệnh <code>kubectl describe quota -n prod</code> và giải thích 2 cột Used vs Hard.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cột <code>Used</code> bằng cột <code>Hard</code> ở mục <code>pods</code> thì điều gì xảy ra khi Deployment scale thêm Pod? — Pod mới sẽ không được tạo và bị chặn rớt event <code>exceeded quota</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao một Deployment có thể bị từ chối RollingUpdate khi Namespace đang sát trần hạn ngạch số lượng <code>pods</code> trong <code>ResourceQuota</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì chiến lược RollingUpdate mặc định tạo thêm các Pod mới trước (<code>maxSurge</code>). Nếu trần <code>pods</code> trong Quota chỉ còn trống 1 Pod nhưng RollingUpdate cần bật 2 Pod mới, tổng số Pod sẽ tạm thời vượt quá trần <code>hard.pods</code> làm cho RollingUpdate bị nghẽn kẹt.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được sự xung đột giữa RollingUpdate maxSurge và Quota pods.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thừa Pod nhưng chưa làm rõ cơ chế maxSurge của RollingUpdate.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự xung đột giữa <code>maxSurge</code> RollingUpdate và trần <code>hard.pods</code> trong Quota.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Hai cách xử lý sự cố này là gì? — Cách 1: Tăng tạm trần <code>pods</code> trong Quota; Cách 2: Đặt <code>maxSurge: 0</code> trong Deployment spec).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Đối tượng <code>ResourceQuota</code> có thể khống chế những loại tài nguyên nào ngoài CPU và RAM?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ngoài CPU và RAM, <code>ResourceQuota</code> còn khống chế: (1) Số lượng đối tượng (<code>pods</code>, <code>services</code>, <code>secrets</code>, <code>configmaps</code>, <code>persistentvolumeclaims</code>); (2) Dung lượng đĩa lưu trữ (<code>requests.storage</code>); (3) Số lượng NodePort/LoadBalancer Services (<code>services.nodeports</code>, <code>services.loadbalancers</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng Quota chỉ khống chế CPU và RAM.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được số lượng Pods nhưng thiếu storage và Services.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích đầy đủ 3 nhóm tài nguyên Quota khống chế (CPU/RAM, Object counts, Storage).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp khống chế tổng dung lượng đĩa PVC trong Quota là gì? — Khai báo <code>requests.storage: 50Gi</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp YAML chuẩn để định nghĩa một ResourceQuota <code>prod-quota</code> giới hạn CPU request 2 cores, RAM request 2Gi và tối đa 5 Pods là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: ResourceQuota</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: prod-quota</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">hard:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">requests.cpu: "2"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">requests.memory: 2Gi</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">pods: "5"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai thụt lề hoặc sai từ khóa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng hard nhưng gõ nhầm request.cpu (thiếu s).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác tuyệt đối khối YAML spec ResourceQuota.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Từ khóa <code>requests.cpu</code> có chữ <code>s</code> hay không? — Bắt buộc phải có chữ <code>s</code> số nhiều: <code>requests.cpu</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tải trọng Overcommit Ratio trong cụm Kubernetes được <code>LimitRange</code> kiểm soát như thế nào qua cờ <code>maxLimitRequestRatio</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <code>maxLimitRequestRatio</code> quy định tỷ lệ tối đa giữa <code>limits</code> và <code>requests</code> của 1 container (ví dụ ratio = 2 có nghĩa limits không được gấp quá 2 lần requests). Giúp chặn các tệp YAML khai báo request quá nhỏ nhưng limit quá lớn gây overcommit ảo.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ maxLimitRequestRatio.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tỷ lệ limits/requests nhưng chưa rõ bài toán chặn overcommit ảo.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ý nghĩa của <code>maxLimitRequestRatio</code> trong việc kiểm soát tải overcommit cụm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container khai báo <code>requests.memory: 100Mi</code> và <code>limits.memory: 500Mi</code> với <code>maxLimitRequestRatio: 2</code> thì bị lỗi gì? — Lỗi tỷ lệ 500/100 = 5 vượt quá max ratio 2).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp lệnh CLI nào dùng để xem danh sách tất cả các đối tượng <code>LimitRange</code> đang áp dụng trong Namespace <code>prod</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl get limitrange -n prod</code> (hoặc <code>kubectl get limits -n prod</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm tên đối tượng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng get limitrange nhưng quên cờ Namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh CLI <code>kubectl get limitrange -n prod</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Xem thông số chi tiết min/max/default của LimitRange bằng lệnh gì? — Lệnh <code>kubectl describe limitrange <name> -n prod</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao trong mô hình Multi-tenancy (nhiều dự án dùng chung 1 cụm K8s), việc thiếu <code>ResourceQuota</code> lại là một lỗ hổng vận hành nguy hiểm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì nếu không có <code>ResourceQuota</code>, một dự án thử nghiệm bị lỗi vô hạn loop có thể chiếm sạch 100% CPU/RAM của toàn cụm, làm tất cả các dự án Production khác bị sập rây chuyền. <code>ResourceQuota</code> tạo ra rào chắn cách ly tài nguyên tuyệt đối giữa các team.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng chỉ cần Namespace là đủ phân chia.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được hết tài nguyên nhưng chưa làm rõ tính cách ly tài nguyên Multi-tenancy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo nguy cơ sập dây chuyền và vai trò cách ly rào chắn của ResourceQuota.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao Namespace không tự động cách ly tài nguyên nếu thiếu Quota? — Vì Namespace chỉ là rào chắn định danh logic, không khống chế dung lượng phần cứng nếu thiếu Quota).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 3 bước quy trình vàng để triển khai Resource Governance an toàn cho một Namespace mới là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tạo <code>LimitRange</code> trước để thiết lập <code>default</code>/<code>defaultRequest</code> tự động tiêm cho Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đo đạc dung lượng tiêu thụ dự kiến của Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tạo <code>ResourceQuota</code> với ngưỡng <code>hard</code> cao hơn 20% so với dung lượng dự kiến để dành khoảng trống RollingUpdate.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đúng 3 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 bước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 3 bước quy trình vàng quản trị tài nguyên Namespace.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 43 là gì? — Học về <code>CRD</code> và <code>Operator</code> ở mức độ người dùng).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Nguyên nhân xảy ra ca hỏng "Quota chặn âm thầm" (Silent Quota Rejection) và thông điệp lỗi phổ biến trả về từ API Server là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Nguyên nhân do Namespace có `ResourceQuota` quản lý CPU/RAM nhưng tệp YAML Pod triển khai lại thiếu khối `resources.requests/limits`. API Server không thể tính toán để trừ Quota nên chặn ngay từ vòng gửi xe với lỗi `is forbidden: failed quota: ... must specify cpu for: ...`.
+1. <b style="color: var(--accent-primary);">"ResourceQuota quản lý tổng trần tài nguyên ở cấp Namespace; LimitRange quản lý ngưỡng min/max và tiêm giá trị mặc định ở cấp Container."</b>
+2. <b style="color: var(--accent-primary);">"Luôn triển khai LimitRange tiêm default/defaultRequest đi kèm với ResourceQuota để triệt tiêu hoàn toàn ca hỏng 'Quota chặn âm thầm'."</b>
+3. <b style="color: var(--accent-primary);">"Dùng <code>kubectl describe quota</code> để xem ngay bảng đối soát cột Used vs Hard khi chẩn đoán nguyên nhân Pod bị Pending."</b>
+4. <b style="color: var(--accent-primary);">"Áp đặt bộ đôi ResourceQuota + LimitRange cho 100% các Namespace nghiệp vụ là nền tảng quản trị tài nguyên đa người dùng (Multi-tenancy) an toàn."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết nguyên nhân ca hỏng Quota chặn âm thầm.
-- 1đ: Nêu được do thiếu tài nguyên nhưng chưa rõ thông điệp lỗi `must specify cpu`.
-- 3đ: Phân tích chuẩn xác cơ chế chặn từ vòng gửi xe của API Server và thông điệp lỗi.
-
-**Câu hỏi đào sâu:** (Giải pháp lâu dài để không phải sửa thủ công từng tệp YAML là gì? — Triển khai một `LimitRange` tiêm giá trị `default`/`defaultRequest` tự động trong Namespace).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Sự khác nhau giữa thuộc tính `default` và `defaultRequest` trong tệp cấu hình `LimitRange` là gì?
-
-**Đáp án chuẩn:** `default` định nghĩa giá trị `limits` tài nguyên mặc định cho container nếu không khai báo. `defaultRequest` định nghĩa giá trị `requests` tài nguyên mặc định cho container nếu không khai báo.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa default và defaultRequest.
-- 1đ: Nêu được 1 trong 2 thuộc tính.
-- 3đ: Trình bày chính xác ánh xạ `default` -> `limits` và `defaultRequest` -> `requests`.
-
-**Câu hỏi đào sâu:** (Nếu container khai báo `requests` nhưng không khai báo `limits` thì `LimitRange` sẽ tiêm thêm thuộc tính nào? — Chỉ tiêm thêm thuộc tính `limits` từ giá trị `default`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Ngưỡng `max` và `min` trong `LimitRange` kiểm soát điều gì ở container?
-
-**Đáp án chuẩn:** `max` quy định trần tài nguyên CPU/RAM tối đa mà 1 container được phép xin. `min` quy định ngưỡng tài nguyên CPU/RAM tối thiểu mà 1 container bắt buộc phải xin. Nếu container khai báo vượt quá `max` hoặc nhỏ hơn `min`, API Server sẽ từ chối tạo Pod.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu ý nghĩa min/max trong LimitRange.
-- 1đ: Nêu được lớn nhất nhỏ nhất nhưng chưa rõ cơ chế từ chối của API Server.
-- 3đ: Phân tích chuẩn xác vai trò chặn các container xin tài nguyên quá dị biệt.
-
-**Câu hỏi đào sâu:** (Nếu container xin `requests.memory: 2Gi` nhưng `LimitRange` quy định `max.memory: 1Gi` thì lỗi gì xuất hiện? — Lỗi `requests.memory is higher than limitrange max`).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Câu lệnh CLI nào dùng để xem bảng đối soát chi tiết giữa tài nguyên đã tiêu thụ (`Used`) và hạn ngạch tối đa (`Hard`) trong Namespace `prod`?
-
-**Đáp án chuẩn:** `kubectl describe quota -n prod`.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm với `kubectl get quota`.
-- 1đ: Nêu đúng describe quota nhưng quên chỉ định Namespace.
-- 3đ: Trình bày chính xác câu lệnh `kubectl describe quota -n prod` và giải thích 2 cột Used vs Hard.
-
-**Câu hỏi đào sâu:** (Nếu cột `Used` bằng cột `Hard` ở mục `pods` thì điều gì xảy ra khi Deployment scale thêm Pod? — Pod mới sẽ không được tạo và bị chặn rớt event `exceeded quota`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Tại sao một Deployment có thể bị từ chối RollingUpdate khi Namespace đang sát trần hạn ngạch số lượng `pods` trong `ResourceQuota`?
-
-**Đáp án chuẩn:** Vì chiến lược RollingUpdate mặc định tạo thêm các Pod mới trước (`maxSurge`). Nếu trần `pods` trong Quota chỉ còn trống 1 Pod nhưng RollingUpdate cần bật 2 Pod mới, tổng số Pod sẽ tạm thời vượt quá trần `hard.pods` làm cho RollingUpdate bị nghẽn kẹt.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được sự xung đột giữa RollingUpdate maxSurge và Quota pods.
-- 1đ: Nêu được thừa Pod nhưng chưa làm rõ cơ chế maxSurge của RollingUpdate.
-- 3đ: Phân tích thấu đáo sự xung đột giữa `maxSurge` RollingUpdate và trần `hard.pods` trong Quota.
-
-**Câu hỏi đào sâu:** (Hai cách xử lý sự cố này là gì? — Cách 1: Tăng tạm trần `pods` trong Quota; Cách 2: Đặt `maxSurge: 0` trong Deployment spec).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Đối tượng `ResourceQuota` có thể khống chế những loại tài nguyên nào ngoài CPU và RAM?
-
-**Đáp án chuẩn:** Ngoài CPU và RAM, `ResourceQuota` còn khống chế: (1) Số lượng đối tượng (`pods`, `services`, `secrets`, `configmaps`, `persistentvolumeclaims`); (2) Dung lượng đĩa lưu trữ (`requests.storage`); (3) Số lượng NodePort/LoadBalancer Services (`services.nodeports`, `services.loadbalancers`).
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng Quota chỉ khống chế CPU và RAM.
-- 1đ: Nêu được số lượng Pods nhưng thiếu storage và Services.
-- 3đ: Phân tích đầy đủ 3 nhóm tài nguyên Quota khống chế (CPU/RAM, Object counts, Storage).
-
-**Câu hỏi đào sâu:** (Cú pháp khống chế tổng dung lượng đĩa PVC trong Quota là gì? — Khai báo `requests.storage: 50Gi`).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn để định nghĩa một ResourceQuota `prod-quota` giới hạn CPU request 2 cores, RAM request 2Gi và tối đa 5 Pods là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: prod-quota
-  namespace: prod
-spec:
-  hard:
-    requests.cpu: "2"
-    requests.memory: 2Gi
-    pods: "5"
-```
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai thụt lề hoặc sai từ khóa.
-- 1đ: Nêu đúng hard nhưng gõ nhầm request.cpu (thiếu s).
-- 3đ: Viết chuẩn xác tuyệt đối khối YAML spec ResourceQuota.
-
-**Câu hỏi đào sâu:** (Từ khóa `requests.cpu` có chữ `s` hay không? — Bắt buộc phải có chữ `s` số nhiều: `requests.cpu`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tải trọng Overcommit Ratio trong cụm Kubernetes được `LimitRange` kiểm soát như thế nào qua cờ `maxLimitRequestRatio`?
-
-**Đáp án chuẩn:** Cờ `maxLimitRequestRatio` quy định tỷ lệ tối đa giữa `limits` và `requests` của 1 container (ví dụ ratio = 2 có nghĩa limits không được gấp quá 2 lần requests). Giúp chặn các tệp YAML khai báo request quá nhỏ nhưng limit quá lớn gây overcommit ảo.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ maxLimitRequestRatio.
-- 1đ: Nêu được tỷ lệ limits/requests nhưng chưa rõ bài toán chặn overcommit ảo.
-- 3đ: Phân tích chuẩn xác ý nghĩa của `maxLimitRequestRatio` trong việc kiểm soát tải overcommit cụm.
-
-**Câu hỏi đào sâu:** (Nếu container khai báo `requests.memory: 100Mi` và `limits.memory: 500Mi` với `maxLimitRequestRatio: 2` thì bị lỗi gì? — Lỗi tỷ lệ 500/100 = 5 vượt quá max ratio 2).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Cú pháp lệnh CLI nào dùng để xem danh sách tất cả các đối tượng `LimitRange` đang áp dụng trong Namespace `prod`?
-
-**Đáp án chuẩn:** `kubectl get limitrange -n prod` (hoặc `kubectl get limits -n prod`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm tên đối tượng.
-- 1đ: Nêu đúng get limitrange nhưng quên cờ Namespace.
-- 3đ: Trình bày chính xác lệnh CLI `kubectl get limitrange -n prod`.
-
-**Câu hỏi đào sâu:** (Xem thông số chi tiết min/max/default của LimitRange bằng lệnh gì? — Lệnh `kubectl describe limitrange <name> -n prod`).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Tại sao trong mô hình Multi-tenancy (nhiều dự án dùng chung 1 cụm K8s), việc thiếu `ResourceQuota` lại là một lỗ hổng vận hành nguy hiểm?
-
-**Đáp án chuẩn:** Vì nếu không có `ResourceQuota`, một dự án thử nghiệm bị lỗi vô hạn loop có thể chiếm sạch 100% CPU/RAM của toàn cụm, làm tất cả các dự án Production khác bị sập rây chuyền. `ResourceQuota` tạo ra rào chắn cách ly tài nguyên tuyệt đối giữa các team.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng chỉ cần Namespace là đủ phân chia.
-- 1đ: Nêu được hết tài nguyên nhưng chưa làm rõ tính cách ly tài nguyên Multi-tenancy.
-- 3đ: Phân tích thấu đáo nguy cơ sập dây chuyền và vai trò cách ly rào chắn của ResourceQuota.
-
-**Câu hỏi đào sâu:** (Tại sao Namespace không tự động cách ly tài nguyên nếu thiếu Quota? — Vì Namespace chỉ là rào chắn định danh logic, không khống chế dung lượng phần cứng nếu thiếu Quota).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 3 bước quy trình vàng để triển khai Resource Governance an toàn cho một Namespace mới là gì?
-
-**Đáp án chuẩn:**
-1. Tạo `LimitRange` trước để thiết lập `default`/`defaultRequest` tự động tiêm cho Pod.
-2. Đo đạc dung lượng tiêu thụ dự kiến của Namespace.
-3. Tạo `ResourceQuota` với ngưỡng `hard` cao hơn 20% so với dung lượng dự kiến để dành khoảng trống RollingUpdate.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đúng 3 bước.
-- 1đ: Nêu được 2 bước.
-- 3đ: Trình bày tự tin, mạch lạc bộ 3 bước quy trình vàng quản trị tài nguyên Namespace.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 43 là gì? — Học về `CRD` và `Operator` ở mức độ người dùng).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1051,28 +1142,6 @@ spec:
 2. **"Luôn triển khai LimitRange tiêm default/defaultRequest đi kèm với ResourceQuota để triệt tiêu hoàn toàn ca hỏng 'Quota chặn âm thầm'."**
 3. **"Dùng `kubectl describe quota` để xem ngay bảng đối soát cột Used vs Hard khi chẩn đoán nguyên nhân Pod bị Pending."**
 4. **"Áp đặt bộ đôi ResourceQuota + LimitRange cho 100% các Namespace nghiệp vụ là nền tảng quản trị tài nguyên đa người dùng (Multi-tenancy) an toàn."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật ResourceQuota & LimitRange CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục quản trị tài nguyên Multi-tenant Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp YAML ResourceQuota và LimitRange chuẩn cho 1 Namespace Production.
-- **BTVN 2:** Thực hành tái hiện ca hỏng "Quota chặn âm thầm" và quay video giải thích cơ chế sửa lỗi bằng LimitRange.
-- **BTVN 3:** So sánh điểm khác nhau giữa QoS Class `Guaranteed`, `Burstable` và `BestEffort` dưới sự chi phối của LimitRange.
-- **BTVN 4 (Chuẩn bị cho Buổi 43 — CRD và Operator mức độ người dùng):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Khái niệm `CRD` (Custom Resource Definition) trong Kubernetes là gì và nó giúp mở rộng API Server thế nào?
-  2. Mô hình `Operator Pattern` kết hợp Custom Resource với Custom Controller để tự động hóa công việc gì?
-  3. Lệnh CLI nào dùng để kiểm tra các CRD đang có trên cụm (`kubectl get crd`, `kubectl get <custom-resource>`)?
 
 ---
 
@@ -1324,14 +1393,15 @@ spec:
       default: {cpu: 200m, memory: 256Mi}
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 13] Mở Rộng Khả Năng Nền Tảng Với Custom Resource Definitions (CRD) & Kubernetes Operator Pattern](ckad-13-13-crd-va-operator-muc-do-nguoi-dung.html).
+
 {% endraw %}

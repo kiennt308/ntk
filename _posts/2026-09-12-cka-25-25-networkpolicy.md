@@ -452,25 +452,6 @@ graph TD
 | Cilium Docs: Layer 3/4 Network Policy | Cilium v1.15 | Hướng dẫn cấu hình NetworkPolicy và eBPF packet filtering |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Mô hình mặc định mở "Default Allow-All" và yêu cầu tiên quyết về CNI plugin hỗ trợ NetworkPolicy | 12 phút |
-| §5 | Chiến lược bảo mật Zero Trust: Quy tắc Khóa 100% (Default Deny All) và mở Whitelist kiểm soát | 12 phút |
-| §6 | Kỹ thuật kết hợp `podSelector`, `namespaceSelector` và `ipBlock` cho Ingress / Egress | 10 phút |
-| §7 | Chứng minh trạng thái khóa mạng bằng lệnh kiểm thử | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| §11 | Câu hỏi tự kiểm tra | 5 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -918,24 +899,11 @@ EOF
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-25/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khởi tạo Workloads và áp dụng Default Deny All | 30 phút |
-| L4 | Bước 2 — Mở Whitelist Ingress và Egress DNS | 30 phút |
-| L5 | Bước 3 — Cấu hình `namespaceSelector` xuyên Namespace | 30 phút |
-| L6 | Bước 4 — Phân tích chi tiết NetworkPolicy và dọn dẹp | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -949,333 +917,432 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân biệt sự khác nhau giữa 2 trạng thái mạng của Pod: <code>Non-isolated</code> và <code>Isolated</code> trong Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Mô hình mạng mặc định (Default Allow-All):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mạng Kubernetes mặc định là <b style="color: var(--accent-primary);">Mặc định mở 100% (Default Allow-All)</b>. Bất kỳ Pod nào ở bất kỳ Namespace nào cũng có thể gửi và nhận gói tin mạng tự do tới mọi Pods khác trên toàn cụm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Điều kiện bắt buộc về CNI Plugin:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm bắt buộc phải sử dụng một CNI plugin có tính năng <b style="color: var(--accent-primary);">Policy Enforcement</b> (như Calico, Cilium, Weave Net).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CNI Flannel thuần túy KHÔNG hỗ trợ NetworkPolicy (nếu dùng Flannel, các tệp YAML NetworkPolicy apply thành công nhưng mạng vẫn mở toang 100%).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Trạng thái <code>Non-isolated</code> (Mở hoàn toàn):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Là trạng thái ban đầu của một Pod khi chưa thuộc bất kỳ đối tượng <code>NetworkPolicy</code> nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod tự do nhận (Ingress) và gửi (Egress) mọi gói tin mạng không bị giới hạn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Trạng thái <code>Isolated</code> (Cô lập / Bị khóa):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Là trạng thái của Pod ngay khi được so khớp bởi thuộc tính <code>podSelector</code> của <b style="color: var(--accent-primary);">ít nhất 1 NetworkPolicy</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod lập tức bị KHOÁ 100% mọi kết nối mạng ngoại trừ các luồng kết nối được khai báo đích danh trong danh sách Whitelist.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không phân biệt được 2 trạng thái.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời mờ nhạt mở vs đóng nhưng không chỉ ra cơ chế kích hoạt <code>podSelector</code> chuyển Pod sang trạng thái Isolated.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>Non-isolated</code> (mở mặc định) vs <code>Isolated</code> (bị khóa tự động ngay khi trùng nhãn <code>podSelector</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra sự cô lập riêng cho Ingress và Egress.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu một Pod thuộc 2 tệp NetworkPolicy khác nhau thì Kubernetes xử lý theo logic phép AND hay phép OR? *(Đáp án: Xử lý theo phép OR [hợp của các danh sách Whitelist]).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo mạng Kubernetes mặc định bị khóa sẵn.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời mạng mở nhưng không giải thích được vai trò Policy Enforcement của CNI Calico/Cilium và việc Flannel không hỗ trợ (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Default Allow-All (mở 100%) và điều kiện CNI phải hỗ trợ Policy Enforcement (như Calico hay Cilium).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cơ chế iptables/eBPF của CNI.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu áp NetworkPolicy khóa mạng trong cụm chạy CNI Flannel thuần túy thì lệnh <code>kubectl apply</code> có báo lỗi không? *(Đáp án: Không báo lỗi, API Server lưu tệp bình thường nhưng Kubelet và CNI bỏ qua không thực thi).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Viết cấu trúc YAML của một NetworkPolicy thực hiện chiến lược Zero Trust "Default Deny All" khóa 100% Ingress và Egress trong Namespace <code>dev</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu trúc YAML chuẩn Default Deny All:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: networking.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: NetworkPolicy</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: default-deny-all</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: dev</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">podSelector: {}</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">policyTypes:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ingress</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Egress</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>podSelector: {}</code>: Chọn 100% Pods trong Namespace <code>dev</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>policyTypes: ["Ingress", "Egress"]</code>: Khóa cả 2 hướng mạng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không khai báo mảng <code>ingress</code> và <code>egress</code>: Không cấp quyền Whitelist cho bất kỳ luồng mạng nào -> KHOÁ 100%.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Viết sai hoàn toàn YAML.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Viết được <code>podSelector: {}</code> nhưng thiếu thuộc tính <code>policyTypes: ["Egress"]</code> hoặc nhầm lẫn cấu hình Whitelist (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Biên soạn chuẩn xác tệp YAML Default Deny All (<code>podSelector: {}</code> và <code>policyTypes: ["Ingress", "Egress"]</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do áp Default Deny trước khi Whitelist.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Dấu ngoặc nhọn rỗng <code>{}</code> trong thuộc tính <code>podSelector: {}</code> có ý nghĩa kĩ thuật là gì? *(Đáp án: Biểu thị cho việc so khớp tất cả [Match All Pods] trong Namespace).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Phân biệt ý nghĩa logic giữa việc viết <code>podSelector</code> và <code>namespaceSelector</code> trong CÙNG một phần tử mảng <code>-</code> (phép AND) và KHÁC phần tử mảng (phép OR).</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Viết trong CÙNG 1 phần tử mảng (Phép AND - Đồng thời):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingress:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• from:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• podSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels: {app: web}</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespaceSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels: {team: frontend}</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ý nghĩa:* Chỉ cho phép Pod có label <code>app: web</code> VÀ nằm trong Namespace có label <code>team: frontend</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Viết ở 2 phần tử mảng KHÁC NHAU (Phép OR - Hoặc):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingress:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• from:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• podSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels: {app: web}</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• namespaceSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels: {team: frontend}</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ý nghĩa:* Cho phép Pod có label <code>app: web</code> (ở cùng ns) HOẶC bất kỳ Pod nào nằm trong Namespace có label <code>team: frontend</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 cách viết giống nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời AND và OR nhưng nhầm lẫn giữa cùng dòng <code>-</code> (AND) vs khác dòng <code>-</code> (OR).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cùng phần tử mảng <code>-</code> (phép AND đồng thời) vs khác phần tử mảng <code>-</code> (phép OR hoặc).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, làm ví dụ bài thi thực tế.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trong kỳ thi CKA, bẫy gộp dòng mảng khiến thí sinh mất điểm nhiều nhất là gì? *(Đáp án: Gộp chung <code>podSelector</code> và <code>namespaceSelector</code> làm phép AND khiến kết nối bị khóa nhầm).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Làm thế nào để cho phép kết nối xuyên Namespace từ Namespace <code>frontend</code> sang Namespace <code>backend</code> sử dụng <code>namespaceSelector</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu hình <code>namespaceSelector</code> xuyên Namespace:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubernetes v1.21+ tự động gán nhãn hệ thống <b style="color: var(--accent-primary);"><code>kubernetes.io/metadata.name</code></b> cho mọi Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Biên soạn NetworkPolicy trong Namespace <code>backend</code> như sau:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">podSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">app: db</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingress:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• from:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• namespaceSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kubernetes.io/metadata.name: frontend</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Mở kết nối cho tất cả các Pods đến từ Namespace <code>frontend</code> tới Pod DB trong Namespace <code>backend</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Dùng <code>podSelector</code> để gọi Namespace khác.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nhớ <code>namespaceSelector</code> nhưng không biết tên nhãn chuẩn <code>kubernetes.io/metadata.name: frontend</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc sử dụng <code>namespaceSelector</code> kết hợp nhãn hệ thống <code>kubernetes.io/metadata.name: frontend</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách tự gán label cho Namespace.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao không thể dùng một mình <code>podSelector</code> để chọn Pod nằm ở Namespace khác? *(Đáp án: Vì <code>podSelector</code> có phạm vi [scope] duy nhất trong CÙNG Namespace chứa tệp NetworkPolicy).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Khối <code>ipBlock</code> trong NetworkPolicy được cấu hình như thế nào để cho phép dải IP <code>192.168.1.0/24</code> nhưng loại trừ IP <code>192.168.1.100</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu hình YAML khối <code>ipBlock</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingress:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• from:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ipBlock:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cidr: 192.168.1.0/24</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">except:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 192.168.1.100/32</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>cidr: 192.168.1.0/24</code>: Cho phép toàn bộ dải IP từ 192.168.1.1 đến 192.168.1.254.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>except: [192.168.1.100/32]</code>: Đặt khoảng loại trừ cho đúng 1 địa chỉ IP nhạy cảm <code>192.168.1.100</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cú pháp <code>ipBlock</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nhớ <code>cidr</code> nhưng gõ sai thuộc tính <code>except</code> hoặc quên mặt nạ <code>/32</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác khối <code>ipBlock</code> với <code>cidr: 192.168.1.0/24</code> và <code>except: [192.168.1.100/32]</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra khi nào dùng <code>ipBlock</code> (ngoại mạng) vs <code>podSelector</code> (nội mạng).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có nên điền địa chỉ IP của một Pod Kubernetes vào khối <code>ipBlock</code> hay không? *(Đáp án: Không nên, vì IP Pod thay đổi liên tục khi Pod restart, phải dùng <code>podSelector</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao khi cấu hình Default Deny Egress, kỹ sư lại bắt buộc phải thêm rule Whitelist Egress cho cổng 53 UDP/TCP tới CoreDNS?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do bắt buộc mở cổng 53 Egress tới CoreDNS:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi áp dụng Default Deny Egress, luồng kết nối đi RA từ Pod bị KHOÁ 100%, bao gồm cả truy vấn DNS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu không mở cổng 53 UDP/TCP tới IP Service <code>kube-dns</code> (<code>10.96.0.10</code>), Pods sẽ <b style="color: var(--accent-primary);">bị liệt hoàn toàn khả năng phân giải tên miền DNS</b>, làm sập toàn bộ kết nối microservices.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu hình mẫu:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">egress:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ports:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• port: 53</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">protocol: UDP</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• port: 53</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">protocol: TCP</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được ảnh hưởng DNS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời mở DNS nhưng không nêu được số cổng 53 và 2 giao thức UDP/TCP.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác tác hại liệt DNS nếu khóa Egress cổng 53 và tệp YAML mở cổng 53 UDP/TCP.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra địa chỉ IP <code>10.96.0.10</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao phải mở cả 2 giao thức UDP và TCP cho cổng 53 DNS? *(Đáp án: Vì truy vấn DNS nhỏ dùng UDP 53, nhưng khi kết quả lớn hoặc dùng DNSSEC sẽ chuyển sang TCP 53).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Kỹ thuật sử dụng lệnh CLI <code>nc -zv</code> hoặc <code>curl</code> để chứng minh một đường kết nối mạng đã bị KHOÁ thành công được thực hiện như thế nào trong bài thi CKA/CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh kiểm thử chứng minh KHOÁ mạng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl exec <pod-client> -n <ns> -- nc -zv -w 2 <target-ip> <port></code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Hoặc: <code>kubectl exec <pod-client> -n <ns> -- curl --connect-timeout 2 http://<target-ip></code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Dấu hiệu chứng minh thành công:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh trả về thông báo <b style="color: var(--accent-primary);"><code>Connection timed out</code> (hoặc <code>refused</code>)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mã thoát Exit Code khác 0 (thường là $1$ hoặc $7$).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <code>-w 2</code> / <code>--connect-timeout 2</code> bắt buộc có để ép ngắt kết nối sau 2 giây, không bị treo terminal.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ lệnh kiểm thử kết nối.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dùng <code>curl</code> nhưng thiếu cờ <code>--connect-timeout 2</code> làm lệnh bị treo vô hạn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh <code>nc -zv -w 2</code> / <code>curl --connect-timeout 2</code> và dấu hiệu Timeout (exit code != 0).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt Timeout (bị Drop) vs Refused (bị Reject).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Sự khác nhau giữa thông báo <code>Connection timed out</code> và <code>Connection refused</code> khi test <code>nc -zv</code> là gì? *(Đáp án: <code>Timed out</code> do NetworkPolicy âm thầm DROP gói tin; <code>Refused</code> do gói tin tới được target nhưng không có tiến trình lắng nghe cổng).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu lệnh CLI nào giúp trích xuất nhanh danh sách đối tượng NetworkPolicy và từ viết tắt của tài nguyên này trong <code>kubectl</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh CLI trích xuất nhanh:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl get netpol -n <namespace></code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Từ viết tắt chính thức:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Từ viết tắt chính thức trong Kubernetes của <code>networkpolicies</code> là <b style="color: var(--accent-primary);"><code>netpol</code></b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ từ viết tắt.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nhớ lệnh <code>kubectl get networkpolicies</code> nhưng không gõ từ ngắn <code>netpol</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh <code>kubectl get netpol -n <namespace></code> và từ viết tắt <code>netpol</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl describe netpol</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh describe nào giúp đọc toàn bộ sơ đồ tường lửa Ingress/Egress của 1 NetworkPolicy? *(Đáp án: Lệnh <code>kubectl describe netpol <policy-name> -n <namespace></code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Trình bày nguyên tắc bảo mật "Đơn quyền hạn tối thiểu" (Principle of Least Privilege) khi áp dụng NetworkPolicy trong microservices.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên tắc Đơn quyền hạn tối thiểu (Principle of Least Privilege):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mặc định <b style="color: var(--accent-primary);">KHOÁ 100% mọi luồng truy cập (Default Deny All)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ <b style="color: var(--accent-primary);">cấp đúng cổng (port) và đúng nguồn (source) tối thiểu</b> mà Pod đó cần để hoạt động.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ví dụ:* Pod Backend chỉ cần kết nối tới Database cổng 5432, thì NetworkPolicy chỉ mở đúng cổng 5432/TCP cho đúng nhãn <code>app: backend</code>, tuyệt đối không mở cổng 22 (SSH) hay mở cho toàn bộ Namespace.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được nguyên tắc Least Privilege.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời mở ít nhưng không giải thích được cơ chế Default Deny All + mở đúng cổng/nguồn tối thiểu.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguyên tắc Least Privilege (khóa 100% rồi chỉ mở đúng cổng và đối tượng tối thiểu).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ tới tiêu chuẩn SOC2/PCI-DSS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao không nên dùng cờ <code>ports: []</code> rỗng trong Whitelist Ingress rule? *(Đáp án: Vì ports rỗng nghĩa là mở 100% tất cả các cổng [All Ports] của Pod đó).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Nếu một Pod A có label <code>app: web</code> và Pod B có label <code>env: prod</code>, làm thế nào để biên soạn NetworkPolicy trong cùng Namespace chỉ cho phép Pod A gọi Pod B cổng 80?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu hình YAML chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: networking.k8s.io/v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: NetworkPolicy</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: allow-web-to-prod-b</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: dev</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">podSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">env: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">policyTypes:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ingress</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingress:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• from:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• podSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">app: web</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ports:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• protocol: TCP</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">port: 80</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Viết sai hoàn toàn YAML.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Viết được nhưng nhầm lẫn giữa target <code>podSelector</code> (env: prod) và ingress <code>podSelector</code> (app: web).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Biên soạn chuẩn xác tệp YAML (<code>podSelector: {env: prod}</code>, <code>from.podSelector: {app: web}</code>, <code>port: 80</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, test lệnh <code>nc -zv</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trong file YAML trên, Pod B (env: prod) có bị khóa kết nối Egress đi ra không? *(Đáp án: Không, vì <code>policyTypes</code> chỉ khai báo <code>Ingress</code>, luồng Egress của Pod B vẫn mở).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do áp NetworkPolicy nhưng mạng vẫn mở vì chạy CNI Flannel, 1 âm thầm do sập DNS toàn bộ Pods vì áp Default Deny Egress quên mở cổng 53) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Áp NetworkPolicy khóa mạng nhưng thử <code>curl</code> từ hacker vẫn lọt qua 100% vì CNI Flannel):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Áp tệp <code>default-deny-all.yaml</code> thành công nhưng các Pods khác vẫn kết nối tự do tới nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl get pods -n kube-system</code> thấy cụm chạy CNI Flannel thuần túy (không có Calico/Cilium daemonset).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Cài đặt CNI Calico hoặc Cilium có tính năng Policy Enforcement vào cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Sập phân giải DNS toàn bộ Pods do áp Default Deny Egress quên Whitelist cổng 53):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* 100% Pods trong Namespace báo lỗi <code>Name or service not known</code> khi gọi tên miền Service.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Lệnh <code>kubectl exec pod -- nslookup kubernetes.default</code> bị báo timeout.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Áp bổ sung NetworkPolicy Whitelist Egress mở cổng 53 UDP/TCP tới IP CoreDNS (<code>10.96.0.10</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân CNI Flannel không có Policy Enforcement và việc thiếu cổng 53 Egress (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi Pod dính lỗi sập DNS do khóa Egress, câu lệnh <code>nc -zv</code> nào giúp phát hiện ngay cổng 53 bị timeout trong 2 giây? *(Đáp án: Lệnh <code>kubectl exec pod -- nc -zv -w 2 10.96.0.10 53</code>).*
+
 ---
 
-### Câu 2 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau giữa 2 trạng thái mạng của Pod: `Non-isolated` và `Isolated` trong Kubernetes.
-
-**Đáp án chuẩn:**
-- **1. Trạng thái `Non-isolated` (Mở hoàn toàn):**
-  - Là trạng thái ban đầu của một Pod khi chưa thuộc bất kỳ đối tượng `NetworkPolicy` nào.
-  - Pod tự do nhận (Ingress) và gửi (Egress) mọi gói tin mạng không bị giới hạn.
-- **2. Trạng thái `Isolated` (Cô lập / Bị khóa):**
-  - Là trạng thái của Pod ngay khi được so khớp bởi thuộc tính `podSelector` của **ít nhất 1 NetworkPolicy**.
-  - Pod lập tức bị KHOÁ 100% mọi kết nối mạng ngoại trừ các luồng kết nối được khai báo đích danh trong danh sách Whitelist.
-
-**Tiêu chí chấm:**
-- **0đ:** Không phân biệt được 2 trạng thái.
-- **1đ:** Trả lời mờ nhạt mở vs đóng nhưng không chỉ ra cơ chế kích hoạt `podSelector` chuyển Pod sang trạng thái Isolated.
-- **2đ:** Giải thích chuẩn xác `Non-isolated` (mở mặc định) vs `Isolated` (bị khóa tự động ngay khi trùng nhãn `podSelector`).
-- **3đ:** Trả lời xuất sắc, chỉ ra sự cô lập riêng cho Ingress và Egress.
-
-**Câu hỏi đào sâu:** Nếu một Pod thuộc 2 tệp NetworkPolicy khác nhau thì Kubernetes xử lý theo logic phép AND hay phép OR? *(Đáp án: Xử lý theo phép OR [hợp của các danh sách Whitelist]).*
-
----
-
-### Câu 3 — 🔥
-
-**Hỏi:** Viết cấu trúc YAML của một NetworkPolicy thực hiện chiến lược Zero Trust "Default Deny All" khóa 100% Ingress và Egress trong Namespace `dev`.
-
-**Đáp án chuẩn:**
-- **Cấu trúc YAML chuẩn Default Deny All:**
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny-all
-  namespace: dev
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
-```
-- **Giải thích:**
-  - `podSelector: {}`: Chọn 100% Pods trong Namespace `dev`.
-  - `policyTypes: ["Ingress", "Egress"]`: Khóa cả 2 hướng mạng.
-  - Không khai báo mảng `ingress` và `egress`: Không cấp quyền Whitelist cho bất kỳ luồng mạng nào -> KHOÁ 100%.
-
-**Tiêu chí chấm:**
-- **0đ:** Viết sai hoàn toàn YAML.
-- **1đ:** Viết được `podSelector: {}` nhưng thiếu thuộc tính `policyTypes: ["Egress"]` hoặc nhầm lẫn cấu hình Whitelist (dính trần 1đ).
-- **2đ:** Biên soạn chuẩn xác tệp YAML Default Deny All (`podSelector: {}` và `policyTypes: ["Ingress", "Egress"]`).
-- **3đ:** Trả lời xuất sắc, chỉ ra lý do áp Default Deny trước khi Whitelist.
-
-**Câu hỏi đào sâu:** Dấu ngoặc nhọn rỗng `{}` trong thuộc tính `podSelector: {}` có ý nghĩa kĩ thuật là gì? *(Đáp án: Biểu thị cho việc so khớp tất cả [Match All Pods] trong Namespace).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Phân biệt ý nghĩa logic giữa việc viết `podSelector` và `namespaceSelector` trong CÙNG một phần tử mảng `-` (phép AND) và KHÁC phần tử mảng (phép OR).
-
-**Đáp án chuẩn:**
-- **1. Viết trong CÙNG 1 phần tử mảng (Phép AND - Đồng thời):**
-```yaml
-ingress:
-- from:
-  - podSelector:
-      matchLabels: {app: web}
-    namespaceSelector:
-      matchLabels: {team: frontend}
-```
-  - *Ý nghĩa:* Chỉ cho phép Pod có label `app: web` VÀ nằm trong Namespace có label `team: frontend`.
-- **2. Viết ở 2 phần tử mảng KHÁC NHAU (Phép OR - Hoặc):**
-```yaml
-ingress:
-- from:
-  - podSelector:
-      matchLabels: {app: web}
-  - namespaceSelector:
-      matchLabels: {team: frontend}
-```
-  - *Ý nghĩa:* Cho phép Pod có label `app: web` (ở cùng ns) HOẶC bất kỳ Pod nào nằm trong Namespace có label `team: frontend`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 cách viết giống nhau.
-- **1đ:** Trả lời AND và OR nhưng nhầm lẫn giữa cùng dòng `-` (AND) vs khác dòng `-` (OR).
-- **2đ:** Giải thích chuẩn xác cùng phần tử mảng `-` (phép AND đồng thời) vs khác phần tử mảng `-` (phép OR hoặc).
-- **3đ:** Trả lời xuất sắc, làm ví dụ bài thi thực tế.
-
-**Câu hỏi đào sâu:** Trong kỳ thi CKA, bẫy gộp dòng mảng khiến thí sinh mất điểm nhiều nhất là gì? *(Đáp án: Gộp chung `podSelector` và `namespaceSelector` làm phép AND khiến kết nối bị khóa nhầm).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Làm thế nào để cho phép kết nối xuyên Namespace từ Namespace `frontend` sang Namespace `backend` sử dụng `namespaceSelector`?
-
-**Đáp án chuẩn:**
-- **Cấu hình `namespaceSelector` xuyên Namespace:**
-  - Kubernetes v1.21+ tự động gán nhãn hệ thống **`kubernetes.io/metadata.name`** cho mọi Namespace.
-  - Biên soạn NetworkPolicy trong Namespace `backend` như sau:
-```yaml
-spec:
-  podSelector:
-    matchLabels:
-      app: db
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: frontend
-```
-- **Tác dụng:** Mở kết nối cho tất cả các Pods đến từ Namespace `frontend` tới Pod DB trong Namespace `backend`.
-
-**Tiêu chí chấm:**
-- **0đ:** Dùng `podSelector` để gọi Namespace khác.
-- **1đ:** Nhớ `namespaceSelector` nhưng không biết tên nhãn chuẩn `kubernetes.io/metadata.name: frontend`.
-- **2đ:** Giải thích chuẩn xác việc sử dụng `namespaceSelector` kết hợp nhãn hệ thống `kubernetes.io/metadata.name: frontend`.
-- **3đ:** Trả lời xuất sắc, chỉ ra cách tự gán label cho Namespace.
-
-**Câu hỏi đào sâu:** Tại sao không thể dùng một mình `podSelector` để chọn Pod nằm ở Namespace khác? *(Đáp án: Vì `podSelector` có phạm vi [scope] duy nhất trong CÙNG Namespace chứa tệp NetworkPolicy).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Khối `ipBlock` trong NetworkPolicy được cấu hình như thế nào để cho phép dải IP `192.168.1.0/24` nhưng loại trừ IP `192.168.1.100`?
-
-**Đáp án chuẩn:**
-- **Cấu hình YAML khối `ipBlock`:**
-```yaml
-ingress:
-- from:
-  - ipBlock:
-      cidr: 192.168.1.0/24
-      except:
-      - 192.168.1.100/32
-```
-- **Giải thích:**
-  - `cidr: 192.168.1.0/24`: Cho phép toàn bộ dải IP từ 192.168.1.1 đến 192.168.1.254.
-  - `except: [192.168.1.100/32]`: Đặt khoảng loại trừ cho đúng 1 địa chỉ IP nhạy cảm `192.168.1.100`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ cú pháp `ipBlock`.
-- **1đ:** Nhớ `cidr` nhưng gõ sai thuộc tính `except` hoặc quên mặt nạ `/32`.
-- **2đ:** Giải thích chuẩn xác khối `ipBlock` với `cidr: 192.168.1.0/24` và `except: [192.168.1.100/32]`.
-- **3đ:** Trả lời xuất sắc, chỉ ra khi nào dùng `ipBlock` (ngoại mạng) vs `podSelector` (nội mạng).
-
-**Câu hỏi đào sâu:** Có nên điền địa chỉ IP của một Pod Kubernetes vào khối `ipBlock` hay không? *(Đáp án: Không nên, vì IP Pod thay đổi liên tục khi Pod restart, phải dùng `podSelector`).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Tại sao khi cấu hình Default Deny Egress, kỹ sư lại bắt buộc phải thêm rule Whitelist Egress cho cổng 53 UDP/TCP tới CoreDNS?
-
-**Đáp án chuẩn:**
-- **Lý do bắt buộc mở cổng 53 Egress tới CoreDNS:**
-  - Khi áp dụng Default Deny Egress, luồng kết nối đi RA từ Pod bị KHOÁ 100%, bao gồm cả truy vấn DNS.
-  - Nếu không mở cổng 53 UDP/TCP tới IP Service `kube-dns` (`10.96.0.10`), Pods sẽ **bị liệt hoàn toàn khả năng phân giải tên miền DNS**, làm sập toàn bộ kết nối microservices.
-- **Cấu hình mẫu:**
-```yaml
-egress:
-- ports:
-  - port: 53
-    protocol: UDP
-  - port: 53
-    protocol: TCP
-```
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được ảnh hưởng DNS.
-- **1đ:** Trả lời mở DNS nhưng không nêu được số cổng 53 và 2 giao thức UDP/TCP.
-- **2đ:** Giải thích chuẩn xác tác hại liệt DNS nếu khóa Egress cổng 53 và tệp YAML mở cổng 53 UDP/TCP.
-- **3đ:** Trả lời xuất sắc, chỉ ra địa chỉ IP `10.96.0.10`.
-
-**Câu hỏi đào sâu:** Tại sao phải mở cả 2 giao thức UDP và TCP cho cổng 53 DNS? *(Đáp án: Vì truy vấn DNS nhỏ dùng UDP 53, nhưng khi kết quả lớn hoặc dùng DNSSEC sẽ chuyển sang TCP 53).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Kỹ thuật sử dụng lệnh CLI `nc -zv` hoặc `curl` để chứng minh một đường kết nối mạng đã bị KHOÁ thành công được thực hiện như thế nào trong bài thi CKA/CKAD?
-
-**Đáp án chuẩn:**
-- **Câu lệnh kiểm thử chứng minh KHOÁ mạng:**
-  `kubectl exec <pod-client> -n <ns> -- nc -zv -w 2 <target-ip> <port>`
-  Hoặc: `kubectl exec <pod-client> -n <ns> -- curl --connect-timeout 2 http://<target-ip>`
-- **Dấu hiệu chứng minh thành công:**
-  - Lệnh trả về thông báo **`Connection timed out` (hoặc `refused`)**.
-  - Mã thoát Exit Code khác 0 (thường là $1$ hoặc $7$).
-  - Cờ `-w 2` / `--connect-timeout 2` bắt buộc có để ép ngắt kết nối sau 2 giây, không bị treo terminal.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ lệnh kiểm thử kết nối.
-- **1đ:** Trả lời dùng `curl` nhưng thiếu cờ `--connect-timeout 2` làm lệnh bị treo vô hạn.
-- **2đ:** Viết chuẩn xác câu lệnh `nc -zv -w 2` / `curl --connect-timeout 2` và dấu hiệu Timeout (exit code != 0).
-- **3đ:** Trả lời xuất sắc, phân biệt Timeout (bị Drop) vs Refused (bị Reject).
-
-**Câu hỏi đào sâu:** Sự khác nhau giữa thông báo `Connection timed out` và `Connection refused` khi test `nc -zv` là gì? *(Đáp án: `Timed out` do NetworkPolicy âm thầm DROP gói tin; `Refused` do gói tin tới được target nhưng không có tiến trình lắng nghe cổng).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Câu lệnh CLI nào giúp trích xuất nhanh danh sách đối tượng NetworkPolicy và từ viết tắt của tài nguyên này trong `kubectl` là gì?
-
-**Đáp án chuẩn:**
-- **Câu lệnh CLI trích xuất nhanh:**
-  `kubectl get netpol -n <namespace>`
-- **Từ viết tắt chính thức:**
-  - Từ viết tắt chính thức trong Kubernetes của `networkpolicies` là **`netpol`**.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ từ viết tắt.
-- **1đ:** Nhớ lệnh `kubectl get networkpolicies` nhưng không gõ từ ngắn `netpol`.
-- **2đ:** Viết chuẩn xác câu lệnh `kubectl get netpol -n <namespace>` và từ viết tắt `netpol`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl describe netpol`.
-
-**Câu hỏi đào sâu:** Lệnh describe nào giúp đọc toàn bộ sơ đồ tường lửa Ingress/Egress của 1 NetworkPolicy? *(Đáp án: Lệnh `kubectl describe netpol <policy-name> -n <namespace>`).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Trình bày nguyên tắc bảo mật "Đơn quyền hạn tối thiểu" (Principle of Least Privilege) khi áp dụng NetworkPolicy trong microservices.
-
-**Đáp án chuẩn:**
-- **Nguyên tắc Đơn quyền hạn tối thiểu (Principle of Least Privilege):**
-  - Mặc định **KHOÁ 100% mọi luồng truy cập (Default Deny All)**.
-  - Chỉ **cấp đúng cổng (port) và đúng nguồn (source) tối thiểu** mà Pod đó cần để hoạt động.
-  - *Ví dụ:* Pod Backend chỉ cần kết nối tới Database cổng 5432, thì NetworkPolicy chỉ mở đúng cổng 5432/TCP cho đúng nhãn `app: backend`, tuyệt đối không mở cổng 22 (SSH) hay mở cho toàn bộ Namespace.
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được nguyên tắc Least Privilege.
-- **1đ:** Trả lời mở ít nhưng không giải thích được cơ chế Default Deny All + mở đúng cổng/nguồn tối thiểu.
-- **2đ:** Giải thích chuẩn xác nguyên tắc Least Privilege (khóa 100% rồi chỉ mở đúng cổng và đối tượng tối thiểu).
-- **3đ:** Trả lời xuất sắc, liên hệ tới tiêu chuẩn SOC2/PCI-DSS.
-
-**Câu hỏi đào sâu:** Tại sao không nên dùng cờ `ports: []` rỗng trong Whitelist Ingress rule? *(Đáp án: Vì ports rỗng nghĩa là mở 100% tất cả các cổng [All Ports] của Pod đó).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Nếu một Pod A có label `app: web` và Pod B có label `env: prod`, làm thế nào để biên soạn NetworkPolicy trong cùng Namespace chỉ cho phép Pod A gọi Pod B cổng 80?
-
-**Đáp án chuẩn:**
-- **Cấu hình YAML chuẩn:**
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-web-to-prod-b
-  namespace: dev
-spec:
-  podSelector:
-    matchLabels:
-      env: prod
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: web
-    ports:
-    - protocol: TCP
-      port: 80
-```
-
-**Tiêu chí chấm:**
-- **0đ:** Viết sai hoàn toàn YAML.
-- **1đ:** Viết được nhưng nhầm lẫn giữa target `podSelector` (env: prod) và ingress `podSelector` (app: web).
-- **2đ:** Biên soạn chuẩn xác tệp YAML (`podSelector: {env: prod}`, `from.podSelector: {app: web}`, `port: 80`).
-- **3đ:** Trả lời xuất sắc, test lệnh `nc -zv`.
-
-**Câu hỏi đào sâu:** Trong file YAML trên, Pod B (env: prod) có bị khóa kết nối Egress đi ra không? *(Đáp án: Không, vì `policyTypes` chỉ khai báo `Ingress`, luồng Egress của Pod B vẫn mở).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do áp NetworkPolicy nhưng mạng vẫn mở vì chạy CNI Flannel, 1 âm thầm do sập DNS toàn bộ Pods vì áp Default Deny Egress quên mở cổng 53) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Áp NetworkPolicy khóa mạng nhưng thử `curl` từ hacker vẫn lọt qua 100% vì CNI Flannel):**
-   - *Triệu chứng:* Áp tệp `default-deny-all.yaml` thành công nhưng các Pods khác vẫn kết nối tự do tới nhau.
-   - *Phát hiện:* Gõ `kubectl get pods -n kube-system` thấy cụm chạy CNI Flannel thuần túy (không có Calico/Cilium daemonset).
-   - *Khắc phục:* Cài đặt CNI Calico hoặc Cilium có tính năng Policy Enforcement vào cụm.
-2. **Chế độ hỏng 2 (Âm thầm - Sập phân giải DNS toàn bộ Pods do áp Default Deny Egress quên Whitelist cổng 53):**
-   - *Triệu chứng:* 100% Pods trong Namespace báo lỗi `Name or service not known` khi gọi tên miền Service.
-   - *Phát hiện:* Lệnh `kubectl exec pod -- nslookup kubernetes.default` bị báo timeout.
-   - *Khắc phục:* Áp bổ sung NetworkPolicy Whitelist Egress mở cổng 53 UDP/TCP tới IP CoreDNS (`10.96.0.10`).
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân CNI Flannel không có Policy Enforcement và việc thiếu cổng 53 Egress (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi Pod dính lỗi sập DNS do khóa Egress, câu lệnh `nc -zv` nào giúp phát hiện ngay cổng 53 bị timeout trong 2 giây? *(Đáp án: Lệnh `kubectl exec pod -- nc -zv -w 2 10.96.0.10 53`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Mạng Kubernetes mặc định <b style="color: var(--accent-primary);">Mặc định mở 100% (Default Allow-All)</b>; NetworkPolicy đòi hỏi CNI phải hỗ trợ Policy Enforcement (như Calico hay Cilium)."*
+2. *"Chiến lược Zero Trust: khóa 100% bằng <b style="color: var(--accent-primary);"><code>podSelector: {}</code></b> và <b style="color: var(--accent-primary);"><code>policyTypes: ["Ingress", "Egress"]</code></b>, sau đó mới mở Whitelist."*
+3. *"Phân biệt 3 bộ chọn: <b style="color: var(--accent-primary);"><code>podSelector</code></b> (nội bộ ns), <b style="color: var(--accent-primary);"><code>namespaceSelector</code></b> (xuyên ns với <code>kubernetes.io/metadata.name</code>), và <b style="color: var(--accent-primary);"><code>ipBlock</code></b> (CIDR ngoài)."*
+4. *"Trong Whitelist rules, cùng mảng <code>-</code> là phép <b style="color: var(--accent-primary);">AND</b>; khác mảng <code>-</code> là phép <b style="color: var(--accent-primary);">OR</b>."*
+5. *"Chứng minh KHOÁ mạng thành công bằng <b style="color: var(--accent-primary);"><code>nc -zv -w 2</code></b> hoặc <b style="color: var(--accent-primary);"><code>curl --connect-timeout 2</code></b> (kết quả Connection Timed Out là ĐẠT)."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1286,40 +1353,6 @@ spec:
 3. *"Phân biệt 3 bộ chọn: **`podSelector`** (nội bộ ns), **`namespaceSelector`** (xuyên ns với `kubernetes.io/metadata.name`), và **`ipBlock`** (CIDR ngoài)."*
 4. *"Trong Whitelist rules, cùng mảng `-` là phép **AND**; khác mảng `-` là phép **OR**."*
 5. *"Chứng minh KHOÁ mạng thành công bằng **`nc -zv -w 2`** hoặc **`curl --connect-timeout 2`** (kết quả Connection Timed Out là ĐẠT)."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Default Allow-All (mở 100%) & CNI Policy Enforcement (Calico/Cilium) (trần 1đ nếu thiếu) |
-| Câu 2 | ★★★ | 3 | | Phân biệt trạng thái `Non-isolated` (mở) vs `Isolated` (bị khóa) |
-| Câu 3 | 🔥 | 3 | | Cấu trúc YAML Default Deny All (`podSelector: {}` & `policyTypes`) (trần 1đ nếu thiếu) |
-| Câu 4 | ★★★ | 3 | | Logic phép AND (cùng mảng `-`) vs phép OR (khác mảng `-`) |
-| Câu 5 | ★★★ | 3 | | Cấu hình `namespaceSelector` xuyên ns với `kubernetes.io/metadata.name` |
-| Câu 6 | ★★★ | 3 | | Khối `ipBlock` với `cidr` và khoảng ngoại trừ `except` |
-| Câu 7 | ★★★ | 3 | | Lý do bắt buộc mở Egress cổng 53 UDP/TCP tới CoreDNS |
-| Câu 8 | ★★★ | 3 | | Lệnh kiểm thử chứng minh KHOÁ `nc -zv -w 2` / `curl --connect-timeout 2` |
-| Câu 9 | ★★★ | 3 | | Lệnh `kubectl get netpol` và từ viết tắt `netpol` |
-| Câu 10 | ★★★ | 3 | | Nguyên tắc bảo mật Đơn quyền hạn tối thiểu (Least Privilege) |
-| Câu 11 | ★★★ | 3 | | YAML Whitelist Pod A (app: web) tới Pod B (env: prod) cổng 80 |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (Mạng vẫn mở do CNI Flannel & Sập DNS do khóa Egress cổng 53) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các Namespaces trong cụm và cảnh báo các Namespaces chưa áp dụng NetworkPolicy Default Deny All.
-2. **BTVN 2:** Khởi tạo 3 Namespaces `frontend`, `backend`, `database` và áp dụng bộ NetworkPolicy cô lập luồng 3-Tier chuẩn doanh nghiệp.
-3. **BTVN 3:** Đo thời gian phản hồi timeout của lệnh `nc -zv -w 2` vs `nc -zv` (không cờ `-w`) khi truy cập IP bị NetworkPolicy DROP.
-4. **BTVN 4 — Chuẩn bị cho Buổi 26 (`buoi-26-volume-pv-pvc`):**
-   - *Câu 1:* Phân biệt sự khác nhau giữa Lưu trữ tạm thời (Ephemeral Volume như `emptyDir`) và Lưu trữ bền vững (Persistent Volume `PV` / `PVC`).
-   - *Câu 2:* Ba chế độ truy cập (Access Modes) của Persistent Volume: `ReadWriteOnce` (RWO), `ReadOnlyMany` (ROX), và `ReadWriteMany` (RWX) có ý nghĩa gì?
-   - *Câu 3:* Ý nghĩa của 3 chính sách thu hồi (Reclaim Policy): `Retain` (Giữ nguyên dữ liệu), `Delete` (Tự động xoá), và `Recycle` (Xoá rác)?
-
-> **Đoạn kết nối Buổi 26:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 26 — buổi bắt đầu của **Chương 3: Storage (Buổi 26 – 30)** chuyên sâu về Volume, PV, PVC, StorageClass và quản lý lưu trữ bền vững trong CKA và CKAD.
 
 ---
 
@@ -1654,15 +1687,15 @@ kubectl exec <pod-name> -n <namespace> -- curl --connect-timeout 2 http://<targe
 kubectl label namespace <namespace> kubernetes.io/metadata.name=<namespace> --overwrite
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 26] Kiến Trúc Lưu Trữ Bền Vững: Volume, PersistentVolume (PV), PersistentVolumeClaim (PVC) & ReclaimPolicy](cka-26-26-volume-pv-pvc.html).
+
 {% endraw %}

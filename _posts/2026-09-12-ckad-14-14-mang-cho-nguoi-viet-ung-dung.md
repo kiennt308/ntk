@@ -496,24 +496,6 @@ Cú pháp <code>curl -H "Host: app.example.com" http://<ingress-ip>/</code>.
 | Services Documentation | `https://kubernetes.io/docs/concepts/services-networking/service/` | Tài liệu chuẩn K8s Services |
 | Ingress Documentation | `https://kubernetes.io/docs/concepts/services-networking/ingress/` | Tài liệu chuẩn K8s Ingress |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. 4 kiểu Service ở góc độ ứng dụng | 12 phút | 12 phút |
-| §5. Định tuyến L7 Ingress Host & Path | 12 phút | 12 phút |
-| §6. HTTPS TLS Termination | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -791,26 +773,11 @@ test ! -f /tmp/lab44-tls.crt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPO
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Deployments | 15 phút | 15 phút |
-| L4. Bước 2: ClusterIP Services & Endpoints | 25 phút | 25 phút |
-| L5. Bước 3: TLS Secret creation | 25 phút | 25 phút |
-| L6. Bước 4: Ingress Host/Path & TLS | 25 phút | 25 phút |
-| L7. Bước 5: Thử nghiệm định tuyến & CLI | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -818,196 +785,318 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân biệt ý nghĩa khác nhau giữa thuộc tính <code>port</code> và <code>targetPort</code> trong tệp khai báo Service spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>ClusterIP</code> chỉ cho phép giao tiếp nội bộ trong cụm; <code>NodePort</code> mở cổng cố định (30000-32767) trên tất cả các Node phục vụ testing; <code>LoadBalancer</code> tích hợp Cloud Provider tạo IP công cộng cho Production; <code>ExternalName</code> trả về bản ghi CNAME trỏ tới tên miền bên ngoài cụm.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>port</code> là cổng ảo mà các client hoặc các Pod khác bên trong cụm gọi vào Service. <code>targetPort</code> là cổng thực tế mà ứng dụng container đang lắng nghe bên trong Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa port và targetPort.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cổng của Service 1 cổng của Pod nhưng chưa rõ cái nào là cổng ảo cái nào là cổng container.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế mapping giữa cổng ảo <code>port</code> của Service và cổng <code>targetPort</code> của container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container lắng nghe cổng 8080 nhưng Service khai báo <code>port: 80</code> và <code>targetPort: 80</code> thì điều gì xảy ra? — Service sẽ gửi traffic tới cổng 80 của Pod và bị rớt kết nối do không có container lắng nghe cổng 80).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 4 loại Service.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được ClusterIP nội bộ và LoadBalancer công cộng nhưng thiếu NodePort hoặc ExternalName.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác kịch bản áp dụng của cả 4 loại Service.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Loại Service nào là loại mặc định khi gõ <code>kubectl expose</code> mà không chỉ định cờ <code>--type</code>? — Loại <code>ClusterIP</code>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Kỹ thuật định tuyến theo tên miền (Host-based Routing) và theo đường dẫn (Path-based Routing) trong Ingress hoạt động ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Host-based Routing kiểm tra Host header của HTTP request (ví dụ <code>host: app1.com</code> trỏ Service 1; <code>host: app2.com</code> trỏ Service 2). Path-based Routing kiểm tra đường dẫn URL (ví dụ <code>/</code> trỏ Web Service; <code>/api</code> trỏ API Service). Cả 2 kỹ thuật đều được xử lý tại Layer 7 bởi Ingress Controller.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết Host-based vs Path-based routing.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tên miền và đường dẫn nhưng chưa rõ cơ chế kiểm tra HTTP header tại L7.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế định tuyến L7 dựa trên Host header và URL Path.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trong cùng một Ingress rule, ta có thể kết hợp cả Host-based và Path-based routing không? — Hoàn toàn được, 1 host có thể chứa mảng nhiều paths).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Phân biệt sự khác nhau giữa <code>pathType: Prefix</code> và <code>pathType: Exact</code> trong Ingress spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>pathType: Prefix</code> so khớp tất cả các URL bắt đầu bằng tiền tố đã khai báo (ví dụ <code>/api</code> sẽ match cả <code>/api</code>, <code>/api/users</code>, <code>/api/v1</code>). <code>pathType: Exact</code> yêu cầu đường dẫn URL phải so khớp chính xác 100% (ví dụ <code>/api</code> chỉ match duy nhất <code>/api</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa Prefix và Exact.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái tiền tố 1 cái chính xác nhưng thiếu ví dụ minh họa.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế so khớp và đưa ra ví dụ minh họa đường dẫn URL.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu dùng <code>pathType: Exact</code> cho <code>/</code> thì các request truy cập <code>/images/logo.png</code> có được chuyển tiếp không? — Không được, vì Exact yêu cầu khớp đúng <code>/</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cơ chế HTTPS TLS Termination tại cấp Ingress Controller là gì và mang lại lợi ích gì cho ứng dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">HTTPS TLS Termination là việc Ingress Controller nạp chứng chỉ SSL từ TLS Secret để giải mã mã hóa HTTPS tại cổng vào tòa nhà; traffic chuyển tiếp từ Ingress tới các Pod backend phía sau là HTTP thông thường. Lợi ích: Tối ưu CPU giải mã mã hóa cho container ứng dụng và tập trung quản lý chứng chỉ SSL tại một nơi duy nhất.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được TLS Termination.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được giải mã HTTPS nhưng chưa rõ lợi ích giảm tải CPU cho Pod backend.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế giải mã mã hóa tại cổng vào và lợi ích giải phóng CPU cho container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Traffic từ Ingress tới Pod backend phía sau là HTTPS hay HTTP? — Là HTTP thông thường trừ khi cấu hình mTLS end-to-end).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cú pháp YAML chuẩn để đính kèm TLS Secret vào Ingress spec cho tên miền <code>shop.example.com</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">tls:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• hosts:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• shop.example.com</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">secretName: shop-tls-secret</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai thụt lề hoặc sai vị trí khối tls.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng secretName nhưng thiếu mảng hosts.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác khối <code>spec.tls</code> chỉ định mảng <code>hosts</code> và <code>secretName</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Loại Secret nào bắt buộc phải dùng cho <code>secretName</code> trong Ingress? — Secret kiểu <code>kubernetes.io/tls</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Khi truy cập qua Ingress bị lỗi HTTP 502 Bad Gateway, câu lệnh CLI nào là công cụ chẩn đoán đầu tiên bạn cần chạy và tìm kiếm điều gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chạy lệnh <code>kubectl get endpoints <service-name></code> (hoặc <code>kubectl get ep</code>). Kiểm tra xem cột <code>ENDPOINTS</code> có hiển thị danh sách IP Pod hay bị rỗng (<code><none></code>). Nguyên nhân thường do Service selector gõ sai nhãn làm rỗng Endpoints.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh get endpoints.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu lệnh describe svc nhưng chưa nhấn mạnh kiểm tra cột Endpoints bị rỗng <code><none></code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>kubectl get ep</code> và giải thích nguyên nhân rỗng Endpoints gây ra lỗi 502.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Endpoints hiển thị đúng IP Pod mà vẫn bị lỗi 502 thì nguyên nhân tiếp theo là gì? — Do <code>targetPort</code> của Service không khớp với cổng container đang lắng nghe).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trường thuộc tính <code>ingressClassName: nginx</code> trong Ingress spec đóng vai trò gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thuộc tính này chỉ định chính xác Ingress Controller nào trong cụm sẽ chịu trách nhiệm tiếp nhận và thực thi tệp Ingress đó (ví dụ Nginx Ingress Controller).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ ingressClassName.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Nginx nhưng chưa rõ vai trò phân quyền Controller xử lý.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế điều hướng tệp Ingress cho đúng Controller xử lý.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cụm có 2 Ingress Controller (Nginx và Traefik) mà tệp Ingress không có <code>ingressClassName</code> thì điều gì xảy ra? — Ingress có thể bị bỏ qua hoặc bị cả 2 Controller tranh nhau xử lý nếu có cờ default).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Lệnh CLI <code>curl</code> nào dùng để kiểm tra việc định tuyến Ingress theo Host <code>app.example.com</code> khi chưa cấu hình DNS trỏ về IP Ingress Controller?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>curl -H "Host: app.example.com" http://<ingress-controller-ip>/</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ -H truyền Host header.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được curl nhưng thiếu cờ -H Host header.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác lệnh <code>curl -H "Host: app.example.com" http://<ip>/</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ nào trong lệnh <code>curl</code> dùng để bỏ qua việc kiểm tra chứng chỉ SSL tự ký khi test HTTPS? — Cờ <code>curl -k</code> hoặc <code>curl --insecure</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp YAML chuẩn của một backend Service trong Ingress v1 (<code>networking.k8s.io/v1</code>) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">backend:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">service:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: web-svc</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">port:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">number: 80</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết theo cú pháp cũ v1beta1 (<code>serviceName</code> / <code>servicePort</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng name nhưng quên thuộc tính <code>number</code> trong port.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác tuyệt đối cú pháp <code>service.name</code> và <code>service.port.number</code> của Ingress v1.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>servicePort: 80</code> là của apiVersion nào? — Của apiVersion cũ <code>extensions/v1beta1</code> hoặc <code>networking.k8s.io/v1beta1</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Loại Service <code>ExternalName</code> hoạt động như thế nào khi một Pod truy cập vào nó?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Service <code>ExternalName</code> không có Selector và không tạo Endpoints. Khi Pod tra cứu DNS của Service này, Kubelet DNS Server trả về trực tiếp một bản ghi CNAME trỏ tới tên miền bên ngoài (ví dụ <code>my-db.database.windows.net</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm ExternalName với ExternalIP.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được trỏ ra ngoài nhưng chưa làm rõ cơ chế trả về bản ghi CNAME của K8s DNS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế trả về bản ghi CNAME trỏ tới tên miền ngoài mà không qua IP ảo.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ưu điểm của ExternalName Service là gì? — Trừu tượng hóa tên miền dịch vụ bên ngoài, giúp ứng dụng không phải hardcode URL bên ngoài vào mã nguồn).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 3 yếu tố bắt buộc phải hội tụ để một bản kê khai Ingress Production hoạt động hoàn hảo là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai báo <code>ingressClassName: nginx</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khối <code>rules</code> định tuyến Host và Path (<code>pathType: Prefix</code>) trỏ đúng tên Service và <code>number</code> port.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khối <code>tls</code> đính kèm Secret kiểu <code>kubernetes.io/tls</code> cho HTTPS.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 3 yếu tố.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 yếu tố.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 3 yếu tố vàng của Ingress Production.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 45 là gì? — Tham gia <b style="color: var(--accent-primary);">Thi thử CKAD đầy đủ 2 giờ</b> và chữa đề!).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Phân biệt ý nghĩa khác nhau giữa thuộc tính `port` và `targetPort` trong tệp khai báo Service spec?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** `port` là cổng ảo mà các client hoặc các Pod khác bên trong cụm gọi vào Service. `targetPort` là cổng thực tế mà ứng dụng container đang lắng nghe bên trong Pod.
+1. <b style="color: var(--accent-primary);">"Dùng ClusterIP cho microservices giao tiếp nội bộ; công bố ứng dụng ra internet qua Ingress Controller định tuyến L7."</b>
+2. <b style="color: var(--accent-primary);">"HTTPS TLS Termination giải mã mã hóa SSL tại Ingress Controller giúp giải phóng tài nguyên CPU cho các container ứng dụng backend."</b>
+3. <b style="color: var(--accent-primary);">"Luôn kiểm tra <code>kubectl get endpoints</code> để chẩn đoán lỗi 502 Bad Gateway khi Service selector bị lệch nhãn."</b>
+4. <b style="color: var(--accent-primary);">"Dùng <code>pathType: Prefix</code> để so khớp tất cả các đường dẫn tiền tố URL cho ứng dụng microservice."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa port và targetPort.
-- 1đ: Nêu được 1 cổng của Service 1 cổng của Pod nhưng chưa rõ cái nào là cổng ảo cái nào là cổng container.
-- 3đ: Trình bày chuẩn xác cơ chế mapping giữa cổng ảo `port` của Service và cổng `targetPort` của container.
-
-**Câu hỏi đào sâu:** (Nếu container lắng nghe cổng 8080 nhưng Service khai báo `port: 80` và `targetPort: 80` thì điều gì xảy ra? — Service sẽ gửi traffic tới cổng 80 của Pod và bị rớt kết nối do không có container lắng nghe cổng 80).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Kỹ thuật định tuyến theo tên miền (Host-based Routing) và theo đường dẫn (Path-based Routing) trong Ingress hoạt động ra sao?
-
-**Đáp án chuẩn:** Host-based Routing kiểm tra Host header của HTTP request (ví dụ `host: app1.com` trỏ Service 1; `host: app2.com` trỏ Service 2). Path-based Routing kiểm tra đường dẫn URL (ví dụ `/` trỏ Web Service; `/api` trỏ API Service). Cả 2 kỹ thuật đều được xử lý tại Layer 7 bởi Ingress Controller.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết Host-based vs Path-based routing.
-- 1đ: Nêu được tên miền và đường dẫn nhưng chưa rõ cơ chế kiểm tra HTTP header tại L7.
-- 3đ: Phân tích thấu đáo cơ chế định tuyến L7 dựa trên Host header và URL Path.
-
-**Câu hỏi đào sâu:** (Trong cùng một Ingress rule, ta có thể kết hợp cả Host-based và Path-based routing không? — Hoàn toàn được, 1 host có thể chứa mảng nhiều paths).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Phân biệt sự khác nhau giữa `pathType: Prefix` và `pathType: Exact` trong Ingress spec?
-
-**Đáp án chuẩn:** `pathType: Prefix` so khớp tất cả các URL bắt đầu bằng tiền tố đã khai báo (ví dụ `/api` sẽ match cả `/api`, `/api/users`, `/api/v1`). `pathType: Exact` yêu cầu đường dẫn URL phải so khớp chính xác 100% (ví dụ `/api` chỉ match duy nhất `/api`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa Prefix và Exact.
-- 1đ: Nêu được 1 cái tiền tố 1 cái chính xác nhưng thiếu ví dụ minh họa.
-- 3đ: Trình bày chuẩn xác cơ chế so khớp và đưa ra ví dụ minh họa đường dẫn URL.
-
-**Câu hỏi đào sâu:** (Nếu dùng `pathType: Exact` cho `/` thì các request truy cập `/images/logo.png` có được chuyển tiếp không? — Không được, vì Exact yêu cầu khớp đúng `/`).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Cơ chế HTTPS TLS Termination tại cấp Ingress Controller là gì và mang lại lợi ích gì cho ứng dụng?
-
-**Đáp án chuẩn:** HTTPS TLS Termination là việc Ingress Controller nạp chứng chỉ SSL từ TLS Secret để giải mã mã hóa HTTPS tại cổng vào tòa nhà; traffic chuyển tiếp từ Ingress tới các Pod backend phía sau là HTTP thông thường. Lợi ích: Tối ưu CPU giải mã mã hóa cho container ứng dụng và tập trung quản lý chứng chỉ SSL tại một nơi duy nhất.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được TLS Termination.
-- 1đ: Nêu được giải mã HTTPS nhưng chưa rõ lợi ích giảm tải CPU cho Pod backend.
-- 3đ: Phân tích thấu đáo cơ chế giải mã mã hóa tại cổng vào và lợi ích giải phóng CPU cho container.
-
-**Câu hỏi đào sâu:** (Traffic từ Ingress tới Pod backend phía sau là HTTPS hay HTTP? — Là HTTP thông thường trừ khi cấu hình mTLS end-to-end).
-
----
-
-### Câu 6 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn để đính kèm TLS Secret vào Ingress spec cho tên miền `shop.example.com` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-spec:
-  tls:
-    - hosts:
-        - shop.example.com
-      secretName: shop-tls-secret
-```
-
-**Tiêu chí chấm:**
-- 0đ: Cấu hình sai thụt lề hoặc sai vị trí khối tls.
-- 1đ: Nêu đúng secretName nhưng thiếu mảng hosts.
-- 3đ: Viết chuẩn xác khối `spec.tls` chỉ định mảng `hosts` và `secretName`.
-
-**Câu hỏi đào sâu:** (Loại Secret nào bắt buộc phải dùng cho `secretName` trong Ingress? — Secret kiểu `kubernetes.io/tls`).
-
----
-
-### Câu 7 — 🔥
-**Hỏi:** Khi truy cập qua Ingress bị lỗi HTTP 502 Bad Gateway, câu lệnh CLI nào là công cụ chẩn đoán đầu tiên bạn cần chạy và tìm kiếm điều gì?
-
-**Đáp án chuẩn:** Chạy lệnh `kubectl get endpoints <service-name>` (hoặc `kubectl get ep`). Kiểm tra xem cột `ENDPOINTS` có hiển thị danh sách IP Pod hay bị rỗng (`<none>`). Nguyên nhân thường do Service selector gõ sai nhãn làm rỗng Endpoints.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh get endpoints.
-- 1đ: Nêu lệnh describe svc nhưng chưa nhấn mạnh kiểm tra cột Endpoints bị rỗng `<none>`.
-- 3đ: Trình bày chính xác lệnh `kubectl get ep` và giải thích nguyên nhân rỗng Endpoints gây ra lỗi 502.
-
-**Câu hỏi đào sâu:** (Nếu Endpoints hiển thị đúng IP Pod mà vẫn bị lỗi 502 thì nguyên nhân tiếp theo là gì? — Do `targetPort` của Service không khớp với cổng container đang lắng nghe).
-
----
-
-### Câu 8 — ★★★
-**Hỏi:** Trường thuộc tính `ingressClassName: nginx` trong Ingress spec đóng vai trò gì?
-
-**Đáp án chuẩn:** Thuộc tính này chỉ định chính xác Ingress Controller nào trong cụm sẽ chịu trách nhiệm tiếp nhận và thực thi tệp Ingress đó (ví dụ Nginx Ingress Controller).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ ingressClassName.
-- 1đ: Nêu được Nginx nhưng chưa rõ vai trò phân quyền Controller xử lý.
-- 3đ: Phân tích chuẩn xác cơ chế điều hướng tệp Ingress cho đúng Controller xử lý.
-
-**Câu hỏi đào sâu:** (Nếu cụm có 2 Ingress Controller (Nginx và Traefik) mà tệp Ingress không có `ingressClassName` thì điều gì xảy ra? — Ingress có thể bị bỏ qua hoặc bị cả 2 Controller tranh nhau xử lý nếu có cờ default).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Lệnh CLI `curl` nào dùng để kiểm tra việc định tuyến Ingress theo Host `app.example.com` khi chưa cấu hình DNS trỏ về IP Ingress Controller?
-
-**Đáp án chuẩn:** `curl -H "Host: app.example.com" http://<ingress-controller-ip>/`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ -H truyền Host header.
-- 1đ: Nêu được curl nhưng thiếu cờ -H Host header.
-- 3đ: Trình bày chính xác lệnh `curl -H "Host: app.example.com" http://<ip>/`.
-
-**Câu hỏi đào sâu:** (Cờ nào trong lệnh `curl` dùng để bỏ qua việc kiểm tra chứng chỉ SSL tự ký khi test HTTPS? — Cờ `curl -k` hoặc `curl --insecure`).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một backend Service trong Ingress v1 (`networking.k8s.io/v1`) là gì?
-
-**Đáp án chuẩn:**
-```yaml
-backend:
-  service:
-    name: web-svc
-    port:
-      number: 80
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết theo cú pháp cũ v1beta1 (`serviceName` / `servicePort`).
-- 1đ: Nêu đúng name nhưng quên thuộc tính `number` trong port.
-- 3đ: Viết chuẩn xác tuyệt đối cú pháp `service.name` và `service.port.number` của Ingress v1.
-
-**Câu hỏi đào sâu:** (Cú pháp `servicePort: 80` là của apiVersion nào? — Của apiVersion cũ `extensions/v1beta1` hoặc `networking.k8s.io/v1beta1`).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Loại Service `ExternalName` hoạt động như thế nào khi một Pod truy cập vào nó?
-
-**Đáp án chuẩn:** Service `ExternalName` không có Selector và không tạo Endpoints. Khi Pod tra cứu DNS của Service này, Kubelet DNS Server trả về trực tiếp một bản ghi CNAME trỏ tới tên miền bên ngoài (ví dụ `my-db.database.windows.net`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm ExternalName với ExternalIP.
-- 1đ: Nêu được trỏ ra ngoài nhưng chưa làm rõ cơ chế trả về bản ghi CNAME của K8s DNS.
-- 3đ: Phân tích chuẩn xác cơ chế trả về bản ghi CNAME trỏ tới tên miền ngoài mà không qua IP ảo.
-
-**Câu hỏi đào sâu:** (Ưu điểm của ExternalName Service là gì? — Trừu tượng hóa tên miền dịch vụ bên ngoài, giúp ứng dụng không phải hardcode URL bên ngoài vào mã nguồn).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 3 yếu tố bắt buộc phải hội tụ để một bản kê khai Ingress Production hoạt động hoàn hảo là gì?
-
-**Đáp án chuẩn:**
-1. Khai báo `ingressClassName: nginx`.
-2. Khối `rules` định tuyến Host và Path (`pathType: Prefix`) trỏ đúng tên Service và `number` port.
-3. Khối `tls` đính kèm Secret kiểu `kubernetes.io/tls` cho HTTPS.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 3 yếu tố.
-- 1đ: Nêu được 2 yếu tố.
-- 3đ: Trình bày tự tin, mạch lạc bộ 3 yếu tố vàng của Ingress Production.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 45 là gì? — Tham gia **Thi thử CKAD đầy đủ 2 giờ** và chữa đề!).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1017,28 +1106,6 @@ backend:
 2. **"HTTPS TLS Termination giải mã mã hóa SSL tại Ingress Controller giúp giải phóng tài nguyên CPU cho các container ứng dụng backend."**
 3. **"Luôn kiểm tra `kubectl get endpoints` để chẩn đoán lỗi 502 Bad Gateway khi Service selector bị lệch nhãn."**
 4. **"Dùng `pathType: Prefix` để so khớp tất cả các đường dẫn tiền tố URL cho ứng dụng microservice."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật Services and Ingress Networking CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kiến trúc mạng microservices Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp Ingress định tuyến 2 tên miền `shop.com` và `api.com` có TLS Secret cho cả 2 tên miền.
-- **BTVN 2:** Thực hành gỡ lỗi một Service bị rỗng Endpoints do sai selector và quay video giải thích.
-- **BTVN 3:** So sánh điểm khác biệt về hiệu năng mạng giữa `kube-proxy` chế độ `iptables` và `ipvs`.
-- **BTVN 4 (Chuẩn bị cho Buổi 45 — Thi thử CKAD đầy đủ 2 giờ!):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Cấu trúc bài thi CKAD chính thức gồm bao nhiêu câu hỏi và thời gian làm bài là bao nhiêu phút?
-  2. Kỹ năng quan trọng nhất để vượt qua bài thi CKAD là gì (tốc độ gõ CLI, dùng cờ `--dry-run=client -o yaml`, alias `k`)?
-  3. Chiến thuật phân bổ thời gian cho các câu hỏi dễ và câu hỏi khó trong 120 phút thi bấm giờ?
 
 ---
 
@@ -1309,14 +1376,15 @@ spec:
             backend: {service: {name: web-svc, port: {number: 80}}}
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 15] Đề Thi Thử CKAD Toàn Diện 120 Phút & Phân Tích Lời Giải Chuẩn Linux Foundation](ckad-15-15-thi-thu-ckad.html).
+
 {% endraw %}

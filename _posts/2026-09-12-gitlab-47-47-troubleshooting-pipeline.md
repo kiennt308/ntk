@@ -1,15 +1,39 @@
 ---
-title: "Bài 47: Khắc Phục Sự Cố Pipeline Chuyên Sâu, Debugging & Chiến Lược Vận Hành Khẩn Cấp (Troubleshooting & Incident Management)"
+layout: post
+title: "[Bài 47] Khắc Phục Sự Cố Pipeline Chuyên Sâu, Debugging & Chiến Lược Vận Hành Khẩn Cấp (Troubleshooting & Incident Management)"
 date: 2026-09-12 00:00:00 +0700
-categories: [GitLab, CI/CD, DevSecOps]
-tags: [GitLab-CI, Troubleshooting, Debugging, Exit-Codes, Runner-Logs, Interactive-Terminal, Incident-Management, Observability]
-description: "Cẩm nang khắc phục sự cố CI/CD toàn diện: Phương pháp luận 5 bước phân tích root cause, giải mã toàn bộ mã lỗi exit code (137, 143, 127...), gỡ rối SSL/TLS, Job Token và kỹ thuật Interactive Web Terminal debug."
+categories: [GitLab]
+tags:
+  - GitLab
+  - CICD
+  - Troubleshooting
+  - Debugging
+  - Exit-Codes
+  - Runner-Logs
+  - Incident-Management
+  - Observability
+  - Part-47
+series: "GitLab CI/CD & DevSecOps Platform Mastery"
+series_order: 47
+difficulty: Advanced
+thumbnail: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=1200&q=80"
+summary: "[GitLab CI/CD P.47] Cẩm nang khắc phục sự cố CI/CD toàn diện: Phương pháp luận 5 bước phân tích root cause, giải mã toàn bộ mã lỗi exit code (137, 143, 127...), gỡ rối SSL/TLS, Job Token và kỹ thuật Interactive Web Terminal debug."
+tldr:
+  - "Làm chủ quy trình 5 bước chẩn đoán sự cố CI/CD (Observe -> Isolate -> Reproduce -> Remediate -> Automate)."
+  - "Giải mã bản chất tầng thấp của các mã lỗi: Exit code 137 (OOM), 143 (SIGTERM/Timeout), 127 (Command Not Found), 1 (App Error)."
+  - "Xử lý triệt để lỗi hạ tầng SSL/TLS certificate, Docker daemon socket permissions, CI_JOB_TOKEN và cache corruption."
+  - "Vận hành công cụ gỡ rối chuyên sâu với CI_DEBUG_TRACE, GitLab Interactive Web Terminal và Runner System Logs."
+  - "Luyện tập 10 câu hỏi tình huống thực chiến phỏng vấn cấp độ Senior SRE / DevOps Lead."
 ---
 
 {% raw %}
 > [!IMPORTANT]
 > **Mục tiêu kỹ thuật then chốt**:
-> - Làm chủ phương pháp luận chẩn đoán sự cố CI/CD 5 bước (Observe $ightarrow$ Isolate $ightarrow$ Reproduce $ightarrow$ Remediate $ightarrow$ Automate).
+> - Làm chủ phương pháp luận chẩn đoán sự cố CI/CD 5 bước (Observe $
+ightarrow$ Isolate $
+ightarrow$ Reproduce $
+ightarrow$ Remediate $
+ightarrow$ Automate).
 > - Giải mã bản chất tầng thấp của các mã lỗi phổ biến: **Exit code 137 (OOM Killer)**, **Exit code 143 (SIGTERM / Timeout)**, **Exit code 127 (Command Not Found)**, **Exit code 1 (Application Error)**.
 > - Xử lý triệt để các lỗi hạ tầng phức tạp: SSL/TLS x509 Certificate verification, Docker daemon socket permissions, CI_JOB_TOKEN permissions denied và distributed cache corruption.
 > - Vận hành công cụ gỡ rối nâng cao: Kích hoạt `CI_DEBUG_TRACE`, sử dụng **GitLab Interactive Web Terminal** và khai thác hệ thống Runner System Logs.
@@ -96,14 +120,14 @@ Mô hình kiến trúc giám sát và xử lý sự cố khẩn cấp cho hệ t
 +---------------------------------------------------------------------------------------------------+
 |                                                                                                   |
 |  +---------------------------+        +--------------------------------+                          |
-|  | GitLab Web UI / Webhook   | -----> | Incident Response Bot (OpsGenie|                          |
+|  | GitLab Web UI / Webhook   | -----> |"Incident Response Bot (OpsGenie"|                          |
 |  | (Job Failed Event)        |        | / PagerDuty / Slack Webhook)   |                          |
 |  +-------------+-------------+        +---------------+----------------+                          |
 |                |                                      |                                           |
 |                v                                      v                                           |
 |  +---------------------------+        +--------------------------------+                          |
 |  | Runner Manager            |        | Automated Diagnostic Script    |                          |
-|  | - Metrics (Port 9252)     | -----> | - Check Node Memory / OOM Log  |                          |
+|  | - Metrics (Port 9252)     | -----> |"- Check Node Memory / OOM Log"|                          |
 |  | - Systemd Logs            |        | - Validate DNS / Proxy Egress  |                          |
 |  +-------------+-------------+        | - Verify Job Token Whitelist   |                          |
 |                |                      +--------------------------------+                          |
@@ -486,7 +510,9 @@ Chạy script kiểm tra:
   </summary>
   <div class="qa-body">
     <p>Mặc định từ các phiên bản GitLab hiện đại, tính năng <strong>Limit CI_JOB_TOKEN access</strong> được kích hoạt để ngăn chặn rò rỉ token truy cập chéo dự án bất hợp pháp. Một Job Token chỉ có thể gọi API của dự án sở hữu nó.</p>
-    <p><strong>Cách xử lý lỗi 403</strong>: Trên dự án đích (Target Project chứa Template hoặc Package), truy cập <em>Settings $ightarrow$ CI/CD $ightarrow$ Token Access</em>, sau đó thêm đường dẫn của Dự án nguồn (Source Project) vào <strong>Allowlist</strong> (hoặc gọi API <code>/projects/:id/job_token_scope/allowlist</code>).</p>
+    <p><strong>Cách xử lý lỗi 403</strong>: Trên dự án đích (Target Project chứa Template hoặc Package), truy cập <em>Settings $
+ightarrow$ CI/CD $
+ightarrow$ Token Access</em>, sau đó thêm đường dẫn của Dự án nguồn (Source Project) vào <strong>Allowlist</strong> (hoặc gọi API <code>/projects/:id/job_token_scope/allowlist</code>).</p>
   </div>
 </details>
 
@@ -585,7 +611,7 @@ Chạy script kiểm tra:
 
 ## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-```
+```text
 +---------------------------------------------------------------------------------------------------+
 |                                      BÀI 47 - TỔNG KẾT KIẾN THỨC                                  |
 +---------------------------------------------------------------------------------------------------+

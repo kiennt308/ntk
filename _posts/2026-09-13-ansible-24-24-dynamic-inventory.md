@@ -727,38 +727,12 @@ enable_plugins = host_list, script, auto, yaml, ini, toml, amazon.aws.aws_ec2, c
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Sử dụng Plugin YAML chính thức:** Thay thế hoàn toàn script `.py` bằng các Dynamic Inventory Plugin FQCN.
-2. **Gom nhóm tự động theo Tags:** Cấu hình `keyed_groups` để tự động phân loại máy chủ theo môi trường và vai trò.
-3. **Bật Cache chống nghẽn API:** Luôn kích hoạt `cache: true` để bảo vệ API Rate-limit của Cloud Provider.
-4. **Tính toán biến linh hoạt:** Sử dụng `compose` để gán `ansible_host` và các biến môi trường động chuẩn xác.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Triển khai trên các nhóm động của Dynamic Inventory ở Lần 2 bắt buộc phải đạt `changed=0`.
-
-```mermaid
-mindmap
-  root((Dynamic Inventory))
-    Cloud Discovery
-      amazon.aws.aws_ec2
-      azure.azcollection.azure_rm
-      google.cloud.gcp_compute
-    Auto-Grouping
-      keyed_groups theo Tags
-      compose: tính toán biến động
-      constructed plugin cho facts
-    Performance & Security
-      Inventory Cache JSON/RAM
-      enable_plugins trong ansible.cfg
-      IAM Instance Profile no-hardcode
-    Verification
-      ansible-inventory --graph
-      Idempotency changed=0 ở Lần 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 25: Kiểm Thử Tự Động Hóa Với Ansible-Lint, Yamllint & Molecule: Test-Driven Infrastructure (TDD)](ansible-25-25-testing-lint-molecule.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 25] Kiểm Thử Tự Động Hóa Với Ansible-Lint, Yamllint & Molecule: Test-Driven Infrastructure (TDD) & Dry-Run](ansible-25-25-testing-lint-molecule.html).
 
 {% endraw %}

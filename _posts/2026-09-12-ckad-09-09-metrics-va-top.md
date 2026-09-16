@@ -454,24 +454,6 @@ Horizontal Pod Autoscaler (HPA) và Vertical Pod Autoscaler (VPA).
 | Metrics Server Documentation | `https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/` | Tài liệu chuẩn K8s Resource Metrics Pipeline |
 | Metrics Server GitHub Repository | `https://github.com/kubernetes-sigs/metrics-server` | Mã nguồn chính thức Metrics Server |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Kiến trúc Metrics Server | 12 phút | 12 phút |
-| §5. Bộ lệnh kubectl top node và pod | 12 phút | 12 phút |
-| §6. Các giới hạn kỹ thuật của Metrics Server | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -799,26 +781,11 @@ test ! -f /tmp/lab39-top.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKP
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Khởi tạo Namespace & API | 10 phút | 10 phút |
-| L4. Bước 2: kubectl top nodes | 15 phút | 15 phút |
-| L5. Bước 3: Pod burn CPU/RAM & top | 35 phút | 35 phút |
-| L6. Bước 4: Sort-by cpu/memory | 25 phút | 25 phút |
-| L7. Bước 5: --containers & -l selector | 15 phút | 15 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -826,185 +793,308 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Metrics Server lưu trữ dữ liệu chỉ số thu thập được ở đâu và trong thời gian bao lâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Metrics Server định kỳ thu thập (pull) chỉ số CPU/RAM từ tiến trình <code>cAdvisor</code> tích hợp trong Kubelet của các Node. Dữ liệu này được cung cấp cho Kubernetes API Server qua đường dẫn Metrics API (<code>metrics.k8s.io</code>) phục vụ cho lệnh <code>kubectl top</code> và bộ tự động co giãn HPA/VPA.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Metrics Server CHỈ lưu trữ dữ liệu tạm thời trong bộ nhớ RAM và bị ghi đè sau mỗi 15–60 giây. Nó hoàn toàn KHÔNG lưu trữ dữ liệu vào đĩa cứng và KHÔNG lưu trữ dữ liệu lịch sử chuỗi thời gian (time-series).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng Metrics Server lưu dữ liệu vào etcd hoặc đĩa cứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lưu trong RAM nhưng nhầm tưởng có lưu dữ liệu vài ngày trước.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác bản chất lưu tạm thời trong RAM (15-60s) của Metrics Server.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có thể dùng lệnh <code>kubectl top</code> để xem biểu đồ biến động RAM 7 ngày trước không? — KHÔNG thể, Metrics Server không lưu dữ liệu lịch sử time-series).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng Metrics Server thu thập trực tiếp từ Docker/Containerd daemon.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thu thập từ Kubelet nhưng thiếu cAdvisor và đường dẫn Metrics API.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo nguồn dữ liệu cAdvisor và vai trò cung cấp cho <code>kubectl top</code> & HPA.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu Metrics Server bị crash thì lệnh <code>kubectl top</code> và HPA sẽ bị ảnh hưởng thế nào? — Lệnh <code>kubectl top</code> báo lỗi <code>Metrics API not available</code> và HPA ngưng co giãn tự động).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Ý nghĩa của các đơn vị <code>100m</code> CPU và <code>100Mi</code> RAM khi xem kết quả từ lệnh <code>kubectl top</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>100m</code> là 100 millicores (bằng 0.1 CPU core hay 10% năng lực tính toán của 1 CPU core). <code>100Mi</code> là 100 Mebibytes bộ nhớ RAM (đơn vị đo lường bộ nhớ dựa trên hệ nhị phân $2^{20}$ bytes).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm <code>100m</code> thành 100 Megabytes RAM.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng 100Mi RAM nhưng giải thích chưa chuẩn đơn vị millicores CPU.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo ý nghĩa chuẩn xác của 2 đơn vị CPU millicores và RAM Mebibytes.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu một Pod sử dụng <code>1000m</code> CPU thì tương đương với bao nhiêu CPU core? — Tương đương với 1 full CPU core).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp lệnh CLI nào dùng để xem danh sách Pod trong Namespace <code>prod</code> được sắp xếp theo mức tiêu thụ bộ nhớ RAM giảm dần?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl top pods -n prod --sort-by=memory</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ cờ --sort-by.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Gõ sai cú pháp từ khóa (ví dụ gõ <code>--sort-by=RAM</code> hoặc <code>--sort-by=mem</code>).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác câu lệnh CLI với cờ <code>--sort-by=memory</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn sắp xếp theo tiêu thụ CPU thì thay đổi cờ thành gì? — Thay thành <code>--sort-by=cpu</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cờ <code>--containers</code> trong lệnh <code>kubectl top pod</code> giải quyết bài toán gì ở Pod đa container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nếu không có cờ <code>--containers</code>, <code>kubectl top pod</code> chỉ in ra tổng tài nguyên của toàn bộ Pod. Cờ <code>--containers</code> giúp phân rã chi tiết mức tiêu thụ CPU và RAM của từng container riêng biệt trong Pod, giúp xác định chính xác container ứng dụng hay container sidecar đang ngốn tài nguyên.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ --containers.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được xem container nhưng không giải thích được bài toán phân rã sidecar vs app container.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò phân rã tài nguyên của cờ <code>--containers</code> trong Pod đa container.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp đầy đủ để xem tài nguyên từng container trong Pod <code>multi-pod</code> Namespace <code>prod</code> là gì? — <code>kubectl top pod multi-pod -n prod --containers</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Khi chạy lệnh <code>kubectl top</code> báo lỗi <code>error: Metrics API not available</code>, quy trình gỡ lỗi từng bước của bạn là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra Deployment metrics-server trong Namespace <code>kube-system</code>: <code>kubectl get deploy metrics-server -n kube-system</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra log của Pod metrics-server: <code>kubectl logs -n kube-system -l k8s-app=metrics-server</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kiểm tra xem cờ <code>--kubelet-insecure-tls</code> đã được thêm vào args của Deployment chưa (nếu ở môi trường lab tự dựng).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Hoảng loạn tưởng cụm K8s bị hỏng hoàn toàn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kiểm tra deployment nhưng thiếu bước đọc log và cờ <code>--kubelet-insecure-tls</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày mạch lạc, chính xác quy trình 3 bước chẩn đoán lỗi Metrics API.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao cờ <code>--kubelet-insecure-tls</code> lại cần thiết trong môi trường lab <code>kubeadm</code>? — Vì Kubelet dùng chứng chỉ SSL tự ký, Metrics Server cần cờ này để bỏ qua xác thực SSL ca-cert).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự khác biệt bản chất giữa chỉ số tiêu thụ tài nguyên thực tế (<code>Resource Usage</code> từ <code>kubectl top</code>) và thông số <code>requests</code>/<code>limits</code> trong Pod spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>requests</code>/<code>limits</code> là các thông số ĐỊNH MỨC được lập trình viên khai báo tĩnh trong file YAML (nhằm xí chỗ Schedule và thiết lập cọc nốt chặn). <code>Resource Usage</code> thu được từ <code>kubectl top</code> là lượng tài nguyên CPU/RAM thực tế mà tiến trình container ĐANG TIÊU THỤ tại thời điểm đo đạc.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa usage thực tế và requests/limits.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được usage là thực tế nhưng chưa làm rõ bản chất tĩnh của requests/limits.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự khác biệt giữa thông số định mức (requests/limits) và dữ liệu tiêu thụ thực tế (usage).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Pod có <code>limits.memory: 500Mi</code> nhưng <code>kubectl top</code> báo dùng <code>450Mi</code> thì có bị crash OOM không? — Chưa bị crash OOM, nhưng đã chạm 90% limit nguy cơ OOM cao).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp lệnh CLI nào dùng để xem tài nguyên tiêu thụ của các Pod có nhãn <code>tier=backend</code> trên toàn bộ các Namespace của cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl top pods -A -l tier=backend</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Gõ sai cờ selector hoặc cờ all-namespaces.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ -l nhưng quên cờ -A.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác câu lệnh CLI kết hợp cờ <code>-A</code> và <code>-l tier=backend</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có thể kết hợp cờ <code>-l tier=backend</code> với <code>--sort-by=cpu</code> được không? — Hoàn toàn được, <code>kubectl top pods -A -l tier=backend --sort-by=cpu</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao Metrics Server KHÔNG thể thay thế cho hệ thống giám sát Prometheus và Grafana trên môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Metrics Server có 3 giới hạn lớn: (1) Chỉ lưu dữ liệu ngắn hạn 15s trong RAM không có lịch sử; (2) Không thu thập chỉ số ứng dụng tùy chỉnh (Custom Metrics); (3) Không có bộ quy tắc cảnh báo (Alerting Rules) và giao diện biểu đồ trực quan như Grafana.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng Metrics Server thay thế được Prometheus.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1-2 giới hạn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cả 3 giới hạn kỹ thuật cốt lõi của Metrics Server.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Metrics Server phù hợp nhất cho mục đích sử dụng nào trên cụm Kubernetes? — Phù hợp cho HPA/VPA co giãn tự động và cho kỹ sư gỡ lỗi nhanh CLI bằng <code>kubectl top</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu lệnh CLI nào dùng để xem tổng mức tiêu thụ tài nguyên CPU và RAM của tất cả các Node trên cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl top nodes</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm với <code>kubectl get nodes</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng top nodes nhưng không rõ các cột dữ liệu trả về.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác câu lệnh CLI <code>kubectl top nodes</code> và các thông số CPU%, Memory% thu được.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu 1 Node hiển thị <code>CPU% 95%</code> trên <code>kubectl top nodes</code> thì điều đó cảnh báo điều gì? — Cảnh báo Node đó đang bị nghẽn CPU trầm trọng, cần scale thêm Node mới).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Điều gì xảy ra đối với Horizontal Pod Autoscaler (HPA) nếu Metrics Server bị gỡ bỏ khỏi cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">HPA sẽ không thể thu thập chỉ số CPU/RAM từ Metrics API (<code>metrics.k8s.io</code>). Trạng thái của HPA sẽ bị chuyển sang <code><unknown></code> và HPA ngưng toàn bộ khả năng tự động tăng/giảm số bản sao Pods.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng HPA vẫn chạy bình thường mà không cần Metrics Server.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được HPA ngưng chạy nhưng chưa làm rõ trạng thái <code><unknown></code> của Metrics API.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự phụ thuộc trực tiếp của HPA vào Metrics Server API.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (HPA có thể lấy dữ liệu từ Prometheus thay cho Metrics Server được không? — ĐƯỢC, bằng cách cài đặt k8s-prometheus-adapter để cung cấp Prometheus Custom Metrics API).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tổng kết bộ 3 cờ lệnh vàng khi sử dụng <code>kubectl top pod</code> để chẩn đoán tài nguyên trong bài thi CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--sort-by=cpu</code> / <code>--sort-by=memory</code>: Sắp xếp tìm Pod ngốn tài nguyên nhất.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--containers</code>: Phân rã xem chi tiết từng container trong Pod đa container.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>-l <label-selector></code>: Lọc danh sách Pod thuộc về ứng dụng chỉ định.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đúng 3 cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 3 cờ lệnh vàng khi gõ <code>kubectl top pod</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 40 là gì? — Chuyển sang Giai đoạn Environment, Configuration & Security với Buổi 40 về ConfigMap bất biến, Secret kiểu và Downward API).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Metrics Server lưu trữ dữ liệu chỉ số thu thập được ở đâu và trong thời gian bao lâu?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Metrics Server CHỈ lưu trữ dữ liệu tạm thời trong bộ nhớ RAM và bị ghi đè sau mỗi 15–60 giây. Nó hoàn toàn KHÔNG lưu trữ dữ liệu vào đĩa cứng và KHÔNG lưu trữ dữ liệu lịch sử chuỗi thời gian (time-series).
+1. <b style="color: var(--accent-primary);">"Metrics Server là nguồn cung cấp dữ liệu duy nhất cho Metrics API (<code>metrics.k8s.io</code>), làm nền tảng cho <code>kubectl top</code> và HPA."</b>
+2. <b style="color: var(--accent-primary);">"Luôn kết hợp cờ <code>--sort-by=memory</code> hoặc <code>--sort-by=cpu</code> với <code>kubectl top pod</code> để tìm ra ngay lập tức Pod ngốn tài nguyên nhất."</b>
+3. <b style="color: var(--accent-primary);">"Dùng cờ <code>--containers</code> để phân rã tài nguyên từng container, giúp phát hiện lỗi rò rỉ bộ nhớ (Memory Leak) từ container sidecar."</b>
+4. <b style="color: var(--accent-primary);">"Hiểu rõ bản chất: Metrics Server chỉ lưu tạm 15s trong RAM cho HPA và CLI; Prometheus/Grafana mới là giải pháp lưu lịch sử time-series và Alerting Production."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Cho rằng Metrics Server lưu dữ liệu vào etcd hoặc đĩa cứng.
-- 1đ: Nêu được lưu trong RAM nhưng nhầm tưởng có lưu dữ liệu vài ngày trước.
-- 3đ: Trình bày chính xác bản chất lưu tạm thời trong RAM (15-60s) của Metrics Server.
-
-**Câu hỏi đào sâu:** (Có thể dùng lệnh `kubectl top` để xem biểu đồ biến động RAM 7 ngày trước không? — KHÔNG thể, Metrics Server không lưu dữ liệu lịch sử time-series).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Ý nghĩa của các đơn vị `100m` CPU và `100Mi` RAM khi xem kết quả từ lệnh `kubectl top` là gì?
-
-**Đáp án chuẩn:** `100m` là 100 millicores (bằng 0.1 CPU core hay 10% năng lực tính toán của 1 CPU core). `100Mi` là 100 Mebibytes bộ nhớ RAM (đơn vị đo lường bộ nhớ dựa trên hệ nhị phân $2^{20}$ bytes).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm `100m` thành 100 Megabytes RAM.
-- 1đ: Nêu đúng 100Mi RAM nhưng giải thích chưa chuẩn đơn vị millicores CPU.
-- 3đ: Phân tích thấu đáo ý nghĩa chuẩn xác của 2 đơn vị CPU millicores và RAM Mebibytes.
-
-**Câu hỏi đào sâu:** (Nếu một Pod sử dụng `1000m` CPU thì tương đương với bao nhiêu CPU core? — Tương đương với 1 full CPU core).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Cú pháp lệnh CLI nào dùng để xem danh sách Pod trong Namespace `prod` được sắp xếp theo mức tiêu thụ bộ nhớ RAM giảm dần?
-
-**Đáp án chuẩn:** `kubectl top pods -n prod --sort-by=memory`.
-
-**Tiêu chí chấm:**
-- 0đ: Không nhớ cờ --sort-by.
-- 1đ: Gõ sai cú pháp từ khóa (ví dụ gõ `--sort-by=RAM` hoặc `--sort-by=mem`).
-- 3đ: Trình bày chuẩn xác câu lệnh CLI với cờ `--sort-by=memory`.
-
-**Câu hỏi đào sâu:** (Nếu muốn sắp xếp theo tiêu thụ CPU thì thay đổi cờ thành gì? — Thay thành `--sort-by=cpu`).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Cờ `--containers` trong lệnh `kubectl top pod` giải quyết bài toán gì ở Pod đa container?
-
-**Đáp án chuẩn:** Nếu không có cờ `--containers`, `kubectl top pod` chỉ in ra tổng tài nguyên của toàn bộ Pod. Cờ `--containers` giúp phân rã chi tiết mức tiêu thụ CPU và RAM của từng container riêng biệt trong Pod, giúp xác định chính xác container ứng dụng hay container sidecar đang ngốn tài nguyên.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ --containers.
-- 1đ: Nêu được xem container nhưng không giải thích được bài toán phân rã sidecar vs app container.
-- 3đ: Phân tích thấu đáo vai trò phân rã tài nguyên của cờ `--containers` trong Pod đa container.
-
-**Câu hỏi đào sâu:** (Cú pháp đầy đủ để xem tài nguyên từng container trong Pod `multi-pod` Namespace `prod` là gì? — `kubectl top pod multi-pod -n prod --containers`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Khi chạy lệnh `kubectl top` báo lỗi `error: Metrics API not available`, quy trình gỡ lỗi từng bước của bạn là gì?
-
-**Đáp án chuẩn:** 
-1. Kiểm tra Deployment metrics-server trong Namespace `kube-system`: `kubectl get deploy metrics-server -n kube-system`.
-2. Kiểm tra log của Pod metrics-server: `kubectl logs -n kube-system -l k8s-app=metrics-server`.
-3. Kiểm tra xem cờ `--kubelet-insecure-tls` đã được thêm vào args của Deployment chưa (nếu ở môi trường lab tự dựng).
-
-**Tiêu chí chấm:**
-- 0đ: Hoảng loạn tưởng cụm K8s bị hỏng hoàn toàn.
-- 1đ: Nêu được kiểm tra deployment nhưng thiếu bước đọc log và cờ `--kubelet-insecure-tls`.
-- 3đ: Trình bày mạch lạc, chính xác quy trình 3 bước chẩn đoán lỗi Metrics API.
-
-**Câu hỏi đào sâu:** (Tại sao cờ `--kubelet-insecure-tls` lại cần thiết trong môi trường lab `kubeadm`? — Vì Kubelet dùng chứng chỉ SSL tự ký, Metrics Server cần cờ này để bỏ qua xác thực SSL ca-cert).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Sự khác biệt bản chất giữa chỉ số tiêu thụ tài nguyên thực tế (`Resource Usage` từ `kubectl top`) và thông số `requests`/`limits` trong Pod spec là gì?
-
-**Đáp án chuẩn:** `requests`/`limits` là các thông số ĐỊNH MỨC được lập trình viên khai báo tĩnh trong file YAML (nhằm xí chỗ Schedule và thiết lập cọc nốt chặn). `Resource Usage` thu được từ `kubectl top` là lượng tài nguyên CPU/RAM thực tế mà tiến trình container ĐANG TIÊU THỤ tại thời điểm đo đạc.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa usage thực tế và requests/limits.
-- 1đ: Nêu được usage là thực tế nhưng chưa làm rõ bản chất tĩnh của requests/limits.
-- 3đ: Phân tích thấu đáo sự khác biệt giữa thông số định mức (requests/limits) và dữ liệu tiêu thụ thực tế (usage).
-
-**Câu hỏi đào sâu:** (Nếu Pod có `limits.memory: 500Mi` nhưng `kubectl top` báo dùng `450Mi` thì có bị crash OOM không? — Chưa bị crash OOM, nhưng đã chạm 90% limit nguy cơ OOM cao).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp lệnh CLI nào dùng để xem tài nguyên tiêu thụ của các Pod có nhãn `tier=backend` trên toàn bộ các Namespace của cụm?
-
-**Đáp án chuẩn:** `kubectl top pods -A -l tier=backend`.
-
-**Tiêu chí chấm:**
-- 0đ: Gõ sai cờ selector hoặc cờ all-namespaces.
-- 1đ: Nêu được cờ -l nhưng quên cờ -A.
-- 3đ: Viết chuẩn xác câu lệnh CLI kết hợp cờ `-A` và `-l tier=backend`.
-
-**Câu hỏi đào sâu:** (Có thể kết hợp cờ `-l tier=backend` với `--sort-by=cpu` được không? — Hoàn toàn được, `kubectl top pods -A -l tier=backend --sort-by=cpu`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao Metrics Server KHÔNG thể thay thế cho hệ thống giám sát Prometheus và Grafana trên môi trường Production?
-
-**Đáp án chuẩn:** Vì Metrics Server có 3 giới hạn lớn: (1) Chỉ lưu dữ liệu ngắn hạn 15s trong RAM không có lịch sử; (2) Không thu thập chỉ số ứng dụng tùy chỉnh (Custom Metrics); (3) Không có bộ quy tắc cảnh báo (Alerting Rules) và giao diện biểu đồ trực quan như Grafana.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng Metrics Server thay thế được Prometheus.
-- 1đ: Nêu được 1-2 giới hạn.
-- 3đ: Phân tích thấu đáo cả 3 giới hạn kỹ thuật cốt lõi của Metrics Server.
-
-**Câu hỏi đào sâu:** (Metrics Server phù hợp nhất cho mục đích sử dụng nào trên cụm Kubernetes? — Phù hợp cho HPA/VPA co giãn tự động và cho kỹ sư gỡ lỗi nhanh CLI bằng `kubectl top`).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Câu lệnh CLI nào dùng để xem tổng mức tiêu thụ tài nguyên CPU và RAM của tất cả các Node trên cụm?
-
-**Đáp án chuẩn:** `kubectl top nodes`.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm với `kubectl get nodes`.
-- 1đ: Nêu đúng top nodes nhưng không rõ các cột dữ liệu trả về.
-- 3đ: Trình bày chính xác câu lệnh CLI `kubectl top nodes` và các thông số CPU%, Memory% thu được.
-
-**Câu hỏi đào sâu:** (Nếu 1 Node hiển thị `CPU% 95%` trên `kubectl top nodes` thì điều đó cảnh báo điều gì? — Cảnh báo Node đó đang bị nghẽn CPU trầm trọng, cần scale thêm Node mới).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Điều gì xảy ra đối với Horizontal Pod Autoscaler (HPA) nếu Metrics Server bị gỡ bỏ khỏi cụm?
-
-**Đáp án chuẩn:** HPA sẽ không thể thu thập chỉ số CPU/RAM từ Metrics API (`metrics.k8s.io`). Trạng thái của HPA sẽ bị chuyển sang `<unknown>` và HPA ngưng toàn bộ khả năng tự động tăng/giảm số bản sao Pods.
-
-**Tiêu chí chấm:**
-- 0đ: Cho rằng HPA vẫn chạy bình thường mà không cần Metrics Server.
-- 1đ: Nêu được HPA ngưng chạy nhưng chưa làm rõ trạng thái `<unknown>` của Metrics API.
-- 3đ: Phân tích chuẩn xác sự phụ thuộc trực tiếp của HPA vào Metrics Server API.
-
-**Câu hỏi đào sâu:** (HPA có thể lấy dữ liệu từ Prometheus thay cho Metrics Server được không? — ĐƯỢC, bằng cách cài đặt k8s-prometheus-adapter để cung cấp Prometheus Custom Metrics API).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Tổng kết bộ 3 cờ lệnh vàng khi sử dụng `kubectl top pod` để chẩn đoán tài nguyên trong bài thi CKAD là gì?
-
-**Đáp án chuẩn:**
-1. `--sort-by=cpu` / `--sort-by=memory`: Sắp xếp tìm Pod ngốn tài nguyên nhất.
-2. `--containers`: Phân rã xem chi tiết từng container trong Pod đa container.
-3. `-l <label-selector>`: Lọc danh sách Pod thuộc về ứng dụng chỉ định.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đúng 3 cờ.
-- 1đ: Nêu được 2 cờ.
-- 3đ: Trình bày tự tin, mạch lạc bộ 3 cờ lệnh vàng khi gõ `kubectl top pod`.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 40 là gì? — Chuyển sang Giai đoạn Environment, Configuration & Security với Buổi 40 về ConfigMap bất biến, Secret kiểu và Downward API).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1014,28 +1104,6 @@ Metrics Server định kỳ thu thập (pull) chỉ số CPU/RAM từ tiến tr�
 2. **"Luôn kết hợp cờ `--sort-by=memory` hoặc `--sort-by=cpu` với `kubectl top pod` để tìm ra ngay lập tức Pod ngốn tài nguyên nhất."**
 3. **"Dùng cờ `--containers` để phân rã tài nguyên từng container, giúp phát hiện lỗi rò rỉ bộ nhớ (Memory Leak) từ container sidecar."**
 4. **"Hiểu rõ bản chất: Metrics Server chỉ lưu tạm 15s trong RAM cho HPA và CLI; Prometheus/Grafana mới là giải pháp lưu lịch sử time-series và Alerting Production."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc bộ lệnh `kubectl top` và kiến trúc Metrics Server CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục kỹ năng Resource Monitoring & Diagnosing Chẩn đoán tài nguyên |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết script tự động chạy `kubectl top pods -A --sort-by=memory` mỗi 5 phút và in ra các Pod dùng RAM > 500Mi.
-- **BTVN 2:** Thực hành sửa file Deployment `metrics-server` để thêm cờ `--kubelet-insecure-tls` trong môi trường lab tự dựng.
-- **BTVN 3:** Phân tích điểm khác nhau giữa Metrics API (`metrics.k8s.io`) và Custom Metrics API (`custom.metrics.k8s.io`).
-- **BTVN 4 (Chuẩn bị cho Buổi 40 — Cấu hình ứng dụng nâng cao):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Sự khác nhau giữa ConfigMap thông thường và ConfigMap bất biến (`immutable: true`) là gì?
-  2. Các loại Secret mặc định trong Kubernetes (`Opaque`, `kubernetes.io/tls`, `kubernetes.io/dockerconfigjson`) phục vụ mục đích gì?
-  3. Kỹ thuật Downward API cho phép truyền những thông tin metadata nào của Pod vào làm biến môi trường hoặc file volume?
 
 ---
 
@@ -1249,14 +1317,15 @@ kubectl top pod <pod-name> -n <ns> --containers
 kubectl top pods -n <ns> -l key=value --sort-by=cpu
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 10] Quản Lý Cấu Hình Ứng Dụng Nâng Cao: Immutable ConfigMap/Secret, Downward API & Projected Volumes](ckad-10-10-cau-hinh-ung-dung-nang-cao.html).
+
 {% endraw %}

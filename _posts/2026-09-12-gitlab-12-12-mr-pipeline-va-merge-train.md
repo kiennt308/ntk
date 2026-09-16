@@ -72,7 +72,7 @@ graph TD
 
     M0 --> M1
     M1 -->|Nếu A PASS| M2
-    M2 -->|Nếu B FAIL: Tự động loại B, test lại C trên (main + A + C)| M3
+    M2 -->|"Nếu B FAIL: Tự động loại B, test lại C trên (main + A + C)"| M3
 ```
 
 ### 1.2. Ba Cấp Độ Kiểm Thử Trước Merge Trong GitLab CI
@@ -225,9 +225,11 @@ graph TD
 <span class="badge badge--rose">🕒 03:45 AM</span> Sau khi chuyển đổi dự án sang sử dụng Merge Request Pipelines, toàn bộ hạ tầng Runner của công ty rơi vào tình trạng tắc nghẽn nghiêm trọng (Queue time tăng vọt từ 2 giây lên 18 phút).
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Mỗi khi lập trình viên đẩy một commit mới lên nhánh tính năng, giao diện GitLab sinh ra đồng thời hai pipeline độc lập thực thi cùng một khối lệnh:
 
 ```text
+
+Mỗi khi lập trình viên đẩy một commit mới lên nhánh tính năng, giao diện GitLab sinh ra đồng thời hai pipeline độc lập thực thi cùng một khối lệnh:
+
 Pipeline #10482: Branch Pipeline for branch 'feat-auth' (Status: Running)
 - Job: lint (running)
 - Job: test (running)

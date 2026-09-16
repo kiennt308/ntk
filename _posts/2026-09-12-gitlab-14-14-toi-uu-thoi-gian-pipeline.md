@@ -231,9 +231,11 @@ graph TD
 <span class="badge badge--rose">🕒 04:50 AM</span> Sau khi nhóm phát triển cấu hình cache cho dự án Node.js monorepo, thời gian thực thi pipeline không những không giảm mà còn tăng từ 8 phút lên 16 phút, khiến tiến độ release bị trễ.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Thời gian chạy lệnh test chỉ mất 40 giây, nhưng thời gian nén và upload cache lên S3 chiếm tới gần 7 phút trên mỗi job:
 
 ```text
+
+Thời gian chạy lệnh test chỉ mất 40 giây, nhưng thời gian nén và upload cache lên S3 chiếm tới gần 7 phút trên mỗi job:
+
 Executing "step_script" stage of the job script...
 $ npm test
 PASS src/index.test.ts (38.2s)

@@ -192,8 +192,6 @@ Dưới đây là cấu trúc Multi-play Playbook mẫu triển khai hệ thốn
 Trong một đợt phát hành khẩn cấp lúc nửa đêm, một kỹ sư sao chép đoạn mã cấu hình từ trình duyệt vào file `site.yml` có chứa phím Tab và sai mức thụt lề ở thuộc tính `become: true`. Kỹ sư này không chạy lệnh kiểm tra `--syntax-check` mà kích chạy trực tiếp trên toàn bộ cụm hạ tầng Production bằng quyền Root.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-- Trình biên dịch Ansible lập tức văng lỗi `ParserError` sau khi đã nạp một nửa số máy, khiến một số node nhận cấu hình dở dang và rơi vào trạng thái trôi dạt cấu hình (**Configuration Drift**).
-- Kịch bản thiếu cờ `--check --diff` đã ghi đè mất cấu hình Database cluster đang hoạt động, gây gián đoạn dịch vụ thanh toán 30 phút.
 
 ```diff
 --- site.yml (Syntax Broken)
@@ -208,6 +206,10 @@ Trong một đợt phát hành khẩn cấp lúc nửa đêm, một kỹ sư sao
 -  - name: Task 1
 +    - name: Task 1 # Sửa: Thụt lề 4 dấu cách đồng nhất
 ```
+
+- Trình biên dịch Ansible lập tức văng lỗi `ParserError` sau khi đã nạp một nửa số máy, khiến một số node nhận cấu hình dở dang và rơi vào trạng thái trôi dạt cấu hình (**Configuration Drift**).
+- Kịch bản thiếu cờ `--check --diff` đã ghi đè mất cấu hình Database cluster đang hoạt động, gây gián đoạn dịch vụ thanh toán 30 phút.
+
 
 ```mermaid
 flowchart TD
@@ -716,41 +718,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Khai báo Declarative qua YAML:** File Playbook bắt đầu bằng `---`, phân định rõ ràng giữa khung kết nối (`hosts`, `become`) và danh sách nhiệm vụ (`tasks`).
-2. **Quy tắc nguyên tử 1 Module / 1 Task:** Mỗi task gọi đúng 1 module chuyên dụng và luôn có nhãn `name:` mô tả rõ ràng.
-3. **Quy trình kiểm tra 3 cấp:** Luôn chạy `--syntax-check` -> `--check --diff` -> Thực thi thực tế.
-4. **Chứng minh Idempotency:** Bảng `PLAY RECAP` ở lần chạy thứ hai bắt buộc phải báo `changed=0`.
-5. **Kiểm soát linh hoạt với `--limit`:** Điều chỉnh phạm vi máy đích bằng cờ CLI mà không sửa mã nguồn YAML.
-
-```mermaid
-mindmap
-  root((Playbook Mastery))
-    YAML Architecture
-      Document marker ---
-      Play: hosts, become, vars
-      Task: 1 module atomic unit
-      Tường minh name tag
-    PLAY RECAP Matrix
-      ok: Trạng thái đã chuẩn
-      changed: Thay đổi thực tế
-      unreachable: Mất kết nối
-      failed: Lỗi ngắt kịch bản
-    Execution Controls
-      syntax-check: Offline validation
-      check & diff: Dry-run preview
-      limit: Target filtering
-      gather_facts: false: Speed optimization
-    Enterprise Quality
-      Idempotency changed=0 run 2
-      Multi-play Multi-tier design
-      docker exec verification
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 06: Idempotency Chuyên Sâu — Kiểm Soát Tính Bất Biến, Phân Tích Cơ Chế Changed/OK & Tối Ưu Hóa Kịch Bản Tự Động](ansible-06-06-idempotency.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 06] Làm Chủ Tính Idempotency: Bản Chất OK / Changed / Failed, Phép Thử Lần 2 & Tối Ưu Changed_when](ansible-06-06-idempotency.html).
+
 {% endraw %}

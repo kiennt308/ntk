@@ -220,7 +220,7 @@ deploy_to_gcp_cloudrun:
 
 > **Bối Cảnh**: Một công ty chuyển đổi 50 repositories từ AWS Access Key tĩnh sang OIDC. Sau khi cấu hình xong, toàn bộ các jobs CI/CD đồng loạt báo lỗi `An error occurred (InvalidIdentityToken) when calling the AssumeRoleWithWebIdentity operation: Incorrect token audience` khiến toàn bộ hoạt động release bị đình trệ.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -258,7 +258,7 @@ deploy_to_gcp_cloudrun:
 - Cấu hình tệp `.gitlab-ci.yml` sử dụng `id_tokens` và AWS CLI.
 - Xác thực phiên làm việc tạm thời thành công và liệt kê tài nguyên S3 mà không cần Access Key tĩnh.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB AWS OIDC FEDERATION
 
      [ GitLab CI Job ]
@@ -560,7 +560,7 @@ Xem log job `verify_aws_oidc`:
 
 ### 7.2. Sơ Đồ Tư Duy Xác Thực OIDC Đa Đám Mây (Mindmap)
 
-```
+```text
                      XÁC THỰC LIÊN BANG ĐA ĐÁM MÂY (OIDC FEDERATION)
                                            │
         ┌──────────────────────────────────┼──────────────────────────────────┐

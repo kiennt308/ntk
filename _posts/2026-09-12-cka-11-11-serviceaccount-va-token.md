@@ -432,24 +432,6 @@ graph TD
 | Official Docs: Service Account Token Volume Projection | Kubernetes v1.35 | Cơ chế TokenRequest API và projected volume |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Tổng quan danh tính ServiceAccount và sự khác biệt với User | 12 phút |
-| §5 | Cơ chế Token chiếu (Bound Token) và `TokenRequest` API v1.35 | 12 phút |
-| §6 | Cấu trúc thư mục `/var/run/secrets/kubernetes.io/serviceaccount/` trong Pod | 10 phút |
-| §7 | Cấu hình bảo mật `automountServiceAccountToken: false` và phân quyền RBAC | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -785,24 +767,11 @@ rm -f /tmp/sa-can-i-get.txt /tmp/sa-can-i-del.txt /tmp/token-request.jwt /tmp/po
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-11/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Tạo `ServiceAccount` tùy biến và gán quyền RBAC | 30 phút |
-| L4 | Bước 2 — Khảo sát `TokenRequest` API và tạo JWT Token ngắn hạn | 30 phút |
-| L5 | Bước 3 — Gắn `serviceAccountName` vào Pod và khảo sát 3 tệp token | 30 phút |
-| L6 | Bước 4 — Cấu hình `automountServiceAccountToken: false` và kiểm thử bảo mật | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -816,244 +785,341 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Danh tính của một ServiceAccount tên <code>app-sa</code> thuộc Namespace <code>dev</code> được biểu diễn như thế nào trong hệ thống phân quyền RBAC?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ServiceAccount</code> (Tài khoản dịch vụ dành cho Máy/Pod):</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đại diện cho các tiến trình/ứng dụng chạy bên trong Pod.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">LÀ một đối tượng API Kubernetes chính thức</b> lưu trong etcd (<code>kind: ServiceAccount</code>), gắn liền với 1 Namespace cụ thể.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Được Kubelet tự động nạp JWT Token vào Pod để ứng dụng gọi API Server.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>User</code> (Tài khoản người dùng dành cho Con người):</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đại diện cho kỹ sư DevOps, quản trị viên.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">KHÔNG có đối tượng API trong etcd</b>; xác thực qua X.509 Certificate (<code>CN</code>/<code>O</code>) hoặc OIDC/Token ngoài.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Danh tính của ServiceAccount trong RBAC luôn tuân theo chuỗi chuẩn 3 phần phân cách bởi dấu hai chấm:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>system:serviceaccount:dev:app-sa</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b> Khi Pod gửi JWT Token tới API Server, API Server giải mã token và trích xuất tên danh tính chuẩn này để đối soát với trường <code>subjects[]</code> trong các <code>RoleBinding</code> hoặc <code>ClusterRoleBinding</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo danh tính chỉ là tên <code>app-sa</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>dev:app-sa</code> nhưng thiếu tiền tố <code>system:serviceaccount:</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác chuỗi <code>system:serviceaccount:dev:app-sa</code> và cơ chế đối soát RoleBinding.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl auth can-i ... --as=system:serviceaccount:dev:app-sa</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi khai báo ServiceAccount trong tệp YAML RoleBinding, trường nào là bắt buộc dưới <code>subjects</code> ngoài tên <code>name</code>? *(Đáp án: Trường <code>namespace: dev</code>).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo ServiceAccount và User hoàn toàn giống nhau.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được ServiceAccount cho Pod còn User cho người nhưng không chỉ ra việc ServiceAccount là API object lưu trong etcd (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác API object lưu trong etcd (ServiceAccount) vs danh tính ngoài không có API object (User).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng định dạng RBAC <code>system:serviceaccount:<ns>:<name></code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Ta có thể tạo ServiceAccount bằng lệnh <code>kubectl create</code> được không, và có tạo được User bằng lệnh đó không? *(Đáp án: Tạo được ServiceAccount bằng kubectl create serviceaccount; KHÔNG tạo được User bằng kubectl).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cơ chế Bound ServiceAccount Token từ Kubernetes v1.21+ giải quyết vấn đề an ninh gì so với token lưu trong Secret kiểu cũ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Secret-based Token (Kiểu cũ):</b> Token lưu vĩnh viễn trong Secret, không có thời hạn hết hạn, không bị ràng buộc với Pod. Nếu lộ Secret, kẻ tấn công có thể dùng token truy cập cụm từ bất kỳ đâu mãi mãi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bound Token (Kiểu mới qua <code>TokenRequest</code> API):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Có thời hạn (Short-lived):</b> Mặc định sống 1 giờ, Kubelet tự động xoay vòng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ràng buộc vị trí (Bound to Pod UID):</b> Tự động vô hiệu hoá ngay khi Pod bị xoá.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ràng buộc đối tượng (<code>aud</code> claim):</b> Chỉ các hệ thống được phép mới nhận token.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 cơ chế này giống nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được token mới an toàn hơn nhưng không giải thích được 3 đặc tính: Short-lived, Bound to Pod UID, và Token Auto-rotation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác rủi ro của token cũ vĩnh viễn vs 3 đặc tính an toàn của Bound Token mới.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu việc Kubernetes v1.35 không còn tự động tạo Secret khi <code>kubectl create sa</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi tạo ServiceAccount trên Kubernetes v1.35, có tệp Secret nào tự động sinh ra đính kèm không? *(Đáp án: Không, Kubernetes v1.35 không còn tự động sinh Secret cho ServiceAccount).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Kubelet tự động xoay vòng (Auto-rotate) Bound ServiceAccount Token trong Pod khi nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet tự động xoay vòng token khi <b style="color: var(--accent-primary);">thời gian sống còn lại của token dưới 20%</b> (hoặc khi token đã dùng được quá <b style="color: var(--accent-primary);">80% thời gian sống</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b> Kubelet gọi <code>TokenRequest</code> API lấy token mới từ API Server, ghi đè tệp <code>token</code> trên đĩa tạm Projected Volume. Tiến trình trong Pod tự động đọc tệp <code>token</code> mới mà không cần restart container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo phải restart Pod mới xoay vòng được token.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được tự động làm mới nhưng không nhớ con số mốc 80% thời gian sống / còn 20%.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác mốc xoay vòng 80% thời gian sống và việc ghi đè file <code>token</code> trên đĩa tạm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng cơ chế atomic file swap của Linux.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu ứng dụng trong Pod hardcode đọc token 1 lần duy nhất lúc khởi động (in-memory caching) thì điều gì xảy ra? *(Đáp án: Ứng dụng sẽ bị ngắt kết nối API Server sau 1 giờ do token trong RAM hết hạn).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Kubelet tự động nạp (mount) Projected Volume chứa 3 tệp nào vào thư mục <code>/var/run/secrets/kubernetes.io/serviceaccount/</code> của container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>token</code>: Chuỗi JWT Bearer Token dùng để xác thực với API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ca.crt</code>: Chứng chỉ Root CA để container xác thực HTTPS với API Server (tránh bị Man-in-the-middle).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>namespace</code>: Tệp văn bản chứa tên Namespace mà Pod đang đứng (ví dụ <code>dev</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ tên 3 tệp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tệp <code>token</code> nhưng thiếu <code>ca.crt</code> hoặc <code>namespace</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 3 tệp <code>token</code>, <code>ca.crt</code>, <code>namespace</code> và vai trò từng tệp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra các client-go SDK tự động tìm 3 tệp này tại đường dẫn chuẩn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tệp <code>ca.crt</code> nạp vào Pod lấy dữ liệu từ đâu trên Control Plane? *(Đáp án: Lấy từ tệp Root CA <code>/etc/kubernetes/pki/ca.crt</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cờ <code>automountServiceAccountToken: false</code> có tác dụng gì và nên áp dụng cho những loại Pod nào trên môi trường sản xuất?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Ngắt hoàn toàn tính năng Kubelet tự động nạp thư mục token vào container (0 tệp token nào được nạp).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Phạm vi áp dụng:</b> Áp dụng cho <b style="color: var(--accent-primary);">hơn 90% các Pod ứng dụng thông thường</b> (Nginx, Node.js, Python, Java, DB) — những ứng dụng chỉ phục vụ traffic người dùng và KHÔNG có nhu cầu trực tiếp gọi API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do an ninh:</b> Ngăn kẻ tấn công trích xuất token khi Pod ứng dụng bị khai thác lỗ hổng (RCE).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo nên bật true cho tất cả Pods cho tiện.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời để tắt nạp token nhưng không giải thích được phạm vi 90% Pods ứng dụng và lý do chống lộ token khi RCE (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác tác dụng ngắt nạp token và lý do bảo mật chống lộ token khi Pod bị hack.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt vị trí đặt cờ ở Pod spec vs ServiceAccount spec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Loại Pod nào BẮT BUỘC phải giữ <code>automountServiceAccountToken: true</code>? *(Đáp án: Các Pod quản trị/giám sát như Prometheus, Ingress Controller, CoreDNS, Operators).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Trường nào trong Pod spec được dùng để chỉ định tên ServiceAccount tùy biến cần gắn vào Pod? Trường cũ <code>serviceAccount</code> bị gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường chuẩn trong Pod spec: <b style="color: var(--accent-primary);"><code>serviceAccountName: <sa-name></code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trường cũ <code>serviceAccount</code> đã bị <b style="color: var(--accent-primary);">deprecated (lỗi thời)</b> từ các phiên bản Kubernetes cũ. Dùng trường <code>serviceAccountName</code> đảm bảo tính tương thích chuẩn theo đúng OpenAPI schema.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo dùng trường <code>serviceAccount</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>serviceAccountName</code> nhưng không giải thích được việc <code>serviceAccount</code> đã bị deprecated.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác trường <code>serviceAccountName: <sa-name></code> và việc trường cũ bị deprecated.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng tệp YAML Pod spec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu trong Pod spec không khai báo <code>serviceAccountName</code> thì Pod sẽ sử dụng ServiceAccount nào? *(Đáp án: Pod tự động gắn ServiceAccount default của Namespace đó).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Nếu cấu hình <code>automountServiceAccountToken: false</code> ở cấp ServiceAccount spec, nhưng trong Pod spec lại đặt <code>automountServiceAccountToken: true</code> thì cờ nào thắng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu hình ở <b style="color: var(--accent-primary);">Pod spec sẽ thắng (Override)</b> cấu hình ở ServiceAccount spec.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên tắc:</b> Pod spec có quyền ưu tiên cao nhất ghi đè (override) các thiết lập mặc định của ServiceAccount. Do đó, Pod vẫn sẽ được Kubelet nạp token bình thường.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo ServiceAccount spec thắng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Pod spec thắng nhưng không nêu được nguyên tắc ghi đè (override) thứ bậc cấu hình.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguyên tắc Pod spec override ServiceAccount spec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng các thuộc tính override khác trong Pod spec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Muốn ngắt nạp token triệt để cho toàn bộ Pod trong Namespace thì nên làm gì? *(Đáp án: Đặt <code>automountServiceAccountToken: false</code> trên ServiceAccount default của Namespace đó).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Lệnh CLI nào giúp kỹ sư tạo ra một chuỗi JWT token tạm thời cho ServiceAccount có thời hạn tùy chỉnh (ví dụ 2 giờ)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Câu lệnh chuẩn:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl create token <sa-name> -n <namespace> --duration=7200s</code> (hoặc <code>--duration=2h</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ứng dụng:</b> Dùng để cấp token tạm thời cho các tiến trình CI/CD runner ngoài cụm (như GitLab CI, GitHub Actions) để gọi API Server triển khai ứng dụng mà không cần tạo Secret vĩnh viễn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ lệnh <code>kubectl create token</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>kubectl create token</code> nhưng thiếu cờ <code>--duration</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lệnh <code>kubectl create token <sa-name> --duration=...</code> và ứng dụng cho CI/CD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc giải mã token tạo ra.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Token tạo ra bằng <code>kubectl create token</code> có tự động xoay vòng như token trong Pod không? *(Đáp án: Không, token tạo từ CLI là chuỗi tĩnh sống đúng thời lượng --duration đã gán).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao API Server dùng cặp khóa <code>sa.key</code> và <code>sa.pub</code> để ký và xác thực ServiceAccount Token thay vì dùng chứng chỉ x509?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ServiceAccount Token là chuỗi <b style="color: var(--accent-primary);">JSON Web Token (JWT)</b> bearer token.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• API Server sử dụng khóa riêng RSA <b style="color: var(--accent-primary);"><code>sa.key</code></b> để ký chữ ký số (Asymmetric Signature) vào JWT payload.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các dịch vụ khác (hoặc các API Server khác trong cụm HA) chỉ cần dùng khóa công khai <b style="color: var(--accent-primary);"><code>sa.pub</code></b> để xác thực tính hợp lệ của chữ ký JWT mà <b style="color: var(--accent-primary);">không cần thực hiện TLS Handshake tốn kém hay truy vấn etcd</b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>sa.key</code> là chứng chỉ x509 SSL.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời để ký token nhưng không giải thích được cơ chế asymmetric RSA signing của JWT bearer token.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế ký JWT bằng <code>sa.key</code> và xác thực bằng <code>sa.pub</code> không cần tốn chi phí TLS Handshake.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với Buổi 07 QT 4.2.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khóa công khai <code>sa.pub</code> được khai báo trên API Server qua cờ nào? *(Đáp án: Cờ <code>--service-account-key-file</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi một Pod bị xoá (Delete Pod), chuyện gì xảy ra đối với Bound ServiceAccount Token của Pod đó?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bound ServiceAccount Token của Pod đó <b style="color: var(--accent-primary);">lập tức trở nên vô hiệu (Invalidated)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do:</b> Bound Token chứa claim <code>pod.uid</code> (UID duy nhất của Pod). Khi API Server nhận token, nó kiểm tra UID Pod trong etcd. Nếu Pod đã bị xoá, API Server từ chối xác thực token ngay lập tức (trả về 401 Unauthorized), dù cho thời hạn 1 giờ của token vẫn chưa hết.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo token vẫn dùng được tới hết 1 giờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được token bị vô hiệu nhưng không giải thích được claim <code>pod.uid</code> bị API Server đối soát.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc token bị vô hiệu tức thì nhờ claim <code>pod.uid</code> ràng buộc với vòng đời Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nhấn mạnh tính năng chống đánh cắp token của Bound Token.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu kẻ tấn công copy tệp <code>token</code> từ Pod bị xoá ra ngoài laptop thì có gọi được API Server không? *(Đáp án: Không, API Server từ chối ngay vì Pod UID không còn tồn tại).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do quên RoleBinding cho SA, 1 âm thầm do lộ token vì quên automount: false) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Pod nạp token nhưng gọi API bị Forbidden):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Pod Ingress/Prometheus bị crash loop, log ứng dụng báo <code>403 Forbidden</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Chạy <code>kubectl auth can-i get pods --as=system:serviceaccount:<ns>:<sa></code> báo <code>no</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Tạo <code>RoleBinding</code> gán đúng Role cho ServiceAccount đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Lộ token Pod Web do để automount true thừa thải):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Pod Nginx bị hack RCE, kẻ tấn công đọc tệp <code>/var/run/secrets/.../token</code> và lén lút truy xuất API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Quét an ninh phát hiện thư mục token tồn tại trên Pod không cần gọi API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Thêm <code>automountServiceAccountToken: false</code> vào Pod spec.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu RoleBinding và thừa automount (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao quét tự động tất cả các Pod trên cụm để tìm các Pod để thừa cờ <code>automountServiceAccountToken: true</code>? *(Đáp án: Dùng lệnh <code>kubectl get pods -A -o jsonpath...</code> lọc các Pod không có automount false).*
+
 ---
 
-### Câu 2 — ★★
-
-**Hỏi:** Danh tính của một ServiceAccount tên `app-sa` thuộc Namespace `dev` được biểu diễn như thế nào trong hệ thống phân quyền RBAC?
-
-**Đáp án chuẩn:**
-- Danh tính của ServiceAccount trong RBAC luôn tuân theo chuỗi chuẩn 3 phần phân cách bởi dấu hai chấm:
-  `system:serviceaccount:dev:app-sa`.
-- **Cơ chế:** Khi Pod gửi JWT Token tới API Server, API Server giải mã token và trích xuất tên danh tính chuẩn này để đối soát với trường `subjects[]` trong các `RoleBinding` hoặc `ClusterRoleBinding`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo danh tính chỉ là tên `app-sa`.
-- **1đ:** Trả lời `dev:app-sa` nhưng thiếu tiền tố `system:serviceaccount:`.
-- **2đ:** Giải thích chuẩn xác chuỗi `system:serviceaccount:dev:app-sa` và cơ chế đối soát RoleBinding.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl auth can-i ... --as=system:serviceaccount:dev:app-sa`.
-
-**Câu hỏi đào sâu:** Khi khai báo ServiceAccount trong tệp YAML RoleBinding, trường nào là bắt buộc dưới `subjects` ngoài tên `name`? *(Đáp án: Trường `namespace: dev`).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Cơ chế Bound ServiceAccount Token từ Kubernetes v1.21+ giải quyết vấn đề an ninh gì so với token lưu trong Secret kiểu cũ?
-
-**Đáp án chuẩn:**
-- **Secret-based Token (Kiểu cũ):** Token lưu vĩnh viễn trong Secret, không có thời hạn hết hạn, không bị ràng buộc với Pod. Nếu lộ Secret, kẻ tấn công có thể dùng token truy cập cụm từ bất kỳ đâu mãi mãi.
-- **Bound Token (Kiểu mới qua `TokenRequest` API):**
-  1. **Có thời hạn (Short-lived):** Mặc định sống 1 giờ, Kubelet tự động xoay vòng.
-  2. **Ràng buộc vị trí (Bound to Pod UID):** Tự động vô hiệu hoá ngay khi Pod bị xoá.
-  3. **Ràng buộc đối tượng (`aud` claim):** Chỉ các hệ thống được phép mới nhận token.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 cơ chế này giống nhau.
-- **1đ:** Nói được token mới an toàn hơn nhưng không giải thích được 3 đặc tính: Short-lived, Bound to Pod UID, và Token Auto-rotation.
-- **2đ:** Giải thích chuẩn xác rủi ro của token cũ vĩnh viễn vs 3 đặc tính an toàn của Bound Token mới.
-- **3đ:** Trả lời xuất sắc, nêu việc Kubernetes v1.35 không còn tự động tạo Secret khi `kubectl create sa`.
-
-**Câu hỏi đào sâu:** Khi tạo ServiceAccount trên Kubernetes v1.35, có tệp Secret nào tự động sinh ra đính kèm không? *(Đáp án: Không, Kubernetes v1.35 không còn tự động sinh Secret cho ServiceAccount).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Kubelet tự động xoay vòng (Auto-rotate) Bound ServiceAccount Token trong Pod khi nào?
-
-**Đáp án chuẩn:**
-- Kubelet tự động xoay vòng token khi **thời gian sống còn lại của token dưới 20%** (hoặc khi token đã dùng được quá **80% thời gian sống**).
-- **Cơ chế:** Kubelet gọi `TokenRequest` API lấy token mới từ API Server, ghi đè tệp `token` trên đĩa tạm Projected Volume. Tiến trình trong Pod tự động đọc tệp `token` mới mà không cần restart container.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo phải restart Pod mới xoay vòng được token.
-- **1đ:** Nói được tự động làm mới nhưng không nhớ con số mốc 80% thời gian sống / còn 20%.
-- **2đ:** Giải thích chuẩn xác mốc xoay vòng 80% thời gian sống và việc ghi đè file `token` trên đĩa tạm.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng cơ chế atomic file swap của Linux.
-
-**Câu hỏi đào sâu:** Nếu ứng dụng trong Pod hardcode đọc token 1 lần duy nhất lúc khởi động (in-memory caching) thì điều gì xảy ra? *(Đáp án: Ứng dụng sẽ bị ngắt kết nối API Server sau 1 giờ do token trong RAM hết hạn).*
-
----
-
-### Câu 5 — ★★
-
-**Hỏi:** Kubelet tự động nạp (mount) Projected Volume chứa 3 tệp nào vào thư mục `/var/run/secrets/kubernetes.io/serviceaccount/` của container?
-
-**Đáp án chuẩn:**
-1. `token`: Chuỗi JWT Bearer Token dùng để xác thực với API Server.
-2. `ca.crt`: Chứng chỉ Root CA để container xác thực HTTPS với API Server (tránh bị Man-in-the-middle).
-3. `namespace`: Tệp văn bản chứa tên Namespace mà Pod đang đứng (ví dụ `dev`).
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ tên 3 tệp.
-- **1đ:** Nêu được tệp `token` nhưng thiếu `ca.crt` hoặc `namespace`.
-- **2đ:** Giải thích chuẩn xác 3 tệp `token`, `ca.crt`, `namespace` và vai trò từng tệp.
-- **3đ:** Trả lời xuất sắc, chỉ ra các client-go SDK tự động tìm 3 tệp này tại đường dẫn chuẩn.
-
-**Câu hỏi đào sâu:** Tệp `ca.crt` nạp vào Pod lấy dữ liệu từ đâu trên Control Plane? *(Đáp án: Lấy từ tệp Root CA `/etc/kubernetes/pki/ca.crt`).*
-
----
-
-### Câu 6 — 🔥
-
-**Hỏi:** Cờ `automountServiceAccountToken: false` có tác dụng gì và nên áp dụng cho những loại Pod nào trên môi trường sản xuất?
-
-**Đáp án chuẩn:**
-- **Tác dụng:** Ngắt hoàn toàn tính năng Kubelet tự động nạp thư mục token vào container (0 tệp token nào được nạp).
-- **Phạm vi áp dụng:** Áp dụng cho **hơn 90% các Pod ứng dụng thông thường** (Nginx, Node.js, Python, Java, DB) — những ứng dụng chỉ phục vụ traffic người dùng và KHÔNG có nhu cầu trực tiếp gọi API Server.
-- **Lý do an ninh:** Ngăn kẻ tấn công trích xuất token khi Pod ứng dụng bị khai thác lỗ hổng (RCE).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo nên bật true cho tất cả Pods cho tiện.
-- **1đ:** Trả lời để tắt nạp token nhưng không giải thích được phạm vi 90% Pods ứng dụng và lý do chống lộ token khi RCE (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác tác dụng ngắt nạp token và lý do bảo mật chống lộ token khi Pod bị hack.
-- **3đ:** Trả lời xuất sắc, phân biệt vị trí đặt cờ ở Pod spec vs ServiceAccount spec.
-
-**Câu hỏi đào sâu:** Loại Pod nào BẮT BUỘC phải giữ `automountServiceAccountToken: true`? *(Đáp án: Các Pod quản trị/giám sát như Prometheus, Ingress Controller, CoreDNS, Operators).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Trường nào trong Pod spec được dùng để chỉ định tên ServiceAccount tùy biến cần gắn vào Pod? Trường cũ `serviceAccount` bị gì?
-
-**Đáp án chuẩn:**
-- Trường chuẩn trong Pod spec: **`serviceAccountName: <sa-name>`**.
-- Trường cũ `serviceAccount` đã bị **deprecated (lỗi thời)** từ các phiên bản Kubernetes cũ. Dùng trường `serviceAccountName` đảm bảo tính tương thích chuẩn theo đúng OpenAPI schema.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo dùng trường `serviceAccount`.
-- **1đ:** Trả lời `serviceAccountName` nhưng không giải thích được việc `serviceAccount` đã bị deprecated.
-- **2đ:** Giải thích chuẩn xác trường `serviceAccountName: <sa-name>` và việc trường cũ bị deprecated.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng tệp YAML Pod spec.
-
-**Câu hỏi đào sâu:** Nếu trong Pod spec không khai báo `serviceAccountName` thì Pod sẽ sử dụng ServiceAccount nào? *(Đáp án: Pod tự động gắn ServiceAccount default của Namespace đó).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Nếu cấu hình `automountServiceAccountToken: false` ở cấp ServiceAccount spec, nhưng trong Pod spec lại đặt `automountServiceAccountToken: true` thì cờ nào thắng?
-
-**Đáp án chuẩn:**
-- Cấu hình ở **Pod spec sẽ thắng (Override)** cấu hình ở ServiceAccount spec.
-- **Nguyên tắc:** Pod spec có quyền ưu tiên cao nhất ghi đè (override) các thiết lập mặc định của ServiceAccount. Do đó, Pod vẫn sẽ được Kubelet nạp token bình thường.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo ServiceAccount spec thắng.
-- **1đ:** Trả lời Pod spec thắng nhưng không nêu được nguyên tắc ghi đè (override) thứ bậc cấu hình.
-- **2đ:** Giải thích chuẩn xác nguyên tắc Pod spec override ServiceAccount spec.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng các thuộc tính override khác trong Pod spec.
-
-**Câu hỏi đào sâu:** Muốn ngắt nạp token triệt để cho toàn bộ Pod trong Namespace thì nên làm gì? *(Đáp án: Đặt `automountServiceAccountToken: false` trên ServiceAccount default của Namespace đó).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Lệnh CLI nào giúp kỹ sư tạo ra một chuỗi JWT token tạm thời cho ServiceAccount có thời hạn tùy chỉnh (ví dụ 2 giờ)?
-
-**Đáp án chuẩn:**
-- Câu lệnh chuẩn:
-  `kubectl create token <sa-name> -n <namespace> --duration=7200s` (hoặc `--duration=2h`).
-- **Ứng dụng:** Dùng để cấp token tạm thời cho các tiến trình CI/CD runner ngoài cụm (như GitLab CI, GitHub Actions) để gọi API Server triển khai ứng dụng mà không cần tạo Secret vĩnh viễn.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ lệnh `kubectl create token`.
-- **1đ:** Nêu được `kubectl create token` nhưng thiếu cờ `--duration`.
-- **2đ:** Giải thích chuẩn xác lệnh `kubectl create token <sa-name> --duration=...` và ứng dụng cho CI/CD.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc giải mã token tạo ra.
-
-**Câu hỏi đào sâu:** Token tạo ra bằng `kubectl create token` có tự động xoay vòng như token trong Pod không? *(Đáp án: Không, token tạo từ CLI là chuỗi tĩnh sống đúng thời lượng --duration đã gán).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Tại sao API Server dùng cặp khóa `sa.key` và `sa.pub` để ký và xác thực ServiceAccount Token thay vì dùng chứng chỉ x509?
-
-**Đáp án chuẩn:**
-- ServiceAccount Token là chuỗi **JSON Web Token (JWT)** bearer token.
-- API Server sử dụng khóa riêng RSA **`sa.key`** để ký chữ ký số (Asymmetric Signature) vào JWT payload.
-- Các dịch vụ khác (hoặc các API Server khác trong cụm HA) chỉ cần dùng khóa công khai **`sa.pub`** để xác thực tính hợp lệ của chữ ký JWT mà **không cần thực hiện TLS Handshake tốn kém hay truy vấn etcd**.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `sa.key` là chứng chỉ x509 SSL.
-- **1đ:** Trả lời để ký token nhưng không giải thích được cơ chế asymmetric RSA signing của JWT bearer token.
-- **2đ:** Giải thích chuẩn xác cơ chế ký JWT bằng `sa.key` và xác thực bằng `sa.pub` không cần tốn chi phí TLS Handshake.
-- **3đ:** Trả lời xuất sắc, liên hệ với Buổi 07 QT 4.2.
-
-**Câu hỏi đào sâu:** Khóa công khai `sa.pub` được khai báo trên API Server qua cờ nào? *(Đáp án: Cờ `--service-account-key-file`).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Khi một Pod bị xoá (Delete Pod), chuyện gì xảy ra đối với Bound ServiceAccount Token của Pod đó?
-
-**Đáp án chuẩn:**
-- Bound ServiceAccount Token của Pod đó **lập tức trở nên vô hiệu (Invalidated)**.
-- **Lý do:** Bound Token chứa claim `pod.uid` (UID duy nhất của Pod). Khi API Server nhận token, nó kiểm tra UID Pod trong etcd. Nếu Pod đã bị xoá, API Server từ chối xác thực token ngay lập tức (trả về 401 Unauthorized), dù cho thời hạn 1 giờ của token vẫn chưa hết.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo token vẫn dùng được tới hết 1 giờ.
-- **1đ:** Nói được token bị vô hiệu nhưng không giải thích được claim `pod.uid` bị API Server đối soát.
-- **2đ:** Giải thích chuẩn xác việc token bị vô hiệu tức thì nhờ claim `pod.uid` ràng buộc với vòng đời Pod.
-- **3đ:** Trả lời xuất sắc, nhấn mạnh tính năng chống đánh cắp token của Bound Token.
-
-**Câu hỏi đào sâu:** Nếu kẻ tấn công copy tệp `token` từ Pod bị xoá ra ngoài laptop thì có gọi được API Server không? *(Đáp án: Không, API Server từ chối ngay vì Pod UID không còn tồn tại).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do quên RoleBinding cho SA, 1 âm thầm do lộ token vì quên automount: false) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Pod nạp token nhưng gọi API bị Forbidden):**
-   - *Triệu chứng:* Pod Ingress/Prometheus bị crash loop, log ứng dụng báo `403 Forbidden`.
-   - *Phát hiện:* Chạy `kubectl auth can-i get pods --as=system:serviceaccount:<ns>:<sa>` báo `no`.
-   - *Khắc phục:* Tạo `RoleBinding` gán đúng Role cho ServiceAccount đó.
-2. **Chế độ hỏng 2 (Âm thầm - Lộ token Pod Web do để automount true thừa thải):**
-   - *Triệu chứng:* Pod Nginx bị hack RCE, kẻ tấn công đọc tệp `/var/run/secrets/.../token` và lén lút truy xuất API Server.
-   - *Phát hiện:* Quét an ninh phát hiện thư mục token tồn tại trên Pod không cần gọi API Server.
-   - *Khắc phục:* Thêm `automountServiceAccountToken: false` vào Pod spec.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu RoleBinding và thừa automount (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.
-
-**Câu hỏi đào sâu:** Làm sao quét tự động tất cả các Pod trên cụm để tìm các Pod để thừa cờ `automountServiceAccountToken: true`? *(Đáp án: Dùng lệnh `kubectl get pods -A -o jsonpath...` lọc các Pod không có automount false).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"ServiceAccount là API object chính thức trong etcd dành cho máy/Pod; danh tính RBAC chuẩn có dạng <code>system:serviceaccount:<namespace>:<serviceaccount-name></code>."*
+2. *"Cơ chế Bound Token (v1.21+) sử dụng <code>TokenRequest</code> API tạo JWT Token ngắn hạn (1 giờ), gắn chặt với UID của Pod và được Kubelet tự động xoay vòng khi trôi qua 80% thời gian sống."*
+3. *"Kubelet tự động nạp Projected Volume chứa 3 tệp <code>token</code>, <code>ca.crt</code>, <code>namespace</code> vào thư mục <code>/var/run/secrets/kubernetes.io/serviceaccount/</code> trong container."*
+4. *"Khai báo <code>automountServiceAccountToken: false</code> là chốt chặn bảo mật bắt buộc cho 90% Pods ứng dụng không có nhu cầu gọi API Server để chống nguy cơ lộ token khi Pod bị RCE."*
+5. *"Trong Pod spec, sử dụng trường chuẩn <code>serviceAccountName: <sa-name></code> để gắn ServiceAccount tùy biến đã được phân quyền RBAC vừa đủ (Least Privilege)."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1064,40 +1130,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Kubelet tự động nạp Projected Volume chứa 3 tệp `token`, `ca.crt`, `namespace` vào thư mục `/var/run/secrets/kubernetes.io/serviceaccount/` trong container."*
 4. *"Khai báo `automountServiceAccountToken: false` là chốt chặn bảo mật bắt buộc cho 90% Pods ứng dụng không có nhu cầu gọi API Server để chống nguy cơ lộ token khi Pod bị RCE."*
 5. *"Trong Pod spec, sử dụng trường chuẩn `serviceAccountName: <sa-name>` để gắn ServiceAccount tùy biến đã được phân quyền RBAC vừa đủ (Least Privilege)."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Phân biệt ServiceAccount (Pod, etcd) vs User (con người, x509) (trần 1đ nếu thiếu) |
-| Câu 2 | ★★ | 3 | | Biểu diễn danh tính RBAC `system:serviceaccount:<ns>:<name>` |
-| Câu 3 | ★★★ | 3 | | 3 ưu thế an toàn của Bound Token mới so với Secret cũ |
-| Câu 4 | ★★★ | 3 | | Mốc Kubelet tự động xoay vòng token (trôi qua 80% thời gian sống) |
-| Câu 5 | ★★ | 3 | | 3 tệp nạp vào Pod (`token`, `ca.crt`, `namespace`) |
-| Câu 6 | 🔥 | 3 | | Tác dụng cờ `automountServiceAccountToken: false` (trần 1đ nếu thiếu) |
-| Câu 7 | ★★★ | 3 | | Trường chuẩn `serviceAccountName` trong Pod spec |
-| Câu 8 | ★★★ | 3 | | Cấu hình Pod spec override ServiceAccount spec |
-| Câu 9 | ★★★ | 3 | | Lệnh `kubectl create token <sa-name> --duration=...` cho CI/CD |
-| Câu 10 | ★★★ | 3 | | Cơ chế ký JWT bằng `sa.key` và xác thực bằng `sa.pub` |
-| Câu 11 | ★★★ | 3 | | Vô hiệu hoá token tức thì khi xoá Pod nhờ claim `pod.uid` |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (quên RoleBinding cho SA & thừa automount) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash quét tất cả các Pod trong Namespace `default` và cảnh báo nếu có Pod nào đang sử dụng ServiceAccount `default` mà để `automountServiceAccountToken: true`.
-2. **BTVN 2:** Thực hành tạo ServiceAccount `gitlab-runner-sa`, cấp quyền `Role` tạo `deployments` trong Namespace `staging`, và dùng `kubectl create token` cấp token 24 giờ.
-3. **BTVN 3:** Sử dụng `kubectl exec` vào một Pod Nginx có `automountServiceAccountToken: false` và xác nhận lệnh `ls /var/run/secrets/kubernetes.io/serviceaccount` trả về lỗi No such file or directory.
-4. **BTVN 4 — Chuẩn bị cho Buổi 12 (`buoi-12-ha-control-plane`):**
-   - *Câu 1:* Kiến trúc Control Plane sẵn sàng cao (High Availability - HA) yêu cầu tối thiểu bao nhiêu node Control Plane để đạt Quorum etcd?
-   - *Câu 2:* Bộ cân bằng tải Load Balancer (như HAProxy / Keepalived / VIP) đóng vai trò gì trước các node Control Plane?
-   - *Câu 3:* Phân biệt sự khác nhau giữa hai mô hình etcd: Stacked etcd topology vs External etcd topology.
-
-> **Đoạn kết nối Buổi 12:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 12 — buổi học chuyên sâu dựng cụm Control Plane sẵn sàng cao (High Availability HA) với 3 node Control Plane, thuật toán Quorum bầu chọn Leader etcd và bộ cân bằng tải Load Balancer an toàn sản xuất.
 
 ---
 
@@ -1369,15 +1401,15 @@ kubectl create token <sa-name> -n <namespace> --duration=3600s
 # spec.automountServiceAccountToken: false
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 12] Thiết Kế Control Plane Sẵn Sàng Cao (HA): Multi-Master Stacked etcd vs External etcd & Load Balancer](cka-12-12-ha-control-plane.html).
+
 {% endraw %}

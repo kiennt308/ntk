@@ -186,9 +186,11 @@ graph TD
 <span class="badge badge--rose">🕒 06:25 AM</span> Một công ty thương mại điện tử triển khai pipeline CI/CD tự động đóng gói và đẩy Docker Image trên mỗi commit nhánh `feature/*`. Sau 3 tháng vận hành, hệ thống Harbor/Artifactory đột ngột báo lỗi `HTTP 507 Insufficient Storage` làm tê liệt hoàn toàn hơn 200 dự án CI/CD của toàn công ty.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Hàng trăm pipeline bị chặn đứng ở stage publish, không thể phân phối mã nguồn mới:
 
 ```text
+
+Hàng trăm pipeline bị chặn đứng ở stage publish, không thể phân phối mã nguồn mới:
+
 $ /kaniko/executor --destination "${HARBOR_REGISTRY}/ecom/cart-service:${CI_COMMIT_SHORT_SHA}"
 INFO[0045] Pushing image to registry.corp.internal/ecom/cart-service:78a1bc4
 error pushing image: failed to push to destination registry.corp.internal/ecom/cart-service:78a1bc4: 

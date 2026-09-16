@@ -232,7 +232,7 @@ upload_to_defectdojo:
 
 > **Bối Cảnh**: Một công ty dịch vụ tài chính bị tin tặc quét mạng và đánh cắp hơn 500.000 bản ghi cơ sở dữ liệu. Nguyên nhân là do một kỹ sư DevOps thêm khối Security Group trong Terraform cho phép truy cập cổng `5432` từ mọi địa chỉ IP (`0.0.0.0/0`) để tiện debug từ nhà, và pipeline CI/CD cũ không có bước kiểm tra IaC nên đã tự động deploy cấu hình này lên AWS.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -269,7 +269,7 @@ upload_to_defectdojo:
 - Cấu hình pipeline GitLab CI chạy Checkov và Trivy.
 - Quan sát các cảnh báo vi phạm tiêu chuẩn an ninh và tiến hành sửa chữa mã nguồn chuẩn CIS.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB CHECKOV IAC & TRIVY CONTAINER SCAN
 
    [ Mã Nguồn Hạ Tầng & Container ]
@@ -608,7 +608,7 @@ git push origin main
 
 ### 7.2. Sơ Đồ Tư Duy Quét Lỗ Hổng Container & IaC (Mindmap)
 
-```
+```text
                        QUÉT AN NINH CONTAINER & HẠ TẦNG IAC
                                          │
         ┌────────────────────────────────┼────────────────────────────────┐

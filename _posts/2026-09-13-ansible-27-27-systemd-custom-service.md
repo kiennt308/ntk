@@ -673,37 +673,12 @@ fi
 </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Đóng Gói Chuẩn Hóa:** Thay thế 100% các lệnh `nohup` bằng Systemd Unit File 3 phần đặt tại `/etc/systemd/system/`.
-2. **Nguyên Tắc Least Privilege:** Không bao giờ chạy daemon dưới quyền `root`, luôn tạo user hệ thống hạ đặc quyền (`/sbin/nologin`).
-3. **Cơ Chế Self-Healing:** Cấu hình `Restart=always` kết hợp `RestartSec=5s` và `StartLimitBurst=5` để chống crash loop.
-4. **Tối Ưu Handler Daemon-Reload:** Chỉ thực thi `daemon-reload` khi file cấu hình có sự thay đổi nội dung trên đĩa.
-5. **Đạt Idempotency Tuyệt Đối:** Mọi playbook quản lý Systemd ở lượt chạy thứ hai đều phải trả về `changed=0`.
-
-```mermaid
-mindmap
-  root((Systemd Service Automation))
-    Cau Truc Unit File
-      Unit: Description va After
-      Service: ExecStart va User
-      Install: WantedBy multi-user.target
-    Bao Mat va Tu Phuc Hoi
-      User non-root sysops nologin
-      Restart always va RestartSec 5s
-      StartLimitBurst 5 phong chong Flapping
-      MemoryMax va LimitNOFILE
-    Ansible Modules va Idempotency
-      ansible.builtin.template deploy 0644
-      ansible.builtin.systemd enabled va started
-      Handler daemon_reload va restart
-      PLAY RECAP changed=0 o Lan 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 28: Tự Động Hóa An Ninh Mạng Với Firewalld & Iptables: Quản Lý Port, Rich Rules, IP Sets & Chặn IP Độc Hại Tự Động](ansible-28-28-firewalld-iptables-security.html) — Tiếp tục hành trình Giai đoạn 5, làm chủ kỹ thuật phòng thủ tường lửa và tự động hóa an ninh mạng Linux cấp Enterprise.
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 28] Tự Động Hóa An Ninh Mạng Với Firewalld & Iptables: Quản Lý Port, Rich Rules, IP Sets & Chặn IP Độc Hại Tự Động](ansible-28-28-firewalld-iptables-security.html).
 
 {% endraw %}

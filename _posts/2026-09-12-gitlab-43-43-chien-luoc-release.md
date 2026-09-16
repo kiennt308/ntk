@@ -44,7 +44,7 @@ Trong quy trình phát hành truyền thống ("Big Bang Deployment"), việc đ
 > - **Deployment (Triển khai kỹ thuật)**: Đưa mã nguồn mới lên hạ tầng Production và khởi chạy an toàn (nhưng chưa phục vụ khách hàng, hoặc chỉ phục vụ một nhóm nhỏ 1-5%).
 > - **Release (Phát hành nghiệp vụ)**: Mở khóa tính năng cho người dùng theo từng giai đoạn có kiểm soát dựa trên số liệu phân tích và Feature Flags.
 
-```
+```text
        TIẾN TRÌNH PHÂN PHỐI LŨY TIẾN (Progressive Delivery Progression)
 
   [ Giai đoạn 1: Dark Launching / Canary 5% ]
@@ -198,7 +198,7 @@ abort_canary_emergency:
 
 > **Bối Cảnh**: Một kỹ sư triển khai tính năng mới theo mô hình Canary 10%. Trong bản mới, kỹ sư đã đổi tên cột `user_email` thành `email` trong cơ sở dữ liệu PostgreSQL. Khi 10% lưu lượng đổ vào bản mới chạy lệnh đổi tên cột, 90% lưu lượng còn lại đổ vào bản cũ `v1.0.0` ngay lập tức bị sập hoàn toàn với lỗi `column user_email does not exist`!
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -237,7 +237,7 @@ abort_canary_emergency:
 - Lập trình kiểm tra cờ tính năng động lúc runtime.
 - Thực hành bật/tắt tính năng theo User ID và quan sát kết quả tức thì không cần redeploy.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB FEATURE FLAGS TRÊN GITLAB CI
 
      [ 1. GitLab UI: Feature Flags ] ──► Khởi tạo cờ: new_discount_engine
@@ -516,7 +516,7 @@ curl http://localhost:8080/checkout?userId=vip-user-01
 
 ### 7.2. Sơ Đồ Tư Duy Chiến Lược Phát Hành Lũy Tiến (Mindmap)
 
-```
+```text
                      CHIẾN LƯỢC PHÁT HÀNH LŨY TIẾN (PROGRESSIVE CD)
                                           │
         ┌─────────────────────────────────┼─────────────────────────────────┐

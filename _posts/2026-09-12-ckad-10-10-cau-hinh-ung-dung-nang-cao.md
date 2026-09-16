@@ -482,24 +482,6 @@ Cú pháp <code>fieldPath: status.podIP</code>.
 | Downward API Documentation | `https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/` | Tài liệu chuẩn K8s Downward API |
 | Projected Volumes Documentation | `https://kubernetes.io/docs/concepts/storage/projected-volumes/` | Tài liệu chuẩn K8s Projected Volumes |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. ConfigMap và Secret bất biến | 12 phút | 12 phút |
-| §5. Phân loại Secret chuyên dụng | 12 phút | 12 phút |
-| §6. Downward API và Projected Volume | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -838,25 +820,11 @@ test ! -f /tmp/lab40-config.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHE
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & CM immutable | 15 phút | 15 phút |
-| L4. Bước 2: Docker & TLS Secrets | 25 phút | 25 phút |
-| L5. Bước 3: Downward API env & vol | 25 phút | 25 phút |
-| L6. Bước 4: Projected Volume | 25 phút | 25 phút |
-| L7. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -864,190 +832,313 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Nếu một hệ thống sử dụng ConfigMap <code>immutable: true</code> nhưng cần thay đổi tham số cấu hình cho ứng dụng thì quy trình thực hiện đúng chuẩn là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Giúp loại bỏ hoàn toàn các vòng lặp watch theo dõi sự thay đổi của Kubelet đối với ConfigMap/Secret đó. Điều này giảm tải đáng kể băng thông mạng và CPU cho cả API Server và Kubelet trên các cụm Kubernetes quy mô lớn.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tạo một ConfigMap mới với tên phiên bản mới (ví dụ <code>app-config-v2</code>) chứa các giá trị tham số mới. Sau đó cập nhật bản kê khai Deployment trỏ tên ConfigMap sang <code>app-config-v2</code> để kích hoạt RollingUpdate.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng phải xóa ConfigMap cũ rồi tạo lại trùng tên.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tạo ConfigMap mới nhưng chưa rõ bước cập nhật Deployment để RollingUpdate.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác quy trình versioning ConfigMap và cập nhật Deployment.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ưu điểm của phương pháp versioning ConfigMap này so với sửa đè ConfigMap cũ là gì? — Giúp dễ dàng rollback về phiên bản cấu hình cũ bất cứ lúc nào).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được lợi ích giảm tải watch Kubelet.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không cho sửa nhưng chưa rõ tác động giảm tải API Server/Kubelet.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo lợi ích giảm tải watch loop cho Kubelet và API Server.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Điều gì xảy ra nếu cố sửa một ConfigMap có cờ <code>immutable: true</code>? — API Server từ chối và trả về lỗi <code>Forbidden: field is immutable</code>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Loại Secret nào trong Kubernetes được dùng để lưu thông tin xác thực kéo ảnh từ Private Docker Registry và cách khai báo trong Pod spec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Secret kiểu <code>kubernetes.io/dockerconfigjson</code> (tạo bằng <code>kubectl create secret docker-registry</code>). Khai báo trong Pod spec dưới trường <code>imagePullSecrets: [{name: <secret-name>}]</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết kiểu dockerconfigjson.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lệnh tạo nhưng quên tên trường <code>imagePullSecrets</code> trong Pod spec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác loại Secret <code>kubernetes.io/dockerconfigjson</code> và vị trí khai báo <code>imagePullSecrets</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu quên khai báo <code>imagePullSecrets</code> thì Pod sẽ gặp lỗi gì khi kéo ảnh private? — Lỗi <code>ImagePullBackOff</code> hoặc <code>ErrImagePull</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Secret kiểu <code>kubernetes.io/tls</code> bắt buộc phải chứa đúng 2 khóa nào dạng PEM?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bắt buộc chứa đúng 2 khóa: <code>tls.crt</code> (chứa chuỗi chứng chỉ SSL public) và <code>tls.key</code> (chứa khóa bí mật private key).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm tên khóa thành cert.pem hay key.pem.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cert và key nhưng gõ sai tên khóa chuẩn.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác tuyệt đối 2 tên khóa <code>tls.crt</code> và <code>tls.key</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào tạo nhanh Secret TLS từ 2 tệp cert và key? — <code>kubectl create secret tls <name> --cert=file.crt --key=file.key</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Kỹ thuật Downward API trong Kubernetes giải quyết bài toán gì cho các ứng dụng microservice?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giải quyết bài toán truyền thông tin định danh và tài nguyên của chính Pod đang chạy (<code>metadata.name</code>, <code>status.podIP</code>, <code>limits.cpu</code>) vào bên trong container mà không cần mã hóa cứng (hardcode) trong code hay tệp cấu hình.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm Downward API.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được truyền thông tin nhưng không rõ các trường metadata thực tế như Name/IP.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò bỏ hardcode và tự động hóa truyền định danh của Downward API.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có mấy cách để expose dữ liệu Downward API vào container? — Có 2 cách: qua biến môi trường (<code>env</code>) và qua tệp volume mount (<code>downwardAPI</code> volume)).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác biệt giữa <code>fieldRef</code> và <code>resourceFieldRef</code> trong cấu hình Downward API là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>fieldRef</code> dùng để trích xuất các thuộc tính metadata của Pod (như <code>metadata.name</code>, <code>metadata.namespace</code>, <code>status.podIP</code>, <code>spec.nodeName</code>). <code>resourceFieldRef</code> dùng để trích xuất thông số tài nguyên của container (như <code>limits.cpu</code>, <code>requests.memory</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa fieldRef và resourceFieldRef.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được fieldRef là metadata nhưng chưa rõ resourceFieldRef lấy CPU/RAM.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác sự khác biệt về mục đích khai báo giữa <code>fieldRef</code> và <code>resourceFieldRef</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khi dùng <code>resourceFieldRef</code> thì bắt buộc phải chỉ định thuộc tính nào thêm? — Thuộc tính <code>containerName</code> để biết lấy tài nguyên của container nào).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Projected Volume trong Kubernetes cho phép thực hiện điều gì vượt trội so với Volume mount thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cho phép hợp nhất (project) nhiều nguồn dữ liệu cấu hình khác nhau (như nhiều ConfigMap, Secret, DownwardAPI và ServiceAccountToken) vào chung một thư mục mount duy nhất dưới <code>volumes.projected.sources</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm Projected Volume.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gộp volume nhưng chưa làm rõ các nguồn gộp CM, Secret, DownwardAPI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo khả năng quy hoạch gộp nhiều nguồn cấu hình vào 1 mount path của Projected Volume.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu hai ConfigMap trong Projected Volume chứa chìa khóa tệp trùng tên thì chuyện gì xảy ra? — Tệp mount sẽ bị xung đột đè đè lên nhau, cần dùng thuộc tính <code>items.path</code> để đổi tên tệp).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cú pháp <code>fieldPath</code> chuẩn để truyền địa chỉ IP của Pod vào biến môi trường <code>MY_POD_IP</code> qua Downward API là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">env:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: MY_POD_IP</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">valueFrom:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">fieldRef:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">fieldPath: status.podIP</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Gõ sai cú pháp fieldPath.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng status.podIP nhưng thiếu cấu trúc valueFrom/fieldRef.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác tuyệt đối khối YAML spec Downward API cho Pod IP.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>fieldPath</code> lấy tên Node mà Pod đang chạy trên đó là gì? — <code>fieldPath: spec.nodeName</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao không nên hardcode địa chỉ IP hay Pod Name bên trong mã nguồn ứng dụng microservice?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì địa chỉ IP và Pod Name trong Kubernetes là động (ephemeral) và thay đổi mỗi khi Pod bị restart hoặc reschedule sang Node khác. Hardcode làm ứng dụng bị crash và mất tính di động Twelve-Factor App.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được tính chất ephemeral của Pod IP.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được IP đổi nhưng chưa kết nối với giải pháp dùng Downward API.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo tính chất động của Pod IP và chuẩn hóa thiết kế Twelve-Factor App.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ứng dụng Java có thể đọc CPU limit từ Downward API để làm gì? — Để tự động tính toán số lượng Worker Threads phù hợp với số CPU cores được cấp).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cú pháp lệnh CLI nào dùng để tạo nhanh Secret <code>reg-cred</code> kéo ảnh Docker Hub với user <code>admin</code> và password <code>secret</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl create secret docker-registry reg-cred --docker-server=https://index.docker.io/v1/ --docker-username=admin --docker-password=secret --docker-email=admin@example.com -n <namespace></code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Gõ sai loại secret docker-registry.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng docker-registry nhưng thiếu tham số --docker-server hay --docker-username.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác tuyệt đối câu lệnh CLI tạo Docker Registry Secret.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có thể tạo Secret <code>docker-registry</code> từ tệp <code>~/.docker/config.json</code> có sẵn không? — ĐƯỢC, dùng cờ <code>--from-file=.dockerconfigjson=~/.docker/config.json</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi nào NÊN và KHÔNG NÊN sử dụng thuộc tính <code>immutable: true</code> cho ConfigMap?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">NÊN dùng cho các tham số cấu hình cố định không đổi (như URL kết nối DB, cổng dịch vụ, tham số tĩnh). KHÔNG NÊN dùng cho các tham số cấu hình cần tính năng hot-reload động mà ứng dụng tự watch để cập nhật tức thì mà không cần restart Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được bối cảnh nên và không nên dùng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được nên dùng cho tĩnh nhưng chưa rõ bài toán hot-reload.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác tiêu chí quyết định dựa trên yêu cầu hot-reload của ứng dụng.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu ConfigMap không immutable thì Kubelet mất bao lâu để tự cập nhật tệp mount trong container? — Mất khoảng 1 đến 2 phút tùy theo cấu hình sync period của Kubelet).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tổng kết bộ 4 kỹ thuật cấu hình ứng dụng nâng cao trong bài thi CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>immutable: true</code>: Khóa ConfigMap/Secret tối ưu hiệu năng cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubernetes.io/dockerconfigjson</code>: Secret kéo ảnh riêng tư via <code>imagePullSecrets</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Downward API</code>: Inject Pod metadata (<code>metadata.name</code>, <code>status.podIP</code>) qua <code>fieldRef</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Projected Volume</code>: Gộp nhiều ConfigMap/Secret vào chung 1 thư mục mount.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 kỹ thuật.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2-3 kỹ thuật.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 kỹ thuật cấu hình nâng cao chuẩn CKAD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 41 là gì? — Học về <code>securityContext</code>, <code>runAsNonRoot</code>, capabilities và <code>readOnlyRootFilesystem</code> để bảo mật Pod).
+
 ---
 
-### Câu 2 — ★★★
-**Hỏi:** Nếu một hệ thống sử dụng ConfigMap `immutable: true` nhưng cần thay đổi tham số cấu hình cho ứng dụng thì quy trình thực hiện đúng chuẩn là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Tạo một ConfigMap mới với tên phiên bản mới (ví dụ `app-config-v2`) chứa các giá trị tham số mới. Sau đó cập nhật bản kê khai Deployment trỏ tên ConfigMap sang `app-config-v2` để kích hoạt RollingUpdate.
+1. <b style="color: var(--accent-primary);">"Sử dụng <code>immutable: true</code> cho các ConfigMap tĩnh giúp triệt tiêu hoàn toàn các vòng lặp watch Kubelet, tối ưu hiệu năng cụm."</b>
+2. <b style="color: var(--accent-primary);">"Tạo Secret kiểu <code>kubernetes.io/dockerconfigjson</code> và khai báo <code>imagePullSecrets</code> là quy chuẩn để Kubelet kéo ảnh riêng tư an toàn."</b>
+3. <b style="color: var(--accent-primary);">"Downward API giúp giải phóng ứng dụng khỏi việc hardcode định danh, tự động inject Pod IP và Name cho Service Discovery."</b>
+4. <b style="color: var(--accent-primary);">"Dùng Projected Volume để quy hoạch toàn bộ ConfigMap, Secret và Downward API vào chung một cây thư mục mount duy nhất."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Cho rằng phải xóa ConfigMap cũ rồi tạo lại trùng tên.
-- 1đ: Nêu được tạo ConfigMap mới nhưng chưa rõ bước cập nhật Deployment để RollingUpdate.
-- 3đ: Trình bày chính xác quy trình versioning ConfigMap và cập nhật Deployment.
-
-**Câu hỏi đào sâu:** (Ưu điểm của phương pháp versioning ConfigMap này so với sửa đè ConfigMap cũ là gì? — Giúp dễ dàng rollback về phiên bản cấu hình cũ bất cứ lúc nào).
-
----
-
-### Câu 3 — 🔥
-**Hỏi:** Loại Secret nào trong Kubernetes được dùng để lưu thông tin xác thực kéo ảnh từ Private Docker Registry và cách khai báo trong Pod spec?
-
-**Đáp án chuẩn:** Secret kiểu `kubernetes.io/dockerconfigjson` (tạo bằng `kubectl create secret docker-registry`). Khai báo trong Pod spec dưới trường `imagePullSecrets: [{name: <secret-name>}]`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết kiểu dockerconfigjson.
-- 1đ: Nêu được lệnh tạo nhưng quên tên trường `imagePullSecrets` trong Pod spec.
-- 3đ: Trình bày chính xác loại Secret `kubernetes.io/dockerconfigjson` và vị trí khai báo `imagePullSecrets`.
-
-**Câu hỏi đào sâu:** (Nếu quên khai báo `imagePullSecrets` thì Pod sẽ gặp lỗi gì khi kéo ảnh private? — Lỗi `ImagePullBackOff` hoặc `ErrImagePull`).
-
----
-
-### Câu 4 — 🔥
-**Hỏi:** Secret kiểu `kubernetes.io/tls` bắt buộc phải chứa đúng 2 khóa nào dạng PEM?
-
-**Đáp án chuẩn:** Bắt buộc chứa đúng 2 khóa: `tls.crt` (chứa chuỗi chứng chỉ SSL public) và `tls.key` (chứa khóa bí mật private key).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm tên khóa thành cert.pem hay key.pem.
-- 1đ: Nêu được cert và key nhưng gõ sai tên khóa chuẩn.
-- 3đ: Trình bày chuẩn xác tuyệt đối 2 tên khóa `tls.crt` và `tls.key`.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào tạo nhanh Secret TLS từ 2 tệp cert và key? — `kubectl create secret tls <name> --cert=file.crt --key=file.key`).
-
----
-
-### Câu 5 — ★★★
-**Hỏi:** Kỹ thuật Downward API trong Kubernetes giải quyết bài toán gì cho các ứng dụng microservice?
-
-**Đáp án chuẩn:** Giải quyết bài toán truyền thông tin định danh và tài nguyên của chính Pod đang chạy (`metadata.name`, `status.podIP`, `limits.cpu`) vào bên trong container mà không cần mã hóa cứng (hardcode) trong code hay tệp cấu hình.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết khái niệm Downward API.
-- 1đ: Nêu được truyền thông tin nhưng không rõ các trường metadata thực tế như Name/IP.
-- 3đ: Phân tích thấu đáo vai trò bỏ hardcode và tự động hóa truyền định danh của Downward API.
-
-**Câu hỏi đào sâu:** (Có mấy cách để expose dữ liệu Downward API vào container? — Có 2 cách: qua biến môi trường (`env`) và qua tệp volume mount (`downwardAPI` volume)).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Sự khác biệt giữa `fieldRef` và `resourceFieldRef` trong cấu hình Downward API là gì?
-
-**Đáp án chuẩn:** `fieldRef` dùng để trích xuất các thuộc tính metadata của Pod (như `metadata.name`, `metadata.namespace`, `status.podIP`, `spec.nodeName`). `resourceFieldRef` dùng để trích xuất thông số tài nguyên của container (như `limits.cpu`, `requests.memory`).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa fieldRef và resourceFieldRef.
-- 1đ: Nêu được fieldRef là metadata nhưng chưa rõ resourceFieldRef lấy CPU/RAM.
-- 3đ: Trình bày chính xác sự khác biệt về mục đích khai báo giữa `fieldRef` và `resourceFieldRef`.
-
-**Câu hỏi đào sâu:** (Khi dùng `resourceFieldRef` thì bắt buộc phải chỉ định thuộc tính nào thêm? — Thuộc tính `containerName` để biết lấy tài nguyên của container nào).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Projected Volume trong Kubernetes cho phép thực hiện điều gì vượt trội so với Volume mount thông thường?
-
-**Đáp án chuẩn:** Cho phép hợp nhất (project) nhiều nguồn dữ liệu cấu hình khác nhau (như nhiều ConfigMap, Secret, DownwardAPI và ServiceAccountToken) vào chung một thư mục mount duy nhất dưới `volumes.projected.sources`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết khái niệm Projected Volume.
-- 1đ: Nêu được gộp volume nhưng chưa làm rõ các nguồn gộp CM, Secret, DownwardAPI.
-- 3đ: Phân tích thấu đáo khả năng quy hoạch gộp nhiều nguồn cấu hình vào 1 mount path của Projected Volume.
-
-**Câu hỏi đào sâu:** (Nếu hai ConfigMap trong Projected Volume chứa chìa khóa tệp trùng tên thì chuyện gì xảy ra? — Tệp mount sẽ bị xung đột đè đè lên nhau, cần dùng thuộc tính `items.path` để đổi tên tệp).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Cú pháp `fieldPath` chuẩn để truyền địa chỉ IP của Pod vào biến môi trường `MY_POD_IP` qua Downward API là gì?
-
-**Đáp án chuẩn:**
-```yaml
-env:
-  - name: MY_POD_IP
-    valueFrom:
-      fieldRef:
-        fieldPath: status.podIP
-```
-
-**Tiêu chí chấm:**
-- 0đ: Gõ sai cú pháp fieldPath.
-- 1đ: Nêu đúng status.podIP nhưng thiếu cấu trúc valueFrom/fieldRef.
-- 3đ: Viết chuẩn xác tuyệt đối khối YAML spec Downward API cho Pod IP.
-
-**Câu hỏi đào sâu:** (Cú pháp `fieldPath` lấy tên Node mà Pod đang chạy trên đó là gì? — `fieldPath: spec.nodeName`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Tại sao không nên hardcode địa chỉ IP hay Pod Name bên trong mã nguồn ứng dụng microservice?
-
-**Đáp án chuẩn:** Vì địa chỉ IP và Pod Name trong Kubernetes là động (ephemeral) và thay đổi mỗi khi Pod bị restart hoặc reschedule sang Node khác. Hardcode làm ứng dụng bị crash và mất tính di động Twelve-Factor App.
-
-**Tiêu chí chấm:**
-- 0đ: Không giải thích được tính chất ephemeral của Pod IP.
-- 1đ: Nêu được IP đổi nhưng chưa kết nối với giải pháp dùng Downward API.
-- 3đ: Phân tích thấu đáo tính chất động của Pod IP và chuẩn hóa thiết kế Twelve-Factor App.
-
-**Câu hỏi đào sâu:** (Ứng dụng Java có thể đọc CPU limit từ Downward API để làm gì? — Để tự động tính toán số lượng Worker Threads phù hợp với số CPU cores được cấp).
-
----
-
-### Câu 10 — 🔥
-**Hỏi:** Cú pháp lệnh CLI nào dùng để tạo nhanh Secret `reg-cred` kéo ảnh Docker Hub với user `admin` và password `secret`?
-
-**Đáp án chuẩn:** `kubectl create secret docker-registry reg-cred --docker-server=https://index.docker.io/v1/ --docker-username=admin --docker-password=secret --docker-email=admin@example.com -n <namespace>`.
-
-**Tiêu chí chấm:**
-- 0đ: Gõ sai loại secret docker-registry.
-- 1đ: Nêu đúng docker-registry nhưng thiếu tham số --docker-server hay --docker-username.
-- 3đ: Trình bày chuẩn xác tuyệt đối câu lệnh CLI tạo Docker Registry Secret.
-
-**Câu hỏi đào sâu:** (Có thể tạo Secret `docker-registry` từ tệp `~/.docker/config.json` có sẵn không? — ĐƯỢC, dùng cờ `--from-file=.dockerconfigjson=~/.docker/config.json`).
-
----
-
-### Câu 11 — ★★★
-**Hỏi:** Khi nào NÊN và KHÔNG NÊN sử dụng thuộc tính `immutable: true` cho ConfigMap?
-
-**Đáp án chuẩn:** NÊN dùng cho các tham số cấu hình cố định không đổi (như URL kết nối DB, cổng dịch vụ, tham số tĩnh). KHÔNG NÊN dùng cho các tham số cấu hình cần tính năng hot-reload động mà ứng dụng tự watch để cập nhật tức thì mà không cần restart Pod.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được bối cảnh nên và không nên dùng.
-- 1đ: Nêu được nên dùng cho tĩnh nhưng chưa rõ bài toán hot-reload.
-- 3đ: Phân tích chuẩn xác tiêu chí quyết định dựa trên yêu cầu hot-reload của ứng dụng.
-
-**Câu hỏi đào sâu:** (Nếu ConfigMap không immutable thì Kubelet mất bao lâu để tự cập nhật tệp mount trong container? — Mất khoảng 1 đến 2 phút tùy theo cấu hình sync period của Kubelet).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Tổng kết bộ 4 kỹ thuật cấu hình ứng dụng nâng cao trong bài thi CKAD là gì?
-
-**Đáp án chuẩn:**
-1. `immutable: true`: Khóa ConfigMap/Secret tối ưu hiệu năng cụm.
-2. `kubernetes.io/dockerconfigjson`: Secret kéo ảnh riêng tư via `imagePullSecrets`.
-3. `Downward API`: Inject Pod metadata (`metadata.name`, `status.podIP`) qua `fieldRef`.
-4. `Projected Volume`: Gộp nhiều ConfigMap/Secret vào chung 1 thư mục mount.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 kỹ thuật.
-- 1đ: Nêu được 2-3 kỹ thuật.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 kỹ thuật cấu hình nâng cao chuẩn CKAD.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 41 là gì? — Học về `securityContext`, `runAsNonRoot`, capabilities và `readOnlyRootFilesystem` để bảo mật Pod).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1057,28 +1148,6 @@ env:
 2. **"Tạo Secret kiểu `kubernetes.io/dockerconfigjson` và khai báo `imagePullSecrets` là quy chuẩn để Kubelet kéo ảnh riêng tư an toàn."**
 3. **"Downward API giúp giải phóng ứng dụng khỏi việc hardcode định danh, tự động inject Pod IP và Name cho Service Discovery."**
 4. **"Dùng Projected Volume để quy hoạch toàn bộ ConfigMap, Secret và Downward API vào chung một cây thư mục mount duy nhất."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §6 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật Advanced Configuration CKAD |
-| **29 – 36 điểm** | Xuất sắc | Thành thục thiết kế cấu hình ứng dụng Cloud Native Production |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Viết tệp YAML Pod spec nhúng cả Downward API `env` và Projected Volume mount `/etc/config`.
-- **BTVN 2:** Thực hành tạo Secret TLS từ chứng chỉ thật cấp bởi Let's Encrypt và mount vào Nginx Pod.
-- **BTVN 3:** So sánh cơ chế cập nhật tệp khi sửa ConfigMap thường vs tạo ConfigMap mới v2 với cờ `immutable: true`.
-- **BTVN 4 (Chuẩn bị cho Buổi 41 — SecurityContext cho ứng dụng):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Mục đích của khối `securityContext` trong Kubernetes Pod spec là gì?
-  2. Ý nghĩa của các thuộc tính `runAsNonRoot: true`, `runAsUser: 1000` và `readOnlyRootFilesystem: true`?
-  3. Quyền `capabilities` (như `CAP_SYS_TIME` hay `NET_ADMIN`) cho phép bổ sung hoặc tước bỏ quyền hạn gì của container?
 
 ---
 
@@ -1328,14 +1397,15 @@ env:
     valueFrom: {fieldRef: {fieldPath: status.podIP}}
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 11] Thiết Lập SecurityContext Cho Ứng Dụng: RunAsNonRoot, ReadOnlyRootFilesystem, Capabilities & fsGroup](ckad-11-11-securitycontext-cho-ung-dung.html).
+
 {% endraw %}

@@ -228,9 +228,11 @@ graph TD
 <span class="badge badge--rose">🕒 06:15 AM</span> Một công ty fintech vận hành Monorepo với 15 microservices. Sau khi kích hoạt tính năng Remote Cache phân tán cho Turborepo/Nx nhằm rút ngắn thời gian CI, microservice xử lý thanh toán `payment-service` bất ngờ deploy nhầm cấu hình URL sandbox của ứng dụng `web-portal` lên môi trường Production, khiến toàn bộ giao dịch thanh toán của khách hàng bị từ chối.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Toàn bộ giao dịch trên Production bị chuyển hướng vào môi trường Sandbox giả lập, gây gián đoạn thanh toán nghiêm trọng:
 
 ```text
+
+Toàn bộ giao dịch trên Production bị chuyển hướng vào môi trường Sandbox giả lập, gây gián đoạn thanh toán nghiêm trọng:
+
 $ turbo run build --filter=payment-service
 • Packages in scope: payment-service
 • Running build in 1 packages

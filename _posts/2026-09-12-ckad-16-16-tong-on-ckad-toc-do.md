@@ -124,7 +124,7 @@ graph TD
     CKADSpeed --> Networking[5. Services & Networking - 15%]
     
     ConfigSec & DesignBuild & Deployment --> PassCKAD[Gom trọn 65% điểm ứng dụng!]
-```
+`
 
 **Nguyên lý cốt lõi:** Hiểu rõ ma trận 5 miền CKAD: Application Environment, Configuration & Security (25%), Application Design & Build (20%), Application Deployment (20%), Application Observability & Maintenance (20%), Services & Networking (15%).
 
@@ -136,14 +136,14 @@ graph TD
 
 **Minh hoạ.**
 
-```yaml
+```
 # Ma trận trọng số bài thi CKAD CNCF:
 # - Application Environment, Configuration & Security: 25%
 # - Application Design & Build: 20%
 # - Application Deployment: 20%
 # - Application Observability & Maintenance: 20%
 # - Services & Networking: 15%
-```
+`
 
 ---
 
@@ -165,7 +165,7 @@ kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" --dry-ru
 
 # Sinh ConfigMap từ key-value:
 kubectl create configmap app-cm --from-literal=APP_COLOR=red --from-literal=APP_MODE=prod
-```
+`
 
 **Nguyên lý cốt lõi:** Khi cấu hình `envFrom` trong Pod spec, sử dụng từ khóa `configMapRef` hoặc `secretRef` để nạp toàn bộ danh sách key-value từ ConfigMap/Secret vào biến môi trường.
 
@@ -177,7 +177,7 @@ kubectl create configmap app-cm --from-literal=APP_COLOR=red --from-literal=APP_
 
 **Minh hoạ.**
 
-```yaml
+```
 # Nạp toàn bộ ConfigMap vào biến môi trường Pod:
 spec:
   containers:
@@ -186,7 +186,7 @@ spec:
       envFrom:
         - configMapRef:
             name: app-cm
-```
+`
 
 ---
 
@@ -220,7 +220,7 @@ spec:
           port: 8080
         initialDelaySeconds: 5
         periodSeconds: 5
-```
+`
 
 **Nguyên lý cốt lõi:** Thực hiện Canary Deployment bằng cách tạo 2 Deployment khác nhau (ví dụ `app-v1` 4 replicas, `app-v2` 1 replica) cùng mang chung nhãn `app=web` để Service điều hướng 20% lưu lượng sang `app-v2`.
 
@@ -232,12 +232,12 @@ spec:
 
 **Minh hoạ.**
 
-```yaml
+```
 # Canary Deployment Pattern:
 # Deployment 1: app-v1 (replicas: 4, labels: app=web, version=v1)
 # Deployment 2: app-v2 (replicas: 1, labels: app=web, version=v2)
 # Service: web-svc (selector: app=web) -> 20% traffic goes to app-v2!
-```
+`
 
 **Nguyên lý cốt lõi:** Khi ứng dụng bị nghẽn ở trạng thái `CrashLoopBackOff`, dùng lệnh `kubectl logs <pod-name> --previous` để đọc log tiến trình container vừa bị sập trước đó.
 
@@ -252,7 +252,7 @@ spec:
 ```bash
 # Đọc log của container vừa bị crash trước đó:
 kubectl logs crash-pod -c main-app --previous
-```
+`
 
 ---
 
@@ -268,10 +268,10 @@ kubectl logs crash-pod -c main-app --previous
 
 **Minh hoạ.**
 
-```bash
+```
 # Luôn đảm bảo truyền cờ -n <namespace> khi tạo đối tượng:
 kubectl create configmap app-cm --from-literal=mode=prod -n lab67-ckad
-```
+`
 
 **Áp vào cụm đang chạy thì làm gì trước:**
 1. Thiết lập alias `k=kubectl` và `do="--dry-run=client -o yaml"`.
@@ -319,7 +319,7 @@ graph TD
     CKADSpeedDrill --> CanaryDeploy[4. Canary Deployment: Shared labels & 20% replica split]
     
     CanaryDeploy --> CKADPass[Complete 20 Questions in 90 Minutes with Score >= 80%!]
-```
+`
 
 **Năm điều phải nhớ:**
 1. **Imperative Mastery**: Thuộc lòng `kubectl create cm`, `secret generic`, `cronjob` để tạo tệp YAML trong 5 giây.
@@ -328,141 +328,195 @@ graph TD
 4. **Canary Pattern**: Dùng chung nhãn `app=web` và chia tỷ lệ replica để làm Canary Deployment.
 5. **Previous Log Trace**: Dùng `kubectl logs --previous` để đọc log container vừa bị crash.
 
----
+## §10. Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-## §10. Câu hỏi tự kiểm tra (5 phút)
-
-
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Miền kiến thức nào chiếm tỷ trọng điểm số cao nhất trong cấu trúc đề thi CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Miền <b style="color: var(--accent-primary);">Application Environment, Configuration & Security (25 %)</b>.
+  Miền <b style="color: var(--accent-primary);">Application Environment, Configuration &amp; Security (25%)</b> là miền có trọng số điểm lớn nhất trong toàn bộ đề thi CKAD.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Lệnh imperative nào giúp tạo nhanh một ConfigMap chứa biến môi trường <code>MODE=prod</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Lệnh <code>kubectl create configmap app-cm --from-literal=MODE=prod</code>.
+  Sử dụng lệnh: <code>kubectl create configmap app-cm --from-literal=MODE=prod</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp imperative để tạo nhanh một CronJob chạy định kỳ mỗi 10 phút một lần?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Lệnh <code>kubectl create cronjob daily-job --image=busybox --schedule="*/10 * * * *" --dry-run=client -o yaml -- date</code>.
+  Sử dụng lệnh: <code>kubectl create cronjob daily-job --image=busybox --schedule="*/10 * * * *" --dry-run=client -o yaml -- date</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cú pháp YAML để nạp toàn bộ các cặp Key-Value từ ConfigMap vào container dưới dạng biến môi trường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Khối từ khóa <b style="color: var(--accent-primary);"><code>envFrom</code></b> đi kèm <code>configMapRef.name</code>.
+  Sử dụng khối <b style="color: var(--accent-primary);"><code>envFrom</code></b> kèm <code>configMapRef: name: &lt;configmap-name&gt;</code> bên trong định nghĩa container.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác biệt bản chất trong hành vi xử lý khi <code>livenessProbe</code> vs <code>readinessProbe</code> bị thất bại?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>livenessProbe</code> thất bại sẽ <b style="color: var(--accent-primary);">restart (kill) container</b>, còn <code>readinessProbe</code> thất bại sẽ <b style="color: var(--accent-primary);">ngắt lưu lượng mạng (gỡ IP Pod khỏi Service Endpoint)</b>.
+  <code>livenessProbe</code> thất bại sẽ khiến Kubelet <b style="color: var(--accent-rose);">restart (kill) container</b>. Trong khi <code>readinessProbe</code> thất bại sẽ <b style="color: var(--accent-amber);">ngắt lưu lượng mạng (gỡ IP Pod ra khỏi Service Endpoint)</b> mà không khởi động lại container.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tham số nào trong cấu hình Probe giúp trì hoãn việc kiểm tra cho đến khi ứng dụng hoàn tất khởi động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Tham số <b style="color: var(--accent-primary);"><code>initialDelaySeconds</code></b>.
+  Tham số <b style="color: var(--accent-primary);"><code>initialDelaySeconds</code></b> (ví dụ <code>initialDelaySeconds: 15</code>).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh nào giúp đọc lại log của container vừa bị crash trước đó thay vì đọc log rỗng của container mới tạo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Lệnh <code>kubectl logs <pod-name> -c <container-name> --previous</code>.
+  Sử dụng cờ <code>--previous</code>: <code>kubectl logs &lt;pod-name&gt; -c &lt;container-name&gt; --previous</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cách triển khai mẫu Canary Deployment cơ bản giữa 2 phiên bản ứng dụng v1 và v2?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Cho 2 Deployment <b style="color: var(--accent-primary);">dùng chung nhãn <code>selector</code> (như <code>app=web</code>)</b> và chia tỷ lệ Replicas là <code>4</code> (v1) và <code>1</code> (v2).
+  Tạo 2 Deployment độc lập (v1 và v2) có cùng nhãn selector chung (như <code>app=web</code>) mà Service trỏ tới, và cấu hình số lượng replicas tương ứng tỷ lệ mong muốn (ví dụ 4 Pod v1 và 1 Pod v2 để chia tải 80/20).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh imperative tạo nhanh một Secret Generic chứa mật khẩu bảo mật?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Lệnh <code>kubectl create secret generic db-pass --from-literal=password=SuperSecret123</code>.
+  Sử dụng lệnh: <code>kubectl create secret generic db-pass --from-literal=password=SuperSecret123</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Hai Multi-Container Patterns phổ biến nhất thường gặp trong đề thi CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Mô hình <b style="color: var(--accent-primary);">Sidecar Pattern</b> (thu thập log) và <b style="color: var(--accent-primary);">Adapter Pattern</b> (chuẩn hóa dữ liệu).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Vì giúp <b style="color: var(--accent-primary);">đọc lại log của container vừa crash</b>, tránh đọc log rỗng của container mới tạo lại.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```yaml
-      spec:
-        containers:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
-            image: nginx
-            envFrom:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• configMapRef:</div>
-                  name: app-cm
-            livenessProbe:
-              httpGet:
-                path: /healthz
-                port: 8080
-              initialDelaySeconds: 15
-      ```
+  <b style="color: var(--accent-primary);">Sidecar Pattern</b> (container phụ hỗ trợ thu thập logs / đồng bộ metrics) và <b style="color: var(--accent-primary);">Adapter Pattern</b> (container phụ chuẩn hóa định dạng dữ liệu đầu ra trước khi gửi tới hệ thống giám sát).
 </div>
 </details>
 
@@ -475,24 +529,6 @@ Vì giúp <b style="color: var(--accent-primary);">đọc lại log của contai
 | CKAD Exam Curriculum | `https://github.com/cncf/curriculum` | Curriculum chính thức kỳ thi CKAD |
 | Kubernetes Imperative Commands | `https://kubernetes.io/docs/reference/kubectl/conventions/` | Hướng dẫn sử dụng lệnh imperatively |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. CKAD 5-Domain Matrix & Config Strategy | 12 phút | 12 phút |
-| §5. Imperative Manifest Generation & Bulk Env Load | 12 phút | 12 phút |
-| §6. Probes & Canary Deployment Pattern | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -536,7 +572,7 @@ Vì giúp <b style="color: var(--accent-primary);">đọc lại log của contai
 
 ## L2. Kiến trúc bài lab CKAD Speed Drill 90 phút
 
-```mermaid
+```
 graph TD
     Candidate[CKAD Developer] -->|"1. Start 90m Speed Timer"| SpeedEnv[CKAD Speed Drill Environment]
     SpeedEnv -->|"2. Config & Secrets"| Q1[Câu 1: ConfigMap, Secret & envFrom]
@@ -546,7 +582,7 @@ graph TD
     
     Q1 & Q2 & Q3 & Q4 -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tự Động]
     GradeScript -->|"Score >= 80%: PASS"| CKADReady[CKAD Exam Ready!]
-```yaml
+`
 
 ---
 
@@ -558,19 +594,19 @@ graph TD
 kubectl create namespace lab67-ckad
 
 mkdir -p /tmp/ckad-speed
-```bash
+`
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab67-ckad`.**
 
-```bash
+```
 kubectl get ns lab67-ckad -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+`
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/ckad-speed`.**
 
 ```bash
 test -d /tmp/ckad-speed && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+`
 
 ---
 
@@ -578,7 +614,7 @@ test -d /tmp/ckad-speed && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 
 
 ### Thao tác 2.1: Thực hiện Câu 1 ConfigMap, Câu 2 Secret, và Câu 3 envFrom Pod
 
-```bash
+```
 # Câu 1: ConfigMap
 cat <<EOF > /tmp/ckad-speed/cm.yaml
 apiVersion: v1
@@ -620,25 +656,25 @@ spec:
         - secretRef:
             name: db-pass
 EOF
-```bash
+`
 
 **CHECKPOINT 3 — Kiểm tra tệp ConfigMap Câu 1.**
 
 ```bash
 grep -q "app-config" /tmp/ckad-speed/cm.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+`
 
 **CHECKPOINT 4 — Kiểm tra tệp Secret Câu 2.**
 
-```bash
+```
 grep -q "db-pass" /tmp/ckad-speed/secret.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```bash
+`
 
 **CHECKPOINT 5 — Kiểm tra tệp Pod envFrom Câu 3.**
 
 ```bash
 grep -q "configMapRef" /tmp/ckad-speed/pod-env.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```yaml
+`
 
 ---
 
@@ -646,7 +682,7 @@ grep -q "configMapRef" /tmp/ckad-speed/pod-env.yaml && echo "CHECKPOINT 5 — Đ
 
 ### Thao tác 3.1: Thực hiện Câu 4 Probes và Câu 5 CronJob
 
-```bash
+```
 # Câu 4: Liveness & Readiness Probes
 cat <<EOF > /tmp/ckad-speed/pod-probe.yaml
 apiVersion: v1
@@ -685,19 +721,19 @@ spec:
               command: [/bin/sh, -c, date]
           restartPolicy: OnFailure
 EOF
-```bash
+`
 
 **CHECKPOINT 6 — Kiểm tra tệp Pod Probes Câu 4.**
 
 ```bash
 grep -q "livenessProbe" /tmp/ckad-speed/pod-probe.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+`
 
 **CHECKPOINT 7 — Kiểm tra tệp CronJob Câu 5.**
 
-```bash
+```
 grep -q "cron-lab67" /tmp/ckad-speed/cronjob.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+`
 
 ---
 
@@ -747,25 +783,25 @@ EOF
 
 # Câu 8: Previous Log Output
 echo "Application Error: Fatal exception in main thread" > /tmp/ckad-speed/prev-log.txt
-```bash
+`
 
 **CHECKPOINT 8 — Kiểm tra tệp Canary Deployment Câu 6.**
 
-```bash
+```
 grep -q "app-v2" /tmp/ckad-speed/canary.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+`
 
 **CHECKPOINT 9 — Kiểm tra tệp Service Câu 7.**
 
 ```bash
 grep -q "web-svc" /tmp/ckad-speed/svc.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+`
 
 **CHECKPOINT 10 — Kiểm tra Previous Log Câu 8.**
 
-```bash
+```
 test -f /tmp/ckad-speed/prev-log.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```yaml
+`
 
 ---
 
@@ -789,19 +825,19 @@ TỔNG ĐIỂM: 100 / 100
 TỐC ĐỘ TRUNG BÌNH: 3.6 PHÚT / CÂU
 ĐÁNH GIÁ: PASS - BẠN ĐÃ ĐẠT TỐC ĐỘ PHẢN XẠ THI CKAD TỐI ƯU!
 EOF
-```bash
+`
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm.**
 
-```bash
+```
 test -f /tmp/ckad-speed/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+`
 
 **CHECKPOINT 12 — Xác minh tổng điểm đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/ckad-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+`
 
 ---
 
@@ -809,16 +845,16 @@ grep -q "PASS" /tmp/ckad-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" ||
 
 ### Thao tác 8.1: Dọn dẹp tài nguyên lab67-ckad
 
-```bash
+```
 kubectl delete namespace lab67-ckad 2>/dev/null || true
 rm -rf /tmp/ckad-speed
-```bash
+`
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/ckad-speed/cm.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+`
 
 ---
 
@@ -864,26 +900,11 @@ test ! -f /tmp/ckad-speed/cm.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CH
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Speed Directory | 15 phút | 15 phút |
-| L4. Bước 2: ConfigMap, Secret & Pod envFrom Questions | 30 phút | 30 phút |
-| L5. Bước 3: Probes & CronJob Questions | 30 phút | 30 phút |
-| L6. Bước 4: Canary Deployment & Previous Logs Questions | 25 phút | 25 phút |
-| L7. Bước 5: Auto-Grading & Speed Benchmark | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -891,216 +912,331 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ưu điểm vượt trội của việc tạo đối tượng bằng lệnh <code>kubectl</code> imperatively trong thi CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Application Environment, Configuration & Security: <b style="color: var(--accent-primary);">25%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Application Design & Build: <b style="color: var(--accent-primary);">20%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Application Deployment: <b style="color: var(--accent-primary);">20%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Application Observability & Maintenance: <b style="color: var(--accent-primary);">20%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> Services & Networking: <b style="color: var(--accent-primary);">15%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp sinh ngay tệp manifest chuẩn trong 5-10 giây mà không cần mở tài liệu <code>kubernetes.io</code> copy/paste, tiết kiệm 80% thời gian và tránh 100% lỗi sai cú pháp thụt lề dòng YAML.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu ưu điểm của imperative CLI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gõ nhanh hơn nhưng chưa làm rõ việc tránh lỗi syntax YAML.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ưu điểm của việc sử dụng lệnh <code>kubectl</code> imperatively trong thi CKAD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp <code>kubectl create</code> sinh CronJob chạy lịch <code>*/5 * * * *</code> là gì? — Lệnh <code>kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" --dry-run=client -o yaml -- date</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết trọng số 5 miền CKAD.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 miền nhưng sai % trọng số.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 100% trọng số của cả 5 miền kiến thức CKAD.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Ngưỡng điểm tối thiểu để đỗ chứng chỉ CKAD là bao nhiêu? — Ngưỡng điểm đỗ CKAD là <b style="color: var(--accent-primary);"><code>66 %</code></b> (66/100 điểm)).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt về mặt tác động kỹ thuật giữa <code>livenessProbe</code> và <code>readinessProbe</code> khi kiểm tra thất bại (Failure)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">LivenessProbe thất bại</b>: Kubelet sẽ <b style="color: var(--accent-primary);">kill và restart lại container</b> (tăng restart count).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">ReadinessProbe thất bại</b>: Kubelet sẽ <b style="color: var(--accent-primary);">tạm ngắt lưu lượng mạng</b> (gỡ IP Pod khỏi danh sách Service Endpoint), không restart container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa Liveness và Readiness.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái restart 1 cái ngắt mạng nhưng chưa rõ tác động Kubelet vs Service Endpoint.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt về mặt tác động giữa LivenessProbe và ReadinessProbe.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khi nào nên dùng <code>startupProbe</code>? — Khi ứng dụng có thời gian khởi động ban đầu quá lâu (như Java app) để tránh bị LivenessProbe kill nhầm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp từ khóa <code>envFrom</code> dưới khối <code>containers</code> trong Pod spec được sử dụng để làm gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Được dùng để <b style="color: var(--accent-primary);">nạp toàn bộ danh sách các cặp key-value từ một ConfigMap (<code>configMapRef</code>) hoặc Secret (<code>secretRef</code>)</b> thành các biến môi trường bên trong container mà không cần khai báo từng biến đơn lẻ.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn envFrom với env valueFrom.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được nạp biến môi trường nhưng chưa rõ nạp toàn bộ danh sách key-value từ ConfigMap/Secret.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác công dụng của cú pháp <code>envFrom</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu 2 ConfigMap cùng nạp qua <code>envFrom</code> chứa key trùng tên thì key nào được ghi đè? — ConfigMap nạp phía sau sẽ <b style="color: var(--accent-primary);">ghi đè giá trị</b> của ConfigMap phía trước).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cơ chế hoạt động của chiến lược Canary Deployment bằng 2 Deployment và 1 Service trong Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Tạo 2 Deployment (<code>v1</code> và <code>v2</code>) <b style="color: var(--accent-primary);">dùng chung nhãn <code>selector</code> (như <code>app=web</code>)</b>. Service sẽ điều hướng lưu lượng ngẫu nhiên qua các Pods. Chia tỷ lệ số lượng Replicas (ví dụ 4 Pods v1 và 1 Pod v2) để chuyển 20% lưu lượng sang phiên bản v2.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cơ chế Canary Deployment.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chia tỷ lệ Pods nhưng chưa làm rõ việc dùng chung nhãn <code>selector</code> trong Service.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế Canary Deployment qua Service selector.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Ưu điểm của Canary Deployment so với RollingUpdate là gì? — Cho phép kiểm thử phiên bản mới trên một tỷ lệ % người dùng nhỏ thực tế trước khi nâng cấp toàn bộ cụm).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cờ câu lệnh <code>kubectl logs</code> nào giúp đọc lại log của một container vừa bị crash trước đó trong Pod bị <code>CrashLoopBackOff</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cờ <b style="color: var(--accent-primary);"><code>--previous</code></b> (cú pháp: <code>kubectl logs <pod-name> -c <container-name> --previous</code>). Nếu không có cờ này, <code>kubectl logs</code> sẽ đọc log của container mới tạo lại (thường rỗng).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ --previous.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kubectl logs nhưng thiếu cờ --previous.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác công dụng của cờ <code>kubectl logs --previous</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu Pod có 2 container thì phải truyền thêm cờ nào? — Truyền cờ chỉ định tên container <b style="color: var(--accent-primary);"><code>-c <container-name></code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp lệnh <code>kubectl create</code> để tạo một Secret Opaque chứa username và password từ biến dòng lệnh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kubectl create secret generic db-secret --from-literal=username=admin --from-literal=password=SuperSecret123</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">`</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai lệnh create secret.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được create secret generic nhưng thiếu cờ --from-literal.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% câu lệnh <code>kubectl create secret generic</code> từ từ khóa literal.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu muốn tạo Secret từ 1 tệp tin thì dùng cờ gì? — Sử dụng cờ <b style="color: var(--accent-primary);"><code>--from-file=/path/to/file</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Hai thiết kế mô hình Pod đa container (Multi-Container Pod) phổ biến nhất trong kỳ thi CKAD là gì và vai trò của chúng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Sidecar Pattern</b>: Tiến trình phụ chạy song song để <b style="color: var(--accent-primary);">thu thập log</b> hoặc nén tệp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Adapter Pattern</b>: Tiến trình phụ chạy song song để <b style="color: var(--accent-primary);">chuẩn hóa dữ liệu log/metrics</b> về định dạng chung trước khi đẩy ra ngoài.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết các multi-container patterns.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Sidecar nhưng thiếu Adapter pattern.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò của Sidecar và Adapter patterns trong thiết kế ứng dụng CKAD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Các container trong cùng 1 Pod chia sẻ những tài nguyên nào với nhau? — Chia sẻ <b style="color: var(--accent-primary);">Network Namespace (IP/Port)</b> và <b style="color: var(--accent-primary);">IPC/Volumes</b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Sự khác biệt giữa <code>command</code> và <code>args</code> dưới khối <code>containers</code> trong Kubernetes Pod spec khi ghi đè Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>command</code>: Ghi đè chỉ thị <b style="color: var(--accent-primary);"><code>ENTRYPOINT</code></b> của Dockerfile.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>args</code>: Ghi đè chỉ thị <b style="color: var(--accent-primary);"><code>CMD</code></b> của Dockerfile.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa command/args và ENTRYPOINT/CMD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được command là lệnh args là tham số nhưng chưa làm rõ ENTRYPOINT/CMD.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự tương quan giữa <code>command</code>/<code>args</code> trong K8s và <code>ENTRYPOINT</code>/<code>CMD</code> trong Dockerfile.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu chỉ khai báo <code>args</code> trong Pod spec mà không khai báo <code>command</code> thì chuyện gì xảy ra? — Kubernetes sẽ giữ nguyên <code>ENTRYPOINT</code> của Dockerfile và chỉ ghi đè <code>CMD</code> bằng <code>args</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh CLI <code>kubectl</code> nào được dùng để tạm thời vô hiệu hóa nhận lưu lượng của một Pod mà không xóa Pod đó khỏi cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Xóa nhãn (labels) trên Pod khớp với <code>selector</code> của Service (ví dụ: <code>kubectl label pod web-pod app-</code>), khiến Pod không còn thỏa mãn điều kiện selector và bị gỡ IP khỏi Service Endpoint.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Tưởng rằng dùng lệnh delete pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gỡ nhãn nhưng chưa rõ cú pháp <code>kubectl label pod <name> app-</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác kỹ thuật xóa nhãn bằng dấu trừ <code>-</code> để gỡ Pod khỏi Service Endpoint.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp thêm dấu trừ <code>-</code> ở cuối tên nhãn trong lệnh <code>kubectl label</code> có tác dụng gì? — Có tác dụng <b style="color: var(--accent-primary);">bỏ (delete) nhãn đó</b> khỏi tài nguyên).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của một Pod spec chứa <code>livenessProbe</code> <code>httpGet</code> và <code>envFrom</code> <code>configMapRef</code> CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: ckad-pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: lab67-ckad</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: nginx</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">envFrom:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• configMapRef:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: app-config</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">livenessProbe:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">httpGet:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">path: /healthz</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">port: 8080</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">initialDelaySeconds: 15</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">periodSeconds: 10</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">`</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc sai vị trí probe/envFrom.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng livenessProbe nhưng thiếu envFrom configMapRef.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp Pod spec thắt chặt cấu hình CKAD.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tham số <code>periodSeconds: 10</code> quy định điều gì? — Quy định <b style="color: var(--accent-primary);">tần suất 10 giây một lần</b> Kubelet sẽ gửi request kiểm tra livenessProbe).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ CKAD Speed Drill (20 câu trong 90 phút) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thuộc lòng các câu lệnh <code>kubectl create</code> imperatively để tạo CM, Secret, CronJob trong 5 giây.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng <code>envFrom.configMapRef</code> để nạp toàn bộ danh sách biến môi trường trong 1 dòng code.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân biệt chính xác tác động của <code>livenessProbe</code> (restart container) vs <code>readinessProbe</code> (ngắt traffic).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai thác <code>kubectl logs --previous</code> để đọc vết nguyên nhân container vừa bị crash.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng CKAD Speed Mastery.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 68 là gì? — Học về <code>Tổng ôn CKS Tốc độ: Giải quyết 16 câu bài tập CKS bảo mật nâng cao trong 90 phút</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Ưu điểm vượt trội của việc tạo đối tượng bằng lệnh `kubectl` imperatively trong thi CKAD là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Giúp sinh ngay tệp manifest chuẩn trong 5-10 giây mà không cần mở tài liệu `kubernetes.io` copy/paste, tiết kiệm 80% thời gian và tránh 100% lỗi sai cú pháp thụt lề dòng YAML.
+1. <b style="color: var(--accent-primary);">"Làm chủ 5 miền kiến thức CKAD và tập trung gom điểm miền Configuration & Security (25%)."</b>
+2. <b style="color: var(--accent-primary);">"Tăng 400% tốc độ làm bài bằng các lệnh imperatively <code>kubectl create cm/secret/cronjob</code>."</b>
+3. <b style="color: var(--accent-primary);">"Nạp biến môi trường siêu tốc qua <code>envFrom</code> và cấu hình bộ đôi <code>livenessProbe</code>/<code>readinessProbe</code>."</b>
+4. <b style="color: var(--accent-primary);">"Duy trì phản xạ 4,5 phút mỗi câu để hoàn thành trọn vẹn 20 câu CKAD trong 90 phút."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không hiểu ưu điểm của imperative CLI.
-- 1đ: Nêu được gõ nhanh hơn nhưng chưa làm rõ việc tránh lỗi syntax YAML.
-- 3đ: Phân tích chuẩn xác ưu điểm của việc sử dụng lệnh `kubectl` imperatively trong thi CKAD.
-
-**Câu hỏi đào sâu:** (Cú pháp `kubectl create` sinh CronJob chạy lịch `*/5 * * * *` là gì? — Lệnh `kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" --dry-run=client -o yaml -- date`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Sự khác biệt về mặt tác động kỹ thuật giữa `livenessProbe` và `readinessProbe` khi kiểm tra thất bại (Failure)?
-
-**Đáp án chuẩn:**
-- **LivenessProbe thất bại**: Kubelet sẽ **kill và restart lại container** (tăng restart count).
-- **ReadinessProbe thất bại**: Kubelet sẽ **tạm ngắt lưu lượng mạng** (gỡ IP Pod khỏi danh sách Service Endpoint), không restart container.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa Liveness và Readiness.
-- 1đ: Nêu được 1 cái restart 1 cái ngắt mạng nhưng chưa rõ tác động Kubelet vs Service Endpoint.
-- 3đ: Phân tích chuẩn xác sự khác biệt về mặt tác động giữa LivenessProbe và ReadinessProbe.
-
-**Câu hỏi đào sâu:** (Khi nào nên dùng `startupProbe`? — Khi ứng dụng có thời gian khởi động ban đầu quá lâu (như Java app) để tránh bị LivenessProbe kill nhầm).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Cú pháp từ khóa `envFrom` dưới khối `containers` trong Pod spec được sử dụng để làm gì?
-
-**Đáp án chuẩn:** Được dùng để **nạp toàn bộ danh sách các cặp key-value từ một ConfigMap (`configMapRef`) hoặc Secret (`secretRef`)** thành các biến môi trường bên trong container mà không cần khai báo từng biến đơn lẻ.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn envFrom với env valueFrom.
-- 1đ: Nêu được nạp biến môi trường nhưng chưa rõ nạp toàn bộ danh sách key-value từ ConfigMap/Secret.
-- 3đ: Phân tích chuẩn xác công dụng của cú pháp `envFrom`.
-
-**Câu hỏi đào sâu:** (Nếu 2 ConfigMap cùng nạp qua `envFrom` chứa key trùng tên thì key nào được ghi đè? — ConfigMap nạp phía sau sẽ **ghi đè giá trị** của ConfigMap phía trước).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cơ chế hoạt động của chiến lược Canary Deployment bằng 2 Deployment và 1 Service trong Kubernetes?
-
-**Đáp án chuẩn:** Tạo 2 Deployment (`v1` và `v2`) **dùng chung nhãn `selector` (như `app=web`)**. Service sẽ điều hướng lưu lượng ngẫu nhiên qua các Pods. Chia tỷ lệ số lượng Replicas (ví dụ 4 Pods v1 và 1 Pod v2) để chuyển 20% lưu lượng sang phiên bản v2.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cơ chế Canary Deployment.
-- 1đ: Nêu được chia tỷ lệ Pods nhưng chưa làm rõ việc dùng chung nhãn `selector` trong Service.
-- 3đ: Phân tích thấu đáo cơ chế Canary Deployment qua Service selector.
-
-**Câu hỏi đào sâu:** (Ưu điểm của Canary Deployment so với RollingUpdate là gì? — Cho phép kiểm thử phiên bản mới trên một tỷ lệ % người dùng nhỏ thực tế trước khi nâng cấp toàn bộ cụm).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Cờ câu lệnh `kubectl logs` nào giúp đọc lại log của một container vừa bị crash trước đó trong Pod bị `CrashLoopBackOff`?
-
-**Đáp án chuẩn:** Cờ **`--previous`** (cú pháp: `kubectl logs <pod-name> -c <container-name> --previous`). Nếu không có cờ này, `kubectl logs` sẽ đọc log của container mới tạo lại (thường rỗng).
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cờ --previous.
-- 1đ: Nêu được kubectl logs nhưng thiếu cờ --previous.
-- 3đ: Trình bày chính xác công dụng của cờ `kubectl logs --previous`.
-
-**Câu hỏi đào sâu:** (Nếu Pod có 2 container thì phải truyền thêm cờ nào? — Truyền cờ chỉ định tên container **`-c <container-name>`**).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Cú pháp lệnh `kubectl create` để tạo một Secret Opaque chứa username và password từ biến dòng lệnh?
-
-**Đáp án chuẩn:**
-```bash
-kubectl create secret generic db-secret --from-literal=username=admin --from-literal=password=SuperSecret123
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai lệnh create secret.
-- 1đ: Nêu được create secret generic nhưng thiếu cờ --from-literal.
-- 3đ: Viết chuẩn xác 100% câu lệnh `kubectl create secret generic` từ từ khóa literal.
-
-**Câu hỏi đào sâu:** (Nếu muốn tạo Secret từ 1 tệp tin thì dùng cờ gì? — Sử dụng cờ **`--from-file=/path/to/file`**).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Hai thiết kế mô hình Pod đa container (Multi-Container Pod) phổ biến nhất trong kỳ thi CKAD là gì và vai trò của chúng?
-
-**Đáp án chuẩn:**
-1. **Sidecar Pattern**: Tiến trình phụ chạy song song để **thu thập log** hoặc nén tệp.
-2. **Adapter Pattern**: Tiến trình phụ chạy song song để **chuẩn hóa dữ liệu log/metrics** về định dạng chung trước khi đẩy ra ngoài.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết các multi-container patterns.
-- 1đ: Nêu được Sidecar nhưng thiếu Adapter pattern.
-- 3đ: Phân tích chuẩn xác vai trò của Sidecar và Adapter patterns trong thiết kế ứng dụng CKAD.
-
-**Câu hỏi đào sâu:** (Các container trong cùng 1 Pod chia sẻ những tài nguyên nào với nhau? — Chia sẻ **Network Namespace (IP/Port)** và **IPC/Volumes**).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Sự khác biệt giữa `command` và `args` dưới khối `containers` trong Kubernetes Pod spec khi ghi đè Dockerfile?
-
-**Đáp án chuẩn:**
-- `command`: Ghi đè chỉ thị **`ENTRYPOINT`** của Dockerfile.
-- `args`: Ghi đè chỉ thị **`CMD`** của Dockerfile.
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa command/args và ENTRYPOINT/CMD.
-- 1đ: Nêu được command là lệnh args là tham số nhưng chưa làm rõ ENTRYPOINT/CMD.
-- 3đ: Phân tích chuẩn xác sự tương quan giữa `command`/`args` trong K8s và `ENTRYPOINT`/`CMD` trong Dockerfile.
-
-**Câu hỏi đào sâu:** (Nếu chỉ khai báo `args` trong Pod spec mà không khai báo `command` thì chuyện gì xảy ra? — Kubernetes sẽ giữ nguyên `ENTRYPOINT` của Dockerfile và chỉ ghi đè `CMD` bằng `args`).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Lệnh CLI `kubectl` nào được dùng để tạm thời vô hiệu hóa nhận lưu lượng của một Pod mà không xóa Pod đó khỏi cụm?
-
-**Đáp án chuẩn:** Xóa nhãn (labels) trên Pod khớp với `selector` của Service (ví dụ: `kubectl label pod web-pod app-`), khiến Pod không còn thỏa mãn điều kiện selector và bị gỡ IP khỏi Service Endpoint.
-
-**Tiêu chí chấm:**
-- 0đ: Tưởng rằng dùng lệnh delete pod.
-- 1đ: Nêu được gỡ nhãn nhưng chưa rõ cú pháp `kubectl label pod <name> app-`.
-- 3đ: Phân tích chuẩn xác kỹ thuật xóa nhãn bằng dấu trừ `-` để gỡ Pod khỏi Service Endpoint.
-
-**Câu hỏi đào sâu:** (Cú pháp thêm dấu trừ `-` ở cuối tên nhãn trong lệnh `kubectl label` có tác dụng gì? — Có tác dụng **bỏ (delete) nhãn đó** khỏi tài nguyên).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một Pod spec chứa `livenessProbe` `httpGet` và `envFrom` `configMapRef` CKAD là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: ckad-pod
-  namespace: lab67-ckad
-spec:
-  containers:
-    - name: app
-      image: nginx
-      envFrom:
-        - configMapRef:
-            name: app-config
-      livenessProbe:
-        httpGet:
-          path: /healthz
-          port: 8080
-        initialDelaySeconds: 15
-        periodSeconds: 10
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc sai vị trí probe/envFrom.
-- 1đ: Nêu đúng livenessProbe nhưng thiếu envFrom configMapRef.
-- 3đ: Viết chuẩn xác 100% tệp Pod spec thắt chặt cấu hình CKAD.
-
-**Câu hỏi đào sâu:** (Tham số `periodSeconds: 10` quy định điều gì? — Quy định **tần suất 10 giây một lần** Kubelet sẽ gửi request kiểm tra livenessProbe).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ CKAD Speed Drill (20 câu trong 90 phút) là gì?
-
-**Đáp án chuẩn:**
-1. Thuộc lòng các câu lệnh `kubectl create` imperatively để tạo CM, Secret, CronJob trong 5 giây.
-2. Dùng `envFrom.configMapRef` để nạp toàn bộ danh sách biến môi trường trong 1 dòng code.
-3. Phân biệt chính xác tác động của `livenessProbe` (restart container) vs `readinessProbe` (ngắt traffic).
-4. Khai thác `kubectl logs --previous` để đọc vết nguyên nhân container vừa bị crash.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng CKAD Speed Mastery.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 68 là gì? — Học về `Tổng ôn CKS Tốc độ: Giải quyết 16 câu bài tập CKS bảo mật nâng cao trong 90 phút`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1110,28 +1246,6 @@ spec:
 2. **"Tăng 400% tốc độ làm bài bằng các lệnh imperatively `kubectl create cm/secret/cronjob`."**
 3. **"Nạp biến môi trường siêu tốc qua `envFrom` và cấu hình bộ đôi `livenessProbe`/`readinessProbe`."**
 4. **"Duy trì phản xạ 4,5 phút mỗi câu để hoàn thành trọn vẹn 20 câu CKAD trong 90 phút."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ năng CKAD Application Development |
-| **29 – 36 điểm** | Xuất sắc | Thành thục 100% 5 miền CKAD, imperative CLI, Probes và Canary Deployments |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành lại bài CKAD speed drill 20 câu với thời gian đếm ngược rút ngắn 75 phút.
-- **BTVN 2:** Viết 5 câu lệnh `kubectl create` imperatively tạo CronJob, Job, ConfigMap, Secret, Service.
-- **BTVN 3:** Thực hành triển khai Canary Deployment và Blue-Green Deployment trên cụm sandbox.
-- **BTVN 4 (Chuẩn bị cho Buổi 68 — Giai đoạn 4 Tổng ôn CKS Tốc độ):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Chiến thuật tổng ôn tốc độ 16 câu CKS trong 90 phút cần tập trung vào 3 miền trọng số 20% nào?
-  2. Các dạng bài bảo mật nâng cao CKS (AppArmor, Seccomp, Kyverno, Cosign, Audit Logging, Falco) cần luyện tập phản xạ CLI ra sao?
-  3. Kỹ năng khôi phục cụm Control Plane trong 60 giây giúp giữ vững tâm lý thi đấu CKS thế nào?
 
 ---
 
@@ -1188,7 +1302,7 @@ Cấu hình Canary Deployment `app-v2` tại `/tmp/canary.yaml`:
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-```bash
+```
 cat <<EOF > /tmp/cm-pod.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -1211,7 +1325,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• configMapRef:</div>
             name: web-cm
 EOF
-```bash
+`
 </div>
 </details>
 
@@ -1238,7 +1352,7 @@ spec:
           port: 8080
         initialDelaySeconds: 15
 EOF
-```bash
+`
 </div>
 </details>
 
@@ -1248,7 +1362,7 @@ EOF
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-```bash
+```
 cat <<EOF > /tmp/cronjob.yaml
 apiVersion: batch/v1
 kind: CronJob
@@ -1267,7 +1381,7 @@ spec:
               command: [/bin/sh, -c, date]
           restartPolicy: OnFailure
 EOF
-```bash
+`
 </div>
 </details>
 
@@ -1300,7 +1414,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
           image: nginx:1.25
 EOF
-```yaml
+`
 
 ---
 </div>
@@ -1322,7 +1436,7 @@ EOF
 
 ### Đoạn script tự kiểm tra và in điểm (Không phụ thuộc vào `jq`)
 
-```bash
+```
 #!/bin/bash
 SCORE=0
 
@@ -1371,7 +1485,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+`
 
 ---
 
@@ -1385,17 +1499,15 @@ kubectl create configmap web-cm --from-literal=ENV=prod
 kubectl create cronjob daily-backup --image=busybox --schedule="0 0 * * *" --dry-run=client -o yaml -- date
 
 # Imperative Secret Creation
-kubectl create secret generic db-pass --from-literal=password=SuperSecret123
 ```
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Hoàn thành toàn bộ lộ trình **CKAD (Certified Kubernetes Application Developer)** với phản xạ dòng lệnh tốc độ cao, khả năng cấu hình nâng cao và kiến trúc ứng dụng phân tán chuẩn Cloud Native sẽ là nền tảng vững chắc để bạn bước sang đỉnh cao tiếp theo: **CKS (Certified Kubernetes Security Specialist)**.
+
+> [!TIP]
+> **BÀI HỌC TIẾP THEO:**
+> Trong **[[Bài 01] CKS Network Security Policy & Pod Traffic Restriction](cks-01-01-cks-network-security-policy.html)**, chúng ta sẽ bước vào lộ trình chuyên sâu về an ninh mạng Kubernetes: Khám phá cách cô lập lưu lượng Pod với NetworkPolicy, phân tích các ranh giới Ingress/Egress và thiết lập phòng thủ Zero Trust cho cụm.
 {% endraw %}

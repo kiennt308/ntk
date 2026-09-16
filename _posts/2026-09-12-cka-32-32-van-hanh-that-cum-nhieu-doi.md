@@ -482,7 +482,7 @@ Vì giúp <b style="color: var(--accent-primary);">kiểm duyệt kỹ các tệ
         kind: Role
         name: developer-role
         apiGroup: rbac.authorization.k8s.io
-      ```
+```
 </div>
 </details>
 
@@ -495,24 +495,6 @@ Vì giúp <b style="color: var(--accent-primary);">kiểm duyệt kỹ các tệ
 | Kubernetes Multi-Tenancy Guide | `https://kubernetes.io/docs/concepts/security/multi-tenancy/` | Hướng dẫn cấu hình Multi-Tenancy Kubernetes |
 | Resource Quotas & Limits | `https://kubernetes.io/docs/concepts/policy/resource-quotas/` | Tài liệu quản lý định ngạch tài nguyên |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Multi-Tenant K8s Architecture & Namespaces | 12 phút | 12 phút |
-| §5. ResourceQuota, LimitRange & RBAC Isolation | 12 phút | 12 phút |
-| §6. NetworkPolicy Isolation & Change Management | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -566,7 +548,7 @@ graph TD
     
     Quota & RBAC & NetPol & GitOps -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Vận Hành]
     GradeScript -->|"Score >= 80%: PASS"| OpsReady[Enterprise Operations Certified!]
-```yaml
+```
 
 ---
 
@@ -580,19 +562,19 @@ kubectl create namespace team-beta
 kubectl create namespace team-secops
 
 mkdir -p /tmp/multi-tenant
-```bash
+```
 
 **CHECKPOINT 1 — Kiểm tra Namespaces `team-alpha`, `team-beta`, `team-secops`.**
 
 ```bash
 kubectl get ns team-alpha -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/multi-tenant`.**
 
 ```bash
 test -d /tmp/multi-tenant && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```yaml
+```
 
 ---
 
@@ -634,19 +616,19 @@ spec:
         memory: 256Mi
       type: Container
 EOF
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra tệp ResourceQuota Câu 1.**
 
 ```bash
 grep -q "quota-alpha" /tmp/multi-tenant/quota.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```bash
+```
 
 **CHECKPOINT 4 — Kiểm tra tệp LimitRange Câu 2.**
 
 ```bash
 grep -q "limit-alpha" /tmp/multi-tenant/limits.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```yaml
+```
 
 ---
 
@@ -701,25 +683,25 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: team-secops
 EOF
-```bash
+```
 
 **CHECKPOINT 5 — Kiểm tra tệp Role Câu 3.**
 
 ```bash
 grep -q "developer-role" /tmp/multi-tenant/role.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra tệp RoleBinding Câu 4.**
 
 ```bash
 grep -q "dev-alpha-binding" /tmp/multi-tenant/binding.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```bash
+```
 
 **CHECKPOINT 7 — Kiểm tra tệp NetworkPolicy Câu 5.**
 
 ```bash
 grep -q "team-secops" /tmp/multi-tenant/netpol.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+```
 
 ---
 
@@ -753,25 +735,25 @@ echo "Error: pods exceed quota limit in team-alpha (rejected by apiserver)" > /t
 
 # Câu 8: GitOps PR Approval Log
 echo "PR #102: Verified by Trivy/Checkov -> Approved by SecOps -> Synced by ArgoCD" > /tmp/multi-tenant/gitops-pr.log
-```bash
+```
 
 **CHECKPOINT 8 — Kiểm tra tệp Mutation Policy Câu 6.**
 
 ```bash
 grep -q "owner" /tmp/multi-tenant/mutate.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 **CHECKPOINT 9 — Kiểm tra nhật ký Quota Test Câu 7.**
 
 ```bash
 test -f /tmp/multi-tenant/quota-test.log && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```bash
+```
 
 **CHECKPOINT 10 — Kiểm tra nhật ký GitOps PR Approval Câu 8.**
 
 ```bash
 test -f /tmp/multi-tenant/gitops-pr.log && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```yaml
+```
 
 ---
 
@@ -795,19 +777,19 @@ TỔNG ĐIỂM: 100 / 100
 TỐC ĐỘ TRUNG BÌNH: 4.2 PHÚT / CÂU
 ĐÁNH GIÁ: PASS - BẠN ĐÃ ĐẠT TIÊU CHUẨN VẬN HÀNH DOANH NGHIỆP!
 EOF
-```bash
+```
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm.**
 
 ```bash
 test -f /tmp/multi-tenant/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```bash
+```
 
 **CHECKPOINT 12 — Xác minh tổng điểm đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/multi-tenant/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```yaml
+```
 
 ---
 
@@ -818,13 +800,13 @@ grep -q "PASS" /tmp/multi-tenant/results.log && echo "CHECKPOINT 12 — ĐẠT" 
 ```bash
 kubectl delete namespace team-alpha team-beta team-secops 2>/dev/null || true
 rm -rf /tmp/multi-tenant
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/multi-tenant/quota.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```yaml
+```
 
 ---
 
@@ -870,26 +852,11 @@ test ! -f /tmp/multi-tenant/quota.yaml && echo "CHECKPOINT 13 — ĐẠT" || ech
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: 3 Namespaces & Speed Directory | 15 phút | 15 phút |
-| L4. Bước 2: ResourceQuota & LimitRange Questions | 30 phút | 30 phút |
-| L5. Bước 3: RBAC RoleBinding & NetworkPolicy Questions | 30 phút | 30 phút |
-| L6. Bước 4: Kyverno Mutation & GitOps PR Questions | 25 phút | 25 phút |
-| L7. Bước 5: Auto-Grading & Enterprise Benchmark | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -897,215 +864,335 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt về vai trò và phạm vi hoạt động giữa <code>ResourceQuota</code> và <code>LimitRange</code> trong một Namespace?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Giúp <b style="color: var(--accent-primary);">phân vùng tài nguyên riêng biệt</b>, <b style="color: var(--accent-primary);">thiết lập rào chắn RBAC thu hẹp theo đội</b>, <b style="color: var(--accent-primary);">áp đặt định ngạch ResourceQuota/LimitRange</b>, và <b style="color: var(--accent-primary);">phong tỏa giao tiếp mạng bằng NetworkPolicy</b>, ngăn chặn hoàn toàn nguy cơ can thiệp tài nguyên trái phép giữa các đội.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">ResourceQuota</b>: Quản lý <b style="color: var(--accent-primary);">tổng dung lượng tài nguyên tối đa (tổng CPU, RAM, số Pods)</b> được phép cấp phát cho cả Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">LimitRange</b>: Quản lý <b style="color: var(--accent-primary);">thông số requests/limits mặc định cho từng Pod đơn lẻ</b> khi lập trình viên quên khai báo khối <code>resources</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa ResourceQuota và LimitRange.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Quota là tổng nhưng chưa làm rõ LimitRange là mặc định per Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò và sự phối hợp giữa ResourceQuota và LimitRange.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chuyện gì xảy ra nếu Pod tạo ra trong Namespace có ResourceQuota mà không khai báo <code>resources</code> và Namespace đó cũng không có LimitRange? — Kubernetes apiserver sẽ <b style="color: var(--accent-primary);">từ chối (reject) khởi tạo Pod đó</b>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu lý do phân chia Namespace.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dễ quản lý nhưng chưa rõ RBAC, Quotas, NetworkPolicy isolation.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 4 lý do cốt lõi của việc phân chia Namespace doanh nghiệp.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tên 3 Namespace được khởi tạo để mô phỏng môi trường 3 đội trong buổi học là gì? — <b style="color: var(--accent-primary);"><code>team-alpha</code></b>, <b style="color: var(--accent-primary);"><code>team-beta</code></b>, và <b style="color: var(--accent-primary);"><code>team-secops</code></b>).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Lý do tuyệt đối không cấp quyền <code>ClusterRoleBinding</code> cho tài khoản của lập trình viên ứng dụng trong môi trường nhiều đội?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì <code>ClusterRoleBinding</code> có phạm vi toàn cụm (cluster-wide), cấp quyền này sẽ cho phép lập trình viên <b style="color: var(--accent-primary);">đọc, sửa hoặc xóa tài nguyên ở các Namespace của đội khác</b>, làm mất hoàn toàn tính cách ly đa người dùng. LUÔN LUÔN phải dùng <b style="color: var(--accent-primary);"><code>RoleBinding</code></b> chỉ định rõ <code>namespace</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu tác hại của ClusterRoleBinding.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được bị thừa quyền nhưng chưa rõ phạm vi toàn cụm vs phạm vi Namespace.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác nguyên tắc RBAC Least Privilege trong môi trường Multi-tenant.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để kiểm tra xem user <code>dev-alpha</code> có quyền get pods ở <code>team-beta</code> hay không? — Lệnh <code>kubectl auth can-i get pods -n team-beta --as=dev-alpha</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp nhãn mặc định nào của Kubernetes bắt buộc phải sử dụng trong <code>namespaceSelector</code> để lọc chính xác Namespace?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Nhãn <b style="color: var(--accent-primary);"><code>kubernetes.io/metadata.name: <namespace-name></code></b>. Nhãn này do Kubernetes tự động gán cho mọi Namespace, giúp NetworkPolicy nhận diện chính xác nguồn lưu lượng theo tên Namespace.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết nhãn metadata.name.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng nhãn namespace nhưng sai cú pháp kubernetes.io/metadata.name.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% cú pháp nhãn <code>kubernetes.io/metadata.name</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu gõ sai tên nhãn này trong NetworkPolicy thì chuyện gì xảy ra? — NetworkPolicy sẽ <b style="color: var(--accent-primary);">không khớp được Namespace</b> và ngắt nhầm toàn bộ lưu lượng mạng).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cơ chế hoạt động của Quy trình quản lý thay đổi (Change Management & GitOps PR Approval Workflow) trong doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lập trình viên tạo Pull Request (PR) trên Git. Hệ thống CI tự động chạy quét an ninh (Trivy/Checkov). Đại diện đội SecOps duyệt PR. Trình quản lý GitOps (ArgoCD/Flux) tự động đồng bộ manifest đã duyệt vào cụm Production.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy trình Change Management GitOps.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng Git nhưng thiếu bước CI scan và SecOps approval.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% quy trình 4 bước GitOps Change Management.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích lớn nhất của GitOps Workflow là gì? — Ngăn chặn 100% các thao tác sửa trực tiếp (ad-hoc mutation) từ máy cá nhân lên cụm Production).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Công dụng của Kyverno Mutation Policy trong việc tự động hóa gán nhãn định danh (<code>owner: team-name</code>) cho Pods?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Giúp tự động chèn thuộc tính nhãn <code>owner: team-alpha</code> vào tất cả các Pods khởi tạo trong Namespace <code>team-alpha</code> mà <b style="color: var(--accent-primary);">không phụ thuộc vào việc lập trình viên có gõ nhãn đó trong tệp YAML hay không</b>, phục vụ giám sát FinOps và Security.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết Kyverno Mutation Policy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chèn nhãn nhưng chưa rõ cơ chế tự động hóa mutation không phụ thuộc Dev.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo ứng dụng của Kyverno Mutation Rule trong vận hành đa đội.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thuộc tính YAML nào trong Kyverno rule thực hiện việc chèn nhãn này? — Thuộc tính <b style="color: var(--accent-primary);"><code>mutate.patchStrategicMerge</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Hiện tượng "Resource Starvation" trong cụm Kubernetes là gì và cách phòng tránh triệt để?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Là hiện tượng <b style="color: var(--accent-primary);">1 Pod sử dụng quá tải CPU/RAM</b> do không bị giới hạn, làm cạn kiệt tài nguyên của Host Node và gây ra sập dây chuyền các Pods khác chạy chung Node. Phòng tránh bằng cách <b style="color: var(--accent-primary);">áp đặt cặp đối tượng ResourceQuota và LimitRange</b> cho mọi Namespace.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu khái niệm Resource Starvation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng quá RAM làm sập Pod khác nhưng thiếu giải pháp ResourceQuota/LimitRange.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác hiện tượng Resource Starvation và giải pháp khắc phục triệt để.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tham số nào dưới <code>resources</code> trong Pod spec ngăn container ngốn quá dung lượng RAM cho phép? — Tham số <b style="color: var(--accent-primary);"><code>resources.limits.memory</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Bốn thông số bắt buộc phải khai báo dưới khối <code>hard</code> của đối tượng <code>ResourceQuota</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>requests.cpu</code>: Tổng CPU tối đa được xin cấp phát.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>requests.memory</code>: Tổng RAM tối đa được xin cấp phát.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>limits.cpu</code>: Trần CPU tối đa được dùng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>limits.memory</code>: Trần RAM tối đa được dùng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 thông số.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 thông số (requests.cpu và limits.cpu).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 4 thông số tài nguyên bắt buộc của ResourceQuota.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Có thể giới hạn tổng số lượng Pods trong ResourceQuota bằng thuộc tính nào? — Thuộc tính <b style="color: var(--accent-primary);"><code>pods: "<number>"</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Kỹ thuật kiểm tra phân quyền RBAC của một user cụ thể mà không cần đăng nhập tài khoản user đó bằng <code>kubectl</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Sử dụng lệnh: <code>kubectl auth can-i <verb> <resource> -n <namespace> --as=<username></code>. Ví dụ: <code>kubectl auth can-i delete pods -n team-alpha --as=dev-alpha</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh kubectl auth can-i.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được can-i nhưng thiếu cờ --as=<username>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% câu lệnh <code>kubectl auth can-i --as</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu kết quả trả về <code>yes</code> thì nghĩa là gì? — Nghĩa là user đó <b style="color: var(--accent-primary);">đã được cấp quyền</b> thực thi hành động đó).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cấu hình NetworkPolicy chuẩn để cấm 100% lưu lượng Ingress từ tất cả các Namespace khác ngoại trừ Namespace <code>team-secops</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">podSelector: {}</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">policyTypes: [Ingress]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingress:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• from:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• namespaceSelector:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">matchLabels:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kubernetes.io/metadata.name: team-secops</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai NetworkPolicy syntax.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng namespaceSelector nhưng thiếu podSelector: {}.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp NetworkPolicy phong tỏa lưu lượng mạng giữa các đội.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>podSelector: {}</code> có ý nghĩa gì trong NetworkPolicy? — Áp dụng quy tắc NetworkPolicy cho <b style="color: var(--accent-primary);">toàn bộ tất cả các Pods</b> trong Namespace đó).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của một đối tượng <code>LimitRange</code> thiết lập default requests/limits per container trong Namespace <code>team-alpha</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: LimitRange</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: limit-alpha</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: team-alpha</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">limits:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• default:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cpu: "1"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">memory: 1Gi</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">defaultRequest:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cpu: 200m</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">memory: 256Mi</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">type: Container</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc LimitRange.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được default nhưng thiếu defaultRequest hoặc type Container.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp LimitRange doanh nghiệp.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sự khác biệt giữa <code>default</code> và <code>defaultRequest</code> trong LimitRange? — <code>default</code> đặt trần <code>limits</code>, còn <code>defaultRequest</code> đặt mức <code>requests</code> ban đầu).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Vận hành Thực tế Cụm Kubernetes Nhiều Đội là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Luôn phân chia Namespace riêng biệt cho từng đội (<code>team-alpha</code>, <code>team-beta</code>, <code>team-secops</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Áp dụng song song cặp đối tượng <code>ResourceQuota</code> và <code>LimitRange</code> cho mọi Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thắt chặt RBAC bằng <code>RoleBinding</code> thu hẹp trong Namespace và dùng <code>NetworkPolicy</code> phong tỏa mạng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Quản lý mọi thay đổi hạ tầng qua quy trình GitOps PR Approval và Kyverno Mutation Rules.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Enterprise Multi-Tenant Operations.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 70 là gì? — Học về <code>Game Day: Bốn sự cố cấy sẵn, diễn tập gỡ lỗi thực tế và báo cáo Postmortem phi quy trách</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Sự khác biệt về vai trò và phạm vi hoạt động giữa `ResourceQuota` và `LimitRange` trong một Namespace?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:**
-- **ResourceQuota**: Quản lý **tổng dung lượng tài nguyên tối đa (tổng CPU, RAM, số Pods)** được phép cấp phát cho cả Namespace.
-- **LimitRange**: Quản lý **thông số requests/limits mặc định cho từng Pod đơn lẻ** khi lập trình viên quên khai báo khối `resources`.
+1. <b style="color: var(--accent-primary);">"Xây dựng mô hình Multi-Tenant Enterprise Cluster chuẩn hóa với Namespace isolation."</b>
+2. <b style="color: var(--accent-primary);">"Kiểm soát tài nguyên chặt chẽ bằng cặp đôi ResourceQuota và LimitRange cho từng đội."</b>
+3. <b style="color: var(--accent-primary);">"Thắt chặt rào chắn an ninh bằng RBAC RoleBinding cách ly và NetworkPolicy phong tỏa mạng."</b>
+4. <b style="color: var(--accent-primary);">"Quản lý 100% thay đổi hạ tầng qua quy trình GitOps PR Approval và Kyverno Automation."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa ResourceQuota và LimitRange.
-- 1đ: Nêu được Quota là tổng nhưng chưa làm rõ LimitRange là mặc định per Pod.
-- 3đ: Phân tích thấu đáo vai trò và sự phối hợp giữa ResourceQuota và LimitRange.
-
-**Câu hỏi đào sâu:** (Chuyện gì xảy ra nếu Pod tạo ra trong Namespace có ResourceQuota mà không khai báo `resources` và Namespace đó cũng không có LimitRange? — Kubernetes apiserver sẽ **từ chối (reject) khởi tạo Pod đó**).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Lý do tuyệt đối không cấp quyền `ClusterRoleBinding` cho tài khoản của lập trình viên ứng dụng trong môi trường nhiều đội?
-
-**Đáp án chuẩn:** Vì `ClusterRoleBinding` có phạm vi toàn cụm (cluster-wide), cấp quyền này sẽ cho phép lập trình viên **đọc, sửa hoặc xóa tài nguyên ở các Namespace của đội khác**, làm mất hoàn toàn tính cách ly đa người dùng. LUÔN LUÔN phải dùng **`RoleBinding`** chỉ định rõ `namespace`.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu tác hại của ClusterRoleBinding.
-- 1đ: Nêu được bị thừa quyền nhưng chưa rõ phạm vi toàn cụm vs phạm vi Namespace.
-- 3đ: Phân tích chuẩn xác nguyên tắc RBAC Least Privilege trong môi trường Multi-tenant.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để kiểm tra xem user `dev-alpha` có quyền get pods ở `team-beta` hay không? — Lệnh `kubectl auth can-i get pods -n team-beta --as=dev-alpha`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Cú pháp nhãn mặc định nào của Kubernetes bắt buộc phải sử dụng trong `namespaceSelector` để lọc chính xác Namespace?
-
-**Đáp án chuẩn:** Nhãn **`kubernetes.io/metadata.name: <namespace-name>`**. Nhãn này do Kubernetes tự động gán cho mọi Namespace, giúp NetworkPolicy nhận diện chính xác nguồn lưu lượng theo tên Namespace.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết nhãn metadata.name.
-- 1đ: Nêu được dùng nhãn namespace nhưng sai cú pháp kubernetes.io/metadata.name.
-- 3đ: Trình bày chuẩn xác 100% cú pháp nhãn `kubernetes.io/metadata.name`.
-
-**Câu hỏi đào sâu:** (Nếu gõ sai tên nhãn này trong NetworkPolicy thì chuyện gì xảy ra? — NetworkPolicy sẽ **không khớp được Namespace** và ngắt nhầm toàn bộ lưu lượng mạng).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Cơ chế hoạt động của Quy trình quản lý thay đổi (Change Management & GitOps PR Approval Workflow) trong doanh nghiệp?
-
-**Đáp án chuẩn:** Lập trình viên tạo Pull Request (PR) trên Git. Hệ thống CI tự động chạy quét an ninh (Trivy/Checkov). Đại diện đội SecOps duyệt PR. Trình quản lý GitOps (ArgoCD/Flux) tự động đồng bộ manifest đã duyệt vào cụm Production.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết quy trình Change Management GitOps.
-- 1đ: Nêu được dùng Git nhưng thiếu bước CI scan và SecOps approval.
-- 3đ: Trình bày chuẩn xác 100% quy trình 4 bước GitOps Change Management.
-
-**Câu hỏi đào sâu:** (Lợi ích lớn nhất của GitOps Workflow là gì? — Ngăn chặn 100% các thao tác sửa trực tiếp (ad-hoc mutation) từ máy cá nhân lên cụm Production).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Công dụng của Kyverno Mutation Policy trong việc tự động hóa gán nhãn định danh (`owner: team-name`) cho Pods?
-
-**Đáp án chuẩn:** Giúp tự động chèn thuộc tính nhãn `owner: team-alpha` vào tất cả các Pods khởi tạo trong Namespace `team-alpha` mà **không phụ thuộc vào việc lập trình viên có gõ nhãn đó trong tệp YAML hay không**, phục vụ giám sát FinOps và Security.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết Kyverno Mutation Policy.
-- 1đ: Nêu được chèn nhãn nhưng chưa rõ cơ chế tự động hóa mutation không phụ thuộc Dev.
-- 3đ: Phân tích thấu đáo ứng dụng của Kyverno Mutation Rule trong vận hành đa đội.
-
-**Câu hỏi đào sâu:** (Thuộc tính YAML nào trong Kyverno rule thực hiện việc chèn nhãn này? — Thuộc tính **`mutate.patchStrategicMerge`**).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Hiện tượng "Resource Starvation" trong cụm Kubernetes là gì và cách phòng tránh triệt để?
-
-**Đáp án chuẩn:** Là hiện tượng **1 Pod sử dụng quá tải CPU/RAM** do không bị giới hạn, làm cạn kiệt tài nguyên của Host Node và gây ra sập dây chuyền các Pods khác chạy chung Node. Phòng tránh bằng cách **áp đặt cặp đối tượng ResourceQuota và LimitRange** cho mọi Namespace.
-
-**Tiêu chí chấm:**
-- 0đ: Không hiểu khái niệm Resource Starvation.
-- 1đ: Nêu được dùng quá RAM làm sập Pod khác nhưng thiếu giải pháp ResourceQuota/LimitRange.
-- 3đ: Phân tích chuẩn xác hiện tượng Resource Starvation và giải pháp khắc phục triệt để.
-
-**Câu hỏi đào sâu:** (Tham số nào dưới `resources` trong Pod spec ngăn container ngốn quá dung lượng RAM cho phép? — Tham số **`resources.limits.memory`**).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Bốn thông số bắt buộc phải khai báo dưới khối `hard` của đối tượng `ResourceQuota` là gì?
-
-**Đáp án chuẩn:**
-1. `requests.cpu`: Tổng CPU tối đa được xin cấp phát.
-2. `requests.memory`: Tổng RAM tối đa được xin cấp phát.
-3. `limits.cpu`: Trần CPU tối đa được dùng.
-4. `limits.memory`: Trần RAM tối đa được dùng.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 thông số.
-- 1đ: Nêu được 2 thông số (requests.cpu và limits.cpu).
-- 3đ: Kể tên chuẩn xác 4 thông số tài nguyên bắt buộc của ResourceQuota.
-
-**Câu hỏi đào sâu:** (Có thể giới hạn tổng số lượng Pods trong ResourceQuota bằng thuộc tính nào? — Thuộc tính **`pods: "<number>"`**).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Kỹ thuật kiểm tra phân quyền RBAC của một user cụ thể mà không cần đăng nhập tài khoản user đó bằng `kubectl`?
-
-**Đáp án chuẩn:** Sử dụng lệnh: `kubectl auth can-i <verb> <resource> -n <namespace> --as=<username>`. Ví dụ: `kubectl auth can-i delete pods -n team-alpha --as=dev-alpha`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh kubectl auth can-i.
-- 1đ: Nêu được can-i nhưng thiếu cờ --as=<username>.
-- 3đ: Viết chuẩn xác 100% câu lệnh `kubectl auth can-i --as`.
-
-**Câu hỏi đào sâu:** (Nếu kết quả trả về `yes` thì nghĩa là gì? — Nghĩa là user đó **đã được cấp quyền** thực thi hành động đó).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Cấu hình NetworkPolicy chuẩn để cấm 100% lưu lượng Ingress từ tất cả các Namespace khác ngoại trừ Namespace `team-secops`?
-
-**Đáp án chuẩn:**
-```yaml
-spec:
-  podSelector: {}
-  policyTypes: [Ingress]
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: team-secops
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai NetworkPolicy syntax.
-- 1đ: Nêu đúng namespaceSelector nhưng thiếu podSelector: {}.
-- 3đ: Viết chuẩn xác 100% tệp NetworkPolicy phong tỏa lưu lượng mạng giữa các đội.
-
-**Câu hỏi đào sâu:** (Cờ `podSelector: {}` có ý nghĩa gì trong NetworkPolicy? — Áp dụng quy tắc NetworkPolicy cho **toàn bộ tất cả các Pods** trong Namespace đó).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một đối tượng `LimitRange` thiết lập default requests/limits per container trong Namespace `team-alpha` là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: limit-alpha
-  namespace: team-alpha
-spec:
-  limits:
-    - default:
-        cpu: "1"
-        memory: 1Gi
-      defaultRequest:
-        cpu: 200m
-        memory: 256Mi
-      type: Container
-```diff
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc LimitRange.
-- 1đ: Nêu được default nhưng thiếu defaultRequest hoặc type Container.
-- 3đ: Viết chuẩn xác 100% tệp LimitRange doanh nghiệp.
-
-**Câu hỏi đào sâu:** (Sự khác biệt giữa `default` và `defaultRequest` trong LimitRange? — `default` đặt trần `limits`, còn `defaultRequest` đặt mức `requests` ban đầu).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Vận hành Thực tế Cụm Kubernetes Nhiều Đội là gì?
-
-**Đáp án chuẩn:**
-1. Luôn phân chia Namespace riêng biệt cho từng đội (`team-alpha`, `team-beta`, `team-secops`).
-2. Áp dụng song song cặp đối tượng `ResourceQuota` và `LimitRange` cho mọi Namespace.
-3. Thắt chặt RBAC bằng `RoleBinding` thu hẹp trong Namespace và dùng `NetworkPolicy` phong tỏa mạng.
-4. Quản lý mọi thay đổi hạ tầng qua quy trình GitOps PR Approval và Kyverno Mutation Rules.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Enterprise Multi-Tenant Operations.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 70 là gì? — Học về `Game Day: Bốn sự cố cấy sẵn, diễn tập gỡ lỗi thực tế và báo cáo Postmortem phi quy trách`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1115,28 +1202,6 @@ spec:
 2. **"Kiểm soát tài nguyên chặt chẽ bằng cặp đôi ResourceQuota và LimitRange cho từng đội."**
 3. **"Thắt chặt rào chắn an ninh bằng RBAC RoleBinding cách ly và NetworkPolicy phong tỏa mạng."**
 4. **"Quản lý 100% thay đổi hạ tầng qua quy trình GitOps PR Approval và Kyverno Automation."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ năng Multi-Tenant Operations |
-| **29 – 36 điểm** | Xuất sắc | Thành thục 100% vận hành cụm nhiều đội, Quotas, RBAC, NetworkPolicy và Change Management |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành lại bài vận hành cụm 3 đội với thời gian bấm giờ rút ngắn 60 phút.
-- **BTVN 2:** Viết 3 chính sách Kyverno Mutation Rules chèn nhãn `environment`, `owner`, `cost-center`.
-- **BTVN 3:** Thiết lập pipeline GitOps PR Approval mô phỏng trên GitHub Actions / GitLab CI.
-- **BTVN 4 (Chuẩn bị cho Buổi 70 — Sự cố Thật và Postmortem):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Mô hình diễn tập sự cố thực tế (Game Day / Chaos Engineering) trong vận hành hạ tầng Kubernetes là gì?
-  2. Bốn sự cố cấy sẵn phổ biến (Node NotReady, OOMKilled, Certificate Expired, DNS resolution failure) được gỡ lỗi theo quy trình nào?
-  3. Phương pháp viết báo cáo sự cố không quy trách nhiệm (Blameless Postmortem Report) giúp cải tiến hệ thống ra sao?
 
 ---
 
@@ -1207,7 +1272,7 @@ spec:
     requests.cpu: "2"
     requests.memory: 4Gi
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1243,7 +1308,7 @@ roleRef:
   name: pod-reader
   apiGroup: rbac.authorization.k8s.io
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1269,7 +1334,7 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: team-secops
 EOF
-```bash
+```
 </div>
 </details>
 
@@ -1298,7 +1363,7 @@ spec:
             labels:
               team: alpha
 EOF
-```yaml
+```
 
 ---
 </div>
@@ -1369,7 +1434,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1384,16 +1449,17 @@ kubectl create quota quota-alpha --hard=pods=10,requests.cpu=2,requests.memory=4
 
 # Imperative Role Generation
 kubectl create role pod-reader --verb=get,list,watch --resource=pods -n team-beta --dry-run=client -o yaml
-```yaml
+```
+
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 33] Game Day Diễn Tập Sự Cố Thực Tế: Phản Ứng Với 4 Sự Cố Cấy Sẵn & Báo Cáo Postmortem Phi Quy Trách](cka-33-33-su-co-that-va-postmortem.html).
+
 {% endraw %}

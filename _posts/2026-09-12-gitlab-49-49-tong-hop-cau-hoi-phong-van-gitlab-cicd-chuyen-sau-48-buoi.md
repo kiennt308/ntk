@@ -110,7 +110,10 @@ tldr:
   <div class="qa-body">
     <p><strong>Stage-based</strong>: Các jobs trong cùng một stage bắt buộc phải hoàn thành 100% trước khi bất kỳ job nào của stage tiếp theo được khởi chạy (tạo ra hiện tượng nghẽn cổ chai nếu một job test chạy chậm 30 phút).</p>
     <p><strong>DAG (`needs:`)</strong>: Xây dựng đồ thị có hướng không chu trình. Một job có thể bắt đầu ngay lập tức khi các jobs liệt kê trong khai báo <code>needs:</code> hoàn tất, bất kể các jobs khác trong cùng stage trước đó đã xong hay chưa.</p>
-    <p><strong>Khi nào kết hợp</strong>: Duy trì <code>stages</code> để phân loại trực quan theo dòng chảy logic (Lint $ightarrow$ Build $ightarrow$ Test $ightarrow$ Deploy), đồng thời gắn <code>needs:</code> cho các microservices độc lập để tối ưu hóa thời gian thực thi song song.</p>
+    <p><strong>Khi nào kết hợp</strong>: Duy trì <code>stages</code> để phân loại trực quan theo dòng chảy logic (Lint $
+ightarrow$ Build $
+ightarrow$ Test $
+ightarrow$ Deploy), đồng thời gắn <code>needs:</code> cho các microservices độc lập để tối ưu hóa thời gian thực thi song song.</p>
   </div>
 </details>
 
@@ -166,11 +169,16 @@ tldr:
   <div class="qa-body">
     <p><strong>Chiến lược khóa Cache theo Checksum file phụ thuộc:</strong></p>
     <ul>
-      <li><strong>Node.js</strong>: <code>key: { files: [package-lock.json] }</code> $ightarrow$ Lưu thư mục <code>.npm/</code> (khi dùng <code>npm ci --cache .npm</code>).</li>
-      <li><strong>Java Maven</strong>: <code>key: { files: [pom.xml] }</code> $ightarrow$ Lưu thư mục <code>.m2/repository/</code> (thiết lập <code>-Dmaven.repo.local=.m2/repository</code>).</li>
-      <li><strong>Python</strong>: <code>key: { files: [requirements.txt, poetry.lock] }</code> $ightarrow$ Lưu thư mục <code>.cache/pip</code>.</li>
-      <li><strong>Golang</strong>: <code>key: { files: [go.sum] }</code> $ightarrow$ Lưu thư mục <code>.go/pkg/mod/</code>.</li>
-      <li><strong>.NET</strong>: <code>key: { files: [packages.lock.json] }</code> $ightarrow$ Lưu thư mục <code>~/.nuget/packages</code>.</li>
+      <li><strong>Node.js</strong>: <code>key: { files: [package-lock.json] }</code> $
+ightarrow$ Lưu thư mục <code>.npm/</code> (khi dùng <code>npm ci --cache .npm</code>).</li>
+      <li><strong>Java Maven</strong>: <code>key: { files: [pom.xml] }</code> $
+ightarrow$ Lưu thư mục <code>.m2/repository/</code> (thiết lập <code>-Dmaven.repo.local=.m2/repository</code>).</li>
+      <li><strong>Python</strong>: <code>key: { files: [requirements.txt, poetry.lock] }</code> $
+ightarrow$ Lưu thư mục <code>.cache/pip</code>.</li>
+      <li><strong>Golang</strong>: <code>key: { files: [go.sum] }</code> $
+ightarrow$ Lưu thư mục <code>.go/pkg/mod/</code>.</li>
+      <li><strong>.NET</strong>: <code>key: { files: [packages.lock.json] }</code> $
+ightarrow$ Lưu thư mục <code>~/.nuget/packages</code>.</li>
     </ul>
     <p><em>Nguyên tắc vàng</em>: Luôn dùng <code>policy: pull-push</code> trên default branch và <code>policy: pull</code> trên merge request branches để bảo vệ cache gốc.</p>
   </div>
@@ -425,4 +433,11 @@ docker manifest push myrepo/app:v1.0.0</code></pre>
 > [!TIP]
 > **Lời khuyên phỏng vấn từ các chuyên gia hàng đầu**:
 > Khi trả lời phỏng vấn kỹ thuật cấp cao, hãy luôn cấu trúc câu trả lời theo công thức **STAR (Situation - Task - Action - Result)** kết hợp với phân tích **Trade-offs (Đánh đổi kỹ thuật)** và số liệu định lượng cụ thể (ví dụ: *Cắt giảm 75% chi phí*, *Rút ngắn pipeline từ 40 phút xuống 6 phút*, *Đạt chuẩn DORA Elite*).
+
+## Tổng Kết & Hoàn Thành Series Đào Tạo
+
+> [!NOTE]
+> **CHÚC MỪNG BẠN ĐÃ HOÀN THÀNH TOÀN BỘ SERIES ĐÀO TẠO GITLAB CI/CD & DEVSECOPS ENTERPRISE MASTERY!**
+> Bạn đã hoàn thành xuất sắc 49 bài học chuyên sâu từ kiến trúc tầng thấp GitLab Runner, cú pháp YAML nâng cao, DevSecOps đa tầng, OIDC Federation đa đám mây, GitOps với Kubernetes/ArgoCD, đến đo lường DORA và chiến lược FinOps cho doanh nghiệp lớn. Hãy áp dụng các kiến trúc và kỹ thuật thực chiến này để xây dựng nền tảng CI/CD vững chắc cho tổ chức của bạn!
+
 {% endraw %}

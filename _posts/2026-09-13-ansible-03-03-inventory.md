@@ -60,9 +60,9 @@ flowchart TD
     MEM --> GRP --> PREC --> PAT
     PAT --> FINAL
 
-    style Sources fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
-    style Parser fill:#0f172a,stroke:#f59e0b,stroke-width:2px,color:#fff
-    style Targeting fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#fff
+    style Sources fill:none,stroke:#38bdf8,stroke-width:2px,color:#fff
+    style Parser fill:none,stroke:#f59e0b,stroke-width:2px,color:#fff
+    style Targeting fill:none,stroke:#10b981,stroke-width:2px,color:#fff
 ```
 
 ### 1.1. Cấu Trúc Phân Cấp Inventory (all, ungrouped & nested groups)
@@ -81,14 +81,14 @@ graph TD
     WEB --> H2["Host: web-node-02 (192.168.1.102)"]
     DB --> H3["Host: db-node-01 (192.168.1.201)"]
 
-    style ALL fill:#334155,stroke:#94a3b8,color:#fff
-    style UNGROUPED fill:#1e293b,stroke:#64748b,color:#fff
-    style DC1 fill:#1e293b,stroke:#38bdf8,color:#fff
-    style WEB fill:#065f46,stroke:#34d399,color:#fff
-    style DB fill:#065f46,stroke:#34d399,color:#fff
-    style H1 fill:#1e293b,stroke:#cbd5e1,color:#fff
-    style H2 fill:#1e293b,stroke:#cbd5e1,color:#fff
-    style H3 fill:#1e293b,stroke:#cbd5e1,color:#fff
+    style ALL fill:none,stroke:#94a3b8,color:#fff
+    style UNGROUPED fill:none,stroke:#64748b,color:#fff
+    style DC1 fill:none,stroke:#38bdf8,color:#fff
+    style WEB fill:none,stroke:#34d399,color:#fff
+    style DB fill:none,stroke:#34d399,color:#fff
+    style H1 fill:none,stroke:#cbd5e1,color:#fff
+    style H2 fill:none,stroke:#cbd5e1,color:#fff
+    style H3 fill:none,stroke:#cbd5e1,color:#fff
 ```
 
 Khi hạ tầng mở rộng, mô hình nhóm lồng nhau (**Group Nesting / Child Groups**) cho phép nhóm các cụm tài nguyên theo vị trí địa lý (`datacenter_hn`, `datacenter_sg`), môi trường (`production`, `staging`), hoặc vai trò nghiệp vụ (`webservers`, `redis_cluster`) mà không phải lặp lại khai báo tên máy.
@@ -229,10 +229,10 @@ flowchart TD
     D --> E["Database Engine bị kill process đột ngột"]
     E --> F["SỰ CỐ SRE: Downtime hệ thống thanh toán Production"]
 
-    style A fill:#7f1d1d,stroke:#f87171,color:#fff
-    style B fill:#7f1d1d,stroke:#f87171,color:#fff
-    style D fill:#7f1d1d,stroke:#f87171,color:#fff
-    style F fill:#7f1d1d,stroke:#f87171,color:#fff
+    style A fill:none,stroke:#f87171,color:#fff
+    style B fill:none,stroke:#f87171,color:#fff
+    style D fill:none,stroke:#f87171,color:#fff
+    style F fill:none,stroke:#f87171,color:#fff
 ```
 
 ### Hậu Quả & Log Lỗi Thực Tế:
@@ -558,42 +558,12 @@ ansible 'web' -m ansible.builtin.copy -a "content='APP_PORT=9090\nCOMPANY=NTKAns
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### Tóm Tắt Các Điểm Cốt Lõi:
-1. **Inventory là Single Source of Truth:** Quản lý chính xác máy chủ nào thuộc về nhóm nào trong toàn bộ vòng đời tự động hóa.
-2. **Cấu trúc Biến Chuẩn Hóa:** Tách biệt triệt để biến ra các thư mục `group_vars/` và `host_vars/`, tuân thủ thứ tự ưu tiên biến.
-3. **Quy tắc An Toàn Host Pattern:** Luôn bọc pattern trong cặp ngoặc đơn `'...'` và rà soát bằng `ansible <pattern> --list-hosts` trước khi nhấn Enter.
-4. **Mô hình Đa Môi Trường:** Tách biệt thư mục inventory theo môi trường (`dev/`, `prod/`) để tái sử dụng 100% mã nguồn Playbook.
-
-```mermaid
-mindmap
-  root((Enterprise Inventory))
-    Inventory Architecture
-      Default Groups: all & ungrouped
-      Nested Child Groups: children
-      Connection Vars: ansible_host, ansible_port
-    Variable Hierarchy
-      group_vars/all.yml
-      group_vars/group_name.yml
-      host_vars/host_name.yml
-      Precedence: host_vars ghi đè group_vars
-    Host Pattern Logic
-      Wildcards: *
-      Union: comma or colon
-      Intersection: &
-      Exclusion: ! (Bọc ngoặc đơn)
-    Vận Hành An Toàn
-      Rà soát với --graph & --list-hosts
-      Đa môi trường với cờ -i
-      Mã hóa biến bí mật qua Ansible Vault
-```
-
----
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 04: Bộ Module Quản Trị Hệ Thống Cốt Lõi & Vận Hành Lệnh Ad-Hoc](ansible-04-04-module-co-ban.html) - Làm chủ toàn diện các module quản lý tệp tin, phân quyền, người dùng, gói dịch vụ và cron job trong thực tế DevOps.
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 04] Làm Chủ Các Modules Cốt Lõi: File, Copy, Template, Package, Service, Command vs Shell vs Raw](ansible-04-04-module-co-ban.html).
 
 {% endraw %}

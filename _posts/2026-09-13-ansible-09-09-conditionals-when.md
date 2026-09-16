@@ -183,8 +183,6 @@ Dưới đây là Playbook mẫu triển khai phần mềm tối ưu cho hạ t�
 Trong một kịch bản cập nhật hệ điều hành tự động cho 500 máy chủ, một kỹ sư viết điều kiện: `when: "{{ is_production }} == true"`. Đồng thời ở một task khác, kỹ sư truy vấn `when: app_config.ssl_enabled == true` nhưng không kiểm tra biến `app_config is defined`.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-- Trình phân giải Jinja2 nội suy chuỗi `{{ is_production }}` thành chuỗi `"true" == true` (so sánh chuỗi với boolean), làm cho điều kiện luôn đánh giá SAI trên môi trường Production, khiến toàn bộ các bản vá bảo mật khẩn cấp bị `skipped` mà không ai biết.
-- Trên các máy chủ mới chưa có cấu hình `app_config`, task bị crash với lỗi nghiêm trọng: `fatal: [target1]: FAILED! => {"msg": "'app_config' is undefined"}` làm dừng toàn bộ đợt cập nhật giữa chừng.
 
 ```diff
 --- site.yml (Broken Conditionals)
@@ -200,6 +198,9 @@ Trong một kịch bản cập nhật hệ điều hành tự động cho 500 m�
 +- name: Enable SSL VirtualHost
 +  when: app_config is defined and app_config.ssl_enabled | default(false) # Sửa: An toàn
 ```
+
+- Trình phân giải Jinja2 nội suy chuỗi `{{ is_production }}` thành chuỗi `"true" == true` (so sánh chuỗi với boolean), làm cho điều kiện luôn đánh giá SAI trên môi trường Production, khiến toàn bộ các bản vá bảo mật khẩn cấp bị `skipped` mà không ai biết.
+- Trên các máy chủ mới chưa có cấu hình `app_config`, task bị crash với lỗi nghiêm trọng: `fatal: [target1]: FAILED! => {"msg": "'app_config' is undefined"}` làm dừng toàn bộ đợt cập nhật giữa chừng.
 
 ```mermaid
 flowchart TD
@@ -720,39 +721,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Tuyệt đối không dùng `{{ }}` trong `when`:** Mệnh đề `when` là biểu thức Jinja2 thô, gọi tên biến trực tiếp.
-2. **Luôn dùng `is defined` bảo vệ:** Kiểm tra biến tồn tại trước khi truy vấn thuộc tính con để tránh lỗi crash Playbook.
-3. **Gom nhóm bằng `block`:** Áp dụng cùng điều kiện cho nhiều task liên tiếp giúp code sạch chuẩn DRY.
-4. **Hiểu đúng trạng thái `SKIPPED`:** Skipped là hành vi logic bình thường, không phải lỗi.
-5. **Đối soát cả 2 nhánh:** Luôn kiểm tra máy thỏa điều kiện có hiện vật và máy bị skipped không bị ghi đè nhầm.
-
-```mermaid
-mindmap
-  root((Conditionals Mastery))
-    Syntax Rules
-      Raw Jinja2 Context
-      Cấm tuyệt đối dấu ngoặc nhọn
-      Toán tử and / or / not
-    Jinja2 Tests
-      is defined / is not defined
-      is changed / is failed
-      is directory / is file
-      Type casting with bool filter
-    Block Architecture
-      Group tasks with block
-      Inherited when conditional
-      Clean DRY code structure
-    Enterprise Verification
-      Skipped state normal behavior
-      assert for pre-requisites
-      Target check both True & False
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 10: Vòng Lặp & Xử Lý Danh Sách: Loop, With_items & Until Retry Logic](ansible-10-10-loops.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 10] Làm Chủ Vòng Lặp & Xử Lý Danh Sách: Loop, Loop_control, List of Hashes & Retry Logic](ansible-10-10-loops.html).
+
 {% endraw %}

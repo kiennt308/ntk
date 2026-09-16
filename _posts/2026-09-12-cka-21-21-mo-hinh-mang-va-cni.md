@@ -426,25 +426,6 @@ graph TD
 | Calico Documentation: Networking | Calico v3.28 | Cấu hình mạng Calico VXLAN, BGP và MTU auto-detection |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Ba quy tắc bất biến trong Mô hình mạng phẳng (Flat Network) | 10 phút |
-| §5 | Kiến trúc CNI (Container Network Interface) và các CNI Plugins (Calico, Flannel, Cilium) | 12 phút |
-| §6 | Đường đi của gói tin IP: Intra-node (`veth` pair) vs Inter-node (VXLAN / BGP) | 12 phút |
-| §7 | MTU mạng và câu lệnh kiểm tra Network Namespace | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| §11 | Câu hỏi tự kiểm tra | 5 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -808,24 +789,11 @@ rm -f /tmp/kube-system-pods.txt /tmp/cni-ds.txt /tmp/pod-ips.txt /tmp/ping-resul
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-21/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Phân tích thư mục cấu hình CNI trên Node | 30 phút |
-| L4 | Bước 2 — Khởi tạo 2 Pods ở 2 Worker Nodes khác nhau | 30 phút |
-| L5 | Bước 3 — Kiểm thử kết nối mạng phẳng Pod-to-Pod Inter-node | 30 phút |
-| L6 | Bước 4 — Kiểm tra thông số card mạng Pod và dọn dẹp | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -839,279 +807,379 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Kubelet ủy quyền việc cài đặt mạng và gán IP cho Pod cho plugin CNI (Container Network Interface) thông qua những thư mục cấu hình và binary chuẩn nào trên Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3 Quy tắc bất biến (Flat Network):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Pod-to-Pod no NAT:</b> Tất cả các Pods có thể giao tiếp với 100% tất cả các Pods khác trong cụm mà KHÔNG CẦN qua kỹ thuật biên dịch địa chỉ mạng (NAT).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Node-to-Pod no NAT:</b> Tất cả các máy chủ Node (bao gồm cả Control Plane và Worker) có thể giao tiếp trực tiếp với 100% tất cả các Pods mà KHÔNG qua NAT.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">IP Consistency:</b> Địa chỉ IP mà một Pod tự nhìn thấy bên trong Network Namespace của chính nó phải ĐỒNG NHẤT 100% với địa chỉ IP mà các Pods khác nhìn thấy khi giao tiếp với nó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiến trúc ủy quyền của Kubelet:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet KHÔNG tự thiết lập mạng cho Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi Pod khởi tạo, Kubelet tìm tệp cấu hình CNI (định dạng <code>.conflist</code> hoặc <code>.json</code>) tại thư mục: <b style="color: var(--accent-primary);"><code>/etc/cni/net.d/</code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet gọi các tệp thực thi binary của CNI plugin (như <code>bridge</code>, <code>flannel</code>, <code>calico</code>, <code>portmap</code>) tại thư mục: <b style="color: var(--accent-primary);"><code>/opt/cni/bin/</code></b> theo các lệnh chuẩn CNI (<code>ADD</code>, <code>DEL</code>, <code>CHECK</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Kubelet tự gán IP cho Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Kubelet gọi CNI nhưng không nhớ đúng 2 đường dẫn thư mục <code>/etc/cni/net.d/</code> và <code>/opt/cni/bin/</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác kiến trúc CNI và 2 đường dẫn thư mục chuẩn <code>/etc/cni/net.d/</code> (chứa config) và <code>/opt/cni/bin/</code> (chứa binary).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra các lệnh CNI spec (<code>ADD</code>, <code>DEL</code>).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Chuyện gì xảy ra nếu thư mục <code>/etc/cni/net.d/</code> bị rỗng không chứa tệp cấu hình nào? *(Đáp án: Kubelet không thể tạo Pod và Node sẽ bị kẹt trạng thái <code>NotReady</code> với lỗi <code>NetworkPluginNotReady</code>).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được quy tắc nào.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được Pod giao tiếp không qua NAT nhưng thiếu quy tắc Node-to-Pod và tính đồng nhất IP (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phát biểu chuẩn xác đầy đủ 3 quy tắc bất biến của Mô hình mạng phẳng Kubernetes.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra sự khác biệt với mô hình Docker port-mapping mặc định.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao mô hình Docker mặc định lại không phải là Flat Network? *(Đáp án: Vì Docker dùng bridge network nội bộ riêng trên mỗi host và bắt buộc dùng NAT / Port mapping <code>8080:80</code> để giao tiếp ra bên ngoài).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>So sánh đặc điểm kĩ thuật và trường hợp sử dụng của 3 CNI Plugins phổ biến: <code>Flannel</code>, <code>Calico</code>, và <code>Cilium</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Flannel</code> (Đơn giản nhất):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Đặc điểm:* Chỉ cung cấp mạng L3 đơn giản bằng Overlay VXLAN hoặc <code>host-gw</code>. <b style="color: var(--accent-primary);">KHÔNG hỗ trợ đối tượng <code>NetworkPolicy</code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Phù hợp cho cụm lab nhỏ hoặc thử nghiệm ban đầu.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Calico</code> (Chuẩn CKA & Doanh nghiệp):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Đặc điểm:* Hỗ trợ cả mạng Overlay (VXLAN/IPIP) và Direct Routing (BGP). Hỗ trợ đầy đủ <b style="color: var(--accent-primary);">NetworkPolicy L3/L4</b> với hiệu năng cao.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Phù hợp cho đa số các cụm sản xuất doanh nghiệp và bài thi CKA.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Cilium</code> (Tiên tiến nhất):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Đặc điểm:* Dựa trên công nghệ <b style="color: var(--accent-primary);">eBPF Kernel</b> (thay thế iptables/IPVS), hỗ trợ NetworkPolicy L3/L4/L7 (HTTP/gRPC filtering) và quan sát mạng thời gian thực (Hubble).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Phù hợp cho hạ tầng siêu lớn nhạy cảm băng thông và bảo mật L7.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không phân biệt được 3 CNI.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Flannel đơn giản còn Calico/Cilium xịn hơn nhưng không nêu được tính năng NetworkPolicy và công nghệ eBPF.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 3 CNI: Flannel (không Policy), Calico (BGP/VXLAN & Policy L3/L4), Cilium (eBPF Kernel & Policy L7).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do bài thi CKA dùng Calico.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao tạo <code>NetworkPolicy</code> trên cụm dùng CNI Flannel lại không có bất kỳ tác dụng cấm traffic nào? *(Đáp án: Vì Flannel không chứa controller lắng nghe và áp dụng các rule NetworkPolicy).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Trình bày chi tiết đường đi của gói tin IP khi 2 Pods nằm trên CÙNG MỘT NODE (Intra-node packet flow).</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Luồng đi gói tin Intra-node:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gói tin IP rời khỏi Network Namespace của Pod A qua interface <code>veth0</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gói tin đi qua cặp card mạng ảo <code>veth</code> pair, chui ra đầu kia là card <code>vethXXXX</code> nằm trong Host Namespace của Node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Từ <code>vethXXXX</code>, gói tin đi qua thiết bị cầu nối ảo (Linux Bridge <code>cni0</code> / eBPF map) nằm trên Host.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cầu nối ảo tra bảng MAC/IP và chuyển thẳng gói tin vào card <code>vethYYYY</code> nối với Pod B.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gói tin đi qua <code>vethYYYY</code> chui vào interface <code>veth0</code> của Pod B.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Đặc điểm:</b> Gói tin chuyển tiếp 100% nội bộ trong Kernel/RAM của Node, <b style="color: var(--accent-primary);">KHÔNG ĐI RA CARD MẠNG VẬT LÝ <code>eth0</code></b>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo gói tin vẫn đi ra card mạng vật lý <code>eth0</code> rồi quay lại.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời đi qua veth pair nhưng thiếu thiết bị cầu nối ảo Linux Bridge / eBPF map (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày chuẩn xác 5 bước luồng đi gói tin qua <code>veth</code> pair và khẳng định không đi ra card mạng vật lý <code>eth0</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc bắt gói tin qua <code>tcpdump</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao gõ <code>tcpdump -i eth0</code> trên Host lại không bắt được gói tin giao tiếp giữa 2 Pods cùng Node? *(Đáp án: Vì gói tin được chuyển tiếp ngay tại Linux Bridge/eBPF, không chạm tới card <code>eth0</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trình bày cơ chế đóng gói (Encapsulation) và giải nén (Decapsulation) khi gói tin đi giữa 2 Pods ở KHÁC NODE (Inter-node Overlay Network).</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế đóng gói (Node 1 - Sender):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gói tin IP gốc của Pod A (Src: Pod A IP, Dst: Pod C IP) rời Pod A chui ra Host Node 1.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CNI trên Node 1 nhận gói tin và thực hiện <b style="color: var(--accent-primary);">Encapsulation</b>: nhét toàn bộ gói tin IP gốc vào bên trong phần payload của một <b style="color: var(--accent-primary);">gói tin UDP outer</b> (Src: Node 1 IP, Dst: Node 2 IP, Dst Port: <b style="color: var(--accent-primary);">4789</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gói tin UDP outer được gửi qua card mạng vật lý <code>eth0</code> của Node 1 ra dây mạng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế giải nén (Node 2 - Receiver):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Card <code>eth0</code> của Node 2 nhận gói tin UDP cổng 4789.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CNI trên Node 2 thực hiện <b style="color: var(--accent-primary);">Decapsulation</b>: bóc bỏ lớp vỏ UDP outer, lấy lại gói tin IP gốc của Pod A.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gói tin IP gốc được chuyển tiếp vào <code>vethYYYY</code> của Pod C.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được đóng gói Overlay.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời có đóng gói gói tin nhưng không nêu được outer UDP packet, cổng 4789 VXLAN và quy trình Decapsulation tại Node 2.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác quy trình Encapsulation (gói IP gốc nhét vào outer UDP packet port 4789) và Decapsulation tại Node 2.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra dung lượng overhead 50 bytes.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu cổng UDP <code>4789</code> bị tường lửa chặn thì hai Pods ở 2 Node khác nhau có kết nối được với nhau không? *(Đáp án: Không kết nối được, gói tin đóng gói bị tường lửa thả drop).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cơ chế định tuyến trực tiếp Direct Routing (như Calico BGP / Flannel <code>host-gw</code>) khác gì so với Overlay VXLAN về mặt hiệu năng và dung lượng MTU?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Overlay VXLAN (Mạng phủ chồng):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đóng gói gói tin IP gốc vào gói UDP outer -> Tốn <b style="color: var(--accent-primary);">50 bytes overhead</b> (MTU giảm từ <code>1500</code> xuống <b style="color: var(--accent-primary);"><code>1450</code> bytes</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tốn CPU Node để đóng gói và xé gói -> Hiệu năng giảm khoảng 10-15%.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Direct Routing (BGP / <code>host-gw</code>):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gói tin IP của Pod được đẩy trực tiếp ra card <code>eth0</code> dựa vào bảng IP route của Node mà KHÔNG bị đóng gói (<b style="color: var(--accent-primary);">No Encapsulation</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tốn <b style="color: var(--accent-primary);">0 byte overhead</b> (MTU giữ nguyên <b style="color: var(--accent-primary);"><code>1500</code> bytes</b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hiệu năng đạt tối đa 100% tốc độ phần cứng card mạng vật lý.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Direct Routing chậm hơn VXLAN.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Direct Routing nhanh hơn nhưng không nêu được con số 0 byte overhead vs 50 bytes overhead MTU <code>1450</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Overlay (50 bytes overhead, MTU 1450, tốn CPU) vs Direct Routing (0 byte overhead, MTU 1500, max throughput).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra điều kiện Direct Routing yêu cầu các Node nằm cùng Subnet Layer 2.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi nào bắt buộc phải dùng Overlay VXLAN mà không dùng được Flannel <code>host-gw</code>? *(Đáp án: Khi các Worker Nodes nằm ở các Subnet Layer 3 khác nhau phân cách bởi Router).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao nếu đặt MTU của card mạng Pod bằng <code>1500</code> bytes trong mạng Overlay VXLAN lại gây ra hiện tượng rớt gói tin IP (Packet Drop/Fragmentation) khi ứng dụng truyền file lớn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân toán học:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Card mạng vật lý <code>eth0</code> của Node có MTU tối đa là <b style="color: var(--accent-primary);">1500 bytes</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mạng Overlay VXLAN tiêu tốn <b style="color: var(--accent-primary);">50 bytes header</b> cho gói đóng gói UDP.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu Pod gửi một gói tin có kích thước đúng <b style="color: var(--accent-primary);">1500 bytes</b>, khi CNI đóng gói VXLAN thêm 50 bytes, tổng dung lượng gói tin vọt lên thành <b style="color: var(--accent-primary);">1550 bytes</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả:</b> Gói tin <code>1550</code> bytes vượt quá MTU 1500 của card vật lý <code>eth0</code>, dẫn tới việc gói tin bị phân mảnh (Fragmentation) hoặc bị card mạng thả ngắt kết nối (Packet Drop), làm ứng dụng bị treo đứng khi truyền file lớn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được nguyên nhân MTU.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do quá dung lượng nhưng không tính được bài toán 1500 + 50 = 1550 bytes vượt quá MTU physical <code>1500</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác phép cộng MTU (1500 + 50 = 1550 > 1500 physical) làm rớt gói tin IP và giải pháp đặt MTU Pod = 1450.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ với lệnh <code>curl</code> file lớn.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để CNI tự động phát hiện và đặt đúng MTU cho Pod? *(Đáp án: CNI tự động đo MTU của card <code>eth0</code> vật lý và trừ đi 50 bytes để gán cho interface Pod).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh CLI <code>crictl inspectp</code> giúp ích gì cho kỹ sư DevOps khi chẩn đoán sự cố mạng của một Pod không chứa shell (Distroless / Scratch container)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Công dụng của <code>crictl inspectp</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Với các container tối giản (Distroless / Scratch), container không có shell (<code>sh</code>/<code>bash</code>) và không có các công cụ mạng (<code>ip</code>, <code>ping</code>, <code>tcpdump</code>) để <code>kubectl exec</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh <code>crictl inspectp --id <pod-sandbox-id></code> cho phép trích xuất đường dẫn tệp <b style="color: var(--accent-primary);">Network Namespace của Pod Sandbox</b> (ví dụ <code>/proc/<PID>/ns/net</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chẩn đoán nâng cao:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kỹ sư dùng lệnh <code>nsenter --net=<netns-path> ip a</code> hoặc <code>tcpdump</code> trực tiếp từ máy chủ Host để soi mạng bên trong Pod mà không cần cài bất kỳ công cụ nào vào container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết lệnh <code>crictl inspectp</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dùng xem thông tin Pod nhưng không nêu được kỹ thuật lấy đường dẫn NetNS kết hợp với <code>nsenter</code> / <code>tcpdump</code> từ Host.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác việc trích xuất Network Namespace của Pod Sandbox để dùng <code>nsenter</code>/<code>tcpdump</code> soi mạng container Distroless.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ câu lệnh <code>crictl inspectp</code> và <code>nsenter</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Sandbox Container (Pause Container) đóng vai trò gì trong việc giữ Network Namespace cho Pod? *(Đáp án: Pause container khởi tạo đầu tiên để giữ IP và Network Namespace cho tất cả các container khác trong Pod dùng chung).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cụm Kubernetes <code>kubeadm</code> mới khởi tạo thành công Control Plane nhưng tất cả các Node vẫn ở trạng thái <code>NotReady</code>. Nguyên nhân là gì và câu lệnh nào giải quyết trong 2 giây?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Công cụ <code>kubeadm</code> theo thiết kế KHÔNG cài đặt sẵn CNI Plugin.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tiến trình Kubelet kiểm tra thư mục <code>/etc/cni/net.d/</code> thấy rỗng, báo lỗi <code>NetworkPluginNotReady</code> và giữ nguyên trạng thái Node là <code>NotReady</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách giải quyết:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cài đặt một CNI Plugin (như Calico) bằng lệnh apply manifest:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ngay khi CNI Pods khởi chạy, Kubelet ghi nhận tệp cấu hình CNI và chuyển 100% các Node sang trạng thái <code>Ready</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo do master node bị lỗi crash.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do thiếu CNI nhưng không giải thích được cơ chế Kubelet kiểm tra <code>/etc/cni/net.d/</code> và lỗi <code>NetworkPluginNotReady</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguyên nhân thiếu CNI Plugin khiến Kubelet báo <code>NetworkPluginNotReady</code> và câu lệnh <code>kubectl apply</code> cài CNI Calico.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra thời gian Node chuyển Ready sau khi apply CNI.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có thể tạo Pods trên Node khi Node đang ở trạng thái <code>NotReady</code> do thiếu CNI không? *(Đáp án: Không, Pods sẽ bị kẹt trạng thái <code>Pending</code> hoặc <code>ContainerCreating</code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác nhau giữa Pod IP và Node IP trong mô hình mạng Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Pod IP</code> (Địa chỉ IP nội bộ Pod):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Do CNI plugin tự động cấp phát từ dải <code>Pod CIDR</code> (ví dụ <code>10.244.1.15</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tính chất Ephemeral (Tạm thời):</b> Pod IP sẽ thay đổi hoàn toàn mỗi khi Pod bị restart, crash hoặc reschedule sang Node khác.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ có thể truy cập nội bộ bên trong cụm (trừ khi dùng BGP Direct Routing).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Node IP</code> (Địa chỉ IP máy chủ thực):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Do hạ tầng mạng vật lý / Cloud Provider cấp cho máy chủ (ví dụ <code>192.168.1.10</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tính chất Static (Cố định):</b> Duy trì ổn định suốt vòng đời máy chủ Node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng cho quản trị SSH, Kubelet API và giao tiếp giữa các Node với nhau.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Pod IP và Node IP là một.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Pod IP của Pod còn Node IP của Node nhưng không nêu được tính chất Ephemeral của Pod IP và dải Pod CIDR.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Pod IP (do CNI cấp từ Pod CIDR, tạm thời Ephemeral) vs Node IP (IP máy chủ cố định, tĩnh).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do không dùng Pod IP trực tiếp cho client bên ngoài mà phải qua Service.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao không nên cấu hình ứng dụng phía ngoài truy cập trực tiếp vào Pod IP? *(Đáp án: Vì Pod IP là Ephemeral sẽ bị thay đổi khi Pod bị xoá tạo lại).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để kiểm tra danh sách các cặp card mạng ảo <code>veth</code> pair đang kết nối các Pods vào Host trên Worker Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh kiểm tra trên Host Node:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chạy lệnh <code>ip link show</code> hoặc <code>ip link show type veth</code> trên máy chủ Host.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kết quả hiển thị danh sách các interface dạng <code>vethXXXX@if2</code> đại diện cho một đầu của cặp <code>veth</code> pair cắm vào Host Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Xác định veth tương ứng với Pod:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Exec vào Pod chạy <code>cat /sys/class/net/eth0/iflink</code> lấy số index (ví dụ <code>15</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trên Host chạy <code>ip link | grep "^15:"</code> sẽ tìm thấy chính xác tên interface <code>vethXXXX</code> tương ứng của Pod đó.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết lệnh xem veth pair.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>ip link</code> nhưng không biết cách đối chiếu số index <code>iflink</code> để tìm đúng card <code>veth</code> của Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lệnh <code>ip link show type veth</code> và kỹ thuật trích xuất <code>iflink</code> để tìm card veth tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ thao tác thực tế.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi Pod bị xoá thì card <code>vethXXXX</code> tương ứng trên Host có bị xoá theo không? *(Đáp án: CNI tự động xoá card <code>vethXXXX</code> trên Host ngay khi Pod bị tiêu diệt).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do rớt gói tin lớn vì đặt sai MTU VXLAN = 1500, 1 âm thầm do Node kẹt NotReady vì thiếu CNI plugin) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Rớt gói tin IP khi truyền file lớn do MTU Pod đặt bằng 1500 trong mạng VXLAN):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Pod A gọi API nhỏ sang Pod B thì OK, nhưng khi upload file > 1,4KB thì kết nối bị treo đứng vô hạn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Exec vào Pod kiểm tra <code>ip link show dev eth0</code> thấy MTU = <code>1500</code>; gói tin 1500 + 50 bytes VXLAN = 1550 vượt MTU physical.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa cấu hình CNI đặt <code>mtu: 1450</code> cho Pod network.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Tất cả các Node bị kẹt ở trạng thái <code>NotReady</code> sau khi init cụm kubeadm):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Gõ <code>kubectl get nodes</code> thấy 100% các Node báo <code>NotReady</code>, không thể khởi tạo bất kỳ Pod ứng dụng nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl describe node cp-01</code> thấy log <code>NetworkPluginNotReady: network plugin is not ready: cni config uninitialized</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Apply file YAML CNI plugin (như Calico) để Kubelet nạp cấu hình mạng.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân MTU 1550 bytes và lỗi Kubelet uninitialized (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi Pod dính lỗi rớt gói MTU, câu lệnh <code>ping</code> nào giúp kiểm chứng chính xác giới hạn kích thước gói tin? *(Đáp án: Lệnh <code>ping -s 1420 -M do <IP-target></code> cấm phân mảnh).*
+
 ---
 
-### Câu 2 — ★★★
-
-**Hỏi:** Kubelet ủy quyền việc cài đặt mạng và gán IP cho Pod cho plugin CNI (Container Network Interface) thông qua những thư mục cấu hình và binary chuẩn nào trên Node?
-
-**Đáp án chuẩn:**
-- **Kiến trúc ủy quyền của Kubelet:**
-  - Kubelet KHÔNG tự thiết lập mạng cho Pod.
-  - Khi Pod khởi tạo, Kubelet tìm tệp cấu hình CNI (định dạng `.conflist` hoặc `.json`) tại thư mục: **`/etc/cni/net.d/`**.
-  - Kubelet gọi các tệp thực thi binary của CNI plugin (như `bridge`, `flannel`, `calico`, `portmap`) tại thư mục: **`/opt/cni/bin/`** theo các lệnh chuẩn CNI (`ADD`, `DEL`, `CHECK`).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Kubelet tự gán IP cho Pod.
-- **1đ:** Trả lời Kubelet gọi CNI nhưng không nhớ đúng 2 đường dẫn thư mục `/etc/cni/net.d/` và `/opt/cni/bin/`.
-- **2đ:** Giải thích chuẩn xác kiến trúc CNI và 2 đường dẫn thư mục chuẩn `/etc/cni/net.d/` (chứa config) và `/opt/cni/bin/` (chứa binary).
-- **3đ:** Trả lời xuất sắc, chỉ ra các lệnh CNI spec (`ADD`, `DEL`).
-
-**Câu hỏi đào sâu:** Chuyện gì xảy ra nếu thư mục `/etc/cni/net.d/` bị rỗng không chứa tệp cấu hình nào? *(Đáp án: Kubelet không thể tạo Pod và Node sẽ bị kẹt trạng thái `NotReady` với lỗi `NetworkPluginNotReady`).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** So sánh đặc điểm kĩ thuật và trường hợp sử dụng của 3 CNI Plugins phổ biến: `Flannel`, `Calico`, và `Cilium`.
-
-**Đáp án chuẩn:**
-- **`Flannel` (Đơn giản nhất):**
-  - *Đặc điểm:* Chỉ cung cấp mạng L3 đơn giản bằng Overlay VXLAN hoặc `host-gw`. **KHÔNG hỗ trợ đối tượng `NetworkPolicy`**.
-  - *Ứng dụng:* Phù hợp cho cụm lab nhỏ hoặc thử nghiệm ban đầu.
-- **`Calico` (Chuẩn CKA & Doanh nghiệp):**
-  - *Đặc điểm:* Hỗ trợ cả mạng Overlay (VXLAN/IPIP) và Direct Routing (BGP). Hỗ trợ đầy đủ **NetworkPolicy L3/L4** với hiệu năng cao.
-  - *Ứng dụng:* Phù hợp cho đa số các cụm sản xuất doanh nghiệp và bài thi CKA.
-- **`Cilium` (Tiên tiến nhất):**
-  - *Đặc điểm:* Dựa trên công nghệ **eBPF Kernel** (thay thế iptables/IPVS), hỗ trợ NetworkPolicy L3/L4/L7 (HTTP/gRPC filtering) và quan sát mạng thời gian thực (Hubble).
-  - *Ứng dụng:* Phù hợp cho hạ tầng siêu lớn nhạy cảm băng thông và bảo mật L7.
-
-**Tiêu chí chấm:**
-- **0đ:** Không phân biệt được 3 CNI.
-- **1đ:** Trả lời Flannel đơn giản còn Calico/Cilium xịn hơn nhưng không nêu được tính năng NetworkPolicy và công nghệ eBPF.
-- **2đ:** Phân tích chuẩn xác 3 CNI: Flannel (không Policy), Calico (BGP/VXLAN & Policy L3/L4), Cilium (eBPF Kernel & Policy L7).
-- **3đ:** Trả lời xuất sắc, chỉ ra lý do bài thi CKA dùng Calico.
-
-**Câu hỏi đào sâu:** Tại sao tạo `NetworkPolicy` trên cụm dùng CNI Flannel lại không có bất kỳ tác dụng cấm traffic nào? *(Đáp án: Vì Flannel không chứa controller lắng nghe và áp dụng các rule NetworkPolicy).*
-
----
-
-### Câu 4 — 🔥
-
-**Hỏi:** Trình bày chi tiết đường đi của gói tin IP khi 2 Pods nằm trên CÙNG MỘT NODE (Intra-node packet flow).
-
-**Đáp án chuẩn:**
-- **Luồng đi gói tin Intra-node:**
-  1. Gói tin IP rời khỏi Network Namespace của Pod A qua interface `veth0`.
-  2. Gói tin đi qua cặp card mạng ảo `veth` pair, chui ra đầu kia là card `vethXXXX` nằm trong Host Namespace của Node.
-  3. Từ `vethXXXX`, gói tin đi qua thiết bị cầu nối ảo (Linux Bridge `cni0` / eBPF map) nằm trên Host.
-  4. Cầu nối ảo tra bảng MAC/IP và chuyển thẳng gói tin vào card `vethYYYY` nối với Pod B.
-  5. Gói tin đi qua `vethYYYY` chui vào interface `veth0` của Pod B.
-- **Đặc điểm:** Gói tin chuyển tiếp 100% nội bộ trong Kernel/RAM của Node, **KHÔNG ĐI RA CARD MẠNG VẬT LÝ `eth0`**.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo gói tin vẫn đi ra card mạng vật lý `eth0` rồi quay lại.
-- **1đ:** Trả lời đi qua veth pair nhưng thiếu thiết bị cầu nối ảo Linux Bridge / eBPF map (dính trần 1đ).
-- **2đ:** Trình bày chuẩn xác 5 bước luồng đi gói tin qua `veth` pair và khẳng định không đi ra card mạng vật lý `eth0`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc bắt gói tin qua `tcpdump`.
-
-**Câu hỏi đào sâu:** Tại sao gõ `tcpdump -i eth0` trên Host lại không bắt được gói tin giao tiếp giữa 2 Pods cùng Node? *(Đáp án: Vì gói tin được chuyển tiếp ngay tại Linux Bridge/eBPF, không chạm tới card `eth0`).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Trình bày cơ chế đóng gói (Encapsulation) và giải nén (Decapsulation) khi gói tin đi giữa 2 Pods ở KHÁC NODE (Inter-node Overlay Network).
-
-**Đáp án chuẩn:**
-- **Cơ chế đóng gói (Node 1 - Sender):**
-  - Gói tin IP gốc của Pod A (Src: Pod A IP, Dst: Pod C IP) rời Pod A chui ra Host Node 1.
-  - CNI trên Node 1 nhận gói tin và thực hiện **Encapsulation**: nhét toàn bộ gói tin IP gốc vào bên trong phần payload của một **gói tin UDP outer** (Src: Node 1 IP, Dst: Node 2 IP, Dst Port: **4789**).
-  - Gói tin UDP outer được gửi qua card mạng vật lý `eth0` của Node 1 ra dây mạng.
-- **Cơ chế giải nén (Node 2 - Receiver):**
-  - Card `eth0` của Node 2 nhận gói tin UDP cổng 4789.
-  - CNI trên Node 2 thực hiện **Decapsulation**: bóc bỏ lớp vỏ UDP outer, lấy lại gói tin IP gốc của Pod A.
-  - Gói tin IP gốc được chuyển tiếp vào `vethYYYY` của Pod C.
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được đóng gói Overlay.
-- **1đ:** Trả lời có đóng gói gói tin nhưng không nêu được outer UDP packet, cổng 4789 VXLAN và quy trình Decapsulation tại Node 2.
-- **2đ:** Giải thích chuẩn xác quy trình Encapsulation (gói IP gốc nhét vào outer UDP packet port 4789) và Decapsulation tại Node 2.
-- **3đ:** Trả lời xuất sắc, chỉ ra dung lượng overhead 50 bytes.
-
-**Câu hỏi đào sâu:** Nếu cổng UDP `4789` bị tường lửa chặn thì hai Pods ở 2 Node khác nhau có kết nối được với nhau không? *(Đáp án: Không kết nối được, gói tin đóng gói bị tường lửa thả drop).*
-
----
-
-### Câu 6 — ★★★
-
-**Hỏi:** Cơ chế định tuyến trực tiếp Direct Routing (như Calico BGP / Flannel `host-gw`) khác gì so với Overlay VXLAN về mặt hiệu năng và dung lượng MTU?
-
-**Đáp án chuẩn:**
-- **Overlay VXLAN (Mạng phủ chồng):**
-  - Đóng gói gói tin IP gốc vào gói UDP outer -> Tốn **50 bytes overhead** (MTU giảm từ `1500` xuống **`1450` bytes**).
-  - Tốn CPU Node để đóng gói và xé gói -> Hiệu năng giảm khoảng 10-15%.
-- **Direct Routing (BGP / `host-gw`):**
-  - Gói tin IP của Pod được đẩy trực tiếp ra card `eth0` dựa vào bảng IP route của Node mà KHÔNG bị đóng gói (**No Encapsulation**).
-  - Tốn **0 byte overhead** (MTU giữ nguyên **`1500` bytes**).
-  - Hiệu năng đạt tối đa 100% tốc độ phần cứng card mạng vật lý.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Direct Routing chậm hơn VXLAN.
-- **1đ:** Trả lời Direct Routing nhanh hơn nhưng không nêu được con số 0 byte overhead vs 50 bytes overhead MTU `1450`.
-- **2đ:** Phân tích chuẩn xác Overlay (50 bytes overhead, MTU 1450, tốn CPU) vs Direct Routing (0 byte overhead, MTU 1500, max throughput).
-- **3đ:** Trả lời xuất sắc, chỉ ra điều kiện Direct Routing yêu cầu các Node nằm cùng Subnet Layer 2.
-
-**Câu hỏi đào sâu:** Khi nào bắt buộc phải dùng Overlay VXLAN mà không dùng được Flannel `host-gw`? *(Đáp án: Khi các Worker Nodes nằm ở các Subnet Layer 3 khác nhau phân cách bởi Router).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Tại sao nếu đặt MTU của card mạng Pod bằng `1500` bytes trong mạng Overlay VXLAN lại gây ra hiện tượng rớt gói tin IP (Packet Drop/Fragmentation) khi ứng dụng truyền file lớn?
-
-**Đáp án chuẩn:**
-- **Nguyên nhân toán học:**
-  - Card mạng vật lý `eth0` của Node có MTU tối đa là **1500 bytes**.
-  - Mạng Overlay VXLAN tiêu tốn **50 bytes header** cho gói đóng gói UDP.
-  - Nếu Pod gửi một gói tin có kích thước đúng **1500 bytes**, khi CNI đóng gói VXLAN thêm 50 bytes, tổng dung lượng gói tin vọt lên thành **1550 bytes**.
-- **Hệ quả:** Gói tin `1550` bytes vượt quá MTU 1500 của card vật lý `eth0`, dẫn tới việc gói tin bị phân mảnh (Fragmentation) hoặc bị card mạng thả ngắt kết nối (Packet Drop), làm ứng dụng bị treo đứng khi truyền file lớn.
-
-**Tiêu chí chấm:**
-- **0đ:** Không giải thích được nguyên nhân MTU.
-- **1đ:** Trả lời do quá dung lượng nhưng không tính được bài toán 1500 + 50 = 1550 bytes vượt quá MTU physical `1500`.
-- **2đ:** Giải thích chuẩn xác phép cộng MTU (1500 + 50 = 1550 > 1500 physical) làm rớt gói tin IP và giải pháp đặt MTU Pod = 1450.
-- **3đ:** Trả lời xuất sắc, minh hoạ với lệnh `curl` file lớn.
-
-**Câu hỏi đào sâu:** Làm sao để CNI tự động phát hiện và đặt đúng MTU cho Pod? *(Đáp án: CNI tự động đo MTU của card `eth0` vật lý và trừ đi 50 bytes để gán cho interface Pod).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Lệnh CLI `crictl inspectp` giúp ích gì cho kỹ sư DevOps khi chẩn đoán sự cố mạng của một Pod không chứa shell (Distroless / Scratch container)?
-
-**Đáp án chuẩn:**
-- **Công dụng của `crictl inspectp`:**
-  - Với các container tối giản (Distroless / Scratch), container không có shell (`sh`/`bash`) và không có các công cụ mạng (`ip`, `ping`, `tcpdump`) để `kubectl exec`.
-  - Lệnh `crictl inspectp --id <pod-sandbox-id>` cho phép trích xuất đường dẫn tệp **Network Namespace của Pod Sandbox** (ví dụ `/proc/<PID>/ns/net`).
-- **Chẩn đoán nâng cao:**
-  - Kỹ sư dùng lệnh `nsenter --net=<netns-path> ip a` hoặc `tcpdump` trực tiếp từ máy chủ Host để soi mạng bên trong Pod mà không cần cài bất kỳ công cụ nào vào container.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết lệnh `crictl inspectp`.
-- **1đ:** Trả lời dùng xem thông tin Pod nhưng không nêu được kỹ thuật lấy đường dẫn NetNS kết hợp với `nsenter` / `tcpdump` từ Host.
-- **2đ:** Giải thích chuẩn xác việc trích xuất Network Namespace của Pod Sandbox để dùng `nsenter`/`tcpdump` soi mạng container Distroless.
-- **3đ:** Trả lời xuất sắc, minh hoạ câu lệnh `crictl inspectp` và `nsenter`.
-
-**Câu hỏi đào sâu:** Sandbox Container (Pause Container) đóng vai trò gì trong việc giữ Network Namespace cho Pod? *(Đáp án: Pause container khởi tạo đầu tiên để giữ IP và Network Namespace cho tất cả các container khác trong Pod dùng chung).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Cụm Kubernetes `kubeadm` mới khởi tạo thành công Control Plane nhưng tất cả các Node vẫn ở trạng thái `NotReady`. Nguyên nhân là gì và câu lệnh nào giải quyết trong 2 giây?
-
-**Đáp án chuẩn:**
-- **Nguyên nhân:**
-  - Công cụ `kubeadm` theo thiết kế KHÔNG cài đặt sẵn CNI Plugin.
-  - Tiến trình Kubelet kiểm tra thư mục `/etc/cni/net.d/` thấy rỗng, báo lỗi `NetworkPluginNotReady` và giữ nguyên trạng thái Node là `NotReady`.
-- **Cách giải quyết:**
-  - Cài đặt một CNI Plugin (như Calico) bằng lệnh apply manifest:
-    `kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml`
-  - Ngay khi CNI Pods khởi chạy, Kubelet ghi nhận tệp cấu hình CNI và chuyển 100% các Node sang trạng thái `Ready`.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo do master node bị lỗi crash.
-- **1đ:** Trả lời do thiếu CNI nhưng không giải thích được cơ chế Kubelet kiểm tra `/etc/cni/net.d/` và lỗi `NetworkPluginNotReady`.
-- **2đ:** Giải thích chuẩn xác nguyên nhân thiếu CNI Plugin khiến Kubelet báo `NetworkPluginNotReady` và câu lệnh `kubectl apply` cài CNI Calico.
-- **3đ:** Trả lời xuất sắc, chỉ ra thời gian Node chuyển Ready sau khi apply CNI.
-
-**Câu hỏi đào sâu:** Có thể tạo Pods trên Node khi Node đang ở trạng thái `NotReady` do thiếu CNI không? *(Đáp án: Không, Pods sẽ bị kẹt trạng thái `Pending` hoặc `ContainerCreating`).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Sự khác nhau giữa Pod IP và Node IP trong mô hình mạng Kubernetes là gì?
-
-**Đáp án chuẩn:**
-- **`Pod IP` (Địa chỉ IP nội bộ Pod):**
-  - Do CNI plugin tự động cấp phát từ dải `Pod CIDR` (ví dụ `10.244.1.15`).
-  - **Tính chất Ephemeral (Tạm thời):** Pod IP sẽ thay đổi hoàn toàn mỗi khi Pod bị restart, crash hoặc reschedule sang Node khác.
-  - Chỉ có thể truy cập nội bộ bên trong cụm (trừ khi dùng BGP Direct Routing).
-- **`Node IP` (Địa chỉ IP máy chủ thực):**
-  - Do hạ tầng mạng vật lý / Cloud Provider cấp cho máy chủ (ví dụ `192.168.1.10`).
-  - **Tính chất Static (Cố định):** Duy trì ổn định suốt vòng đời máy chủ Node.
-  - Dùng cho quản trị SSH, Kubelet API và giao tiếp giữa các Node với nhau.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Pod IP và Node IP là một.
-- **1đ:** Trả lời Pod IP của Pod còn Node IP của Node nhưng không nêu được tính chất Ephemeral của Pod IP và dải Pod CIDR.
-- **2đ:** Phân tích chuẩn xác Pod IP (do CNI cấp từ Pod CIDR, tạm thời Ephemeral) vs Node IP (IP máy chủ cố định, tĩnh).
-- **3đ:** Trả lời xuất sắc, chỉ ra lý do không dùng Pod IP trực tiếp cho client bên ngoài mà phải qua Service.
-
-**Câu hỏi đào sâu:** Tại sao không nên cấu hình ứng dụng phía ngoài truy cập trực tiếp vào Pod IP? *(Đáp án: Vì Pod IP là Ephemeral sẽ bị thay đổi khi Pod bị xoá tạo lại).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Làm thế nào để kiểm tra danh sách các cặp card mạng ảo `veth` pair đang kết nối các Pods vào Host trên Worker Node?
-
-**Đáp án chuẩn:**
-- **Câu lệnh kiểm tra trên Host Node:**
-  - Chạy lệnh `ip link show` hoặc `ip link show type veth` trên máy chủ Host.
-  - Kết quả hiển thị danh sách các interface dạng `vethXXXX@if2` đại diện cho một đầu của cặp `veth` pair cắm vào Host Namespace.
-- **Xác định veth tương ứng với Pod:**
-  - Exec vào Pod chạy `cat /sys/class/net/eth0/iflink` lấy số index (ví dụ `15`).
-  - Trên Host chạy `ip link | grep "^15:"` sẽ tìm thấy chính xác tên interface `vethXXXX` tương ứng của Pod đó.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết lệnh xem veth pair.
-- **1đ:** Trả lời `ip link` nhưng không biết cách đối chiếu số index `iflink` để tìm đúng card `veth` của Pod.
-- **2đ:** Giải thích chuẩn xác lệnh `ip link show type veth` và kỹ thuật trích xuất `iflink` để tìm card veth tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ thao tác thực tế.
-
-**Câu hỏi đào sâu:** Khi Pod bị xoá thì card `vethXXXX` tương ứng trên Host có bị xoá theo không? *(Đáp án: CNI tự động xoá card `vethXXXX` trên Host ngay khi Pod bị tiêu diệt).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do rớt gói tin lớn vì đặt sai MTU VXLAN = 1500, 1 âm thầm do Node kẹt NotReady vì thiếu CNI plugin) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Rớt gói tin IP khi truyền file lớn do MTU Pod đặt bằng 1500 trong mạng VXLAN):**
-   - *Triệu chứng:* Pod A gọi API nhỏ sang Pod B thì OK, nhưng khi upload file > 1,4KB thì kết nối bị treo đứng vô hạn.
-   - *Phát hiện:* Exec vào Pod kiểm tra `ip link show dev eth0` thấy MTU = `1500`; gói tin 1500 + 50 bytes VXLAN = 1550 vượt MTU physical.
-   - *Khắc phục:* Sửa cấu hình CNI đặt `mtu: 1450` cho Pod network.
-2. **Chế độ hỏng 2 (Âm thầm - Tất cả các Node bị kẹt ở trạng thái `NotReady` sau khi init cụm kubeadm):**
-   - *Triệu chứng:* Gõ `kubectl get nodes` thấy 100% các Node báo `NotReady`, không thể khởi tạo bất kỳ Pod ứng dụng nào.
-   - *Phát hiện:* Gõ `kubectl describe node cp-01` thấy log `NetworkPluginNotReady: network plugin is not ready: cni config uninitialized`.
-   - *Khắc phục:* Apply file YAML CNI plugin (như Calico) để Kubelet nạp cấu hình mạng.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân MTU 1550 bytes và lỗi Kubelet uninitialized (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi Pod dính lỗi rớt gói MTU, câu lệnh `ping` nào giúp kiểm chứng chính xác giới hạn kích thước gói tin? *(Đáp án: Lệnh `ping -s 1420 -M do <IP-target>` cấm phân mảnh).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Mô hình mạng Kubernetes là Mạng phẳng (Flat Network): Pod-to-Pod không NAT, Node-to-Pod không NAT, IP Pod tự nhìn thấy đồng nhất."*
+2. *"Kubelet ủy quyền 100% việc tạo mạng cho CNI plugin qua cấu hình <code>/etc/cni/net.d/</code> và binary <code>/opt/cni/bin/</code>."*
+3. *"Traffic 2 Pods CÙNG NODE đi qua cặp <code>veth</code> pair và Linux Bridge/eBPF nội bộ host, KHÔNG ĐI RA card mạng vật lý <code>eth0</code>."*
+4. *"Traffic 2 Pods KHÁC NODE được đóng gói Overlay <b style="color: var(--accent-primary);">VXLAN Port UDP 4789</b> (MTU <code>1450</code>) hoặc định tuyến trực tiếp BGP/<code>host-gw</code> (MTU <code>1500</code>)."*
+5. *"Dùng <code>crictl inspectp</code> kết hợp <code>nsenter</code> giúp soi thẳng vào Network Namespace của Pod Sandbox mà không cần cài công cụ vào container."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1122,40 +1190,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Traffic 2 Pods CÙNG NODE đi qua cặp `veth` pair và Linux Bridge/eBPF nội bộ host, KHÔNG ĐI RA card mạng vật lý `eth0`."*
 4. *"Traffic 2 Pods KHÁC NODE được đóng gói Overlay **VXLAN Port UDP 4789** (MTU `1450`) hoặc định tuyến trực tiếp BGP/`host-gw` (MTU `1500`)."*
 5. *"Dùng `crictl inspectp` kết hợp `nsenter` giúp soi thẳng vào Network Namespace của Pod Sandbox mà không cần cài công cụ vào container."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | 3 quy tắc bất biến Mô hình mạng phẳng (trần 1đ nếu thiếu) |
-| Câu 2 | ★★★ | 3 | | Kubelet ủy quyền CNI qua `/etc/cni/net.d/` và `/opt/cni/bin/` |
-| Câu 3 | ★★★ | 3 | | So sánh 3 CNI (Flannel, Calico, Cilium eBPF) |
-| Câu 4 | 🔥 | 3 | | Luồng đi gói tin Intra-node qua `veth` pair (không ra `eth0`) (trần 1đ nếu thiếu) |
-| Câu 5 | ★★★ | 3 | | Luồng đi gói tin Inter-node Encapsulation Overlay VXLAN UDP 4789 |
-| Câu 6 | ★★★ | 3 | | Direct Routing (0 byte overhead) vs Overlay VXLAN (50 bytes overhead) |
-| Câu 7 | ★★★ | 3 | | Phép toán MTU VXLAN (1500 + 50 = 1550 > 1500 physical gây rớt gói) |
-| Câu 8 | ★★★ | 3 | | Lệnh `crictl inspectp` soi Network Namespace container Distroless |
-| Câu 9 | ★★★ | 3 | | Nguyên nhân Node kẹt `NotReady` do thiếu CNI plugin |
-| Câu 10 | ★★★ | 3 | | Phân biệt Pod IP (Ephemeral, Pod CIDR) vs Node IP (Static, physical) |
-| Câu 11 | ★★★ | 3 | | Lệnh `ip link` và kỹ thuật tra `iflink` tìm card veth tương ứng |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (Rớt gói MTU VXLAN & Node NotReady thiếu CNI) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra xem cổng UDP `4789` VXLAN có đang mở trên tất cả các Worker Nodes hay không.
-2. **BTVN 2:** Thực hành cài đặt CNI Calico trên một cụm Kubeadm mới tạo và kiểm tra log của Pod `calico-node`.
-3. **BTVN 3:** Sử dụng `tcpdump` trên Host để bắt gói tin UDP 4789 khi 2 Pods ở 2 Node thực hiện `ping` nhau.
-4. **BTVN 4 — Chuẩn bị cho Buổi 22 (`buoi-22-service-va-kube-proxy`):**
-   - *Câu 1:* Đối tượng `Service` trong Kubernetes được tạo ra để giải quyết bài toán gì của Pod IP (vốn có tính chất Ephemeral tạm thời)?
-   - *Câu 2:* Phân biệt 4 loại Service chuẩn (`ClusterIP`, `NodePort`, `LoadBalancer`, `ExternalName`) và dải cổng NodePort mặc định (30000-32767).
-   - *Câu 3:* Tiến trình `kube-proxy` sử dụng chế độ nào (`iptables` vs `IPVS`) để thực hiện load balancing traffic tới các Endpoints của Service?
-
-> **Đoạn kết nối Buổi 22:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 22 — buổi học tiếp theo của Chương 2 chuyên sâu về Đối tượng Service, EndpointSlice, tiến trình `kube-proxy` và so sánh hiệu năng giữa `iptables` và `IPVS` trong CKA và CKAD.
 
 ---
 
@@ -1418,15 +1452,15 @@ kubectl exec <pod-name> -n <namespace> -- ip link show dev eth0
 ip link show type veth
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 22] Dịch Vụ Mạng Service & Kube-Proxy: ClusterIP, NodePort, LoadBalancer & So Sánh iptables vs IPVS](cka-22-22-service-va-kube-proxy.html).
+
 {% endraw %}

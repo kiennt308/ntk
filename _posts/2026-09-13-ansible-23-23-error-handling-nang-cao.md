@@ -728,39 +728,12 @@ ansible-playbook site-error-handling.yml > error-proof.txt
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Kiểm soát lỗi chính xác:** Thay thế `ignore_errors` bằng `failed_when` và `changed_when` để kiểm soát trạng thái thực tế.
-2. **Mô hình Try-Catch-Finally:** Bọc các chuỗi task phức tạp vào khối `block - rescue - always` để tự động hóa quy trình rollback.
-3. **Bảo vệ Handler:** Luôn kích hoạt `force_handlers = True` trong `ansible.cfg` để không bỏ sót các task khởi động lại dịch vụ.
-4. **Bảo vệ cụm phân tán:** Sử dụng `any_errors_fatal: true` cho các hệ thống DB/Cluster để ngăn ngừa chia rẽ cụm (Split-brain).
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Kịch bản xử lý lỗi chuyên sâu ở lượt chạy Lần 2 bắt buộc phải đạt `changed=0`.
-
-```mermaid
-mindmap
-  root((Advanced Error Handling))
-    Atomic Safety
-      any_errors_fatal: true
-      force_handlers: true
-      max_fail_percentage
-    Block-Rescue-Always
-      block: Main deployment
-      rescue: Automated rollback
-      always: Cleanup & Audit
-    Conditional Triggers
-      failed_when: Precise error filter
-      changed_when: Accurate change tracking
-      ignore_unreachable: SSH drops
-    Retry & Polling
-      until: Health check criteria
-      retries & delay intervals
-      Idempotency changed=0 ở Lần 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 24: Dynamic Inventory & Cloud Auto-Discovery: Tự Động Thu Thập Danh Sách Máy Chủ AWS, Azure, GCP & VMware](ansible-24-24-dynamic-inventory.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 24] Dynamic Inventory & Cloud Auto-Discovery: Tự Động Thu Thập Danh Sách Máy Chủ AWS, Azure, GCP & VMware](ansible-24-24-dynamic-inventory.html).
 
 {% endraw %}

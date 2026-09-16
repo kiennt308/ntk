@@ -380,7 +380,7 @@ Lệnh <code>sudo apparmor_parser -q -r /path/to/apparmor-profile</code>.
        securityContext:
          seccompProfile:
            type: RuntimeDefault
-     ```
+```
 </div>
 </details>
 
@@ -462,7 +462,7 @@ Lệnh <code>sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver
   
 ```bash
       falco -r /etc/falco/falco_rules.local.yaml
-      ```
+```
 </div>
 </details>
 
@@ -475,24 +475,6 @@ Lệnh <code>sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver
 | CKS Exam Curriculum | `https://github.com/cncf/curriculum` | Curriculum chính thức kỳ thi CKS |
 | Kubernetes Security Hardening | `https://kubernetes.io/docs/concepts/security/` | Hướng dẫn gia cố an ninh Kubernetes |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. CKS 6-Domain Matrix & 20% Domains Focus | 12 phút | 12 phút |
-| §5. Fast Security CLI Skills: AppArmor, Seccomp, Kyverno & Cosign | 12 phút | 12 phút |
-| §6. Audit Policy, Falco Custom Rules & Apiserver Recovery | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -853,26 +835,11 @@ test ! -f /tmp/cks-speed/apparmor.yaml && echo "CHECKPOINT 13 — ĐẠT" || ech
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Speed Directory | 15 phút | 15 phút |
-| L4. Bước 2: System Hardening Questions | 30 phút | 30 phút |
-| L5. Bước 3: Supply Chain Security Questions | 30 phút | 30 phút |
-| L6. Bước 4: Monitoring & Runtime Questions | 25 phút | 25 phút |
-| L7. Bước 5: Auto-Grading & Speed Benchmark | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -880,215 +847,327 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thao tác bắt buộc phải thực hiện trước khi gán annotation AppArmor profile vào Pod spec trong Linux là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Minimize Microservice Vulnerabilities: <b style="color: var(--accent-primary);">20%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Supply Chain Security: <b style="color: var(--accent-primary);">20%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Monitoring, Logging and Runtime Security: <b style="color: var(--accent-primary);">20%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Cluster Hardening: <b style="color: var(--accent-primary);">15%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> System Hardening: <b style="color: var(--accent-primary);">15%</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">6.</b> Cluster Setup: <b style="color: var(--accent-primary);">10%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">BẮT BUỘC phải nạp tệp profile AppArmor vào Linux Kernel của Host Node bằng lệnh: <code>sudo apparmor_parser -q -r /path/to/profile</code>. Nếu chưa nạp, Pod gán annotation sẽ bị từ chối khởi chạy (<code>BlockedByAppArmor</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết việc nạp profile AppArmor vào Kernel.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được nạp profile nhưng thiếu lệnh apparmor_parser -r.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác tầm quan trọng và lệnh CLI nạp AppArmor profile.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh nào kiểm tra xem profile AppArmor đã nạp thành công vào Kernel chưa? — Lệnh <code>aa-status</code> hoặc <code>cat /sys/kernel/security/apparmor/profiles</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết trọng số 6 miền CKS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 miền nhưng sai % trọng số.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 100% trọng số của cả 6 miền kiến thức CKS.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Chiến thuật gom điểm tập trung vào 3 miền 20% giúp đạt tổng cộng bao nhiêu điểm bài thi? — Gom trọn <b style="color: var(--accent-primary);"><code>60 điểm</code></b> bài thi CKS).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp YAML chuẩn để khai báo Seccomp <code>RuntimeDefault</code> cho Pod trong Kubernetes v1.30+?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">securityContext:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">seccompProfile:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">type: RuntimeDefault</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cú pháp Seccomp v1.30+ hoặc dùng annotation cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được RuntimeDefault nhưng sai vị trí securityContext.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% thuộc tính <code>seccompProfile</code> trong Kubernetes v1.30+.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sự khác biệt giữa <code>type: RuntimeDefault</code> và <code>type: Localhost</code> là gì? — <code>RuntimeDefault</code> dùng profile mặc định của Container Runtime (CRI), còn <code>Localhost</code> dùng tệp profile tùy chỉnh nạp tại <code>/var/lib/kubelet/seccomp/</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khối cấu hình nào bắt buộc phải bổ sung trong Kyverno Allowed Registries policy để bảo vệ các Pods hệ thống không bị chặn khởi chạy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khối <b style="color: var(--accent-primary);"><code>exclude.resources.namespaces: [kube-system]</code></b>. Khối này loại trừ namespace <code>kube-system</code> khỏi phạm vi kiểm tra domain registry, giúp các Pods hệ thống (như coredns, kube-proxy) khởi chạy bình thường.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết việc exclude kube-system trong Kyverno policy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được loại trừ kube-system nhưng chưa rõ khối syntax <code>exclude.resources.namespaces</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác công dụng và vị trí khối <code>exclude</code> trong Kyverno policy.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>validationFailureAction: Enforce</code> khác gì với <code>Audit</code>? — <code>Enforce</code> cưỡng chế <b style="color: var(--accent-primary);">chặn từ chối ngay request vi phạm</b>, còn <code>Audit</code> chỉ <b style="color: var(--accent-primary);">ghi lại cảnh báo log</b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Quy trình sao lưu và khôi phục khẩn cấp tệp <code>kube-apiserver.yaml</code> trong 60 giây khi gõ sai syntax làm sập Control Plane?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Sao lưu trước khi sửa</b>: <code>sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/apiserver.bak</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khôi phục khẩn cấp</b>: <code>sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver.yaml</code>. Kubelet sẽ tự động nhận diện và khởi chạy lại apiserver trong 60 giây.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy trình khôi phục apiserver khẩn cấp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được copy file nhưng thiếu cờ sudo và vị trí Static Pods.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% quy trình 2 bước sao lưu và khôi phục apiserver.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để theo dõi xem apiserver đã sống lại thành công chưa? — Lệnh <code>crictl ps | grep kube-apiserver</code> hoặc <code>crictl logs <container-id></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Hai cờ câu lệnh bắt buộc phải bổ sung vào Static Pod <code>kube-apiserver.yaml</code> để bật Audit Logging?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--audit-policy-file=/etc/kubernetes/audit/policy.yaml</code> (Trỏ tới tệp chính sách).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--audit-log-path=/var/log/kubernetes/audit/audit.log</code> (Trỏ tới tệp nhật ký đầu ra).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được 2 cờ Audit Logging.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cờ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 2 cờ Audit Logging trên <code>kube-apiserver</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao phải mount volume <code>hostPath</code> cho 2 tệp trên? — Để Pod <code>kube-apiserver</code> chạy dạng Static Pod có thể truy cập được tệp policy và ghi tệp audit.log ngoài đĩa Host Node).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Năm thành tố bắt buộc phải có trong một quy tắc Falco Custom Rule và vai trò của từng thành tố?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>rule</code>: Tên quy tắc duy nhất.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>desc</code>: Mô tả chi tiết mục đích quy tắc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>condition</code>: Điều kiện lọc biểu thức (ví dụ: <code>spawned_process and container</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>output</code>: Định dạng chuỗi thông điệp in ra khi phát hiện vi phạm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>priority</code>: Mức độ ưu tiên cảnh báo (<code>CRITICAL</code>, <code>WARNING</code>, <code>INFO</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 5 thành tố.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 thành tố.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo vai trò của từng thành tố trong 5 thành tố bắt buộc của Falco Rule.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu thiếu 1 trong 5 thành tố thì chuyện gì xảy ra? — Falco service sẽ <b style="color: var(--accent-primary);">báo lỗi schema validation error</b> và từ chối tải file quy tắc).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Kỹ thuật ghim cờ mã băm bất biến Image Digest (<code>@sha256:...</code>) thay vì tag <code>:latest</code> giải quyết nguy cơ bảo mật nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vô hiệu hóa hoàn toàn nguy cơ <b style="color: var(--accent-primary);">Tấn công tráo đổi ảnh (Image Swapping Attack)</b>. Tag <code>:latest</code> có tính biến động (mutable), có thể bị kẻ tấn công ghi đè ảnh độc hại lên registry. Image Digest là mã băm SHA-256 bất biến (immutable), đảm bảo 100% Pod chỉ kéo đúng ảnh đã được kiểm định.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết ý nghĩa ghim Image Digest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cấm latest nhưng chưa làm rõ tính bất biến của SHA-256 digest.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo nguy cơ bảo mật và giải pháp ghim Image Digest trong CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để lấy mã băm Digest của một container image trên registry? — Lệnh <code>docker inspect --format='{{index .RepoDigests 0}}' <image></code> hoặc <code>crictl inspecti <image></code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Sự khác biệt giữa 4 cấp độ ghi nhật ký kiểm toán trong tệp Audit Policy (<code>None</code>, <code>Metadata</code>, <code>Request</code>, <code>RequestResponse</code>)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>None</code>: Không ghi log.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Metadata</code>: Chỉ ghi dữ liệu tả (Request URI, User, Namespace, Verb, Time).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Request</code>: Ghi Metadata + nội dung Body request gửi lên.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>RequestResponse</code>: Ghi Metadata + Body request + Body response trả về (Đầy đủ nhất).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa các cấp độ Audit Log.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Metadata và RequestResponse nhưng thiếu Request.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt về lượng dữ liệu ghi nhật ký giữa 4 cấp độ Audit Policy.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cấp độ nào nên áp dụng cho tài nguyên nhạy cảm như <code>Secrets</code>? — Áp dụng cấp độ <b style="color: var(--accent-primary);"><code>RequestResponse</code></b> để truy vết toàn bộ nội dung thao tác tác động lên Secret).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Kỹ thuật quét an ninh tĩnh bằng <code>kubesec scan</code> và các thông số cần điều chỉnh để nâng điểm Pod spec lên điểm dương?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chạy <code>kubesec scan /tmp/pod.yaml</code>. Để nâng điểm Pod spec đạt mức an toàn (điểm dương):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm <code>securityContext.runAsNonRoot: true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm <code>securityContext.readOnlyRootFilesystem: true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm <code>securityContext.allowPrivilegeEscalation: false</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm <code>capabilities.drop: ["ALL"]</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách nâng điểm Kubesec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được runAsNonRoot nhưng thiếu readOnlyRootFilesystem và drop ALL capabilities.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 4 thuộc tính SecurityContext giúp nâng tối đa điểm Kubesec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mức điểm Kubesec âm thể hiện điều gì? — Thể hiện manifest dính các cờ nguy hiểm như <code>privileged: true</code> hoặc chạy container dưới quyền user root).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp bash script chuẩn để trích xuất tất cả các cảnh báo <code>CRITICAL</code> từ file <code>/var/log/syslog</code> của Falco ra <code>/tmp/alerts.log</code> CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```bash</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">grep -i "falco" /var/log/syslog | grep -i "critical" > /tmp/alerts.log</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai câu lệnh grep syslog.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng grep syslog nhưng thiếu cờ -i hoặc thiếu bộ lọc Falco.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% câu lệnh trích xuất cảnh báo Falco ra tệp output.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để xem liên tục các cảnh báo Falco thời gian thực? — Lệnh <code>tail -f /var/log/syslog | grep -i falco</code>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ CKS Speed Drill (16 câu bảo mật trong 90 phút) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thuộc lòng vị trí và nạp profile AppArmor (<code>apparmor_parser -r</code>) trước khi gán Pod spec.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Biên soạn Kyverno Allowed Registries ở chế độ <code>Enforce</code> kèm khối <code>exclude</code> cho <code>kube-system</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nhớ thuộc lòng bộ 2 cờ Audit Logging trên <code>kube-apiserver</code> và thao tác khôi phục apiserver sập trong 60s.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Viết chính xác 100% tệp quy tắc Falco Custom Rule chứa đủ 5 thành tố bắt buộc.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng CKS Speed Mastery.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 69 là gì? — Học về <code>Vận hành thực tế cụm Kubernetes nhiều đội: Quota, chính sách an ninh và quy trình quản lý thay đổi</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Thao tác bắt buộc phải thực hiện trước khi gán annotation AppArmor profile vào Pod spec trong Linux là gì?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** BẮT BUỘC phải nạp tệp profile AppArmor vào Linux Kernel của Host Node bằng lệnh: `sudo apparmor_parser -q -r /path/to/profile`. Nếu chưa nạp, Pod gán annotation sẽ bị từ chối khởi chạy (`BlockedByAppArmor`).
+1. <b style="color: var(--accent-primary);">"Làm chủ 6 miền kiến thức CKS và gom trọn 60% điểm số tại 3 miền trọng số 20%."</b>
+2. <b style="color: var(--accent-primary);">"Thành thục phản xạ nạp AppArmor profile và cấu hình Seccomp RuntimeDefault trong 1 phút."</b>
+3. <b style="color: var(--accent-primary);">"Thiết lập bộ rào chắn an ninh Kyverno Allowed Registries, Audit Policy và Falco Rules."</b>
+4. <b style="color: var(--accent-primary);">"Duy trì phản xạ 5,5 phút mỗi câu để hoàn thành trọn vẹn 16 câu CKS trong 90 phút."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết việc nạp profile AppArmor vào Kernel.
-- 1đ: Nêu được nạp profile nhưng thiếu lệnh apparmor_parser -r.
-- 3đ: Phân tích chuẩn xác tầm quan trọng và lệnh CLI nạp AppArmor profile.
-
-**Câu hỏi đào sâu:** (Lệnh nào kiểm tra xem profile AppArmor đã nạp thành công vào Kernel chưa? — Lệnh `aa-status` hoặc `cat /sys/kernel/security/apparmor/profiles`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Cú pháp YAML chuẩn để khai báo Seccomp `RuntimeDefault` cho Pod trong Kubernetes v1.30+?
-
-**Đáp án chuẩn:**
-```yaml
-spec:
-  securityContext:
-    seccompProfile:
-      type: RuntimeDefault
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cú pháp Seccomp v1.30+ hoặc dùng annotation cũ.
-- 1đ: Nêu được RuntimeDefault nhưng sai vị trí securityContext.
-- 3đ: Viết chuẩn xác 100% thuộc tính `seccompProfile` trong Kubernetes v1.30+.
-
-**Câu hỏi đào sâu:** (Sự khác biệt giữa `type: RuntimeDefault` và `type: Localhost` là gì? — `RuntimeDefault` dùng profile mặc định của Container Runtime (CRI), còn `Localhost` dùng tệp profile tùy chỉnh nạp tại `/var/lib/kubelet/seccomp/`).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Khối cấu hình nào bắt buộc phải bổ sung trong Kyverno Allowed Registries policy để bảo vệ các Pods hệ thống không bị chặn khởi chạy?
-
-**Đáp án chuẩn:** Khối **`exclude.resources.namespaces: [kube-system]`**. Khối này loại trừ namespace `kube-system` khỏi phạm vi kiểm tra domain registry, giúp các Pods hệ thống (như coredns, kube-proxy) khởi chạy bình thường.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết việc exclude kube-system trong Kyverno policy.
-- 1đ: Nêu được loại trừ kube-system nhưng chưa rõ khối syntax `exclude.resources.namespaces`.
-- 3đ: Phân tích chuẩn xác công dụng và vị trí khối `exclude` trong Kyverno policy.
-
-**Câu hỏi đào sâu:** (Cờ `validationFailureAction: Enforce` khác gì với `Audit`? — `Enforce` cưỡng chế **chặn từ chối ngay request vi phạm**, còn `Audit` chỉ **ghi lại cảnh báo log**).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Quy trình sao lưu và khôi phục khẩn cấp tệp `kube-apiserver.yaml` trong 60 giây khi gõ sai syntax làm sập Control Plane?
-
-**Đáp án chuẩn:**
-- **Sao lưu trước khi sửa**: `sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/apiserver.bak`.
-- **Khôi phục khẩn cấp**: `sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver.yaml`. Kubelet sẽ tự động nhận diện và khởi chạy lại apiserver trong 60 giây.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết quy trình khôi phục apiserver khẩn cấp.
-- 1đ: Nêu được copy file nhưng thiếu cờ sudo và vị trí Static Pods.
-- 3đ: Trình bày chuẩn xác 100% quy trình 2 bước sao lưu và khôi phục apiserver.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để theo dõi xem apiserver đã sống lại thành công chưa? — Lệnh `crictl ps | grep kube-apiserver` hoặc `crictl logs <container-id>`).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Hai cờ câu lệnh bắt buộc phải bổ sung vào Static Pod `kube-apiserver.yaml` để bật Audit Logging?
-
-**Đáp án chuẩn:**
-1. `--audit-policy-file=/etc/kubernetes/audit/policy.yaml` (Trỏ tới tệp chính sách).
-2. `--audit-log-path=/var/log/kubernetes/audit/audit.log` (Trỏ tới tệp nhật ký đầu ra).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được 2 cờ Audit Logging.
-- 1đ: Nêu được 1 cờ.
-- 3đ: Kể tên chuẩn xác 2 cờ Audit Logging trên `kube-apiserver`.
-
-**Câu hỏi đào sâu:** (Tại sao phải mount volume `hostPath` cho 2 tệp trên? — Để Pod `kube-apiserver` chạy dạng Static Pod có thể truy cập được tệp policy và ghi tệp audit.log ngoài đĩa Host Node).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Năm thành tố bắt buộc phải có trong một quy tắc Falco Custom Rule và vai trò của từng thành tố?
-
-**Đáp án chuẩn:**
-1. `rule`: Tên quy tắc duy nhất.
-2. `desc`: Mô tả chi tiết mục đích quy tắc.
-3. `condition`: Điều kiện lọc biểu thức (ví dụ: `spawned_process and container`).
-4. `output`: Định dạng chuỗi thông điệp in ra khi phát hiện vi phạm.
-5. `priority`: Mức độ ưu tiên cảnh báo (`CRITICAL`, `WARNING`, `INFO`).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 5 thành tố.
-- 1đ: Nêu được 3 thành tố.
-- 3đ: Phân tích thấu đáo vai trò của từng thành tố trong 5 thành tố bắt buộc của Falco Rule.
-
-**Câu hỏi đào sâu:** (Nếu thiếu 1 trong 5 thành tố thì chuyện gì xảy ra? — Falco service sẽ **báo lỗi schema validation error** và từ chối tải file quy tắc).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Kỹ thuật ghim cờ mã băm bất biến Image Digest (`@sha256:...`) thay vì tag `:latest` giải quyết nguy cơ bảo mật nào?
-
-**Đáp án chuẩn:** Vô hiệu hóa hoàn toàn nguy cơ **Tấn công tráo đổi ảnh (Image Swapping Attack)**. Tag `:latest` có tính biến động (mutable), có thể bị kẻ tấn công ghi đè ảnh độc hại lên registry. Image Digest là mã băm SHA-256 bất biến (immutable), đảm bảo 100% Pod chỉ kéo đúng ảnh đã được kiểm định.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết ý nghĩa ghim Image Digest.
-- 1đ: Nêu được cấm latest nhưng chưa làm rõ tính bất biến của SHA-256 digest.
-- 3đ: Phân tích thấu đáo nguy cơ bảo mật và giải pháp ghim Image Digest trong CKS.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để lấy mã băm Digest của một container image trên registry? — Lệnh `docker inspect --format='{{index .RepoDigests 0}}' <image>` hoặc `crictl inspecti <image>`).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Sự khác biệt giữa 4 cấp độ ghi nhật ký kiểm toán trong tệp Audit Policy (`None`, `Metadata`, `Request`, `RequestResponse`)?
-
-**Đáp án chuẩn:**
-- `None`: Không ghi log.
-- `Metadata`: Chỉ ghi dữ liệu tả (Request URI, User, Namespace, Verb, Time).
-- `Request`: Ghi Metadata + nội dung Body request gửi lên.
-- `RequestResponse`: Ghi Metadata + Body request + Body response trả về (Đầy đủ nhất).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa các cấp độ Audit Log.
-- 1đ: Nêu được Metadata và RequestResponse nhưng thiếu Request.
-- 3đ: Phân tích chuẩn xác sự khác biệt về lượng dữ liệu ghi nhật ký giữa 4 cấp độ Audit Policy.
-
-**Câu hỏi đào sâu:** (Cấp độ nào nên áp dụng cho tài nguyên nhạy cảm như `Secrets`? — Áp dụng cấp độ **`RequestResponse`** để truy vết toàn bộ nội dung thao tác tác động lên Secret).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Kỹ thuật quét an ninh tĩnh bằng `kubesec scan` và các thông số cần điều chỉnh để nâng điểm Pod spec lên điểm dương?
-
-**Đáp án chuẩn:**
-Chạy `kubesec scan /tmp/pod.yaml`. Để nâng điểm Pod spec đạt mức an toàn (điểm dương):
-1. Thêm `securityContext.runAsNonRoot: true`.
-2. Thêm `securityContext.readOnlyRootFilesystem: true`.
-3. Thêm `securityContext.allowPrivilegeEscalation: false`.
-4. Thêm `capabilities.drop: ["ALL"]`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách nâng điểm Kubesec.
-- 1đ: Nêu được runAsNonRoot nhưng thiếu readOnlyRootFilesystem và drop ALL capabilities.
-- 3đ: Trình bày chuẩn xác 4 thuộc tính SecurityContext giúp nâng tối đa điểm Kubesec.
-
-**Câu hỏi đào sâu:** (Mức điểm Kubesec âm thể hiện điều gì? — Thể hiện manifest dính các cờ nguy hiểm như `privileged: true` hoặc chạy container dưới quyền user root).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp bash script chuẩn để trích xuất tất cả các cảnh báo `CRITICAL` từ file `/var/log/syslog` của Falco ra `/tmp/alerts.log` CKS là gì?
-
-**Đáp án chuẩn:**
-```bash
-grep -i "falco" /var/log/syslog | grep -i "critical" > /tmp/alerts.log
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai câu lệnh grep syslog.
-- 1đ: Nêu đúng grep syslog nhưng thiếu cờ -i hoặc thiếu bộ lọc Falco.
-- 3đ: Viết chuẩn xác 100% câu lệnh trích xuất cảnh báo Falco ra tệp output.
-
-**Câu hỏi đào sâu:** (Lệnh CLI nào dùng để xem liên tục các cảnh báo Falco thời gian thực? — Lệnh `tail -f /var/log/syslog | grep -i falco`).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ CKS Speed Drill (16 câu bảo mật trong 90 phút) là gì?
-
-**Đáp án chuẩn:**
-1. Thuộc lòng vị trí và nạp profile AppArmor (`apparmor_parser -r`) trước khi gán Pod spec.
-2. Biên soạn Kyverno Allowed Registries ở chế độ `Enforce` kèm khối `exclude` cho `kube-system`.
-3. Nhớ thuộc lòng bộ 2 cờ Audit Logging trên `kube-apiserver` và thao tác khôi phục apiserver sập trong 60s.
-4. Viết chính xác 100% tệp quy tắc Falco Custom Rule chứa đủ 5 thành tố bắt buộc.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng CKS Speed Mastery.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 69 là gì? — Học về `Vận hành thực tế cụm Kubernetes nhiều đội: Quota, chính sách an ninh và quy trình quản lý thay đổi`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1098,28 +1177,6 @@ grep -i "falco" /var/log/syslog | grep -i "critical" > /tmp/alerts.log
 2. **"Thành thục phản xạ nạp AppArmor profile và cấu hình Seccomp RuntimeDefault trong 1 phút."**
 3. **"Thiết lập bộ rào chắn an ninh Kyverno Allowed Registries, Audit Policy và Falco Rules."**
 4. **"Duy trì phản xạ 5,5 phút mỗi câu để hoàn thành trọn vẹn 16 câu CKS trong 90 phút."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ năng CKS Security Hardening |
-| **29 – 36 điểm** | Xuất sắc | Thành thục 100% 6 miền CKS, AppArmor/Seccomp, Kyverno, Audit Policy và Falco Rules |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành lại bài CKS speed drill 16 câu với thời gian đếm ngược rút ngắn 75 phút.
-- **BTVN 2:** Viết 3 tệp quy tắc Falco Custom Rules bắt hành vi ghi file `/bin` và kết nối SSH.
-- **BTVN 3:** Thực hành sao lưu, chỉnh sửa Audit Policy và khôi phục `kube-apiserver` 3 lần liên tiếp.
-- **BTVN 4 (Chuẩn bị cho Buổi 69 — Vận hành Thật Cụm Nhiều Đội):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Mô hình vận hành thực tế cụm Kubernetes nhiều đội (Multi-tenant Enterprise Cluster) cần thiết lập ResourceQuota và LimitRange ra sao?
-  2. Quy trình quản lý thay đổi (Change Management) và xét duyệt chính sách an ninh giữa các đội Dev, DevOps và SecOps được thực thi ra sao?
-  3. Kỹ năng phân chia Namespace, RBAC isolation và NetworkPolicy isolation đảm bảo tính cách ly giữa các đội như thế nào?
 
 ---
 
@@ -1337,14 +1394,15 @@ sudo apparmor_parser -q -r /etc/apparmor.d/profile
 falco -r /etc/falco/falco_rules.local.yaml
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [Hoàn Thành Toàn Bộ Lộ Trình Chứng Chỉ Quốc Tế CNCF (CKA / CKAD / CKS)](index.html).
+
 {% endraw %}

@@ -243,9 +243,11 @@ graph TD
 <span class="badge badge--rose">🕒 03:15 AM</span> Trong đợt phát hành khẩn cấp phiên bản mới, pipeline của dịch vụ thanh toán bị từ chối tạo ngay lập tức với lỗi `inputs:build_engine: value 'fast' is not in options list`.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-GitLab không sinh ra bất kỳ job nào và báo lỗi cú pháp ngay trên giao diện Merge Request:
 
 ```text
+
+GitLab không sinh ra bất kỳ job nào và báo lỗi cú pháp ngay trên giao diện Merge Request:
+
 Status: Failed to create pipeline
 Error: Included component '$CI_SERVER_FQDN/platform-components/container-tools/docker-build@1.3.0' validation failed:
 - input 'build_engine': value 'fast' is not allowed. Valid options: ['kaniko', 'docker-dind', 'buildah']

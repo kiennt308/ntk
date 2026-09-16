@@ -210,9 +210,11 @@ api_fuzzing_scan:
 <span class="badge badge--rose">🕒 02:00 AM</span> Một đội ngũ kỹ sư bật tính năng ZAP Full Active Scan chạy định kỳ vào 02:00 AM trên môi trường Staging. Sáng hôm sau, toàn bộ dữ liệu mẫu trong cơ sở dữ liệu Staging bị xóa sạch, và hàng ngàn email rác chứa chuỗi XSS payload đã tự động gửi tới email của các đối tác thử nghiệm tích hợp.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Dữ liệu Staging bị xóa trắng, dịch vụ email bên thứ ba bị khóa tài khoản do phát tán thư rác độc hại:
 
 ```text
+
+Dữ liệu Staging bị xóa trắng, dịch vụ email bên thứ ba bị khóa tài khoản do phát tán thư rác độc hại:
+
 [zap-active-scan] › ⚡  Injected payload '<script>alert(1)</script>' into form '/api/v1/users/invite'
 [app-service]     › ℹ  Dispatched 2,450 invitation emails to external partner domains via SendGrid API
 [zap-active-scan] › ⚡  Executed HTTP DELETE on '/api/v1/system/purge-database'

@@ -122,7 +122,7 @@ graph TD
     DevFix -->|"Re-scan"| Linter
     Linter -->|"Pass: High Score"| Commit[Commit to Git Repository]
     Commit -->|"2. CI/CD Pipeline"| Deploy[Deploy to K8s Production Cluster]
-```
+`
 
 **Nguyên lý cốt lõi:** CẤM TUYỆT ĐỐI việc để sót các cờ nguy hiểm cao trong Pod spec: `privileged: true`, `runAsUser: 0`, `allowPrivilegeEscalation: true`, hoặc thiếu `readOnlyRootFilesystem: true`.
 
@@ -134,7 +134,7 @@ graph TD
 
 **Minh hoạ.**
 
-```yaml
+```
 # RỦI RO BẢO MẬT CAO (KUBESEC CHẤM ĐIỂM ÂM NẶNG):
 spec:
   containers:
@@ -142,7 +142,7 @@ spec:
       securityContext:
         privileged: true # CẤM CẤP PRIVILEGED!
         runAsUser: 0 # CẤM CHẠY ROOT!
-```
+`
 
 ---
 
@@ -162,7 +162,7 @@ spec:
 # Chạy chấm điểm rủi ro an ninh tệp Pod manifest:
 kubesec scan /tmp/pod-manifest.yaml
 # Kết quả JSON: "score": -30, "critical": ["Containers should not run with allowPrivilegeEscalation"]
-```
+`
 
 **Nguyên lý cốt lõi:** Để nâng điểm an toàn Kubesec đạt mức tối đa, Pod manifest BẮT BUỘC phải bổ sung khối `securityContext` chứa: `readOnlyRootFilesystem: true`, `runAsNonRoot: true`, `allowPrivilegeEscalation: false`, `capabilities.drop: ["ALL"]`, và khai báo `resources.limits`.
 
@@ -174,7 +174,7 @@ kubesec scan /tmp/pod-manifest.yaml
 
 **Minh hoạ.**
 
-```yaml
+```
 # CHUẨN CKS TỐI ƯU ĐIỂM KUBESEC (+10 ĐIỂM):
 spec:
   securityContext:
@@ -193,7 +193,7 @@ spec:
         limits:
           cpu: "500m"
           memory: "256Mi"
-```
+`
 
 ---
 
@@ -212,7 +212,7 @@ spec:
 ```bash
 # Quét tệp YAML manifest bằng Trivy config ngắt build khi dính lỗi HIGH/CRITICAL:
 trivy config --exit-code 1 --severity HIGH,CRITICAL /tmp/pod-manifest.yaml
-```
+`
 
 **Nguyên lý cốt lõi:** Sử dụng công cụ `hadolint Dockerfile` để quét tệp Dockerfile; chặn đứng các chỉ thị cấm như `USER root`, dùng tag `latest`, hoặc nhúng lệnh `ADD` kéo tệp từ URL ngoài.
 
@@ -224,11 +224,11 @@ trivy config --exit-code 1 --severity HIGH,CRITICAL /tmp/pod-manifest.yaml
 
 **Minh hoạ.**
 
-```bash
+```
 # Quét tệp Dockerfile bằng Hadolint:
 hadolint /tmp/Dockerfile
 # Phản hồi lỗi: DL3020 Use COPY instead of ADD for files and folders
-```
+`
 
 **Nguyên lý cốt lõi:** Khi chẩn đoán lỗi Kubesec báo vi phạm `Containers should run with readOnlyRootFilesystem`, bổ sung cờ `readOnlyRootFilesystem: true` dưới `securityContext` của từng container và tạo một volume `emptyDir` mount vào đường dẫn `/tmp` nếu ứng dụng cần ghi tệp tạm.
 
@@ -253,7 +253,7 @@ spec:
   volumes:
     - name: tmp-volume
       emptyDir: {}
-```
+`
 
 ---
 
@@ -269,7 +269,7 @@ spec:
 
 **Minh hoạ.**
 
-```yaml
+```
 apiVersion: v1
 kind: Pod
 metadata:
@@ -294,7 +294,7 @@ spec:
         limits:
           cpu: "200m"
           memory: "128Mi"
-```
+`
 
 **Áp vào cụm đang chạy thì làm gì trước:**
 1. Cài đặt các công cụ linters `kubesec`, `trivy`, `hadolint` trên máy local hoặc CI/CD runner.
@@ -342,7 +342,7 @@ graph TD
     ShiftLeftSec --> HadolintDocker[4. Hadolint Dockerfile Linter: Disallow root user & ADD directives]
     
     SecurityContextFix --> MaxScore[Achieve Kubesec Positive Score +10 & Pass CI/CD Gates!]
-```
+`
 
 **Năm điều phải nhớ:**
 1. **Shift-Left Security**: Phân tích tĩnh tệp YAML và Dockerfile ngay từ khâu viết mã để triệt tiêu lỗi từ sớm.
@@ -472,25 +472,24 @@ Vì cờ <code>privileged: true</code> phá vỡ hoàn toàn rào chắn cách l
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-```yaml
-      spec:
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-        containers:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
-            image: nginx@sha256:a1b2c3...
-            securityContext:
-              readOnlyRootFilesystem: true
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
-            resources:
-              limits:
-                cpu: "200m"
-                memory: "128Mi"
-      ```
+```
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+  containers:
+    - name: app
+      image: nginx@sha256:a1b2c3...
+      securityContext:
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+      resources:
+        limits:
+          cpu: "200m"
+          memory: "128Mi"
+```bash
 </div>
 </details>
 
@@ -503,24 +502,6 @@ Vì cờ <code>privileged: true</code> phá vỡ hoàn toàn rào chắn cách l
 | Kubesec Security Scanner | `https://kubesec.io/` | Tài liệu chuẩn công cụ Kubesec |
 | Hadolint Dockerfile Linter | `https://github.com/hadolint/hadolint` | Tài liệu công cụ Hadolint |
 
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| §0. Khởi động và ôn tập | 10 phút | 10 phút |
-| §1. Học viên làm được gì | 1 phút | 1 phút |
-| §2. Cần biết trước | 1 phút | 1 phút |
-| §3. Thuật ngữ và mô hình tư duy | 8 phút | 8 phút |
-| §4. Shift-Left Security & Static Analysis | 12 phút | 12 phút |
-| §5. Kubesec Manifest Scanning & Scoring | 12 phút | 12 phút |
-| §6. Trivy Config, Checkov & Hadolint Scan | 10 phút | 10 phút |
-| §7. Đưa vào cụm thật | 4 phút | 4 phút |
-| §8. Bẫy hay gặp | 2 phút | 2 phút |
-| §9. Tóm tắt | 2 phút | 2 phút |
-| §10. Câu hỏi tự kiểm tra | 5 phút | 5 phút |
-| **Tổng** | **60'** | **60'** |
 
 ---
 
@@ -564,7 +545,7 @@ Vì cờ <code>privileged: true</code> phá vỡ hoàn toàn rào chắn cách l
 
 ## L2. Kiến trúc bài lab Shift-Left Static Analysis
 
-```mermaid
+`
 graph TD
     Dev[Security Engineer / Dev] -->|"1. Create Insecure Manifest"| BadYAML[/tmp/bad-pod.yaml]
     BadYAML -->|"2. Kubesec / Trivy Scan"| Scanner[Static Analysis Tools]
@@ -575,7 +556,7 @@ graph TD
     Scanner -->|"Score +10: PASSED"| PassedGate[Pass CI/CD Gatekeeper]
     
     PassedGate -->|"5. Deploy to Cluster"| PodRunning[Pod Started in lab62]
-```yaml
+```
 
 ---
 
@@ -583,7 +564,7 @@ graph TD
 
 ### Thao tác 1.1: Tạo Namespace và biên soạn `/tmp/bad-pod.yaml`
 
-```bash
+`
 kubectl create namespace lab62
 
 cat <<EOF > /tmp/bad-pod.yaml
@@ -604,13 +585,13 @@ EOF
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab62`.**
 
-```bash
+`
 kubectl get ns lab62 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```bash
+```
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/bad-pod.yaml`.**
 
-```bash
+`
 grep -q "bad-pod" /tmp/bad-pod.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
 ```yaml
 
@@ -620,7 +601,7 @@ grep -q "bad-pod" /tmp/bad-pod.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "C
 
 ### Thao tác 2.1: Chạy `kubesec scan /tmp/bad-pod.yaml`
 
-```bash
+`
 kubesec scan /tmp/bad-pod.yaml 2>/dev/null || {
   # Giả lập phản hồi Kubesec scan nếu môi trường lab chưa nạp binary kubesec:
   cat <<EOF
@@ -636,19 +617,19 @@ kubesec scan /tmp/bad-pod.yaml 2>/dev/null || {
 ]
 EOF
 }
-```bash
+```
 
 **CHECKPOINT 3 — Kiểm tra chạy `kubesec scan`.**
 
-```bash
+`
 test -f /tmp/bad-pod.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
 ```bash
 
 **CHECKPOINT 4 — Kiểm tra phân tích danh sách lỗi Kubesec.**
 
-```bash
+`
 test -f /tmp/bad-pod.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```yaml
+```
 
 ---
 
@@ -656,7 +637,7 @@ test -f /tmp/bad-pod.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 
 
 ### Thao tác 5.1: Biên soạn tệp `/tmp/Dockerfile.bad`
 
-```bash
+`
 cat <<EOF > /tmp/Dockerfile.bad
 FROM alpine:latest
 USER root
@@ -668,21 +649,21 @@ EOF
 
 **CHECKPOINT 5 — Chạy `trivy config` trên `/tmp/bad-pod.yaml`.**
 
-```bash
+`
 test -f /tmp/bad-pod.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```bash
+```
 
 **CHECKPOINT 6 — Kiểm tra tệp `/tmp/Dockerfile.bad`.**
 
-```bash
+`
 test -f /tmp/Dockerfile.bad && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
 ```bash
 
 **CHECKPOINT 7 — Quét tệp Dockerfile bằng `hadolint`.**
 
-```bash
+`
 test -f /tmp/Dockerfile.bad && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```yaml
+```
 
 ---
 
@@ -690,7 +671,7 @@ test -f /tmp/Dockerfile.bad && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOIN
 
 ### Thao tác 6.1: Biên soạn tệp `/tmp/good-pod.yaml` thắt chặt bảo mật
 
-```bash
+`
 cat <<EOF > /tmp/good-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -729,25 +710,25 @@ kubectl apply -f /tmp/good-pod.yaml 2>/dev/null || true
 
 **CHECKPOINT 8 — Kiểm tra cờ `readOnlyRootFilesystem` trong `/tmp/good-pod.yaml`.**
 
-```bash
+`
 grep -q "readOnlyRootFilesystem" /tmp/good-pod.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```bash
+```
 
 **CHECKPOINT 9 — Chạy lại `kubesec scan` đạt điểm dương (+10đ).**
 
-```bash
+`
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
 ```bash
 
 **CHECKPOINT 10 — Apply Pod an toàn `/tmp/good-pod.yaml`.**
 
-```bash
+`
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```bash
+```
 
 **CHECKPOINT 11 — Kiểm tra Pod `good-pod` ở trạng thái `Running`.**
 
-```bash
+`
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
 ```yaml
 
@@ -755,13 +736,13 @@ test -f /tmp/good-pod.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOIN
 
 ## L7. Bước 5: Tra cứu báo cáo quét tĩnh sạch (10 phút)
 
-```bash
+`
 test -f /tmp/good-pod.yaml && echo "SCAN_CLEAN_VERIFIED" >/dev/null
-```bash
+```
 
 **CHECKPOINT 12 — Tra cứu báo cáo quét tĩnh sạch.**
 
-```bash
+`
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
 ```yaml
 
@@ -771,14 +752,14 @@ test -f /tmp/good-pod.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOIN
 
 ### Thao tác 8.1: Dọn dẹp tài nguyên lab62
 
-```bash
+`
 kubectl delete namespace lab62 2>/dev/null || true
 rm -f /tmp/bad-pod.yaml /tmp/Dockerfile.bad /tmp/good-pod.yaml
-```bash
+```
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
-```bash
+`
 test ! -f /tmp/bad-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
 ```yaml
 
@@ -826,26 +807,11 @@ test ! -f /tmp/bad-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOI
 | Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
 | **Tổng điểm** | | **100 điểm** |
 
----
-
-## Bảng đối soát thời lượng
-
-| Khối thực hành | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| L0 & L1. Chuẩn bị và kiểm tra | 10 phút | 10 phút |
-| L3. Bước 1: Namespace & Bad Manifest | 15 phút | 15 phút |
-| L4. Bước 2: Kubesec Scan & Scoring | 25 phút | 25 phút |
-| L5. Bước 3: Dockerfile Scan via Hadolint | 25 phút | 25 phút |
-| L6. Bước 4: Manifest Hardening & Good Pod | 25 phút | 25 phút |
-| L7. Bước 5: Audit Clean Reports | 10 phút | 10 phút |
-| L8. Dọn dẹp môi trường | 10 phút | 10 phút |
-| **Tổng** | **120'** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -853,225 +819,343 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cơ chế chấm điểm và đánh giá rủi ro an ninh của công cụ Kubesec (<code>kubesec scan</code>) hoạt động như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Giúp phát hiện và xử lý sớm các lỗi cấu hình an ninh ngay từ giai đoạn phát triển (máy Dev/CI-CD) trước khi code được commit hoặc deploy lên cụm. Chi phí sửa lỗi ở giai đoạn Shift-Left rẻ hơn và an toàn hơn gấp 100 lần so với việc xử lý sự cố rò rỉ khi ứng dụng đã chạy Production.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kubesec phân tích tệp YAML theo danh sách các quy tắc an ninh định trước; <b style="color: var(--accent-primary);">trừ điểm nặng</b> đối với các cờ nguy hiểm (như <code>privileged: true</code>, <code>runAsUser: 0</code>) và <b style="color: var(--accent-primary);">cộng điểm thưởng</b> đối với các cấu hình bảo mật thắt chặt (như <code>readOnlyRootFilesystem: true</code>, <code>capabilities.drop: ["ALL"]</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cơ chế chấm điểm Kubesec.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tìm lỗi nhưng chưa rõ hệ thống trừ điểm vi phạm vs cộng điểm thưởng bảo mật.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế chấm điểm định lượng của công cụ Kubesec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Điểm số Kubesec đạt bao nhiêu thì tệp manifest được xem là an toàn? — Điểm số Kubesec đạt mức <b style="color: var(--accent-primary);">dương (>= +5đ)</b> và không chứa lỗi <code>Critical</code>).
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết triết lý Shift-Left Security.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sửa lỗi sớm nhưng chưa giải thích khâu Dev/CI-CD và tiết kiệm chi phí.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo triết lý Shift-Left Security và lợi ích trong quy trình CI/CD.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Công cụ CLI nào chuyên dụng để chấm điểm an toàn cho tệp Kubernetes YAML manifest? — Công cụ <b style="color: var(--accent-primary);">Kubesec</b> (<code>kubesec scan</code>)).
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Bốn cờ cấu hình nguy hiểm nhất dưới khối <code>securityContext</code> trong Pod manifest bị Kubesec trừ điểm nặng nhất là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>privileged: true</code> (Cấp quyền root kernel cho container).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>runAsUser: 0</code> (Chạy tiến trình với tư cách user root).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>allowPrivilegeEscalation: true</code> (Cho phép tiến trình con leo thang quyền root).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>capabilities.add: ["SYS_ADMIN"]</code> (Cấp quyền quản trị hệ thống Linux).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được các cờ nguy hiểm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 cờ nguy hiểm.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 4 cờ cấu hình nguy hiểm nhất trong Pod spec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ cấu hình nào giúp ngăn chặn tiến trình con trong container leo thang quyền root? — Cờ <b style="color: var(--accent-primary);"><code>allowPrivilegeEscalation: false</code></b>).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Bốn cờ cấu hình thắt chặt bảo mật quan trọng nhất giúp nâng điểm Kubesec đạt mức tối đa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>readOnlyRootFilesystem: true</code> (Đặt hệ thống tệp gốc container dạng chỉ đọc).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>runAsNonRoot: true</code> (Bắt buộc chạy dưới user không phải root).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>capabilities.drop: ["ALL"]</code> (Tước bỏ 100% quyền Linux kernel capabilities).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>resources.limits</code> (Khai báo giới hạn phần cứng CPU/Memory).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được các cờ bảo mật.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 cờ bảo mật.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 4 cờ cấu hình thắt chặt bảo mật giúp tối ưu điểm Kubesec.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao việc khai báo <code>resources.limits</code> lại được đánh giá là một tiêu chuẩn bảo mật? — Vì giúp ngăn chặn tiến trình container chiếm dụng cạn kệt tài nguyên CPU/RAM gây sập Node (DoS attack)).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Giải pháp khắc phục triệt để khi ứng dụng bị crash do thiếu quyền ghi tệp tạm sau khi bổ sung cờ <code>readOnlyRootFilesystem: true</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bổ sung một volume hệ thống tệp tạm trên RAM <b style="color: var(--accent-primary);"><code>emptyDir: {}</code></b> dưới khối <code>volumes</code> và mount volume đó vào đường dẫn <code>/tmp</code> (hoặc <code>/var/log</code>) dưới khối <code>volumeMounts</code> của container.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách gỡ lỗi readOnlyRootFilesystem crash.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được mount file nhưng chưa rõ việc dùng volume <code>emptyDir</code> trỏ vào <code>/tmp</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác giải pháp mount volume <code>emptyDir</code> kết hợp với <code>readOnlyRootFilesystem: true</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Volume <code>emptyDir</code> có tồn tại vĩnh viễn trên Host đĩa cứng không? — KHÔNG! <code>emptyDir</code> là hệ thống tệp tạm nằm trên RAM, bị xóa sạch khi Pod dừng).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác biệt về vai trò giữa công cụ <code>Kubesec</code> (phân tích K8s YAML) và <code>Hadolint</code> (phân tích Dockerfile)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kubesec</b>: Chuyên dụng để <b style="color: var(--accent-primary);">phân tích tĩnh bản kê khai Kubernetes YAML</b>, kiểm tra <code>securityContext</code>, <code>resources</code>, <code>capabilities</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hadolint</b>: Chuyên dụng để <b style="color: var(--accent-primary);">phân tích tĩnh tệp Dockerfile</b>, kiểm tra các thực hành xấu trong câu lệnh đóng gói image (<code>USER root</code>, chỉ thị <code>ADD</code>, <code>apt-get</code> thiếu clean cache).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn giữa Kubesec và Hadolint.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả hai quét file nhưng chưa làm rõ 1 cái quét K8s YAML 1 cái quét Dockerfile.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự phân công vai trò giữa Kubesec và Hadolint.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tại sao chỉ thị <code>ADD</code> trong Dockerfile lại bị Hadolint cảnh báo thay bằng <code>COPY</code>? — Vì <code>ADD</code> có thể tự động tải và giải nén tệp từ URL ngoài không kiểm soát, nguy cơ chèn mã độc).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Lệnh CLI Trivy nào được sử dụng để phân tích lỗi an ninh cấu hình trong tệp YAML manifest và tự động ngắt pipeline CI/CD với exit code 1?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>trivy config --exit-code 1 --severity HIGH,CRITICAL /path/to/manifest.yaml</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh trivy config.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được trivy config nhưng thiếu cờ --exit-code 1.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% lệnh <code>trivy config</code> ngắt pipeline CI/CD khi dính lỗi HIGH/CRITICAL.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>--severity HIGH,CRITICAL</code> có tác dụng gì? — Chỉ ngắt build khi phát hiện lỗi ở mức độ nghiêm trọng Cao hoặc Rất cao, bỏ qua các cảnh báo nhỏ).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Quy trình 4 bước hoàn chỉnh để tích hợp Static Analysis linters vào đường ống CI/CD tự động hóa bảo mật là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Commit</b>: Dev viết YAML/Dockerfile và commit mã nguồn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Linting Scan</b>: Runner chạy <code>kubesec scan</code>, <code>hadolint</code> và <code>trivy config</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Gatekeeper Check</b>: Nếu điểm Kubesec âm hoặc dính lỗi CRITICAL, ngắt build (<code>exit-code 1</code>) và gửi báo cáo về cho Dev.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Deploy</b>: Nếu 100% linters pass, cho phép apply manifest vào cụm Kubernetes.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 bước CI/CD static analysis pipeline.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được scan và deploy nhưng thiếu bước ngắt build Gatekeeper check.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo quy trình 4 bước tích hợp CI/CD tự động hóa Static Analysis.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tính năng pre-commit hook trong Git giúp ích gì cho quy trình này? — Cho phép tự động chạy linter ngay dưới máy Dev trước khi lệnh <code>git commit</code> được thực thi).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cách chẩn đoán và khắc phục khi Kubesec báo lỗi <code>Containers should not run with allowPrivilegeEscalation</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Mở tệp Pod manifest, tìm khối <code>securityContext</code> dưới phần <code>containers</code> và thêm cờ <code>allowPrivilegeEscalation: false</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách sửa lỗi allowPrivilegeEscalation.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được sửa file nhưng chưa rõ vị trí thêm cờ <code>allowPrivilegeEscalation: false</code> dưới container securityContext.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cách bổ sung cờ <code>allowPrivilegeEscalation: false</code> để khắc phục vi phạm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cờ <code>allowPrivilegeEscalation: false</code> có tác dụng kỹ thuật gì ở tầng Linux Kernel? — Đặt bit <code>no_new_privs</code> ngăn tiến trình con nhận thêm quyền root từ các file setuid binary).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Phân biệt sự khác nhau giữa công cụ <code>Kubesec</code> và công cụ <code>Checkov</code> trong phân tích tĩnh mã nguồn hạ tầng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kubesec</b>: Chuyên sâu và nhanh gọn cho <b style="color: var(--accent-primary);">Kubernetes YAML manifests</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Checkov</b>: Là công cụ phân tích tĩnh đa nền tảng <b style="color: var(--accent-primary);">Infrastructure as Code (IaC)</b>, hỗ trợ quét Kubernetes YAML, Terraform, CloudFormation, Helm charts, và Serverless.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được Kubesec và Checkov.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả hai quét YAML nhưng chưa rõ Checkov là công cụ quét IaC đa nền tảng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự khác biệt giữa Kubesec chuyên sâu K8s và Checkov quét đa nền tảng IaC.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu dự án sử dụng Helm Charts thì nên chọn công cụ nào để quét tệp template? — Sử dụng Checkov hoặc Trivy config scan để quét trực tiếp tệp Helm template).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp YAML chuẩn của một Pod spec thắt chặt bảo mật đạt điểm tuyệt đối Kubesec CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">`</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: hardened-pod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: prod</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">securityContext:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">runAsNonRoot: true</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">runAsUser: 10001</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">seccompProfile:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">type: RuntimeDefault</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: nginx@sha256:a1b2c3d4e5f6...</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">securityContext:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">readOnlyRootFilesystem: true</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">allowPrivilegeEscalation: false</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">capabilities:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">drop:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">limits:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cpu: "200m"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">memory: "128Mi"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai cấu trúc YAML hoặc thiếu securityContext.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng readOnlyRootFilesystem nhưng thiếu capabilities drop ALL hoặc resources limits.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% tệp Pod spec thắt chặt bảo mật đạt điểm tối đa Kubesec CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khối <code>seccompProfile.type: RuntimeDefault</code> đóng vai trò gì trong Pod spec trên? — Bắt buộc tiến trình container phải tuân theo bộ lọc seccomp mặc định của Container Runtime để giới hạn syscalls).
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Bộ 4 quy tắc vàng để làm chủ Static Manifest Analysis & Shift-Left Security CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân tích tĩnh 100% tệp YAML manifests và Dockerfiles trước khi commit mã nguồn (Shift-Left Security).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chạy <code>kubesec scan</code> và khắc phục các vi phạm để nâng điểm bảo mật từ âm sang dương (>= +5đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bắt buộc bổ sung <code>readOnlyRootFilesystem: true</code>, <code>capabilities.drop: ["ALL"]</code>, và <code>resources.limits</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tích hợp cờ <code>--exit-code 1</code> trên Trivy/Checkov trong CI/CD pipeline để tự động chặn các tệp YAML dính lỗi CRITICAL.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Static Analysis CKS.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 63 là gì? — Học về <code>Cấu hình Audit Logging Nâng cao và Phân tích Truy vết Sự cố Bảo mật Kubernetes</code>).
+
 ---
 
-### Câu 2 — 🔥
-**Hỏi:** Cơ chế chấm điểm và đánh giá rủi ro an ninh của công cụ Kubesec (`kubesec scan`) hoạt động như thế nào?
+## V3. Câu chốt để nói khi phỏng vấn
 
-**Đáp án chuẩn:** Kubesec phân tích tệp YAML theo danh sách các quy tắc an ninh định trước; **trừ điểm nặng** đối với các cờ nguy hiểm (như `privileged: true`, `runAsUser: 0`) và **cộng điểm thưởng** đối với các cấu hình bảo mật thắt chặt (như `readOnlyRootFilesystem: true`, `capabilities.drop: ["ALL"]`).
+1. <b style="color: var(--accent-primary);">"Thực thi nguyên lý Shift-Left Security bằng cách phân tích tĩnh 100% tệp YAML và Dockerfile ngay trên máy Dev."</b>
+2. <b style="color: var(--accent-primary);">"Sử dụng công cụ Kubesec (<code>kubesec scan</code>) để chấm điểm an toàn và triệt tiêu các cờ vi phạm nguy hiểm cao."</b>
+3. <b style="color: var(--accent-primary);">"Nâng điểm bảo mật Pod spec lên mức tối đa bằng cách bổ sung <code>readOnlyRootFilesystem: true</code> và drop 100% capabilities."</b>
+4. <b style="color: var(--accent-primary);">"Tự động hóa rào chắn CI/CD với cờ <code>--exit-code 1</code> trên Trivy config scan để ngắt build khi phát hiện lỗi CRITICAL."</b>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết cơ chế chấm điểm Kubesec.
-- 1đ: Nêu được tìm lỗi nhưng chưa rõ hệ thống trừ điểm vi phạm vs cộng điểm thưởng bảo mật.
-- 3đ: Phân tích chuẩn xác cơ chế chấm điểm định lượng của công cụ Kubesec.
-
-**Câu hỏi đào sâu:** (Điểm số Kubesec đạt bao nhiêu thì tệp manifest được xem là an toàn? — Điểm số Kubesec đạt mức **dương (>= +5đ)** và không chứa lỗi `Critical`).
-
----
-
-### Câu 3 — ★★★
-**Hỏi:** Bốn cờ cấu hình nguy hiểm nhất dưới khối `securityContext` trong Pod manifest bị Kubesec trừ điểm nặng nhất là gì?
-
-**Đáp án chuẩn:**
-1. `privileged: true` (Cấp quyền root kernel cho container).
-2. `runAsUser: 0` (Chạy tiến trình với tư cách user root).
-3. `allowPrivilegeEscalation: true` (Cho phép tiến trình con leo thang quyền root).
-4. `capabilities.add: ["SYS_ADMIN"]` (Cấp quyền quản trị hệ thống Linux).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được các cờ nguy hiểm.
-- 1đ: Nêu được 2 cờ nguy hiểm.
-- 3đ: Kể tên chuẩn xác 4 cờ cấu hình nguy hiểm nhất trong Pod spec.
-
-**Câu hỏi đào sâu:** (Cờ cấu hình nào giúp ngăn chặn tiến trình con trong container leo thang quyền root? — Cờ **`allowPrivilegeEscalation: false`**).
-
----
-
-### Câu 4 — ★★★
-**Hỏi:** Bốn cờ cấu hình thắt chặt bảo mật quan trọng nhất giúp nâng điểm Kubesec đạt mức tối đa là gì?
-
-**Đáp án chuẩn:**
-1. `readOnlyRootFilesystem: true` (Đặt hệ thống tệp gốc container dạng chỉ đọc).
-2. `runAsNonRoot: true` (Bắt buộc chạy dưới user không phải root).
-3. `capabilities.drop: ["ALL"]` (Tước bỏ 100% quyền Linux kernel capabilities).
-4. `resources.limits` (Khai báo giới hạn phần cứng CPU/Memory).
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu được các cờ bảo mật.
-- 1đ: Nêu được 2 cờ bảo mật.
-- 3đ: Trình bày chuẩn xác 4 cờ cấu hình thắt chặt bảo mật giúp tối ưu điểm Kubesec.
-
-**Câu hỏi đào sâu:** (Tại sao việc khai báo `resources.limits` lại được đánh giá là một tiêu chuẩn bảo mật? — Vì giúp ngăn chặn tiến trình container chiếm dụng cạn kệt tài nguyên CPU/RAM gây sập Node (DoS attack)).
-
----
-
-### Câu 5 — 🔥
-**Hỏi:** Giải pháp khắc phục triệt để khi ứng dụng bị crash do thiếu quyền ghi tệp tạm sau khi bổ sung cờ `readOnlyRootFilesystem: true`?
-
-**Đáp án chuẩn:** Bổ sung một volume hệ thống tệp tạm trên RAM **`emptyDir: {}`** dưới khối `volumes` và mount volume đó vào đường dẫn `/tmp` (hoặc `/var/log`) dưới khối `volumeMounts` của container.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách gỡ lỗi readOnlyRootFilesystem crash.
-- 1đ: Nêu được mount file nhưng chưa rõ việc dùng volume `emptyDir` trỏ vào `/tmp`.
-- 3đ: Phân tích chuẩn xác giải pháp mount volume `emptyDir` kết hợp với `readOnlyRootFilesystem: true`.
-
-**Câu hỏi đào sâu:** (Volume `emptyDir` có tồn tại vĩnh viễn trên Host đĩa cứng không? — KHÔNG! `emptyDir` là hệ thống tệp tạm nằm trên RAM, bị xóa sạch khi Pod dừng).
-
----
-
-### Câu 6 — ★★★
-**Hỏi:** Sự khác biệt về vai trò giữa công cụ `Kubesec` (phân tích K8s YAML) và `Hadolint` (phân tích Dockerfile)?
-
-**Đáp án chuẩn:**
-- **Kubesec**: Chuyên dụng để **phân tích tĩnh bản kê khai Kubernetes YAML**, kiểm tra `securityContext`, `resources`, `capabilities`.
-- **Hadolint**: Chuyên dụng để **phân tích tĩnh tệp Dockerfile**, kiểm tra các thực hành xấu trong câu lệnh đóng gói image (`USER root`, chỉ thị `ADD`, `apt-get` thiếu clean cache).
-
-**Tiêu chí chấm:**
-- 0đ: Nhầm lẫn giữa Kubesec và Hadolint.
-- 1đ: Nêu được cả hai quét file nhưng chưa làm rõ 1 cái quét K8s YAML 1 cái quét Dockerfile.
-- 3đ: Phân tích chuẩn xác sự phân công vai trò giữa Kubesec và Hadolint.
-
-**Câu hỏi đào sâu:** (Tại sao chỉ thị `ADD` trong Dockerfile lại bị Hadolint cảnh báo thay bằng `COPY`? — Vì `ADD` có thể tự động tải và giải nén tệp từ URL ngoài không kiểm soát, nguy cơ chèn mã độc).
-
----
-
-### Câu 7 — ★★★
-**Hỏi:** Lệnh CLI Trivy nào được sử dụng để phân tích lỗi an ninh cấu hình trong tệp YAML manifest và tự động ngắt pipeline CI/CD với exit code 1?
-
-**Đáp án chuẩn:** Lệnh `trivy config --exit-code 1 --severity HIGH,CRITICAL /path/to/manifest.yaml`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết lệnh trivy config.
-- 1đ: Nêu được trivy config nhưng thiếu cờ --exit-code 1.
-- 3đ: Trình bày chính xác 100% lệnh `trivy config` ngắt pipeline CI/CD khi dính lỗi HIGH/CRITICAL.
-
-**Câu hỏi đào sâu:** (Cờ `--severity HIGH,CRITICAL` có tác dụng gì? — Chỉ ngắt build khi phát hiện lỗi ở mức độ nghiêm trọng Cao hoặc Rất cao, bỏ qua các cảnh báo nhỏ).
-
----
-
-### Câu 8 — 🔥
-**Hỏi:** Quy trình 4 bước hoàn chỉnh để tích hợp Static Analysis linters vào đường ống CI/CD tự động hóa bảo mật là gì?
-
-**Đáp án chuẩn:**
-1. **Commit**: Dev viết YAML/Dockerfile và commit mã nguồn.
-2. **Linting Scan**: Runner chạy `kubesec scan`, `hadolint` và `trivy config`.
-3. **Gatekeeper Check**: Nếu điểm Kubesec âm hoặc dính lỗi CRITICAL, ngắt build (`exit-code 1`) và gửi báo cáo về cho Dev.
-4. **Deploy**: Nếu 100% linters pass, cho phép apply manifest vào cụm Kubernetes.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 bước CI/CD static analysis pipeline.
-- 1đ: Nêu được scan và deploy nhưng thiếu bước ngắt build Gatekeeper check.
-- 3đ: Phân tích thấu đáo quy trình 4 bước tích hợp CI/CD tự động hóa Static Analysis.
-
-**Câu hỏi đào sâu:** (Tính năng pre-commit hook trong Git giúp ích gì cho quy trình này? — Cho phép tự động chạy linter ngay dưới máy Dev trước khi lệnh `git commit` được thực thi).
-
----
-
-### Câu 9 — ★★★
-**Hỏi:** Cách chẩn đoán và khắc phục khi Kubesec báo lỗi `Containers should not run with allowPrivilegeEscalation`?
-
-**Đáp án chuẩn:** Mở tệp Pod manifest, tìm khối `securityContext` dưới phần `containers` và thêm cờ `allowPrivilegeEscalation: false`.
-
-**Tiêu chí chấm:**
-- 0đ: Không biết cách sửa lỗi allowPrivilegeEscalation.
-- 1đ: Nêu được sửa file nhưng chưa rõ vị trí thêm cờ `allowPrivilegeEscalation: false` dưới container securityContext.
-- 3đ: Phân tích chuẩn xác cách bổ sung cờ `allowPrivilegeEscalation: false` để khắc phục vi phạm.
-
-**Câu hỏi đào sâu:** (Cờ `allowPrivilegeEscalation: false` có tác dụng kỹ thuật gì ở tầng Linux Kernel? — Đặt bit `no_new_privs` ngăn tiến trình con nhận thêm quyền root từ các file setuid binary).
-
----
-
-### Câu 10 — ★★★
-**Hỏi:** Phân biệt sự khác nhau giữa công cụ `Kubesec` và công cụ `Checkov` trong phân tích tĩnh mã nguồn hạ tầng?
-
-**Đáp án chuẩn:**
-- **Kubesec**: Chuyên sâu và nhanh gọn cho **Kubernetes YAML manifests**.
-- **Checkov**: Là công cụ phân tích tĩnh đa nền tảng **Infrastructure as Code (IaC)**, hỗ trợ quét Kubernetes YAML, Terraform, CloudFormation, Helm charts, và Serverless.
-
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được Kubesec và Checkov.
-- 1đ: Nêu được cả hai quét YAML nhưng chưa rõ Checkov là công cụ quét IaC đa nền tảng.
-- 3đ: Phân tích chuẩn xác sự khác biệt giữa Kubesec chuyên sâu K8s và Checkov quét đa nền tảng IaC.
-
-**Câu hỏi đào sâu:** (Nếu dự án sử dụng Helm Charts thì nên chọn công cụ nào để quét tệp template? — Sử dụng Checkov hoặc Trivy config scan để quét trực tiếp tệp Helm template).
-
----
-
-### Câu 11 — 🔥
-**Hỏi:** Cú pháp YAML chuẩn của một Pod spec thắt chặt bảo mật đạt điểm tuyệt đối Kubesec CKS là gì?
-
-**Đáp án chuẩn:**
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hardened-pod
-  namespace: prod
-spec:
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 10001
-    seccompProfile:
-      type: RuntimeDefault
-  containers:
-    - name: app
-      image: nginx@sha256:a1b2c3d4e5f6...
-      securityContext:
-        readOnlyRootFilesystem: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-      resources:
-        limits:
-          cpu: "200m"
-          memory: "128Mi"
-```
-
-**Tiêu chí chấm:**
-- 0đ: Viết sai cấu trúc YAML hoặc thiếu securityContext.
-- 1đ: Nêu đúng readOnlyRootFilesystem nhưng thiếu capabilities drop ALL hoặc resources limits.
-- 3đ: Viết chuẩn xác 100% tệp Pod spec thắt chặt bảo mật đạt điểm tối đa Kubesec CKS.
-
-**Câu hỏi đào sâu:** (Khối `seccompProfile.type: RuntimeDefault` đóng vai trò gì trong Pod spec trên? — Bắt buộc tiến trình container phải tuân theo bộ lọc seccomp mặc định của Container Runtime để giới hạn syscalls).
-
----
-
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Static Manifest Analysis & Shift-Left Security CKS là gì?
-
-**Đáp án chuẩn:**
-1. Phân tích tĩnh 100% tệp YAML manifests và Dockerfiles trước khi commit mã nguồn (Shift-Left Security).
-2. Chạy `kubesec scan` và khắc phục các vi phạm để nâng điểm bảo mật từ âm sang dương (>= +5đ).
-3. Bắt buộc bổ sung `readOnlyRootFilesystem: true`, `capabilities.drop: ["ALL"]`, và `resources.limits`.
-4. Tích hợp cờ `--exit-code 1` trên Trivy/Checkov trong CI/CD pipeline để tự động chặn các tệp YAML dính lỗi CRITICAL.
-
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Static Analysis CKS.
-
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 63 là gì? — Học về `Cấu hình Audit Logging Nâng cao và Phân tích Truy vết Sự cố Bảo mật Kubernetes`).
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1081,28 +1165,6 @@ spec:
 2. **"Sử dụng công cụ Kubesec (`kubesec scan`) để chấm điểm an toàn và triệt tiêu các cờ vi phạm nguy hiểm cao."**
 3. **"Nâng điểm bảo mật Pod spec lên mức tối đa bằng cách bổ sung `readOnlyRootFilesystem: true` và drop 100% capabilities."**
 4. **"Tự động hóa rào chắn CI/CD với cờ `--exit-code 1` trên Trivy config scan để ngắt build khi phát hiện lỗi CRITICAL."**
-
----
-
-## V4. Bảng ghi điểm
-
-| Điểm số | Mức độ đạt được | Đánh giá |
-|---|---|---|
-| **0 – 18 điểm** | Chưa đạt | Cần đọc lại §4 và §5 của tệp `01-ly-thuyet.md` |
-| **19 – 28 điểm** | Đạt yêu cầu | Nắm chắc các kỹ thuật CKS Static Manifest Analysis |
-| **29 – 36 điểm** | Xuất sắc | Thành thục sử dụng Kubesec, Checkov, Trivy config scan và Hadolint |
-
----
-
-## V5. Bài tập về nhà
-
-- **BTVN 1:** Thực hành cài đặt `kubesec` CLI và quét rà soát toàn bộ các tệp YAML manifest trong dự án lab.
-- **BTVN 2:** Sửa đổi 5 tệp Pod manifest dính lỗi nguy hiểm để nâng điểm số Kubesec lên >= +5đ.
-- **BTVN 3:** Viết script Bash tự động chạy `trivy config` và `hadolint` quét kiểm tra toàn bộ thư mục mã nguồn CI/CD.
-- **BTVN 4 (Chuẩn bị cho Buổi 63 — Cấu hình Audit Logging Nâng cao CKS):** Trả lời ngắn gọn 3 câu hỏi:
-  1. Tính năng Kubernetes Audit Logging đóng vai trò gì trong việc điều tra truy vết sự cố bảo mật (Security Incident Response)?
-  2. Bốn cấp độ ghi nhật ký Audit (Audit Levels: `None`, `Metadata`, `Request`, `RequestResponse`) khác nhau như thế nào?
-  3. Cấu hình tệp `audit-policy.yaml` và hai cờ câu lệnh bắt buộc trên `kube-apiserver` để bật Audit Logging là gì?
 
 ---
 
@@ -1159,7 +1221,7 @@ Phân tích và chỉnh sửa tệp `/tmp/Dockerfile.bad` thành `/tmp/Dockerfil
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-```bash
+`
 kubesec scan /tmp/insecure-pod.yaml > /tmp/kubesec-report.json 2>/dev/null || {
   cat <<EOF > /tmp/kubesec-report.json
 [
@@ -1180,7 +1242,7 @@ EOF
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-```bash
+`
 cat <<EOF > /tmp/secured-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -1211,7 +1273,7 @@ spec:
     - name: tmp-vol
       emptyDir: {}
 EOF
-```
+```bash
 </div>
 
 <div class="qa-answer">
@@ -1220,7 +1282,7 @@ EOF
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-```bash
+```
 cat <<EOF > /tmp/trivy-config-report.json
 {
   "Target": "/tmp/secured-pod.yaml",
@@ -1228,7 +1290,7 @@ cat <<EOF > /tmp/trivy-config-report.json
   "Status": "PASSED"
 }
 EOF
-```
+```bash
 </div>
 
 <div class="qa-answer">
@@ -1237,7 +1299,7 @@ EOF
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-```bash
+```
 cat <<EOF > /tmp/Dockerfile.clean
 FROM alpine:3.19
 RUN apk add --no-cache curl
@@ -1245,7 +1307,7 @@ COPY app.tar.gz /app/
 USER 10001
 CMD ["sh"]
 EOF
-```
+```bash
 </div>
 
 ## T4. Bẫy hay gặp
@@ -1264,7 +1326,7 @@ EOF
 
 ### Đoạn script tự kiểm tra và in điểm (Không phụ thuộc vào `jq`)
 
-```bash
+`
 #!/bin/bash
 SCORE=0
 
@@ -1313,7 +1375,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1345,12 +1407,11 @@ spec:
 
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Nội dung | Ngân sách thời gian | Thực tế |
-|---|---|---|
-| T0 & T1. Đọc đề và chuẩn bị | 2 phút | 2 phút |
-| T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
-| T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
-| **Tổng** | **30'** | **30'** |
+Làm chủ kỹ thuật phân tích tĩnh bản kê khai Kubernetes (Static Analysis Manifests) bằng các công cụ chuyên dụng như **kubesec**, **kube-linter** và **trivy config** giúp bạn phát hiện và triệt tiêu các cấu hình mất an toàn ngay từ giai đoạn Shift-Left CI/CD.
+
+> [!TIP]
+> **BÀI HỌC TIẾP THEO:**
+> Trong **[[Bài 18] Kubernetes Audit Logging: Cấu Hình Audit Policy, Backend & Phân Tích Sự Cố](cks-18-18-audit-log.html)**, chúng ta sẽ khám phá cơ chế ghi vết kiểm toán chuyên sâu của API Server: Cách thiết kế chính sách Audit Policy đa tầng, ghi log ra tệp an toàn và truy vết các hành vi xâm nhập trái phép.
 {% endraw %}

@@ -513,10 +513,11 @@ Trước khi chính thức bàn giao hệ thống Argo CD cho môi trường Pro
 
 ---
 
-## Tổng Kết
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
 Bảo mật và gia cố vận hành là ranh giới phân định giữa một hệ thống GitOps thử nghiệm và một nền tảng GitOps cấp độ Doanh nghiệp (Enterprise-Grade). Bằng cách thiết lập mô hình phòng thủ đa tầng kết hợp NetworkPolicy, Pod Security Standards, Controller Sharding và chiến lược Disaster Recovery bài bản, bạn đã biến Argo CD thành một cỗ máy phân phối phần mềm an toàn, tin cậy và sẵn sàng chịu đựng mọi biến cố hạ tầng.
 
 > [!TIP]
-> **Bài tiếp theo:** [Bài 24: Capstone Project - Xây Dựng Nền Tảng GitOps Enterprise Đa Đội, Đa Cụm End-to-End](argocd-24-24-capstone-xay-dung-nen-tang-gitops-enterprise-da-doi-da-cum-end-to-end.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực GitOps với bài học tiếp theo: [[Bài 24] Capstone Project: Xây Dựng Nền Tảng GitOps Enterprise Đa Đội, Đa Cụm End-to-End](argocd-24-24-capstone-xay-dung-nen-tang-gitops-enterprise-da-doi-da-cum-end-to-end.html).
 {% endraw %}

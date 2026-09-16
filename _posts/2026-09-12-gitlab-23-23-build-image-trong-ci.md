@@ -218,9 +218,11 @@ graph TD
 <span class="badge badge--rose">🕒 06:20 AM</span> Một pipeline đóng gói ứng dụng Node.js Monorepo sử dụng Google Kaniko trên Kubernetes Runner bị sập ngắt quãng với mã lỗi `command terminated with exit code 137` (OOM - Out of Memory) khi container pod chạm ngưỡng giới hạn 4GB RAM được cấp phát trong Resource Limit.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Job build container image bị hủy đột ngột, làm gián đoạn toàn bộ luồng triển khai phát hành:
 
 ```text
+
+Job build container image bị hủy đột ngột, làm gián đoạn toàn bộ luồng triển khai phát hành:
+
 $ /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "${IMAGE_TAG}"
 INFO[0001] Resolved base image node:20-alpine to node:20-alpine
 INFO[0003] Taking snapshot of full filesystem...

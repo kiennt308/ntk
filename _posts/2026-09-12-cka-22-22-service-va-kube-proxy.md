@@ -463,25 +463,6 @@ graph TD
 | Official Docs: Virtual IPs and Service Proxies | Kubernetes v1.35 | Tiến trình `kube-proxy`, so sánh `iptables` mode vs `IPVS` mode |
 | File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
 
----
-
-## Bảng đối soát thời lượng
-
-| Section | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| §0 | Khởi động và ôn tập | 10 phút |
-| §1 | Sau buổi này học viên LÀM ĐƯỢC gì | 1 phút |
-| §2 | Cần biết trước | 1 phút |
-| §3 | Thuật ngữ và mô hình tư duy | 8 phút |
-| §4 | Khái niệm Service VIP và 4 kiểu Service chuẩn (`ClusterIP`, `NodePort`, `LoadBalancer`, `ExternalName`) | 12 phút |
-| §5 | Headless Service (`clusterIP: None`) và đối tượng `EndpointSlice` | 12 phút |
-| §6 | Tiến trình `kube-proxy` và so sánh chế độ `iptables` ($O(N)$) vs `IPVS` ($O(1)$) | 10 phút |
-| §7 | Cấu hình cờ externalTrafficPolicy: Local và câu lệnh kiểm tra | 4 phút |
-| §8 | Đưa vào cụm thật | 4 phút |
-| §9 | Bẫy hay gặp | 2 phút |
-| §10 | Tóm tắt | 2 phút |
-| §11 | Câu hỏi tự kiểm tra | 5 phút |
-| **Tổng** | **Khối lý thuyết** | **60'** |
 
 ---
 
@@ -904,24 +885,11 @@ rm -f /tmp/svc-vip.txt /tmp/svc-eps.txt /tmp/nodeport-val.txt /tmp/headless-ip.t
 - Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-22/`.
 - Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
 
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Tiêu đề bước | Thời lượng |
-|---|---|---|
-| L3 | Bước 1 — Khởi tạo Deployment và Service kiểu `ClusterIP` | 30 phút |
-| L4 | Bước 2 — Khởi tạo Service kiểu `NodePort` và kiểm thử | 30 phút |
-| L5 | Bước 3 — Khởi tạo Headless Service và trích xuất EndpointSlice | 30 phút |
-| L6 | Bước 4 — Phân tích `kube-proxy` mode và dọn dẹp | 20 phút |
-| L7 | Nộp hiện vật và dọn dẹp | 10 phút |
-| **Tổng** | **Khối thực hành** | **120'** |
 
 ---
 
 ## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **Kubernetes Administrator**, **Cloud Security Specialist**, **Platform SRE** và **DevOps Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
 
 ## V1. Cách tiến hành
 
@@ -935,278 +903,370 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V2. Bộ câu hỏi
+---
 
+## V2. Bộ câu hỏi phỏng vấn thực chiến
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Khái niệm Headless Service (<code>clusterIP: None</code>) là gì và tại sao nó lại là thành phần bắt buộc cho các kiến trúc StatefulSet (như PostgreSQL, Kafka, MongoDB)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. <code>ClusterIP</code> (Mặc định - Nội bộ cụm):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Cấp địa chỉ IP ảo (VIP) cố định chỉ truy cập được từ bên trong cụm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dành cho giao tiếp giữa các microservices nội bộ (như Backend gọi sang Database).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. <code>NodePort</code> (Mở cổng máy chủ):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Mở một cổng tĩnh công cộng trên tất cả các máy chủ Worker Nodes trong dải <b style="color: var(--accent-primary);"><code>30000-32767</code></b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Phù hợp cho môi trường thử nghiệm/dev hoặc khi không có Cloud LoadBalancer.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3. <code>LoadBalancer</code> (Tích hợp Đám mây / MetalLB):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Tự động gọi Cloud Controller Manager xin địa chỉ IP công cộng (External IP) và provisioning một Load Balancer đám mây trỏ vào các NodePorts.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dành cho ứng dụng Production phơi ra Internet trên AWS/GCP/Azure hoặc Bare-metal dán MetalLB.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">4. <code>ExternalName</code> (Tên miền CNAME ngoài):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Trỏ tên miền Kubernetes nội bộ sang một CNAME bên ngoài mà KHÔNG tạo VIP hay proxy.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dành cho ứng dụng trong cụm gọi ra dịch vụ Database bên ngoài (như AWS RDS).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bản chất Headless Service:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai báo thuộc tính <b style="color: var(--accent-primary);"><code>clusterIP: None</code></b> trong Service spec.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubernetes sẽ <b style="color: var(--accent-primary);">KHÔNG CẤP PHÁT địa chỉ IP ảo VIP</b> cho Service.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế DNS:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi client truy vấn tên miền của Headless Service, CoreDNS trả về trực tiếp danh sách tất cả các địa chỉ IP thực tế của các Pods bên dưới qua bản ghi DNS A records.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do bắt buộc cho StatefulSet:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các ứng dụng Database StatefulSet (như Primary-Replica DB, Master-Worker Cluster) cần tự quản lý giao thức đồng bộ và kết nối trực tiếp đến ĐÚNG từng Pod thành viên (<code>db-0</code>, <code>db-1</code>) thay vì qua bộ cân bằng tải ngẫu nhiên.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Headless Service là Service bị lỗi mất IP.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>clusterIP: None</code> không có VIP nhưng không giải thích được cơ chế CoreDNS trả trực tiếp IP Pods và nhu cầu của StatefulSet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác Headless Service (<code>clusterIP: None</code>), cơ chế DNS A records và vai trò bắt buộc cho StatefulSet.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cấu trúc DNS SRV record của Headless Service.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tên miền DNS đầy đủ FQDN để gọi trực tiếp tới Pod 0 của StatefulSet <code>web</code> qua Headless Service <code>nginx</code> trong namespace <code>dev</code> là gì? *(Đáp án: <code>web-0.nginx.dev.svc.cluster.local</code>).*
 
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 4 loại này như nhau.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời tên 4 loại nhưng không nêu được dải cổng NodePort <code>30000-32767</code> và cơ chế CNAME của ExternalName (dính trần 1đ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 4 kiểu Service chuẩn, dải cổng <code>30000-32767</code> và kịch bản ứng dụng tương ứng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra mối liên hệ cấp tiến <code>ClusterIP -> NodePort -> LoadBalancer</code>.</div>
-
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao Service <code>LoadBalancer</code> lại luôn tự động tạo một Service <code>NodePort</code> ẩn đằng sau nó? *(Đáp án: Vì Cloud LoadBalancer cần gọi vào các cổng NodePort của các Worker Nodes để chuyển tiếp traffic vào Pods).*
+---</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Phân biệt sự khác nhau cốt lõi về khả năng mở rộng giữa đối tượng <code>Endpoints</code> truyền thống và <code>EndpointSlice</code> (<code>discovery.k8s.io/v1</code>) hiện đại.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Endpoints</code> (Truyền thống):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Gộp toàn bộ tất cả các địa chỉ IP của 100% Pods thuộc Service vào <b style="color: var(--accent-primary);">ĐÚNG 1 ĐỐI TƯỢNG duy nhất</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Nhược điểm:* Khi cụm scale ra 10.000 Pods, mỗi lần chỉ có 1 Pod bị restart đổi IP, API Server phải truyền tải toàn bộ đối tượng <code>Endpoints</code> dung lượng khổng lồ tới 100% các Worker Nodes, gây sập etcd và nghẽn mạng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>EndpointSlice</code> (Hiện đại v1.21+):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Chia nhỏ danh sách điểm cuối thành các <b style="color: var(--accent-primary);">lát cắt (Slices)</b>, mỗi <code>EndpointSlice</code> chỉ chứa <b style="color: var(--accent-primary);">tối đa 100 endpoints (IP Pods)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ưu điểm:* Thêm/xoá 1 Pod chỉ cần đồng bộ đúng 1 slice 100 endpoints, giảm 80% băng thông đồng bộ và tài nguyên CPU/Memory của Kubelet.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 đối tượng này giống hệt nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời EndpointSlice chia nhỏ hơn nhưng không nêu được con số tối đa <b style="color: var(--accent-primary);">100 endpoints/slice</b> và bài toán nghẽn etcd của Endpoints cũ.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Endpoints (gộp 1 file) vs EndpointSlice (chia nhỏ max 100 endpoints/slice giảm tải etcd/Kubelet).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra apiGroup <code>discovery.k8s.io/v1</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu một Service có 250 Pods bên dưới thì Kubernetes sẽ tạo ra bao nhiêu đối tượng <code>EndpointSlice</code>? *(Đáp án: Tạo ra <b style="color: var(--accent-primary);">3</b> đối tượng <code>EndpointSlice</code> [100 + 100 + 50]).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tiến trình <code>kube-proxy</code> đóng vai trò gì trên máy chủ Node và nó hoạt động dưới dạng đối tượng nào trong Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bản chất của <code>kube-proxy</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hoạt động dưới dạng một <b style="color: var(--accent-primary);"><code>DaemonSet</code></b> chạy trên 100% tất cả các Worker Nodes và Control Plane Nodes trong namespace <code>kube-system</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò chính:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lắng nghe các sự kiện thay đổi Service, Endpoints và <code>EndpointSlice</code> từ API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chịu trách nhiệm trực tiếp hiện thực hoá địa chỉ IP ảo VIP trên đĩa thực tế của Node bằng cách tạo và liên tục cập nhật các quy tắc định tuyến mạng (iptables rules hoặc IPVS virtual server tables).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>kube-proxy</code> làm nhiệm vụ DNS phân giải tên miền.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>kube-proxy</code> làm mạng nhưng không nêu được đối tượng DaemonSet và cơ chế sync quy tắc iptables/IPVS.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>kube-proxy</code> (DaemonSet 100% Nodes, sync rule iptables/IPVS hiện thực hoá Service VIP).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cờ <code>--proxy-mode</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu dừng hoàn toàn Pod <code>kube-proxy</code> trên Node 1 thì Pods trên Node 1 gọi vào ClusterIP VIP có chạy được không? *(Đáp án: Không chạy được, các rule định tuyến không còn được cập nhật).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Phân biệt ý nghĩa và cách hoạt động của 2 thuộc tính <code>port</code> và <code>targetPort</code> trong tệp YAML khai báo Service spec.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>port</code> (Cổng dịch vụ ảo của Service):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cổng ảo mà đối tượng Service phơi ra cho các client bên ngoài hoặc microservices khác gọi vào (ví dụ <code>port: 80</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Client truy cập qua địa chỉ <code>http://<ClusterIP>:80</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>targetPort</code> (Cổng ứng dụng thực tế trong Pod):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cổng thực tế mà tiến trình container bên trong Pod đang lắng nghe (ví dụ <code>targetPort: 8080</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kube-proxy</code> sẽ thực hiện chuyển hướng traffic từ <code>port: 80</code> của Service sang <code>targetPort: 8080</code> của Pod.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>port</code> và <code>targetPort</code> bắt buộc phải luôn bằng nhau.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>port</code> ở ngoài <code>targetPort</code> ở trong nhưng không giải thích được cơ chế chuyển hướng traffic của <code>kube-proxy</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác <code>port</code> (cổng ảo phơi ra của Service VIP) vs <code>targetPort</code> (cổng thực tế container Pod lắng nghe).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra <code>targetPort</code> có thể đặt theo dạng chuỗi tên cổng (Named Port).</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu trong Pod container lắng nghe cổng 8080 mà trong Service đặt <code>targetPort: 80</code> thì chuyện gì xảy ra khi <code>curl</code> vào Service VIP? *(Đáp án: Kết nối bị từ chối <code>Connection Refused</code> do không có tiến trình nào lắng nghe cổng 80 trong Pod).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Trình bày sự khác nhau về độ phức tạp thuật toán và hiệu năng giữa chế độ <code>iptables</code> mode ($O(N)$) và <code>IPVS</code> mode ($O(1)$) của tiến trình <code>kube-proxy</code>.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. <code>iptables</code> mode (Mặc định - Tuyến tính $O(N)$):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Duy trì danh sách các quy tắc lọc gói tin nối tiếp nhau theo đường thẳng trong Linux Kernel.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Độ phức tạp:* <b style="color: var(--accent-primary);">$O(N)$</b> (với $N$ là số lượng Services).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Nhược điểm:* Khi cụm mở rộng ra > 5.000 Services, thời gian tra cứu và sync rule chậm chạp, CPU Node bị vọt 100%.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. <code>IPVS</code> mode (IP Virtual Server - Bảng băm $O(1)$):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Dùng bảng băm (Hash Table) chuyên dụng của công nghệ IPVS trong Linux Kernel.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Độ phức tạp:* <b style="color: var(--accent-primary);">$O(1)$</b> hằng số.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ưu điểm:* Thời gian tra cứu định tuyến chỉ <b style="color: var(--accent-primary);">1 miligiây bất kể cụm có 10 hay 100.000 Services</b>; hỗ trợ nhiều thuật toán cân bằng tải (Round-Robin <code>rr</code>, Least Connection <code>lc</code>).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>iptables</code> nhanh hơn <code>IPVS</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>iptables</code> chậm hơn <code>IPVS</code> nhưng không nêu được độ phức tạp toán học <b style="color: var(--accent-primary);">$O(N)$</b> vs <b style="color: var(--accent-primary);">$O(1)$</b> và bảng băm Hash Table (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác <code>iptables</code> ($O(N)$ tuyến tính, suy giảm khi > 5.000 Svcs) vs <code>IPVS</code> ($O(1)$ bảng băm Hash Table, max performance).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra yêu cầu nạp Kernel module <code>ip_vs</code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao <code>kube-proxy</code> không chọn <code>IPVS</code> làm chế độ mặc định từ đầu? *(Đáp án: Vì IPVS yêu cầu máy chủ Linux phải nạp sẵn các Kernel module <code>ip_vs</code>, trong khi <code>iptables</code> luôn có sẵn trên mọi distro).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Khai báo cờ <code>externalTrafficPolicy: Local</code> trong Service spec mang lại lợi ích gì cho việc bảo toàn địa chỉ IP nguồn (Client IP) và có đánh đổi rủi ro gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích chính:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bảo toàn Client IP:</b> Ngăn chặn Kubelet thực hiện SNAT (Source Network Address Translation), giúp ứng dụng bên trong Pod đọc được 100% địa chỉ IP thực tế của khách hàng từ ngoài Internet.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Loại bỏ 0 hop mạng phụ:</b> Traffic đi thẳng vào Pod trên Node nhận request mà không bị forward sang Node khác.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Đánh đổi rủi ro (Rủi ro mất cân bằng / Drop connection):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Traffic chỉ được chuyển tới các Pods nằm trên <b style="color: var(--accent-primary);">ĐÚNG NODE ĐÓ</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu khách hàng gọi vào NodePort của một Worker Node <b style="color: var(--accent-primary);">KHÔNG CÓ Pod nào chạy bên dưới</b>, kết nối sẽ bị rớt (Drop) hoàn toàn.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết cờ <code>externalTrafficPolicy</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được giữ Client IP nhưng không giải thích được việc loại bỏ 0 hop phụ và rủi ro rớt kết nối trên Node thiếu Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lợi ích bảo toàn Client IP, 0 hop phụ và rủi ro rớt kết nối nếu Node không có Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, đề xuất giải pháp dùng DaemonSet hoặc podAntiAffinity đi kèm.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Giá trị mặc định của <code>externalTrafficPolicy</code> khi không khai báo là gì? *(Đáp án: Giá trị mặc định là <b style="color: var(--accent-primary);"><code>Cluster</code></b> [SNAT IP và chia đều sang 100% Pods trên toàn cụm]).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu lệnh CLI nào giúp trích xuất đồng thời danh sách địa chỉ Service VIP, Endpoints truyền thống và lát cắt <code>EndpointSlice</code> trong 2 giây?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh CLI chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl get svc,ep,endpointslice -n dev</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trích xuất đồng thời 3 đối tượng đại diện cho hạ tầng định tuyến Service trong Namespace <code>dev</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp kỹ sư kiểm tra nhanh xem Service VIP đã ghép nối đúng danh sách IP của Pods hay chưa.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ lệnh trích xuất gộp.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời gõ 3 lệnh riêng lẻ <code>kubectl get svc</code>, <code>kubectl get ep</code>, <code>kubectl get endpointslice</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh gộp <code>kubectl get svc,ep,endpointslice -n dev</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc kiểm tra Endpoints rỗng <code><none></code>.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi lệnh trên hiển thị cột <code>ENDPOINTS</code> mang giá trị <code><none></code> thì kỹ sư cần kiểm tra thuộc tính gì đầu tiên trong Service? *(Đáp án: Kiểm tra thuộc tính <code>spec.selector</code> trong Service xem có gõ sai nhãn Pod hay không).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Thuộc tính <code>sessionAffinity: ClientIP</code> trong Service spec được cấu hình để giải quyết kịch bản gì trên thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kịch bản giải quyết (Sticky Session / Session Persistence):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi ứng dụng web lưu trữ trạng thái phiên làm việc (Session state) trực tiếp trong bộ nhớ RAM của từng Pod (chưa tập trung về Redis).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế hoạt động:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu hình <code>sessionAffinity: ClientIP</code> bắt buộc <code>kube-proxy</code> phải duy trì định tuyến 100% các request từ cùng một địa chỉ IP khách hàng (Client IP) vào <b style="color: var(--accent-primary);">ĐÚNG MỘT POD BẰNG NHAU</b> trong một khoảng thời gian trì hoãn (<code>timeoutSeconds</code>, mặc định 10.800 giây / 3 giờ).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết <code>sessionAffinity</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời nhớ Client IP nhưng không giải thích được cơ chế Sticky Session và thời gian trì hoãn <code>timeoutSeconds</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác bài toán Sticky Session và cơ chế <code>sessionAffinity: ClientIP</code> định tuyến client cùng IP vào đúng 1 Pod.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết file YAML minh hoạ.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Thuộc tính <code>sessionAffinity</code> mặc định của Service khi không khai báo là gì? *(Đáp án: Mặc định là <b style="color: var(--accent-primary);"><code>None</code></b> [chia tải ngẫu nhiên round-robin]).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao loại Service <code>ExternalName</code> lại KHÔNG có địa chỉ IP ảo ClusterIP, KHÔNG có <code>spec.selector</code> và KHÔNG tạo đối tượng Endpoints?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bản chất của <code>ExternalName</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ExternalName</code> chỉ là một quy tắc ghi đè tên miền DNS thuần túy trong CoreDNS (trỏ tên miền Kubernetes sang một CNAME bên ngoài).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên lý hoạt động:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi client truy vấn tên miền của Service <code>ExternalName</code> (ví dụ <code>my-db.dev.svc.cluster.local</code>), CoreDNS lập tức trả về bản ghi <b style="color: var(--accent-primary);">CNAME</b> trỏ tới tên miền ngoài (ví dụ <code>postgres.rds.amazonaws.com</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Client tự động mở kết nối mạng thẳng tới tên miền ngoài đó mà KHÔNG ĐI QUA bất kỳ địa chỉ VIP, proxy hay Pods nào trong cụm.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo ExternalName bị lỗi không có IP.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời trỏ ra ngoài nhưng không giải thích được cơ chế trả về bản ghi CNAME thuần túy của CoreDNS bỏ qua proxy.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác bản chất ExternalName là quy tắc DNS CNAME thuần túy, không dùng VIP/proxy/selector.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ file YAML ExternalName.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào giúp kiểm tra bản ghi CNAME của ExternalName Service? *(Đáp án: Lệnh <code>nsenter</code> / <code>dig</code> hoặc <code>nslookup <service-name></code>).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Sự khác nhau giữa 2 thuật toán cân bằng tải Round-Robin (<code>rr</code>) và Least Connection (<code>lc</code>) khi cấu hình <code>kube-proxy</code> ở chế độ <code>IPVS</code> mode là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Round-Robin (<code>rr</code> - Chia tải luân phiên):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chuyển tiếp các request mới lần lượt xoay vòng luân phiên tới từng Pod backend (Pod 1 -> Pod 2 -> Pod 1 -> Pod 2) mà không quan tâm đến số lượng kết nối đang xử lý.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Least Connection (<code>lc</code> - Chia tải vào Pod rảnh nhất):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chuyển tiếp request mới tới Pod nào đang xử lý <b style="color: var(--accent-primary);">số lượng kết nối thực tế ÍT NHẤT</b> tại thời điểm đó.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ưu thế <code>IPVS</code>:</b> Giúp xử lý mượt mà các bài toán ứng dụng có thời gian xử lý request lệch nhau (request lâu vs request nhanh).</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không phân biệt được 2 thuật toán.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>rr</code> xoay vòng còn <code>lc</code> chọn Pod rảnh nhưng không nêu được ưu thế của <code>IPVS</code> mode hỗ trợ <code>lc</code>.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Round-Robin (chia luân phiên ngẫu nhiên) vs Least Connection (chia vào Pod đang xử lý ít kết nối nhất).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do <code>iptables</code> mode không làm được Least Connection.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao chế độ <code>iptables</code> mode lại KHÔNG THỂ hỗ trợ thuật toán Least Connection (<code>lc</code>)? *(Đáp án: Vì <code>iptables</code> chỉ là các rule lọc tĩnh ngẫu nhiên, không thể theo dõi số lượng kết nối active của từng Pod).*
+
+---</div>
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nêu 2 chế độ hỏng (1 im lặng do Service VIP treo vì gõ sai label selector, 1 âm thầm do CPU Node vọt 100% vì dùng iptables mode trên cụm 10.000 Services) và cách phát hiện/khắc phục.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Service VIP treo đứng timeout do gõ sai <code>spec.selector</code> không bắt được Pod nào):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Client <code>curl</code> vào ClusterIP VIP bị treo vô hạn không nhận được phản hồi HTTP.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl get ep <service-name></code> thấy cột <code>ENDPOINTS</code> báo <code><none></code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa <code>spec.selector</code> trong Service spec khớp 100% với <code>metadata.labels</code> của Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - CPU Node bị vọt 100% và gián đoạn mạng do dùng <code>iptables</code> mode trên cụm > 5.000 Services):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Mỗi khi có 1 Pod mới khởi tạo hoặc bị xoá, toàn bộ Worker Nodes bị nảy CPU 100% và độ trễ mạng mạng bị spike lên vài giây.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>iptables-save | wc -l</code> thấy hàng trăm nghìn dòng rule tuyến tính $O(N)$.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Chuyển chế độ định tuyến của <code>kube-proxy</code> sang <b style="color: var(--accent-primary);"><code>IPVS</code> mode ($O(1)$)</b> bằng cách nạp module <code>ip_vs</code> và sửa ConfigMap <code>kube-proxy</code>.</div>
+  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân Endpoints <code><none></code> và suy giảm hiệu năng $O(N)$ của <code>iptables</code> (dính trần 1đ).</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
+  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
+  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi Service rỗng Endpoints <code><none></code>, câu lệnh nào xem được ngay lý do thiếu Pods chuẩn trong 2 giây? *(Đáp án: Lệnh <code>kubectl describe service <service-name></code>).*
+
 ---
 
-### Câu 2 — ★★★
-
-**Hỏi:** Khái niệm Headless Service (`clusterIP: None`) là gì và tại sao nó lại là thành phần bắt buộc cho các kiến trúc StatefulSet (như PostgreSQL, Kafka, MongoDB)?
-
-**Đáp án chuẩn:**
-- **Bản chất Headless Service:**
-  - Khai báo thuộc tính **`clusterIP: None`** trong Service spec.
-  - Kubernetes sẽ **KHÔNG CẤP PHÁT địa chỉ IP ảo VIP** cho Service.
-- **Cơ chế DNS:**
-  - Khi client truy vấn tên miền của Headless Service, CoreDNS trả về trực tiếp danh sách tất cả các địa chỉ IP thực tế của các Pods bên dưới qua bản ghi DNS A records.
-- **Lý do bắt buộc cho StatefulSet:**
-  - Các ứng dụng Database StatefulSet (như Primary-Replica DB, Master-Worker Cluster) cần tự quản lý giao thức đồng bộ và kết nối trực tiếp đến ĐÚNG từng Pod thành viên (`db-0`, `db-1`) thay vì qua bộ cân bằng tải ngẫu nhiên.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo Headless Service là Service bị lỗi mất IP.
-- **1đ:** Trả lời `clusterIP: None` không có VIP nhưng không giải thích được cơ chế CoreDNS trả trực tiếp IP Pods và nhu cầu của StatefulSet.
-- **2đ:** Giải thích chuẩn xác Headless Service (`clusterIP: None`), cơ chế DNS A records và vai trò bắt buộc cho StatefulSet.
-- **3đ:** Trả lời xuất sắc, chỉ ra cấu trúc DNS SRV record của Headless Service.
-
-**Câu hỏi đào sâu:** Tên miền DNS đầy đủ FQDN để gọi trực tiếp tới Pod 0 của StatefulSet `web` qua Headless Service `nginx` trong namespace `dev` là gì? *(Đáp án: `web-0.nginx.dev.svc.cluster.local`).*
-
----
-
-### Câu 3 — ★★★
-
-**Hỏi:** Phân biệt sự khác nhau cốt lõi về khả năng mở rộng giữa đối tượng `Endpoints` truyền thống và `EndpointSlice` (`discovery.k8s.io/v1`) hiện đại.
-
-**Đáp án chuẩn:**
-- **`Endpoints` (Truyền thống):**
-  - *Cơ chế:* Gộp toàn bộ tất cả các địa chỉ IP của 100% Pods thuộc Service vào **ĐÚNG 1 ĐỐI TƯỢNG duy nhất**.
-  - *Nhược điểm:* Khi cụm scale ra 10.000 Pods, mỗi lần chỉ có 1 Pod bị restart đổi IP, API Server phải truyền tải toàn bộ đối tượng `Endpoints` dung lượng khổng lồ tới 100% các Worker Nodes, gây sập etcd và nghẽn mạng.
-- **`EndpointSlice` (Hiện đại v1.21+):**
-  - *Cơ chế:* Chia nhỏ danh sách điểm cuối thành các **lát cắt (Slices)**, mỗi `EndpointSlice` chỉ chứa **tối đa 100 endpoints (IP Pods)**.
-  - *Ưu điểm:* Thêm/xoá 1 Pod chỉ cần đồng bộ đúng 1 slice 100 endpoints, giảm 80% băng thông đồng bộ và tài nguyên CPU/Memory của Kubelet.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 đối tượng này giống hệt nhau.
-- **1đ:** Trả lời EndpointSlice chia nhỏ hơn nhưng không nêu được con số tối đa **100 endpoints/slice** và bài toán nghẽn etcd của Endpoints cũ.
-- **2đ:** Phân tích chuẩn xác Endpoints (gộp 1 file) vs EndpointSlice (chia nhỏ max 100 endpoints/slice giảm tải etcd/Kubelet).
-- **3đ:** Trả lời xuất sắc, chỉ ra apiGroup `discovery.k8s.io/v1`.
-
-**Câu hỏi đào sâu:** Nếu một Service có 250 Pods bên dưới thì Kubernetes sẽ tạo ra bao nhiêu đối tượng `EndpointSlice`? *(Đáp án: Tạo ra **3** đối tượng `EndpointSlice` [100 + 100 + 50]).*
-
----
-
-### Câu 4 — ★★★
-
-**Hỏi:** Tiến trình `kube-proxy` đóng vai trò gì trên máy chủ Node và nó hoạt động dưới dạng đối tượng nào trong Kubernetes?
-
-**Đáp án chuẩn:**
-- **Bản chất của `kube-proxy`:**
-  - Hoạt động dưới dạng một **`DaemonSet`** chạy trên 100% tất cả các Worker Nodes và Control Plane Nodes trong namespace `kube-system`.
-- **Vai trò chính:**
-  - Lắng nghe các sự kiện thay đổi Service, Endpoints và `EndpointSlice` từ API Server.
-  - Chịu trách nhiệm trực tiếp hiện thực hoá địa chỉ IP ảo VIP trên đĩa thực tế của Node bằng cách tạo và liên tục cập nhật các quy tắc định tuyến mạng (iptables rules hoặc IPVS virtual server tables).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `kube-proxy` làm nhiệm vụ DNS phân giải tên miền.
-- **1đ:** Trả lời `kube-proxy` làm mạng nhưng không nêu được đối tượng DaemonSet và cơ chế sync quy tắc iptables/IPVS.
-- **2đ:** Giải thích chuẩn xác `kube-proxy` (DaemonSet 100% Nodes, sync rule iptables/IPVS hiện thực hoá Service VIP).
-- **3đ:** Trả lời xuất sắc, chỉ ra cờ `--proxy-mode`.
-
-**Câu hỏi đào sâu:** Nếu dừng hoàn toàn Pod `kube-proxy` trên Node 1 thì Pods trên Node 1 gọi vào ClusterIP VIP có chạy được không? *(Đáp án: Không chạy được, các rule định tuyến không còn được cập nhật).*
-
----
-
-### Câu 5 — ★★★
-
-**Hỏi:** Phân biệt ý nghĩa và cách hoạt động của 2 thuộc tính `port` và `targetPort` trong tệp YAML khai báo Service spec.
-
-**Đáp án chuẩn:**
-- **`port` (Cổng dịch vụ ảo của Service):**
-  - Cổng ảo mà đối tượng Service phơi ra cho các client bên ngoài hoặc microservices khác gọi vào (ví dụ `port: 80`).
-  - Client truy cập qua địa chỉ `http://<ClusterIP>:80`.
-- **`targetPort` (Cổng ứng dụng thực tế trong Pod):**
-  - Cổng thực tế mà tiến trình container bên trong Pod đang lắng nghe (ví dụ `targetPort: 8080`).
-  - `kube-proxy` sẽ thực hiện chuyển hướng traffic từ `port: 80` của Service sang `targetPort: 8080` của Pod.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `port` và `targetPort` bắt buộc phải luôn bằng nhau.
-- **1đ:** Trả lời `port` ở ngoài `targetPort` ở trong nhưng không giải thích được cơ chế chuyển hướng traffic của `kube-proxy`.
-- **2đ:** Phân tích chuẩn xác `port` (cổng ảo phơi ra của Service VIP) vs `targetPort` (cổng thực tế container Pod lắng nghe).
-- **3đ:** Trả lời xuất sắc, chỉ ra `targetPort` có thể đặt theo dạng chuỗi tên cổng (Named Port).
-
-**Câu hỏi đào sâu:** Nếu trong Pod container lắng nghe cổng 8080 mà trong Service đặt `targetPort: 80` thì chuyện gì xảy ra khi `curl` vào Service VIP? *(Đáp án: Kết nối bị từ chối `Connection Refused` do không có tiến trình nào lắng nghe cổng 80 trong Pod).*
-
----
-
-### Câu 6 — 🔥
-
-**Hỏi:** Trình bày sự khác nhau về độ phức tạp thuật toán và hiệu năng giữa chế độ `iptables` mode ($O(N)$) và `IPVS` mode ($O(1)$) của tiến trình `kube-proxy`.
-
-**Đáp án chuẩn:**
-- **1. `iptables` mode (Mặc định - Tuyến tính $O(N)$):**
-  - *Cơ chế:* Duy trì danh sách các quy tắc lọc gói tin nối tiếp nhau theo đường thẳng trong Linux Kernel.
-  - *Độ phức tạp:* **$O(N)$** (với $N$ là số lượng Services).
-  - *Nhược điểm:* Khi cụm mở rộng ra > 5.000 Services, thời gian tra cứu và sync rule chậm chạp, CPU Node bị vọt 100%.
-- **2. `IPVS` mode (IP Virtual Server - Bảng băm $O(1)$):**
-  - *Cơ chế:* Dùng bảng băm (Hash Table) chuyên dụng của công nghệ IPVS trong Linux Kernel.
-  - *Độ phức tạp:* **$O(1)$** hằng số.
-  - *Ưu điểm:* Thời gian tra cứu định tuyến chỉ **1 miligiây bất kể cụm có 10 hay 100.000 Services**; hỗ trợ nhiều thuật toán cân bằng tải (Round-Robin `rr`, Least Connection `lc`).
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo `iptables` nhanh hơn `IPVS`.
-- **1đ:** Trả lời `iptables` chậm hơn `IPVS` nhưng không nêu được độ phức tạp toán học **$O(N)$** vs **$O(1)$** và bảng băm Hash Table (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác `iptables` ($O(N)$ tuyến tính, suy giảm khi > 5.000 Svcs) vs `IPVS` ($O(1)$ bảng băm Hash Table, max performance).
-- **3đ:** Trả lời xuất sắc, chỉ ra yêu cầu nạp Kernel module `ip_vs`.
-
-**Câu hỏi đào sâu:** Tại sao `kube-proxy` không chọn `IPVS` làm chế độ mặc định từ đầu? *(Đáp án: Vì IPVS yêu cầu máy chủ Linux phải nạp sẵn các Kernel module `ip_vs`, trong khi `iptables` luôn có sẵn trên mọi distro).*
-
----
-
-### Câu 7 — ★★★
-
-**Hỏi:** Khai báo cờ `externalTrafficPolicy: Local` trong Service spec mang lại lợi ích gì cho việc bảo toàn địa chỉ IP nguồn (Client IP) và có đánh đổi rủi ro gì?
-
-**Đáp án chuẩn:**
-- **Lợi ích chính:**
-  - **Bảo toàn Client IP:** Ngăn chặn Kubelet thực hiện SNAT (Source Network Address Translation), giúp ứng dụng bên trong Pod đọc được 100% địa chỉ IP thực tế của khách hàng từ ngoài Internet.
-  - **Loại bỏ 0 hop mạng phụ:** Traffic đi thẳng vào Pod trên Node nhận request mà không bị forward sang Node khác.
-- **Đánh đổi rủi ro (Rủi ro mất cân bằng / Drop connection):**
-  - Traffic chỉ được chuyển tới các Pods nằm trên **ĐÚNG NODE ĐÓ**.
-  - Nếu khách hàng gọi vào NodePort của một Worker Node **KHÔNG CÓ Pod nào chạy bên dưới**, kết nối sẽ bị rớt (Drop) hoàn toàn.
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết cờ `externalTrafficPolicy`.
-- **1đ:** Nêu được giữ Client IP nhưng không giải thích được việc loại bỏ 0 hop phụ và rủi ro rớt kết nối trên Node thiếu Pod.
-- **2đ:** Giải thích chuẩn xác lợi ích bảo toàn Client IP, 0 hop phụ và rủi ro rớt kết nối nếu Node không có Pod.
-- **3đ:** Trả lời xuất sắc, đề xuất giải pháp dùng DaemonSet hoặc podAntiAffinity đi kèm.
-
-**Câu hỏi đào sâu:** Giá trị mặc định của `externalTrafficPolicy` khi không khai báo là gì? *(Đáp án: Giá trị mặc định là **`Cluster`** [SNAT IP và chia đều sang 100% Pods trên toàn cụm]).*
-
----
-
-### Câu 8 — ★★★
-
-**Hỏi:** Câu lệnh CLI nào giúp trích xuất đồng thời danh sách địa chỉ Service VIP, Endpoints truyền thống và lát cắt `EndpointSlice` trong 2 giây?
-
-**Đáp án chuẩn:**
-- **Câu lệnh CLI chuẩn:**
-  `kubectl get svc,ep,endpointslice -n dev`
-- **Tác dụng:**
-  - Trích xuất đồng thời 3 đối tượng đại diện cho hạ tầng định tuyến Service trong Namespace `dev`.
-  - Giúp kỹ sư kiểm tra nhanh xem Service VIP đã ghép nối đúng danh sách IP của Pods hay chưa.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ lệnh trích xuất gộp.
-- **1đ:** Trả lời gõ 3 lệnh riêng lẻ `kubectl get svc`, `kubectl get ep`, `kubectl get endpointslice`.
-- **2đ:** Viết chuẩn xác câu lệnh gộp `kubectl get svc,ep,endpointslice -n dev`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng việc kiểm tra Endpoints rỗng `<none>`.
-
-**Câu hỏi đào sâu:** Khi lệnh trên hiển thị cột `ENDPOINTS` mang giá trị `<none>` thì kỹ sư cần kiểm tra thuộc tính gì đầu tiên trong Service? *(Đáp án: Kiểm tra thuộc tính `spec.selector` trong Service xem có gõ sai nhãn Pod hay không).*
-
----
-
-### Câu 9 — ★★★
-
-**Hỏi:** Thuộc tính `sessionAffinity: ClientIP` trong Service spec được cấu hình để giải quyết kịch bản gì trên thực tế?
-
-**Đáp án chuẩn:**
-- **Kịch bản giải quyết (Sticky Session / Session Persistence):**
-  - Khi ứng dụng web lưu trữ trạng thái phiên làm việc (Session state) trực tiếp trong bộ nhớ RAM của từng Pod (chưa tập trung về Redis).
-- **Cơ chế hoạt động:**
-  - Cấu hình `sessionAffinity: ClientIP` bắt buộc `kube-proxy` phải duy trì định tuyến 100% các request từ cùng một địa chỉ IP khách hàng (Client IP) vào **ĐÚNG MỘT POD BẰNG NHAU** trong một khoảng thời gian trì hoãn (`timeoutSeconds`, mặc định 10.800 giây / 3 giờ).
-
-**Tiêu chí chấm:**
-- **0đ:** Không biết `sessionAffinity`.
-- **1đ:** Trả lời nhớ Client IP nhưng không giải thích được cơ chế Sticky Session và thời gian trì hoãn `timeoutSeconds`.
-- **2đ:** Giải thích chuẩn xác bài toán Sticky Session và cơ chế `sessionAffinity: ClientIP` định tuyến client cùng IP vào đúng 1 Pod.
-- **3đ:** Trả lời xuất sắc, viết file YAML minh hoạ.
-
-**Câu hỏi đào sâu:** Thuộc tính `sessionAffinity` mặc định của Service khi không khai báo là gì? *(Đáp án: Mặc định là **`None`** [chia tải ngẫu nhiên round-robin]).*
-
----
-
-### Câu 10 — ★★★
-
-**Hỏi:** Tại sao loại Service `ExternalName` lại KHÔNG có địa chỉ IP ảo ClusterIP, KHÔNG có `spec.selector` và KHÔNG tạo đối tượng Endpoints?
-
-**Đáp án chuẩn:**
-- **Bản chất của `ExternalName`:**
-  - `ExternalName` chỉ là một quy tắc ghi đè tên miền DNS thuần túy trong CoreDNS (trỏ tên miền Kubernetes sang một CNAME bên ngoài).
-- **Nguyên lý hoạt động:**
-  - Khi client truy vấn tên miền của Service `ExternalName` (ví dụ `my-db.dev.svc.cluster.local`), CoreDNS lập tức trả về bản ghi **CNAME** trỏ tới tên miền ngoài (ví dụ `postgres.rds.amazonaws.com`).
-  - Client tự động mở kết nối mạng thẳng tới tên miền ngoài đó mà KHÔNG ĐI QUA bất kỳ địa chỉ VIP, proxy hay Pods nào trong cụm.
-
-**Tiêu chí chấm:**
-- **0đ:** Bảo ExternalName bị lỗi không có IP.
-- **1đ:** Trả lời trỏ ra ngoài nhưng không giải thích được cơ chế trả về bản ghi CNAME thuần túy của CoreDNS bỏ qua proxy.
-- **2đ:** Giải thích chuẩn xác bản chất ExternalName là quy tắc DNS CNAME thuần túy, không dùng VIP/proxy/selector.
-- **3đ:** Trả lời xuất sắc, minh hoạ file YAML ExternalName.
-
-**Câu hỏi đào sâu:** Lệnh nào giúp kiểm tra bản ghi CNAME của ExternalName Service? *(Đáp án: Lệnh `nsenter` / `dig` hoặc `nslookup <service-name>`).*
-
----
-
-### Câu 11 — ★★★
-
-**Hỏi:** Sự khác nhau giữa 2 thuật toán cân bằng tải Round-Robin (`rr`) và Least Connection (`lc`) khi cấu hình `kube-proxy` ở chế độ `IPVS` mode là gì?
-
-**Đáp án chuẩn:**
-- **1. Round-Robin (`rr` - Chia tải luân phiên):**
-  - Chuyển tiếp các request mới lần lượt xoay vòng luân phiên tới từng Pod backend (Pod 1 -> Pod 2 -> Pod 1 -> Pod 2) mà không quan tâm đến số lượng kết nối đang xử lý.
-- **2. Least Connection (`lc` - Chia tải vào Pod rảnh nhất):**
-  - Chuyển tiếp request mới tới Pod nào đang xử lý **số lượng kết nối thực tế ÍT NHẤT** tại thời điểm đó.
-- **Ưu thế `IPVS`:** Giúp xử lý mượt mà các bài toán ứng dụng có thời gian xử lý request lệch nhau (request lâu vs request nhanh).
-
-**Tiêu chí chấm:**
-- **0đ:** Không phân biệt được 2 thuật toán.
-- **1đ:** Trả lời `rr` xoay vòng còn `lc` chọn Pod rảnh nhưng không nêu được ưu thế của `IPVS` mode hỗ trợ `lc`.
-- **2đ:** Phân tích chuẩn xác Round-Robin (chia luân phiên ngẫu nhiên) vs Least Connection (chia vào Pod đang xử lý ít kết nối nhất).
-- **3đ:** Trả lời xuất sắc, chỉ ra lý do `iptables` mode không làm được Least Connection.
-
-**Câu hỏi đào sâu:** Tại sao chế độ `iptables` mode lại KHÔNG THỂ hỗ trợ thuật toán Least Connection (`lc`)? *(Đáp án: Vì `iptables` chỉ là các rule lọc tĩnh ngẫu nhiên, không thể theo dõi số lượng kết nối active của từng Pod).*
-
----
-
-### Câu 12 — 🔥
-
-**Hỏi:** Nêu 2 chế độ hỏng (1 im lặng do Service VIP treo vì gõ sai label selector, 1 âm thầm do CPU Node vọt 100% vì dùng iptables mode trên cụm 10.000 Services) và cách phát hiện/khắc phục.
-
-**Đáp án chuẩn:**
-1. **Chế độ hỏng 1 (Im lặng - Service VIP treo đứng timeout do gõ sai `spec.selector` không bắt được Pod nào):**
-   - *Triệu chứng:* Client `curl` vào ClusterIP VIP bị treo vô hạn không nhận được phản hồi HTTP.
-   - *Phát hiện:* Gõ `kubectl get ep <service-name>` thấy cột `ENDPOINTS` báo `<none>`.
-   - *Khắc phục:* Sửa `spec.selector` trong Service spec khớp 100% với `metadata.labels` của Pod.
-2. **Chế độ hỏng 2 (Âm thầm - CPU Node bị vọt 100% và gián đoạn mạng do dùng `iptables` mode trên cụm > 5.000 Services):**
-   - *Triệu chứng:* Mỗi khi có 1 Pod mới khởi tạo hoặc bị xoá, toàn bộ Worker Nodes bị nảy CPU 100% và độ trễ mạng mạng bị spike lên vài giây.
-   - *Phát hiện:* Kiểm tra `iptables-save | wc -l` thấy hàng trăm nghìn dòng rule tuyến tính $O(N)$.
-   - *Khắc phục:* Chuyển chế độ định tuyến của `kube-proxy` sang **`IPVS` mode ($O(1)$)** bằng cách nạp module `ip_vs` và sửa ConfigMap `kube-proxy`.
-
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 2 chế độ hỏng.
-- **1đ:** Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân Endpoints `<none>` và suy giảm hiệu năng $O(N)$ của `iptables` (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.
-
-**Câu hỏi đào sâu:** Khi Service rỗng Endpoints `<none>`, câu lệnh nào xem được ngay lý do thiếu Pods chuẩn trong 2 giây? *(Đáp án: Lệnh `kubectl describe service <service-name>`).*
+## V3. Câu chốt để nói khi phỏng vấn
+
+1. *"Service cấp VIP cố định giải quyết tính chất Ephemeral của Pod IP; ghép nối nhóm Pods tự động qua <code>spec.selector</code>."*
+2. *"4 kiểu Service chuẩn: <code>ClusterIP</code> (nội bộ), <code>NodePort</code> (cổng <b style="color: var(--accent-primary);"><code>30000-32767</code></b>), <code>LoadBalancer</code> (Cloud/MetalLB), <code>ExternalName</code> (CNAME)."*
+3. *"Headless Service (<code>clusterIP: None</code>) trả trực tiếp IP Pods qua CoreDNS DNS A record cho các kiến trúc StatefulSet."*
+4. *"EndpointSlice (<code>discovery.k8s.io</code>) chia nhỏ danh sách điểm cuối tối đa <b style="color: var(--accent-primary);">100 endpoints/slice</b> giúp giảm 80% tải đồng bộ etcd."*
+5. *"Chế độ <code>IPVS</code> mode của <code>kube-proxy</code> có độ phức tạp bảng băm <b style="color: var(--accent-primary);">$O(1)$</b> vượt trội hơn chế độ <code>iptables</code> mode <b style="color: var(--accent-primary);">$O(N)$</b> trên các cụm lớn."*
+
+---</div>
+</div>
+</details>
 
 ---
 
@@ -1217,40 +1277,6 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 3. *"Headless Service (`clusterIP: None`) trả trực tiếp IP Pods qua CoreDNS DNS A record cho các kiến trúc StatefulSet."*
 4. *"EndpointSlice (`discovery.k8s.io`) chia nhỏ danh sách điểm cuối tối đa **100 endpoints/slice** giúp giảm 80% tải đồng bộ etcd."*
 5. *"Chế độ `IPVS` mode của `kube-proxy` có độ phức tạp bảng băm **$O(1)$** vượt trội hơn chế độ `iptables` mode **$O(N)$** trên các cụm lớn."*
-
----
-
-## V4. Bảng ghi điểm
-
-| Số thứ tự câu | Mức độ | Điểm tối đa | Điểm đạt được | Ghi chú của Trưởng nhóm / Senior |
-|---|---|---|---|---|
-| Câu 1 | 🔥 | 3 | | Phân biệt 4 kiểu Service chuẩn và dải cổng NodePort 30000-32767 (trần 1đ nếu thiếu) |
-| Câu 2 | ★★★ | 3 | | Headless Service (`clusterIP: None`) và vai trò cho StatefulSet |
-| Câu 3 | ★★★ | 3 | | EndpointSlice (max 100 endpoints/slice) vs Endpoints cũ |
-| Câu 4 | ★★★ | 3 | | `kube-proxy` DaemonSet 100% Nodes sync rule định tuyến |
-| Câu 5 | ★★★ | 3 | | Phân biệt `port` (Service VIP) vs `targetPort` (Pod container) |
-| Câu 6 | 🔥 | 3 | | So sánh `iptables` mode $O(N)$ vs `IPVS` mode $O(1)$ bảng băm (trần 1đ nếu thiếu) |
-| Câu 7 | ★★★ | 3 | | Cờ `externalTrafficPolicy: Local` bảo toàn Client IP và 0 hop phụ |
-| Câu 8 | ★★★ | 3 | | Lệnh gộp `kubectl get svc,ep,endpointslice` trích xuất trong 2s |
-| Câu 9 | ★★★ | 3 | | Cấu hình `sessionAffinity: ClientIP` cho Sticky Session |
-| Câu 10 | ★★★ | 3 | | Bản chất ExternalName Service trỏ CNAME thuần túy |
-| Câu 11 | ★★★ | 3 | | Thuật toán Round-Robin `rr` vs Least Connection `lc` trong IPVS |
-| Câu 12 | 🔥 | 3 | | 2 chế độ hỏng (Selector gõ sai rỗng Endpoints & CPU spike do iptables O(N)) |
-| **Tổng điểm** | | **36** | | **Ngưỡng ĐẠT: ≥ 27 / 36 điểm** |
-
----
-
-## V5. Bài tập về nhà
-
-1. **BTVN 1:** Viết script bash tự động kiểm tra tất cả các Services trong cụm và cảnh báo ngay lập tức các Services bị rỗng Endpoints (`<none>`).
-2. **BTVN 2:** Khởi tạo một Headless Service cho StatefulSet Nginx 3 bản sao và thực hành `nslookup` từ Pod test để phân tích danh sách bản ghi DNS A records.
-3. **BTVN 3:** Thực hành chuyển đổi chế độ `kube-proxy` từ `iptables` sang `IPVS` mode trên cụm lab và dùng `ipvsadm` kiểm tra bảng định tuyến.
-4. **BTVN 4 — Chuẩn bị cho Buổi 23 (`buoi-23-coredns-va-phan-giai-ten`):**
-   - *Câu 1:* Tiến trình `CoreDNS` hoạt động như thế nào trong cụm Kubernetes và cấu trúc tên miền FQDN chuẩn của một Service là gì?
-   - *Câu 2:* Hai tham số `ndots` và `search` trong tệp `/etc/resolv.conf` của Pod có tác dụng gì và tại sao gõ tên miền ngắn lại gây ra nhiều truy vấn DNS phụ?
-   - *Câu 3:* Bốn kiểu hỏng phân giải tên DNS phổ biến nhất trong Kubernetes (như CoreDNS OOMKilled, loop plugin, coredns configmap syntax error) và cách sửa?
-
-> **Đoạn kết nối Buổi 23:** Ba câu hỏi BTVN 4 trên sẽ dẫn thẳng học viên vào Buổi 23 — buổi học chuyên sâu về CoreDNS, phân giải tên miền FQDN, tham số `ndots:5` trong `/etc/resolv.conf` và chẩn đoán 4 kiểu hỏng DNS trong CKA và CKAD.
 
 ---
 
@@ -1519,15 +1545,15 @@ iptables-save | grep <svc-name>
 ipvsadm -ln
 ```
 
+
 ---
 
-## Bảng đối soát thời lượng
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-| Mục | Tiêu đề mục | Ngân sách thời gian |
-|---|---|---|
-| T0 | Vì sao có khối này | 1 phút |
-| T1 | Luật chơi | 1 phút |
-| T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
-| T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
-| **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+
+> [!TIP]
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 23] Phân Giải Tên Miền Với CoreDNS: Cơ Chế ndots, Search Domains & Kỹ Thuật Chẩn Đoán Sự Cố DNS](cka-23-23-coredns-va-phan-giai-ten.html).
+
 {% endraw %}

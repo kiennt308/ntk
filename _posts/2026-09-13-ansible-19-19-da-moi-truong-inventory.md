@@ -694,38 +694,12 @@ docker exec target1 cat /etc/environment-app.conf
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-### 5 Điều Cốt Lõi Cần Ghi Nhớ:
-1. **Tách thư mục inventory cô lập:** Tạo `inventory/staging/` và `inventory/production/` riêng biệt.
-2. **Đặt `group_vars/` bên trong thư mục môi trường:** Đảm bảo biến được tự động nạp đè chính xác theo cờ `-i`.
-3. **Luôn dùng cờ `-i`:** Chỉ định tường minh đường dẫn thư mục môi trường khi chạy `ansible-playbook`.
-4. **Kiểm tra ma trận biến với `ansible-inventory`:** Dùng `ansible-inventory --vars` đối soát ma trận biến trước khi chạy.
-5. **Cấu hình an toàn mặc định:** Đặt `inventory = ./inventory/staging` trong `ansible.cfg` để bảo vệ Production.
-
-```mermaid
-mindmap
-  root((Multi-Environment Inventory))
-    Directory Layout
-      inventory/staging/
-      inventory/production/
-      hosts.ini theo môi trường
-    Group Vars Layering
-      group_vars/all.yml: biến chung
-      group_vars/web.yml: biến nhóm
-      host_vars: biến cá thể
-    Safe Practices
-      Safe default: staging trong ansible.cfg
-      Xóa bỏ group_vars ở root
-      ansible-inventory tra cứu CLI
-    Enterprise Goal
-      1 Playbook duy nhất không lặp code
-      Idempotency changed=0 ở Lần 2
-```
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 20: Bảo Mật Dữ Liệu Nhạy Cảm Với Ansible Vault: Mã Hóa File, Mã Hóa Biến Chuỗi & Multi-Vault ID Trong CI/CD](ansible-20-20-ansible-vault.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 20] Bảo Mật Dữ Liệu Nhạy Cảm Với Ansible Vault: Mã Hóa File/String, Vault Password Client, Multi-Vault IDs & CI/CD Vault](ansible-20-20-ansible-vault.html).
 
 {% endraw %}

@@ -679,34 +679,12 @@ include_role: name=webserver webserver_port=8080</code></pre>
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-```mermaid
-mindmap
-  root((Role Nâng Cao))
-    Static vs Dynamic
-      import_role Parse time
-      include_role Runtime
-      tasks_from chia nhỏ
-    Phụ Thuộc & Môi Trường
-      meta dependencies nạp trước
-      when điều kiện môi trường
-      loop nạp mảng đối tượng
-    Kiểm Soát Biến & Chuẩn Hóa
-      public false chống rò rỉ
-      allow_duplicates kiểm soát lặp
-      Idempotency changed=0 Lần 2
-```
-
-### Năm Điểm Cốt Lõi Phải Ghi Nhớ:
-1. **Phân biệt Static và Dynamic:** Sử dụng `import_role` cho các task cần kế thừa tag/handler tĩnh và `include_role` cho vòng lặp `loop:` hoặc phân nhánh `when:`.
-2. **Khai báo phụ thuộc trong `meta/main.yml`:** Tự động hóa chuẩn bị nền tảng trước khi thực thi Role ứng dụng.
-3. **Mô-đun hóa với `tasks_from:`:** Chia nhỏ kịch bản Role thành nhiều tệp task độc lập (`configure.yml`, `cleanup.yml`).
-4. **Bảo vệ phạm vi biến với `public: false`:** Ngăn chặn biến nạp động rò rỉ làm ô nhiễm không gian toàn cục của Playbook.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Khẳng định chất lượng kịch bản mô-đun hóa nâng cao ở mốc 50% khóa học.
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 16: Quản Lý Phụ Thuộc Với Ansible Galaxy: Tải Roles, Collections & Cấu Hình requirements.yml](ansible-16-16-ansible-galaxy.html).
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 16] Quản Trị Hệ Sinh Thái Ansible Galaxy: Cài Đặt, Xuất Bản, Versioning & Quản Lý requirements.yml Chuẩn Doanh Nghiệp](ansible-16-16-ansible-galaxy.html).
+
 {% endraw %}

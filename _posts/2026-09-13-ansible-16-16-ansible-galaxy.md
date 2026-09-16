@@ -629,34 +629,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-```mermaid
-mindmap
-  root((Ansible Galaxy))
-    Kho Tài Nguyên Mở
-      galaxy.ansible.com
-      Community & Certified
-      Tái sử dụng nhanh
-    Quản Lý Phụ Thuộc
-      requirements.yml tập trung
-      Version Pinning cố định
-      Hỗ trợ Git riêng tư
-    Môi Trường & Tự Động Hóa
-      Cô lập roles_path ./roles
-      Offline Air-Gapped tarball
-      Idempotency changed=0 Lần 2
-```
-
-### Năm Điểm Cốt Lõi Phải Ghi Nhớ:
-1. **Quản lý tập trung qua `requirements.yml`:** Khai báo danh sách tất cả các Roles và Collections bên ngoài mà dự án sử dụng.
-2. **Nguyên tắc Version Pinning:** Luôn chốt phiên bản cố định trong `requirements.yml` để chống breaking changes.
-3. **Cô lập thư mục cài đặt:** Thiết lập `roles_path = ./roles` và `collections_path = ./collections` trong `ansible.cfg`.
-4. **Hỗ trợ Git riêng tư & Air-Gapped:** Nạp Role từ Git nội bộ và cài đặt offline bằng tệp nén tarball `.tar.gz`.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Kiểm thử tính Idempotency của các tài nguyên Galaxy ở lượt chạy Lần 2 và đối soát máy đích bằng `docker exec`.
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 17: Tổ Chức Module Hiện Đại Với Ansible Collections: FQCN, Xây Dựng & Phân Phối Gói Tự Động Hóa](ansible-17-17-collections-fqcn.html).
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 17] Ansible Collections & Fully Qualified Collection Name (FQCN): Tách Biệt Core Engine & Tích Hợp Đa Nền Tảng Đám Mây](ansible-17-17-collections-fqcn.html).
+
 {% endraw %}

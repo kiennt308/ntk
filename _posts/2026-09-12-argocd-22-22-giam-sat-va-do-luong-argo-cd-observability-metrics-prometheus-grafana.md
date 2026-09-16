@@ -498,10 +498,11 @@ curl -s -G "http://localhost:9090/api/v1/query" \
 
 ---
 
-## 9. Tổng Kết & Bài Học Tiếp Theo
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
 Thiết lập một hệ thống **Observability** toàn diện với Prometheus, ServiceMonitor, PromQL và Grafana giúp bạn chuyển đổi từ thế bị động (chờ developer báo cáo khi app không deploy được) sang thế chủ động (phát hiện sớm suy giảm hiệu năng trước khi xảy ra sự cố).
 
 > [!TIP]
-> **Bài tiếp theo:** [Bài 23: Bảo Mật, Hardening, Sao Lưu DR & Xử Lý Sự Cố Argo CD Production](argocd-23-23-bao-mat-hardening-sao-luu-dr-va-xu-ly-su-co-argo-cd-production.html)
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục hành trình nâng cao năng lực GitOps với bài học tiếp theo: [[Bài 23] Bảo Mật, Hardening, Sao Lưu DR & Xử Lý Sự Cố Argo CD Production](argocd-23-23-bao-mat-hardening-sao-luu-dr-va-xu-ly-su-co-argo-cd-production.html).
 {% endraw %}

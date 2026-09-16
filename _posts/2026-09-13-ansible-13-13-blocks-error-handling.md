@@ -663,34 +663,12 @@ fi
   </div>
 </details>
 
----
+## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-```mermaid
-mindmap
-  root((Xử Lý Lỗi Chuyên Sâu))
-    Bộ ba Try Catch Finally
-      block Thực thi chính
-      rescue Cứu hộ khi fail
-      always Dọn dẹp bắt buộc
-    Khống chế Trạng thái
-      failed_when Bắt lỗi logic
-      changed_when Tắt changed mạo danh
-      ignore_errors Bỏ qua task phụ
-    Bảo vệ Cụm Hạ Tầng
-      any_errors_fatal Phanh khẩn cấp
-      Rollback tự động
-      Idempotency changed=0 Lần 2
-```
-
-### Năm Điểm Cốt Lõi Phải Ghi Nhớ:
-1. **Bộ ba `block-rescue-always`:** `block` chạy tác vụ chính, `rescue` kích hoạt kịch bản cứu trợ khi có lỗi, `always` luôn luôn chạy dọn dẹp tài nguyên.
-2. **Khống chế trạng thái thay đổi:** Luôn khai báo `changed_when: false` cho các câu lệnh CLI chỉ đọc để bảo vệ tính Idempotency.
-3. **Bắt lỗi logic với `failed_when:`:** Định nghĩa lại điều kiện thất bại dựa trên stdout/stderr thay vì chỉ phụ thuộc vào exit code của shell.
-4. **Phanh khẩn cấp toàn cụm `any_errors_fatal:`:** Ngăn chặn tình trạng lệch phiên bản trên cluster khi có một node gặp sự cố.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Kịch bản phục hồi lỗi ở lượt chạy thứ hai bắt buộc phải đạt `changed=0` và đối soát thực tế trên máy đích.
+Kiến thức trong bài viết này đóng vai trò then chốt trong việc xây dựng hệ sinh thái tự động hóa hạ tầng ổn định, an toàn và tối ưu hiệu năng. Nắm vững cả lý thuyết kiến trúc và kỹ năng thực hành là chìa khóa để vận hành hệ thống ở quy mô lớn.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:** [Bài 14: Kiến Trúc Ansible Roles Cơ Bản: Cấu Trúc Thư Mục, tasks, vars, defaults, handlers & meta](ansible-14-14-roles-basics.html).
+> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
+> Tiếp tục nâng cao kỹ năng tự động hóa với bài học tiếp theo: [[Bài 14] Đóng Gói Tái Sử Dụng Với Ansible Roles: Cấu Trúc Thư Mục Chuẩn, Tasks, Handlers, Vars, Defaults & Meta](ansible-14-14-roles-basics.html).
+
 {% endraw %}

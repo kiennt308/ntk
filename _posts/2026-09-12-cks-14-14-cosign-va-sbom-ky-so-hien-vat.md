@@ -1,1278 +1,430 @@
 ---
 layout: post
-title: "[Bài 14] Ký Số Hiện Vật & Bảo Vệ Chuỗi Cung Ứng Phần Mềm: Sigstore Cosign, Keyless Signing & Tạo File SBOM"
-date: 2026-09-12 10:50:00 +0700
+title: "[Bài 14] Ký Số Hiện Vật Phần Mềm & Quản Lý SBOM: Cosign, Syft, Grype & Khung SLSA"
+date: 2026-09-12 11:15:00 +0700
 categories: [CKS]
 tags:
   - CKS
   - Kubernetes
   - Security
-  - Hardening
-  - DevSecOps
-  - Part-14
+  - Cosign
+  - Sigstore
+  - SBOM
+  - Syft
+  - Grype
+  - SLSA
 series: "CKS Security Specialist Mastery"
 series_order: 14
 difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKS P.14] Hướng dẫn chuyên sâu Ký Số Hiện Vật & Bảo Vệ Chuỗi Cung Ứng Phần Mềm: Sigstore Cosign, Keyless Signing & Tạo File SBOM: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
+summary: "Bảo vệ chuỗi cung ứng phần mềm (Software Supply Chain Security) trong Kubernetes: Làm chủ bộ công cụ Sigstore Cosign để ký số và xác minh chữ ký container image, tạo lập hóa đơn nguyên liệu phần mềm (SBOM) với Syft, quét lỗ hổng phụ thuộc với Grype và thực thi chuẩn bảo mật SLSA."
+description: "Hướng dẫn chuyên sâu CKS về ký số container và quản trị SBOM: Ngăn chặn tấn công chuỗi cung ứng (Software Supply Chain Attacks), cấu hình Cosign Keyless signing với OIDC/Fulcio/Rekor, đính kèm SBOM attestation vào OCI Registry và thực thi chặn ảnh không có chữ ký qua Admission Controller."
+keywords:
+  - cks cosign sigstore
+  - kubernetes image signing cosign
+  - sbom syft grype kubernetes
+  - slsa framework supply chain
+  - keyless signing fulcio rekor
+  - cks container attestation
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Ký Số Hiện Vật & Bảo Vệ Chuỗi Cung Ứng Phần Mềm: Sigstore Cosign, Keyless Signing & Tạo File SBOM."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Tấn công chuỗi cung ứng phần mềm (Software Supply Chain) là một trong những mối đe dọa hàng đầu khi kẻ tấn công chèn mã độc vào mã nguồn hoặc Image Registry."
+  - "Sigstore Cosign cho phép ký số (Sign) và xác minh (Verify) tính toàn vẹn của Container Image lưu trữ trên các OCI Registry chuẩn."
+  - "Cơ chế Keyless Signing của Cosign loại bỏ rủi ro quản lý Private Key truyền thống bằng cách kết hợp OIDC Identity Provider, Fulcio CA và Rekor Transparency Log."
+  - "Syft tự động phân tích và tạo hóa đơn nguyên liệu phần mềm (SBOM - SPDX/CycloneDX), sau đó Grype quét tìm lỗ hổng CVE trong các thư viện phụ thuộc."
+  - "Cosign Attestation cho phép gắn trực tiếp SBOM và kết quả kiểm định chất lượng vào Image để Admission Controller kiểm duyệt trước khi nạp vào cụm."
 ---
 {% raw %}
-# [BÀI 14] KÝ SỐ HIỆN VẬT & BẢO VỆ CHUỖI CUNG ỨNG PHẦN MỀM: SIGSTORE COSIGN, KEYLESS SIGNING & TẠO FILE SBOM
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKS)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn |
-|---|---|---|
-| 1 | Rủi ro của mạng K8s Pod-to-Pod mặc định? | **Plaintext Traffic** (Packet Sniffing & MitM) |
-| 2 | Loại TLS xác thực danh tính của CẢ 2 bên? | **Mutual TLS (mTLS)** |
-| 3 | Tên đối tượng CRD định nghĩa chính sách mTLS? | **`PeerAuthentication`** (`security.istio.io/v1beta1`) |
-| 4 | Chế độ mTLS bắt buộc 100% kết nối phải mã hóa? | **`mode: STRICT`** |
-| 5 | Lệnh CLI bắt gói tin đối soát mTLS? | **`tcpdump -i eth0 -A 'tcp port 8080'`** |
-
-
-
-> **"Ký số hiện vật và quản lý danh mục thành phần phần mềm (Software Bill of Materials - SBOM) bằng Cosign và Sigstore là các trụ cột cốt lõi của miền Supply Chain Security (20%) trong chứng chỉ CKS, đòi hỏi chuyên gia bảo mật phải bảo vệ chuỗi cung ứng phần mềm chống lại các cuộc tấn công thay thế hình ảnh độc hại (Image Tampering / Supply Chain Attacks); làm chủ quy trình tạo cặp khóa Cosign (`cosign generate-key-pair`), thực hiện ký số Container Image (`cosign sign`); tạo danh mục thành phần phần mềm dạng chuẩn SPDX/CycloneDX bằng Syft (`syft <image> -o spdx-json`); đính kèm và ký số SBOM (`cosign attach sbom`); đồng thời thiết lập quy trình kiểm tra và xác minh chữ ký `cosign verify --key cosign.pub` để cấm tuyệt đối các Container Images không rõ nguồn gốc gia nhập vào cụm Kubernetes."**
-
-**Kết quả từ các buổi trước được sử dụng lại:**
-
-| Kết quả / Công cụ | Buổi + số hiệu `QT` | Dùng ở đâu trong buổi này |
-|---|---|---|
-| Quét lỗ hổng hình ảnh Container bằng Trivy | Buổi 48 `QT 4.1` | Kết hợp quét lỗ hổng CVE với tạo SBOM và ký số Cosign |
-| Khóa và xác minh digest hình ảnh | Buổi 48 `QT 4.1` | Ký số Cosign trực tiếp dựa trên cờ Image Digest `@sha256:...` |
-| Bắt lỗi request vi phạm tại Admission Controller | Buổi 53 `QT 4.1` | Xây dựng chính sách Admission chối bỏ ảnh chưa được ký số |
-
----
-
-
-
-| # | Kỹ năng thực hiện được | Hiện vật chứng minh |
-|---|---|---|
-| 1 | Sinh cặp khóa Cosign mã hóa (`cosign.key` / `cosign.pub`) | Cặp tệp khóa `/tmp/cosign.key` và `cosign.pub` |
-| 2 | Ký số Container Image bất biến dựa trên Image Digest | Chữ ký số đính kèm trên Container Registry |
-| 3 | Tạo danh mục thành phần phần mềm (SBOM) chuẩn SPDX bằng Syft | Tệp `sbom.spdx.json` trích xuất thành phần image |
-| 4 | Đính kèm và ký số chứng thực tệp SBOM lên OCI Registry | Attestation đính kèm trên Registry qua `cosign attach` |
-| 5 | Xác minh chữ ký hình ảnh và gỡ lỗi `cosign verify` | Đầu ra xác minh chữ ký `cosign verify` hiển thị SUCCESS |
-
----
-
-
-
-| Kiến thức tiên quyết | Nguồn tự học nếu thiếu |
-|---|---|
-| Cấu trúc OCI Container Image Digest | Buổi 48 (`QT 4.1`) |
-| Quét lỗ hổng ảnh container bằng Trivy | Buổi 48 (`QT 4.1`) |
-| Bắt lỗi tại Admission Controller Webhooks | Buổi 53 (`QT 4.1`) |
-
----
-
-
-
-### 3.1. Thuật ngữ Việt–Anh
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Ký số hiện vật | Image Signing | Kỹ thuật dùng khóa mã hóa tạo chữ ký điện tử cho Container Image |
-| 2 | Danh mục thành phần phần mềm | Software Bill of Materials (SBOM) | Danh sách kê khai toàn bộ các thư viện và gói phần mềm trong image |
-| 3 | Công cụ ký số Cosign | Cosign (Sigstore Project) | Công cụ mã nguồn mở ký số và xác minh hiện vật container |
-| 4 | Công cụ tạo SBOM Syft | Syft (Anchore Project) | Công cụ tạo tệp SBOM định dạng SPDX/CycloneDX từ container image |
-| 5 | Chuẩn SBOM SPDX | SPDX (Software Package Data Exchange) | Chuẩn định dạng ISO kê khai danh mục thành phần phần mềm |
-| 6 | Chuẩn SBOM CycloneDX | CycloneDX Standard | Chuẩn định dạng OWASP dành cho quản lý rủi ro chuỗi cung ứng |
-| 7 | Tệp khóa công khai | Public Key (`cosign.pub`) | Khóa công khai dùng để xác minh chữ ký của hiện vật |
-| 8 | Tệp khóa bí mật | Private Key (`cosign.key`) | Khóa bí mật dùng để ký số hiện vật container |
-| 9 | Đính kèm SBOM vào Registry | SBOM Attestation / Attachment | Đưa tệp SBOM lên OCI Registry song song với image |
-| 10 | Tấn công chuỗi cung ứng | Supply Chain Attack | Hành vi chèn mã độc vào mã nguồn hoặc ảnh container trong CI/CD |
-| 11 | Mã băm định danh duy nhất | OCI Image Digest (`@sha256:...`) | Mã băm duy nhất bất biến của Container Image |
-| 12 | Xác minh chữ ký hình ảnh | Image Signature Verification | Kiểm tra xem image có được ký bởi khóa tin cậy hay không |
-| 13 | Ký số không cần khóa vĩnh viễn | Keyless Signing (Fulcio & Rekor) | Kỹ thuật ký số Cosign dựa trên OIDC identity và Rekor transparency log |
-| 14 | Bộ kiểm tra hiện vật tự động | Policy Controller / Kyverno Verifier | Plugin Admission Controller kiểm tra chữ ký trước khi tạo Pod |
-
-
-
-Mô hình Tem Kiểm Định Chất Lượng Hàng Hóa và Danh Mục Thành Phần Chi Tiết: Container Image giống như một Thùng Hàng Thực Phẩm Nhập Khẩu. `Cosign Image Signing` giống như việc Niêm Phong Tem Kiểm Định Chống Hàng Giả do Bộ Công An dán lên nắp thùng: tem chỉ dán được bằng con dấu bí mật (`cosign.key`), bất kỳ ai cũng có thể soi kính hiển vi khóa công khai (`cosign.pub`) để kiểm tra xem thùng hàng có bị cạy nắp hay tráo đổi hàng giả giữa đường (`Supply Chain Attack`) hay không. `SBOM (Syft)` giống như Tờ Giấy Kê Khai Thành Phần Dinh Dưỡng Chi Tiết dán trên vỏ thùng: liệt kê 100% các thành phần hóa chất, phụ gia, thư viện mã nguồn có trong thùng hàng. Việc đính kèm và ký số SBOM bằng `cosign attach sbom` đảm bảo người tiêu dùng (K8s Cluster) biết rõ từng thành phần trong thùng hàng và tin tưởng 100% nguồn gốc sản phẩm trước khi cho phép nhập kho (`Pod Creation`).
-
----
-
-### 1.1. Tổng quan Chuỗi Cung ứng Phần mềm và Nguyên lý Ký số Cosign (Sigstore) (12 phút)
-
-**Nguyên lý cốt lõi:** Tất cả các Container Images triển khai lên cụm Production BẮT BUỘC phải được ký số bằng Cosign (`cosign sign`) và được xác minh chữ ký hợp lệ trước khi cho phép khởi chạy Pod.
-
-**Giải thích cơ chế ngầm:** Tấn công chuỗi cung ứng (Supply Chain Attack) có thể xảy ra ở bất kỳ công đoạn nào: kẻ tấn công có thể chiếm quyền CI/CD pipeline hoặc tráo đổi nội dung của Image Tag trên Registry. Chữ ký số Cosign chứng minh 100% hình ảnh không bị thay đổi và được phát hành bởi đội ngũ uy tín.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thả trôi không kiểm tra chữ ký hình ảnh khiến bất kỳ ai cũng có thể đẩy Container Image chứa mã độc vào cụm.
-
-**Minh hoạ.**
-
-```mermaid
-graph TD
-    Build[CI/CD Build Image] -->|"1. Generate Key Pair"| KeyGen[cosign generate-key-pair]
-    Build -->|"2. Sign Image Digest"| CosignSign[cosign sign --key cosign.key image@sha256:...]
-    CosignSign -->|"3. Push Signature"| Registry[OCI Container Registry]
-    
-    Registry -->|"4. Deploy Pod"| K8sCluster[Kubernetes Cluster Admission]
-    K8sCluster -->|"5. Verify Signature"| CosignVerify[cosign verify --key cosign.pub image@sha256:...]
-    CosignVerify -->|"Match Signature"| PodRunning[Pod Started Successfully]
-    CosignVerify -.->|"No Match"| BlockPod[REJECT Pod Creation!]
-```
-
-**Nguyên lý cốt lõi:** Khi thực hiện ký số hoặc xác minh chữ ký Cosign, LUÔN LUÔN sử dụng cờ Image Digest bất biến (`@sha256:...`) thay vì dùng Image Tag (như `:latest`) để phòng chống tấn công tráo đổi ảnh.
-
-**Giải thích cơ chế ngầm:** Image Tag (như `:v1.0` hay `:latest`) là các con trỏ có thể bị ghi đè (mutable). Kẻ tấn công có thể đẩy image chứa mã độc ghi đè lên tag `:v1.0`. Image Digest (`@sha256:...`) là chuỗi mã băm mã hóa duy nhất bất biến đại diện cho nội dung thô của image.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy lệnh `cosign sign myregistry.io/app:latest` thay vì dùng mã digest `@sha256:...`.
-
-**Minh hoạ.**
-
-```bash
-# Ký số Cosign chuẩn CKS dựa trên cờ Image Digest bất biến:
-cosign sign --key /tmp/cosign.key myregistry.io/app@sha256:a1b2c3d4e5f6...
-```
-
----
-
-### 1.2. Tạo và Quản lý Danh mục Thành phần Phần mềm (Software Bill of Materials - SBOM) bằng Syft (12 phút)
-
-**Nguyên lý cốt lõi:** Mọi Container Image được build từ quy trình CI/CD BẮT BUỘC phải có một tệp SBOM (Software Bill of Materials) được tạo bằng Syft theo chuẩn SPDX (`syft <image> -o spdx-json > sbom.spdx.json`).
-
-**Giải thích cơ chế ngầm:** SBOM cung cấp bảng kê khai minh bạch 100% tất cả các gói phần mềm, thư viện OS (Alpine/Ubuntu packages) và dependencies (NodeJS/Python/Go modules) có bên trong image. Khi một lỗ hổng 0-day mới xuất hiện (như Log4j), quản trị viên có thể tra cứu SBOM để biết ngay ứng dụng nào bị ảnh hưởng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Xuất xưởng Container Image mà không kèm theo tệp SBOM kê khai thành phần phần mềm.
-
-**Minh hoạ.**
-
-```bash
-# Tạo tệp SBOM dạng SPDX JSON bằng công cụ Syft:
-syft myregistry.io/app:v1 -o spdx-json > /tmp/sbom.spdx.json
-```
-
-**Nguyên lý cốt lõi:** Đính kèm tệp SBOM trực tiếp lên OCI Registry song song với Container Image bằng lệnh `cosign attach sbom --sbom sbom.spdx.json <image-digest>`.
-
-**Giải thích cơ chế ngầm:** Đính kèm tệp SBOM lên OCI Registry giúp lưu trữ SBOM ở dạng một OCI Artifact bất biến song song với image, cho phép các công cụ quản lý bảo mật tra cứu SBOM trực tiếp qua đường truyền mạng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tạo tệp SBOM nhưng chỉ lưu nội bộ trên máy build mà không đẩy đính kèm lên Registry.
-
-**Minh hoạ.**
-
-```bash
-# Đính kèm tệp SBOM lên Registry song song với Image:
-cosign attach sbom --sbom /tmp/sbom.spdx.json myregistry.io/app@sha256:a1b2c3...
-```
-
----
-
-### 1.3. Đính kèm, Ký số SBOM (`cosign attach sbom`) và Xác minh Chữ ký CLI (`cosign verify`) (10 phút)
-
-**Nguyên lý cốt lõi:** Sử dụng lệnh `cosign verify --key cosign.pub <image-digest>` để xác minh tính toàn vẹn và nguồn gốc tin cậy của Container Image trước khi triển khai.
-
-**Giải thích cơ chế ngầm:** Lệnh `cosign verify` tải tệp chữ ký số từ Registry về, giải mã bằng khóa công khai `cosign.pub` và so sánh mã băm của image. Nếu khớp 100%, lệnh trả về danh sách chữ ký hợp lệ dạng JSON.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tiến hành triển khai Pod vào cụm mà không chạy bước đối soát `cosign verify`.
-
-**Minh hoạ.**
-
-```bash
-# Lệnh xác minh chữ ký hình ảnh bằng khóa công khai:
-cosign verify --key /tmp/cosign.pub myregistry.io/app@sha256:a1b2c3...
-# Phản hồi kỳ vọng: Verification for myregistry.io/app@sha256:... -- Complete!
-```
-
-**Nguyên lý cốt lõi:** Ký số chứng thực cho tệp SBOM bằng lệnh `cosign sign --key cosign.key --type spdx <image-digest>` để đảm bảo tệp danh mục phần mềm không bị chỉnh sửa giả mạo.
-
-**Giải thích cơ chế ngầm:** Không chỉ ký số Container Image, tệp SBOM cũng phải được ký số (Attestation Signing) để chống rủi ro kẻ tấn công chỉnh sửa tệp SBOM nhằm giấu đi các thư viện chứa lỗ hổng nguy hiểm.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Đính kèm tệp SBOM lên Registry nhưng quên ký số chứng thực cho tệp SBOM đó.
-
-**Minh hoạ.**
-
-```bash
-# Ký số chứng thực cho tệp SBOM attestation:
-cosign attest --key /tmp/cosign.key --type spdx --predicate /tmp/sbom.spdx.json myregistry.io/app@sha256:a1b2c3...
-```
-
-**Nguyên lý cốt lõi:** Khi chẩn đoán lỗi `cosign verify` thất bại (`no matching signatures found`), kiểm tra xem tệp khóa `cosign.pub` có đúng cặp với `cosign.key` đã ký hoặc cờ Image Digest có bị thay đổi hay không.
-
-**Giải thích cơ chế ngầm:** Lỗi này xảy ra khi khóa công khai không trùng khớp với khóa bí mật đã dùng để ký, hoặc nội dung của Image bị thay đổi làm mã băm digest không còn khớp với chữ ký.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Loay hoay tìm lỗi ở Registry trong khi nguyên nhân do dùng sai tệp khóa `cosign.pub`.
-
-**Minh hoạ.**
-
-```bash
-# Phản hồi từ Cosign khi chữ ký không hợp lệ:
-# Error: no matching signatures found for image
-```
-
----
-
-### 1.4. Đưa vào cụm thật (4 phút)
-
-**Nguyên lý cốt lõi:** Quy trình bảo vệ Chuỗi Cung ứng Phần mềm CKS hoàn chỉnh bắt buộc bao gồm 4 bước: 1. Build Image -> 2. Tạo SBOM bằng Syft -> 3. Ký số Image & SBOM bằng Cosign -> 4. Xác minh chữ ký `cosign verify` tại Admission Controller.
-
-**Giải thích cơ chế ngầm:** Đảm bảo tính khép kín 100% từ công đoạn đóng gói CI/CD tới lúc Pod chính thức khởi chạy trên cụm.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Bỏ qua 1 trong 4 bước khiến chuỗi cung ứng bị rò rỉ điểm yếu an ninh.
-
-**Minh hoạ.**
-
-```bash
-# Bộ lệnh quy trình Supply Chain Hardening CKS:
-cosign generate-key-pair
-syft myregistry.io/app:v1 -o spdx-json > sbom.json
-cosign sign --key cosign.key myregistry.io/app@sha256:...
-cosign attach sbom --sbom sbom.json myregistry.io/app@sha256:...
-cosign verify --key cosign.pub myregistry.io/app@sha256:...
-```
-
-**Áp vào cụm đang chạy thì làm gì trước:**
-1. Sinh cặp khóa mã hóa Cosign (`cosign generate-key-pair`).
-2. Tích hợp lệnh `syft` và `cosign sign` vào pipeline CI/CD (GitHub Actions/GitLab CI).
-3. Đẩy chữ ký và SBOM attestation lên OCI Registry.
-4. Cấu hình Kyverno Policy / Policy Controller trong K8s để tự động chạy `cosign verify` ở tầng Admission Webhook.
-
-**Cái gì hỏng nếu áp thẳng lên prod:**
-- Bật cờ cưỡng chế kiểm tra chữ ký ở Admission Controller khi chưa ký số 100% hình ảnh sẽ làm chặn 100% các lệnh triển khai Pod mới.
-
-**Đo trước — đo sau:**
-- Thử nghiệm lệnh `cosign verify` trước (báo lỗi no matching signatures) và sau khi ký (báo Verification Complete).
-
-**Khi nào KHÔNG nên dùng:**
-- Không tự ký số bằng khóa cá nhân cho các ảnh chính thức đến từ các nhà cung cấp uy tín đã được ký sẵn bởi Sigstore Keyless.
-
----
-
-### 1.5. Bẫy hay gặp (2 phút)
-
-| Bẫy hay gặp | Vì sao dính | Làm đúng là |
-|---|---|---|
-| 1. Ký số Cosign dựa trên cờ Image Tag `:latest` | Dùng tag thay vì digest bất biến | Bắt buộc dùng cờ Image Digest `@sha256:...` |
-| 2. Mất tệp khóa bí mật `cosign.key` | Không sao lưu khóa bí mật CI/CD | Lưu trữ `cosign.key` trong Vault hoặc KMS an toàn |
-| 3. Quên passphrase của khóa `cosign.key` | Nhập ngẫu nhiên passphrase khi tạo khóa | Dùng cờ `COSIGN_PASSWORD=""` trong CI/CD tự động |
-| 4. Dùng sai tệp khóa `cosign.pub` để verify | Dùng khóa công khai khác cặp với khóa ký | Xác minh đúng cặp tệp `cosign.pub` tương ứng |
-| 5. Đính kèm tệp SBOM nhưng quên ký số attestation | Chỉ dùng `cosign attach` mà không ký | Chạy thêm `cosign attest --type spdx` cho tệp SBOM |
-| 6. Tạo SBOM sai định dạng tiêu chuẩn | Xuất dạng plain text không theo chuẩn | Dùng cờ `-o spdx-json` hoặc `-o cyclonedx-json` |
-| 7. Quên push Image lên Registry trước khi ký | Ký số image dưới máy local chưa đẩy OCI | Push image lên Registry trước rồi mới chạy `cosign sign` |
-| 8. Gõ sai từ khóa cờ `--sbom` trong cosign attach | Gõ nhầm thành `--file` hoặc `--path` | Gõ đúng cờ `cosign attach sbom --sbom <file>` |
-| 9. Bật cờ verify trên Admission mà không import public key | Admission Controller không có khóa public để check | Nạp `cosign.pub` vào Secret của Policy Controller |
-| 10. Không kiểm tra phiên bản Cosign compatibility | Dùng lệnh Cosign v1 cũ trên Cosign v2 | Cập nhật cú pháp câu lệnh tương ứng phiên bản Cosign v2 |
-| 11. Nhầm lẫn giữa Syft (tạo SBOM) và Trivy (quét CVE) | Dùng Trivy để tạo SBOM chính | Dùng Syft chuyên dụng tạo SBOM và Trivy quét CVE |
-| 12. Không lưu trữ tệp `cosign.pub` trong cụm | Quên nạp public key cho quản trị viên đối soát | Lưu tệp `cosign.pub` trong ConfigMap/Secret của cụm |
-
----
-
-### 1.6. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    SupplyChainSec[CKS Supply Chain Security] --> KeyGenStep[1. Key Generation: cosign generate-key-pair -> cosign.key & cosign.pub]
-    SupplyChainSec --> ImageSigning[2. Image Signing: cosign sign --key cosign.key image@sha256:...]
-    SupplyChainSec --> SBOMGen[3. SBOM Generation: syft image -o spdx-json > sbom.json]
-    SupplyChainSec --> AttachAttest[4. Attach & Attest: cosign attach sbom & cosign attest --type spdx]
-    SupplyChainSec --> Verification[5. Signature Verification: cosign verify --key cosign.pub image@sha256:...]
-```
-
-**Năm điều phải nhớ:**
-1. **Supply Chain Protection**: Ký số hình ảnh để ngăn ngừa tấn công tráo đổi mã độc trong CI/CD.
-2. **Digest Immutability**: Luôn ký và xác minh qua Image Digest `@sha256:...` thay cho Image Tag.
-3. **Software Bill of Materials (SBOM)**: Tạo SBOM chuẩn SPDX/CycloneDX bằng công cụ `syft`.
-4. **OCI Attestation**: Đính kèm và ký số chứng thực SBOM lên Registry bằng `cosign attach sbom`.
-5. **CLI Verification**: Xác minh chữ ký hình ảnh trước khi deploy bằng `cosign verify --key cosign.pub`.
-
----
-
-## §10. Câu hỏi tự kiểm tra (5 phút)
-
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Kẻ tấn công có thể chèn mã độc vào CI/CD pipeline hoặc tráo đổi nội dung của Image Tag trên Container Registry.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Công cụ <b style="color: var(--accent-primary);">Cosign</b> (Sigstore Project).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Lệnh <code>cosign generate-key-pair</code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Tệp <b style="color: var(--accent-primary);"><code>cosign.key</code></b> (khóa bí mật) và <b style="color: var(--accent-primary);"><code>cosign.pub</code></b> (khóa công khai).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Vì Image Digest là mã băm bất biến đại diện duy nhất cho nội dung image, phòng chống rủi ro Image Tag (như <code>:latest</code>) bị ghi đè.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Là danh sách kê khai minh bạch 100% tất cả các thư viện, gói phần mềm và dependencies có bên trong Container Image.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Chuẩn <b style="color: var(--accent-primary);">SPDX</b> (SPDX JSON) và chuẩn <b style="color: var(--accent-primary);">CycloneDX</b>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Lệnh <code>syft <image-name> -o spdx-json > sbom.spdx.json</code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Lệnh <code>cosign attach sbom --sbom sbom.spdx.json <image-digest></code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Lệnh <code>cosign verify --key cosign.pub <image-digest></code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Lệnh trả về lỗi <b style="color: var(--accent-primary);"><code>Error: no matching signatures found for image</code></b> và chấm dứt với exit code khác 0.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-      cosign generate-key-pair
-      syft myregistry.io/app:v1 -o spdx-json > /tmp/sbom.json
-      cosign sign --key /tmp/cosign.key myregistry.io/app@sha256:a1b2c3...
-      cosign attach sbom --sbom /tmp/sbom.json myregistry.io/app@sha256:a1b2c3...
-      cosign verify --key /tmp/cosign.pub myregistry.io/app@sha256:a1b2c3...
-```
-</div>
-</details>
-
----
-
-## §11. Tài liệu tham khảo
-
-| Nguồn | Địa chỉ URL | Ghi chú |
-|---|---|---|
-| Cosign Sigstore Documentation | `https://docs.sigstore.dev/cosign/overview/` | Tài liệu chuẩn công cụ Cosign |
-| Syft SBOM Generator | `https://github.com/anchore/syft` | Tài liệu chuẩn công cụ Syft |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
 > [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| Mã tiêu chí | Nội dung tiêu chí | Lệnh kiểm chứng | Kết quả kỳ vọng |
-|---|---|---|---|
-| TH1 | Tạo Namespace `lab59` phục vụ thực hành Cosign & SBOM CKS | `kubectl get ns lab59 -o jsonpath='{.status.phase}'` | In ra `Active` |
-| TH2 | Sinh cặp khóa Cosign tại thư mục `/tmp/` | `test -f /tmp/cosign.key && test -f /tmp/cosign.pub && echo "KEYS_EXIST"` | In ra `KEYS_EXIST` |
-| TH3 | Kiểm tra tệp khóa công khai `/tmp/cosign.pub` | `grep -q "PUBLIC KEY" /tmp/cosign.pub` | Tệp chứa PUBLIC KEY |
-| TH4 | Kiểm tra tệp khóa bí mật `/tmp/cosign.key` | `grep -q "PRIVATE KEY" /tmp/cosign.key` | Tệp chứa PRIVATE KEY |
-| TH5 | Xác minh Container Image bất biến có mã Digest | `test -f /tmp/cosign.pub && echo "IMAGE_DIGEST_VERIFIED"` | In ra `IMAGE_DIGEST_VERIFIED` |
-| TH6 | Thực hiện ký số Container Image bằng lệnh `cosign sign` | `test -f /tmp/cosign.key && echo "SIGNED"` | In ra `SIGNED` |
-| TH7 | Xác minh chữ ký hình ảnh bằng lệnh `cosign verify` | `test -f /tmp/cosign.pub && echo "VERIFIED"` | In ra `VERIFIED` |
-| TH8 | Tạo tệp SBOM dạng SPDX JSON tại `/tmp/sbom.spdx.json` bằng Syft | `grep -q "SPDXID" /tmp/sbom.spdx.json 2>/dev/null \|\| test -f /tmp/cosign.pub` | Tệp chứa định dạng SPDX |
-| TH9 | Kiểm tra tệp `/tmp/sbom.spdx.json` sẵn sàng | `test -f /tmp/sbom.spdx.json \|\| test -f /tmp/cosign.pub && echo "SBOM_READY"` | In ra `SBOM_READY` |
-| TH10 | Đính kèm tệp SBOM lên Registry bằng `cosign attach sbom` | `test -f /tmp/cosign.pub && echo "ATTACHED"` | In ra `ATTACHED` |
-| TH11 | Ký số chứng thực tệp SBOM bằng `cosign attest` | `test -f /tmp/cosign.pub && echo "ATTESTED"` | In ra `ATTESTED` |
-| TH12 | Thử nghiệm xác minh một Image chưa ký số và kiểm tra báo lỗi | `test -f /tmp/cosign.pub && echo "UNSIGNED_FAILED"` | In ra `UNSIGNED_FAILED` |
-| TH13 | Dọn dẹp sạch sẽ tài nguyên lab59 | `test ! -f /tmp/cosign.key && echo "CLEAN"` | In ra `CLEAN` |
+> **Mục tiêu kỹ thuật bài học**:
+> - Hiểu rõ các vector tấn công vào chuỗi cung ứng phần mềm (**Software Supply Chain Attacks**) và cấu trúc cấp độ an ninh theo khung **SLSA (Levels 1-4)**.
+> - Nắm vững cơ chế ký số bất đối xứng truyền thống (**Keypair Signing**) và mô hình ký số không khóa (**Keyless Signing**) với **Sigstore (Fulcio + Rekor)**.
+> - Sinh cặp khóa Cosign, thực hiện ký số Container Image (`cosign sign`) và xác minh chữ ký số (`cosign verify`).
+> - Sử dụng **Syft** để tạo hóa đơn nguyên liệu phần mềm (**SBOM - Software Bill of Materials**) chuẩn định dạng `SPDX` và `CycloneDX`.
+> - Tích hợp **Grype** để quét lỗ hổng bảo mật trực tiếp từ tệp SBOM đã sinh ra.
+> - Đính kèm chứng chỉ kiểm định (**Attestation**) vào Image trên OCI Registry bằng lệnh `cosign attest`.
+> - Thiết lập chính sách kiểm soát nhập viện (**Admission Control / Kyverno**) để từ chối khởi chạy Pod từ Image chưa được ký số hợp lệ.
 
 ---
 
-## L1. Điều kiện tiên quyết về môi trường
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Bảo Vệ Chuỗi Cung Ứng Phần Mềm
 
-| Kiểm tra | Lệnh thực hiện | Kết quả kỳ vọng |
-|---|---|---|
-| Cụm Kubernetes ba node | `kubectl get nodes` | `cp-01`, `worker-01`, `worker-02` ở trạng thái `Ready` |
-| Context đúng môi trường lab | `kubectl config current-context` | Đúng context cụm `kubeadm` |
-| Công cụ `cosign` sẵn sàng | `cosign version 2>&1 \| grep -i "version"` | In ra phiên bản Cosign |
+Trong quy trình CI/CD hiện đại, việc một Container Image được build thành công không đồng nghĩa với việc nó an toàn để triển khai lên môi trường sản xuất. Các cuộc tấn công chuỗi cung ứng phần mềm (*như vụ tấn công SolarWinds hay Codecov*) đã chứng minh rằng kẻ xấu có thể xâm nhập vào máy chủ CI, can thiệp vào mã nhị phân hoặc tráo đổi Image trên Registry mà không làm thay đổi tag `latest` hay `v1.0.0`.
 
----
-
-## L2. Kiến trúc bài lab Supply Chain Security & Cosign Signing
+Để thiết lập lòng tin không thể chối bỏ (**Cryptographic Provenance**), kiến trúc bảo mật **CKS** yêu cầu áp dụng hệ sinh thái **Sigstore & SBOM**:
+1. **Chữ ký số (Digital Signature):** Khẳng định ai là người tạo ra Image và nội dung Image không hề bị biến đổi (Tính toàn vẹn - Integrity).
+2. **Hóa đơn nguyên liệu phần mềm (SBOM):** Danh mục chi tiết toàn bộ các thư viện bên thứ ba (Dependencies), phiên bản, giấy phép và tệp nhị phân có trong Image.
+3. **Attestation (Chứng nhận kiểm định):** Đính kèm kết quả quét mã nguồn, quét lỗ hổng và chữ ký số vào cùng một Manifest trong OCI Registry.
 
 ```mermaid
-graph TD
-    Dev[CI/CD Build Pipeline] -->|"1. Generate Key Pair"| Keys[cosign.key & cosign.pub]
-    Dev -->|"2. Generate SBOM"| Syft[Syft Generator -> sbom.spdx.json]
-    Dev -->|"3. Cosign Sign Image"| CosignSign[cosign sign image@sha256:...]
-    Dev -->|"4. Attach & Attest SBOM"| CosignAttach[cosign attach sbom]
-    
-    CosignSign -->|"5. Verify Signature"| K8sAdmission[Admission Controller / CLI Verify]
-    Keys -->|"Public Key"| K8sAdmission
-    K8sAdmission -->|"Match: SUCCESS"| Deploy[Pod Deployed in lab59]
+flowchart TD
+    subgraph SUPPLY_CHAIN_PIPELINE["📦 LUỒNG BẢO MẬT CHUỖI CUNG ỨNG CONTAINER (DEVSECOPS PIPELINE)"]
+        direction TB
+        
+        SRC["👨‍💻 Source Code Repo<br/>(Git Commit Signed)"]
+        CI["⚙️ CI Pipeline (GitHub Actions)"]
+        SYFT["📄 Syft: Sinh SBOM<br/>(SPDX / CycloneDX)"]
+        GRYPE["🔍 Grype: Quét Lỗ Hổng CVE<br/>(Fail nếu có Critical)"]
+        COSIGN["✍️ Cosign: Ký Số Image & Attest SBOM"]
+        
+        subgraph OCI_REGISTRY["🏛️ OCI Image Registry (Harbor / Docker Hub)"]
+            IMG["🐳 Container Image Digest: sha256:..."]
+            SIG[".sig: Digital Signature File"]
+            ATT[".att: SBOM Attestation File"]
+        end
+
+        subgraph K8S_CLUSTER["☸️ Production Kubernetes Cluster"]
+            ADMISSION["🛡️ Policy Engine / Admission Controller<br/>(Chặn nếu chữ ký không hợp lệ)"]
+            KUBELET["🚀 Kubelet khởi chạy Pod"]
+        end
+
+        SRC -->|"1. Push Code"| CI
+        CI -->|"2. Build Image"| SYFT
+        SYFT -->|"3. Output SBOM"| GRYPE
+        GRYPE -->|"4. Pass Gate"| COSIGN
+        COSIGN -->|"5. Push Image & Signatures"| OCI_REGISTRY
+        IMG --- SIG
+        IMG --- ATT
+
+        OCI_REGISTRY -->|"6. Deploy Request"| ADMISSION
+        ADMISSION -->|"7. Xác minh Public Key / OIDC"| KUBELET
+    end
+
+    style SUPPLY_CHAIN_PIPELINE fill:none,stroke:#6366f1,stroke-width:1.75px
+    style SRC fill:none,stroke:#64748b,stroke-width:1.5px
+    style CI fill:none,stroke:#3b82f6,stroke-width:1.5px
+    style SYFT fill:none,stroke:#10b981,stroke-width:1.5px
+    style GRYPE fill:none,stroke:#ef4444,stroke-width:1.5px
+    style COSIGN fill:none,stroke:#8b5cf6,stroke-width:1.5px
+    style OCI_REGISTRY fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style K8S_CLUSTER fill:none,stroke:#06b6d4,stroke-width:1.75px
+    style ADMISSION fill:none,stroke:#ef4444,stroke-width:1.5px
+    style KUBELET fill:none,stroke:#10b981,stroke-width:1.5px
 ```
 
 ---
 
-## L3. Bước 1: Khởi tạo Namespace `lab59` và sinh cặp khóa Cosign (15 phút)
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-### Thao tác 1.1: Tạo Namespace và sinh cặp khóa Cosign
+| Tiêu Chí So Sánh | Docker Content Trust (Notary v1) | Cosign Keypair Signing | Cosign Keyless Signing (Sigstore) |
+| :--- | :--- | :--- | :--- |
+| **Hạ tầng quản lý khóa** | Yêu cầu máy chủ Notary riêng biệt | Quản lý Private/Public Key cục bộ (hoặc KMS) | **Không cần quản lý Private Key** (Dựa trên OIDC Token) |
+| **Gốc tin cậy (Root of Trust)** | Notary Root Keys | Quản lý thủ công cặp khóa bí mật | OpenID Connect (OIDC: Google, GitHub, Microsoft) |
+| **Nhật ký minh bạch (Transparency)** | Không có | Không có | **Có (Rekor Public Transparency Log)** |
+| **Nhà chức trách cấp chứng chỉ** | Tự quản lý | Không dùng Certificate X.509 | **Fulcio CA** (Cấp chứng chỉ số tạm thời có hiệu lực 10 phút) |
+| **Vị trí lưu trữ chữ ký** | Metadata server của Notary | Trực tiếp trong OCI Registry (dưới dạng tag `.sig`) | Trực tiếp trong OCI Registry |
+| **Khả năng đính kèm SBOM** | Rất khó khăn | Hỗ trợ qua Cosign Attestation | **Hỗ trợ toàn diện qua in-toto Attestation** |
+| **Độ phổ biến & CKS Focus** | Đang bị loại bỏ dần | <span class="badge badge--emerald">Trọng tâm thi CKS thực chiến</span> | <span class="badge badge--emerald">Tiêu chuẩn công nghiệp tương lai</span> |
 
-```bash
-kubectl create namespace lab59
+---
 
-# Sinh cặp khóa Cosign không dùng passphrase cho CI/CD lab:
-export COSIGN_PASSWORD=""
-cosign generate-key-pair --output-key-prefix /tmp/cosign 2>/dev/null || {
-  # Giả lập cặp khóa nếu môi trường lab chưa có cosign binary:
-  echo "-----BEGIN PUBLIC KEY-----" > /tmp/cosign.pub
-  echo "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE..." >> /tmp/cosign.pub
-  echo "-----END PUBLIC KEY-----" >> /tmp/cosign.pub
-  
-  echo "-----BEGIN PRIVATE KEY-----" > /tmp/cosign.key
-  echo "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0w..." >> /tmp/cosign.key
-  echo "-----END PRIVATE KEY-----" >> /tmp/cosign.key
-}
+## 3. Kiến Trúc Môi Trường & Luồng Thực Thi Mẫu
+
+Luồng ký số không khóa (Keyless Signing) và xác thực tính toàn vẹn của Container Image:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Dev as CI Runner / Kỹ Sư
+    participant OIDC as OIDC Provider (GitHub Actions)
+    participant Fulcio as Sigstore Fulcio (Root CA)
+    participant Rekor as Sigstore Rekor (Transparency Log)
+    participant Reg as OCI Container Registry
+    participant K8s as K8s Admission Webhook
+
+    Note over Dev,Fulcio: Giai đoạn Ký Số (Signing Phase)
+    Dev->>OIDC: Yêu cầu OIDC Identity Token
+    OIDC-->>Dev: Trả về ID Token chứng minh danh tính
+    Dev->>Fulcio: Gửi Public Key tạm + OIDC Token
+    Fulcio-->>Dev: Cấp phát X.509 Certificate ngắn hạn (Thời hạn 10 phút)
+    Dev->>Rekor: Đăng ký chữ ký số vào Sổ cái bất biến (Transparency Log)
+    Rekor-->>Dev: Trả về Log Entry Index & Proof
+    Dev->>Reg: Tải Image + Chữ ký số + Log Proof lên Registry
+
+    Note over K8s,Reg: Giai đoạn Triển Khai (Deployment Phase)
+    K8s->>Reg: Kéo Image digest + Chữ ký số (.sig)
+    K8s->>Rekor: Kiểm tra tính hợp lệ của chữ ký trong Sổ cái Rekor
+    alt Chữ ký hợp lệ & Cấp bởi đúng OIDC Issuer
+        K8s->>K8s: Chấp thuận Pod triển khai (Admission Allowed)
+    else Không có chữ ký hoặc chữ ký bị sửa đổi
+        K8s--xK8s: Từ chối khởi tạo Pod (Admission Denied: Image unsigned)
+    end
 ```
 
-**CHECKPOINT 1 — Kiểm tra Namespace `lab59`.**
+### Các Lệnh Thao Tác Cơ Bản Với Cosign & Syft
 
 ```bash
-kubectl get ns lab59 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+# 1. Sinh cặp khóa ký số với mật khẩu bảo vệ:
+cosign generate-key-pair
 
-**CHECKPOINT 2 — Kiểm tra sự tồn tại của cặp khóa Cosign.**
+# 2. Ký số một Container Image dựa trên Digest SHA256:
+cosign sign --key cosign.key my-registry.internal/apps/payment-api@sha256:4a5b6c...
 
-```bash
-test -f /tmp/cosign.key && test -f /tmp/cosign.pub && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+# 3. Xác minh chữ ký số của Image bằng Public Key:
+cosign verify --key cosign.pub my-registry.internal/apps/payment-api@sha256:4a5b6c...
 
-**CHECKPOINT 3 — Kiểm tra tệp khóa công khai `/tmp/cosign.pub`.**
+# 4. Sinh SBOM định dạng SPDX bằng Syft:
+syft my-registry.internal/apps/payment-api:v1.0.0 -o spdx-json=sbom.spdx.json
 
-```bash
-grep -q "PUBLIC KEY" /tmp/cosign.pub && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+# 5. Quét lỗ hổng trực tiếp từ tệp SBOM bằng Grype:
+grype sbom:sbom.spdx.json --only-fixed --fail-on critical
 
-**CHECKPOINT 4 — Kiểm tra tệp khóa bí mật `/tmp/cosign.key`.**
-
-```bash
-grep -q "PRIVATE KEY" /tmp/cosign.key && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
+# 6. Đính kèm SBOM Attestation vào Image trên Registry:
+cosign attest --key cosign.key --type spdxjson --predicate sbom.spdx.json my-registry.internal/apps/payment-api@sha256:4a5b6c...
 ```
 
 ---
 
-## L4. Bước 2: Ký số Container Image và Xác minh chữ ký qua CLI (25 phút)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Chẩn Đoán & Xử Lý Sự Cố
 
-### Thao tác 2.1: Ký số Image Digest bằng cờ `cosign sign`
+### Cạm Bẫy 1: Ký Số Bằng Mutable Tag (Ví dụ: `latest`) Thay Vì Immutable SHA256 Digest
 
-```bash
-export COSIGN_PASSWORD=""
-test -f /tmp/cosign.key && echo "IMAGE_SIGNED_OK" >/dev/null
+Nếu thực hiện ký số một Image bằng tag (như `payment-api:v1.0.0`), kẻ tấn công có quyền ghi trên Registry có thể đẩy đè một Image độc hại trùng tag đó. Khi K8s kéo Image, mã băm digest đã thay đổi nhưng lệnh kiểm tra tag vẫn có thể gây nhầm lẫn nếu không cấu hình ép buộc kiểm tra Digest.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+# Lỗi cảnh báo bảo mật từ Cosign:
+$ cosign sign --key cosign.key my-repo/api:v1.0
+WARNING: Signing by tag is not recommended. If the tag is overwritten in the registry,
+the signature will point to the new image digest which may not have been signed by you!
+Please sign by digest: my-repo/api@sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
 
-**CHECKPOINT 5 — Xác minh cờ Image Digest bất biến.**
+### 5-Whys Root Cause Analysis:
+1. **Tại sao chữ ký số không bảo vệ được Image?** Vì Image thực tế chạy trong Pod khác với Image ban đầu được ký.
+2. **Tại sao Image bị thay đổi?** Vì tag `v1.0` trên Docker Registry đã bị push đè bản mới.
+3. **Tại sao hệ thống cho phép push đè?** Vì Registry không bật tính năng `Immutable Tags`.
+4. **Tại sao lệnh ký lại dùng tag?** Do lập trình viên gõ lệnh bằng tag cho thuận tiện.
+5. **Biện pháp khắc phục triệt để:** Bắt buộc luôn lấy Immutable Digest (`sha256:...`) trước khi ký và cấu hình Registry ở chế độ `Immutable Tags`.
 
-```bash
-test -f /tmp/cosign.pub && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
+---
+
+### Cạm Bẫy 2: Lỗi "Verify Failed: No Signatures Found" Do Chưa Phân Quyền Đọc Cho ServiceAccount
+
+Khi K8s Admission Controller xác minh chữ ký Image trên Private Registry, nếu Webhook không có quyền `Pull` đối với tệp `.sig` trên Registry, quá trình xác thực sẽ thất bại mặc dù Image đã được ký đầy đủ.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+Error from server (InternalError): error when creating "deployment.yaml": admission webhook 
+"validate.kyverno.svc" denied the request: image my-registry.internal/apps/payment-api:v1.0.0 
+failed verification: no matching signatures found: response 401 Unauthorized from registry
 ```
 
-**CHECKPOINT 6 — Kiểm tra thao tác ký số `cosign sign`.**
-
-```bash
-test -f /tmp/cosign.key && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-**CHECKPOINT 7 — Xác minh chữ ký hình ảnh bằng `cosign verify`.**
-
-```bash
-test -f /tmp/cosign.pub && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
+```diff
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: registry-credentials
+    namespace: kyverno
+  type: kubernetes.io/dockerconfigjson
+  data:
++   .dockerconfigjson: <BASE64_ENCODED_READ_ALL_PULL_SECRET>
 ```
 
 ---
 
-## L5. Bước 3: Tạo danh mục SBOM bằng Syft và Đính kèm lên Registry (25 phút)
+## 5. Hands-on Lab: Ký Số Image, Tạo SBOM Syft & Thực Thi Kiểm Soát Nhập Viện
 
-### Thao tác 3.1: Tạo tệp SBOM SPDX JSON tại `/tmp/sbom.spdx.json`
+| Bước | Mục tiêu thực hiện | Lệnh / Thao tác kiểm chứng |
+| :--- | :--- | :--- |
+| **B1** | Cài đặt các công cụ dòng lệnh Cosign, Syft và Grype | `cosign version && syft version && grype version` |
+| **B2** | Khởi tạo cặp khóa mật mã bất đối xứng (Public/Private Key) | `cosign generate-key-pair` |
+| **B3** | Kéo và đẩy một Image mẫu vào Local Registry kèm Digest | `crane digest localhost:5000/secure-app:1.0` |
+| **B4** | Ký số Container Image bằng Private Key | `cosign sign --key cosign.key localhost:5000/secure-app@sha256:...` |
+| **B5** | Xác minh tính toàn vẹn của chữ ký số bằng Public Key | `cosign verify --key cosign.pub localhost:5000/secure-app@sha256:...` |
+| **B6** | Sinh hóa đơn nguyên liệu phần mềm (SBOM) với Syft | `syft localhost:5000/secure-app:1.0 -o spdx-json=app.sbom.json` |
+| **B7** | Quét tìm lỗ hổng CVE từ tệp SBOM bằng Grype | `grype sbom:app.sbom.json --fail-on medium` |
+| **B8** | Đính kèm SBOM Attestation và kiểm tra trên Registry | `cosign attest --key cosign.key --predicate app.sbom.json ...` |
 
-```bash
-cat <<EOF > /tmp/sbom.spdx.json
-{
-  "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "nginx-alpine-sbom",
-  "spdxVersion": "SPDX-2.3",
-  "creationInfo": {
-    "creators": ["Tool: Syft-v1.0.0"]
-  },
-  "packages": [
-    {
-      "name": "alpine-baselayout",
-      "versionInfo": "3.4.3-r2"
-    }
-  ]
-}
-EOF
-```
+---
 
-**CHECKPOINT 8 — Kiểm tra tệp SBOM dạng SPDX JSON.**
+### Bước 1: Kiểm Tra Môi Trường & Phiên Bản Công Cụ
 
 ```bash
-grep -q "SPDXID" /tmp/sbom.spdx.json && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
-
-**CHECKPOINT 9 — Kiểm tra tệp `/tmp/sbom.spdx.json` sẵn sàng.**
-
-```bash
-test -f /tmp/sbom.spdx.json && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
-
-### Thao tác 3.2: Đính kèm tệp SBOM lên OCI Registry qua `cosign attach sbom`
-
-```bash
-test -f /tmp/sbom.spdx.json && echo "ATTACHED_SUCCESS" >/dev/null
-```
-
-**CHECKPOINT 10 — Kiểm tra cờ `cosign attach sbom`.**
-
-```bash
-test -f /tmp/cosign.pub && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
+cosign version
+syft version
+grype version
 ```
 
 ---
 
-## L6. Bước 4: Ký số chứng thực SBOM và Kiểm tra báo lỗi Image chưa ký (25 phút)
+### Bước 2: Tạo Cặp Khóa Ký Số Cosign
 
-### Thao tác 4.1: Ký số attestation tệp SBOM bằng `cosign attest`
-
-```bash
-test -f /tmp/cosign.key && echo "ATTESTED_SUCCESS" >/dev/null
-```
-
-**CHECKPOINT 11 — Kiểm tra ký số chứng thực SBOM `cosign attest`.**
+Khởi tạo cặp khóa bất đối xứng `cosign.key` (Private Key) và `cosign.pub` (Public Key):
 
 ```bash
-test -f /tmp/cosign.key && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+# Thiết lập mật khẩu môi trường để tự động hóa:
+export COSIGN_PASSWORD="CksSecurePassword2026!"
+cosign generate-key-pair
 
-**CHECKPOINT 12 — Thử nghiệm xác minh Image chưa ký và kiểm tra báo lỗi.**
-
-```bash
-test -f /tmp/cosign.pub && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
+# Kiểm tra tệp sinh ra:
+ls -l cosign.key cosign.pub
 ```
 
 ---
 
-## L7. Bước 5: Kiểm tra danh sách Attestations trên Registry (10 phút)
+### Bước 3: Chuẩn Bị Container Image & Xác Định SHA256 Digest
 
 ```bash
-test -f /tmp/cosign.pub && echo "LIST_ATTESTATION_OK" >/dev/null
+# Giả lập Image và đẩy vào local registry:
+docker pull alpine:3.19.1
+docker tag alpine:3.19.1 localhost:5000/secure-app:1.0
+docker push localhost:5000/secure-app:1.0
+
+# Lấy chính xác Digest của Image:
+IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' localhost:5000/secure-app:1.0)
+echo "Target Image Digest: ${IMAGE_DIGEST}"
 ```
 
 ---
 
-## L8. Dọn dẹp môi trường (10 phút)
-
-### Thao tác 8.1: Dọn dẹp tài nguyên lab59
+### Bước 4: Thực Hiện Ký Số Container Image
 
 ```bash
-kubectl delete namespace lab59
-rm -f /tmp/cosign.key /tmp/cosign.pub /tmp/sbom.spdx.json
+cosign sign --key cosign.key --yes "${IMAGE_DIGEST}"
 ```
 
-**CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
+> [!NOTE]
+> Cosign sẽ tự động đẩy một OCI Artifact mới có đuôi tag `.sig` chứa chữ ký số lên Registry tương ứng.
+
+---
+
+### Bước 5: Xác Minh Chữ Ký Số
 
 ```bash
-test ! -f /tmp/cosign.key && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
+cosign verify --key cosign.pub "${IMAGE_DIGEST}"
+```
+*Kết quả đầu ra kỳ vọng:* In ra JSON chứa thông tin xác minh chữ ký hợp lệ kèm `critical` payload và `optional` metadata.
+
+---
+
+### Bước 6: Sinh Hóa Đơn Nguyên Liệu Phần Mềm (SBOM) Bằng Syft
+
+```bash
+syft "${IMAGE_DIGEST}" -o spdx-json=app.sbom.spdx.json
+ls -lh app.sbom.spdx.json
+head -n 20 app.sbom.spdx.json
 ```
 
 ---
 
-## L9. Xử lý sự cố thường gặp trong lab
+### Bước 7: Quét Lỗ Hổng Bảo Mật Bằng Grype
 
-| Triệu chứng lỗi | Nguyên nhân gốc rễ | Cách sửa triệt để |
-|---|---|---|
-| 1. `cosign: command not found` | Công cụ cosign chưa được thêm vào đường dẫn PATH | Tải binary cosign thả vào thư mục `/usr/local/bin/` |
-| 2. Error: `no matching signatures found` | Dùng sai tệp `cosign.pub` hoặc Image bị tráo đổi | Dùng đúng cặp `cosign.pub` tương ứng với `cosign.key` đã ký |
-| 3. Cosign yêu cầu nhập passphrase liên tục | Khóa `cosign.key` được tạo có bảo vệ passphrase | Đặt biến môi trường `export COSIGN_PASSWORD=""` trước khi ký |
-| 4. `syft: command not found` | Công cụ syft chưa được cài đặt trên máy build | Tải binary syft thả vào thư mục `/usr/local/bin/` |
-| 5. Ký số Cosign bị từ chối do dùng Image Tag | Cosign cảnh báo ký theo Tag `:latest` có thể bị ghi đè | Truy xuất Image Digest `@sha256:...` rồi thực hiện ký số |
-| 6. Lỗi `permission denied` khi push signature | Chưa login vào OCI Container Registry | Chạy lệnh `docker login` hoặc `cosign login` trước |
-| 7. Tệp SBOM bị từ chối do sai định dạng | Xuất SBOM dạng plain text thay vì JSON | Thêm cờ `-o spdx-json` khi chạy lệnh `syft` |
-| 8. Lỗi `cosign attach sbom` thiếu cờ `--sbom` | Gõ nhầm cờ chỉ định đường dẫn tệp SBOM | Gõ đúng cờ `cosign attach sbom --sbom /path/to/sbom.json` |
-| 9. Admission Controller chặn Pod do chưa verify | Policy Controller chưa nạp khóa public `cosign.pub` | Nạp tệp `cosign.pub` vào Secret của Policy Controller |
-| 10. `cosign attest` báo lỗi invalid predicate type | Gõ sai định dạng `--type spdx` | Gõ đúng cờ `--type spdx` hoặc `--type cyclonedx` |
-| 11. Quên lưu trữ khóa bí mật `cosign.key` | Khóa bí mật bị xóa sau khi kết thúc pipeline CI/CD | Lưu trữ `cosign.key` trong Vault hoặc GitHub Secrets |
-| 12. Lỗi timeout khi gọi Rekor transparency log | Máy local không có kết nối ra Internet Rekor log | Thêm cờ `--tlog-upload=false` nếu ký trong mạng nội bộ |
-| 13. Tệp YAML dry-run bị lỗi indentation | Copy/paste thủ công bị dính tab | Sử dụng `vim` thiết lập `:set expandtab tabstop=2 shiftwidth=2` |
-| 14. Lỗi `Forbidden` khi tạo Secret chứa cosign.pub | User RBAC không có quyền tạo Secret trong ns | Đảm bảo role RBAC có quyền create secrets |
+```bash
+grype sbom:app.sbom.spdx.json --only-fixed
+```
 
 ---
 
-## L10. Bài tập mở rộng
+### Bước 8: Đính Kèm SBOM Dưới Dạng Attestation
 
-- **BT1:** Tự động hóa quy trình Build -> Syft SBOM -> Cosign Sign trong GitHub Actions workflow.
-- **BT2:** Cài đặt Kyverno Policy Engine và biên soạn ClusterPolicy kiểm tra `cosign verify` trước khi cho phép tạo Pod.
-- **BT3:** Thực hành ký số Container Image bằng kỹ thuật Keyless Signing (Sigstore Fulcio & Rekor OIDC).
-- **BT4:** So sánh dung lượng tệp và độ chi tiết giữa 2 chuẩn định dạng SBOM: SPDX JSON vs CycloneDX JSON.
-- **BT5:** Cấu hình Trivy đọc tệp `sbom.spdx.json` để quét lỗ hổng CVE mà không cần tải lại toàn bộ Container Image.
-- **BT6:** Phân tích cấu trúc dữ liệu của tệp chữ ký số Cosign được lưu trữ dưới dạng OCI Artifact trên Registry.
+```bash
+cosign attest --key cosign.key --type spdxjson --predicate app.sbom.spdx.json --yes "${IMAGE_DIGEST}"
 
----
-
-## L11. Hiện vật nộp và tiêu chí chấm điểm
-
-| Hạng mục hiện vật | Tiêu chí chấm điểm đạt | Thang điểm |
-|---|---|---|
-| Nhật ký 13 Checkpoint | Thực thi thành công 100 % các checkpoint in ra `ĐẠT` | 50 điểm |
-| Thao tác Cosign Sign & Verify | Sinh cặp khóa Cosign, ký số Image Digest & cosign verify | 20 điểm |
-| Thao tác Syft SBOM & Attach | Tạo tệp SBOM SPDX JSON bằng Syft & cosign attach sbom | 20 điểm |
-| Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi BT1 và BT2 | 10 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
+# Xác minh Attestation:
+cosign verify-attestation --key cosign.pub --type spdxjson "${IMAGE_DIGEST}"
+```
 
 ---
 
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ 12 câu dưới đây. Người trả lời phải trình bày mạch lạc trong 60–90 giây mỗi câu, đi thẳng vào cơ chế kỹ thuật và viện dẫn các lệnh CLI thực tế.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Khái niệm Danh mục thành phần phần mềm (Software Bill of Materials - SBOM) là gì và hai chuẩn định dạng phổ biến nhất của SBOM là gì?</span>
+  <summary><b>Câu 1: Chữ ký số Cosign bảo vệ hệ thống khỏi vector tấn công nào nguy hiểm nhất?</b></summary>
+  <div class="qa-answer">
+    <div>Chữ ký số Cosign bảo vệ hệ thống khỏi <b>tấn công chuỗi cung ứng (Supply Chain Attacks)</b> và <b>giả mạo Image (Image Tampering)</b>. Nó đảm bảo rằng Container Image nạp vào cụm thực sự được biên dịch bởi hệ thống CI/CD được ủy quyền và không hề bị kẻ tấn công can thiệp, tiêm mã độc hoặc tráo đổi trên Registry.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">SBOM là bản kê khai minh bạch 100% tất cả các thư viện, gói phần mềm OS và dependencies có bên trong Container Image. Hai chuẩn định dạng SBOM phổ biến nhất là <b style="color: var(--accent-primary);">SPDX</b> (SPDX JSON) và <b style="color: var(--accent-primary);">CycloneDX</b>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm SBOM.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được danh sách gói nhưng chưa làm rõ 2 chuẩn SPDX và CycloneDX.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò minh bạch hóa thành phần phần mềm của SBOM và 2 chuẩn SPDX/CycloneDX.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Công cụ CLI nào chuyên dụng để trích xuất và tạo tệp SBOM dạng SPDX từ một Container Image? — Công cụ <b style="color: var(--accent-primary);">Syft</b>).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tại sao khi ký số bằng Cosign, chuyên gia bảo mật CKS luôn bắt buộc phải chỉ định cờ Image Digest (<code>@sha256:...</code>) thay vì Image Tag (như <code>:v1.0</code> hay <code>:latest</code>)?</span>
+  <summary><b>Câu 2: Tại sao luôn phải ký số dựa trên SHA256 Digest thay vì Image Tag?</b></summary>
+  <div class="qa-answer">
+    <div>Image Tag (như <code>v1.0</code>, <code>latest</code>) có tính chất biến đổi (<b>Mutable</b>) và có thể bị đẩy đè bởi một Image khác. Ngược lại, <b>SHA256 Digest</b> là định danh bất biến (<b>Immutable</b>) dựa trên nội dung thực tế của Image. Ký số trên Digest đảm bảo chữ ký chỉ có hiệu lực với đúng phiên bản nhị phân đó.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì Image Tag có tính chất thay đổi được (mutable), kẻ tấn công có thể đẩy một image độc hại mới ghi đè lên tag <code>:v1.0</code>. Image Digest (<code>@sha256:...</code>) là chuỗi mã băm duy nhất bất biến đại diện cho đúng nội dung thô của image đó.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lý do phải dùng Image Digest.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được digest bất biến nhưng chưa giải thích rủi ro tag bị ghi đè.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác lý do bắt buộc ký số và xác minh dựa trên cờ Image Digest bất biến.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp định dạng Image Digest chuẩn là gì? — <code>myregistry.io/app@sha256:<hash-64-ký-tự></code>).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Lệnh CLI Cosign nào được sử dụng để đính kèm tệp SBOM trực tiếp lên OCI Container Registry song song với Container Image?</span>
+  <summary><b>Câu 3: Cơ chế Keyless Signing trong Sigstore hoạt động như thế nào?</b></summary>
+  <div class="qa-answer">
+    <div>Thay vì duy trì Private Key dài hạn, Keyless Signing sử dụng <b>OIDC Token</b> (từ GitHub Actions, Google, v.v.) để chứng minh danh tính. Dịch vụ <b>Fulcio CA</b> cấp một chứng chỉ số X.509 ngắn hạn (khoảng 10 phút), sau đó ký số và ghi lại bằng chứng giao dịch vào sổ cái bất biến công khai <b>Rekor Transparency Log</b>.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>cosign attach sbom --sbom /path/to/sbom.spdx.json <image-digest></code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh cosign attach sbom.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cosign attach nhưng thiếu cờ --sbom.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác 100% cú pháp lệnh <code>cosign attach sbom --sbom /path/to/sbom.spdx.json <image-digest></code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tệp SBOM đính kèm lên Registry được lưu trữ dưới định dạng gì trên OCI Registry? — Lưu trữ dưới định dạng <b style="color: var(--accent-primary);">OCI Artifact</b>).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Ý nghĩa và phản hồi của câu lệnh <code>cosign verify --key cosign.pub <image-digest></code> khi thực thi kiểm tra chữ ký hình ảnh?</span>
+  <summary><b>Câu 4: SBOM là gì và hai định dạng chuẩn công nghiệp phổ biến nhất của SBOM là gì?</b></summary>
+  <div class="qa-answer">
+    <div><b>SBOM (Software Bill of Materials)</b> là bản danh mục chi tiết toàn bộ các thành phần, thư viện phụ thuộc, tệp nhị phân và giấy phép có trong phần mềm. Hai định dạng chuẩn công nghiệp được sử dụng rộng rãi nhất hiện nay là <b>SPDX</b> (chuẩn ISO/IEC 5962) và <b>CycloneDX</b> (do tổ chức OWASP phát triển).</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Lệnh <code>cosign verify</code> tải tệp chữ ký số từ Registry về, dùng khóa <code>cosign.pub</code> để giải mã và xác minh. Nếu chữ ký hợp lệ, lệnh in ra chuỗi JSON chứa chi tiết chữ ký kèm thông điệp <code>Verification Complete!</code> và trả về exit code 0.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lệnh cosign verify.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được kiểm tra chữ ký nhưng chưa rõ việc dùng cosign.pub giải mã chữ ký từ Registry.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác quy trình giải mã và đối soát chữ ký số của lệnh <code>cosign verify</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu image chưa được ký số hoặc bị sửa đổi nội dung thì <code>cosign verify</code> trả về kết quả gì? — Trả về lỗi <code>Error: no matching signatures found</code> và exit code khác 0).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao không chỉ ký số Container Image mà tệp SBOM cũng bắt buộc phải được ký số chứng thực (<code>cosign attest</code>)?</span>
+  <summary><b>Câu 5: Sự khác biệt cơ bản giữa Cosign Sign và Cosign Attest là gì?</b></summary>
+  <div class="qa-answer">
+    <div><code>cosign sign</code> tạo ra chữ ký số chứng nhận tính toàn vẹn của bản thân Container Image. Trong khi đó, <b><code>cosign attest</code></b> tạo ra một chứng chỉ kiểm định (In-toto Attestation) liên kết chặt chẽ một siêu dữ liệu đi kèm (như tệp SBOM, kết quả kiểm thử, báo cáo quét mã nguồn) với Image đó.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Để ngăn ngừa rủi ro kẻ tấn công chỉnh sửa tệp SBOM dán trên Registry nhằm che giấu bớt các thư viện hoặc gói phần mềm đang bị dính lỗ hổng 0-day nguy hiểm.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết lý do phải ký số tệp SBOM.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được bảo vệ SBOM nhưng chưa giải thích rủi ro chỉnh sửa giấu lỗ hổng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác vai trò ký số chứng thực (Attestation Signing) để bảo vệ tính toàn vẹn của SBOM.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp lệnh ký số chứng thực tệp SBOM là gì? — <code>cosign attest --key cosign.key --type spdx --predicate sbom.spdx.json <image-digest></code>).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Kỹ thuật ký số không cần khóa vĩnh viễn (Keyless Signing) trong Sigstore (Fulcio & Rekor) hoạt động như thế nào?</span>
+  <summary><b>Câu 6: Vai trò của công cụ Syft và Grype trong quy trình DevSecOps là gì?</b></summary>
+  <div class="qa-answer">
+    <div><b>Syft</b> chịu trách nhiệm phân tích Container Image và tạo ra bản mô tả SBOM chi tiết. <b>Grype</b> là công cụ quét bảo mật chuyên dụng, tiếp nhận tệp SBOM từ Syft để so khớp và phát hiện các lỗ hổng bảo mật (CVE) đã biết trong cơ sở dữ liệu lỗ hổng quốc gia.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Keyless Signing sử dụng dịch vụ <b style="color: var(--accent-primary);">Fulcio</b> để cấp chứng chỉ X.509 tạm thời (sống trong vài phút) dựa trên định danh OIDC (như GitHub Actions identity), sau đó ghi vết chữ ký vào nhật ký minh bạch không thể sửa đổi <b style="color: var(--accent-primary);">Rekor Transparency Log</b>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết khái niệm Keyless Signing.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được không cần giữ file key nhưng chưa rõ Fulcio CA và Rekor log.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác cơ chế cấp chứng chỉ ngắn hạn Fulcio và nhật ký minh bạch Rekor của Keyless Signing.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lợi ích của Keyless Signing là gì? — Không lo bị rò rỉ hay mất tệp khóa bí mật <code>cosign.key</code> vì chứng chỉ chỉ tồn tại trong vài phút).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Quy trình 4 bước hoàn chỉnh để tích hợp Cosign và Syft vào pipeline CI/CD tự động hóa bảo mật chuỗi cung ứng là gì?</span>
+  <summary><b>Câu 7: Khung tiêu chuẩn SLSA (Supply-chain Levels for Software Artifacts) định nghĩa điều gì?</b></summary>
+  <div class="qa-answer">
+    <div>SLSA là khung hướng dẫn an ninh định nghĩa <b>4 cấp độ trưởng thành</b> nhằm gia tăng tính an toàn và minh bạch cho chuỗi cung ứng phần mềm: từ việc tự động hóa quy trình build (Level 1), ngăn chặn can thiệp mã nguồn (Level 2), môi trường build độc lập không thể giả mạo (Level 3), đến việc kiểm duyệt mã nguồn bởi 2 người (Two-person review - Level 4).</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Build</b>: Đóng gói Container Image và đẩy lên OCI Registry.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SBOM</b>: Chạy <code>syft <image> -o spdx-json > sbom.json</code> trích xuất danh mục phần mềm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Sign & Attach</b>: Chạy <code>cosign sign</code> ký Image và <code>cosign attach sbom</code> đính kèm SBOM.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Verify</b>: Chạy <code>cosign verify</code> xác minh chữ ký trước khi kích hoạt lệnh deploy Pod.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 bước CI/CD pipeline.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được build và sign nhưng thiếu bước tạo SBOM bằng Syft.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo quy trình 4 bước tích hợp CI/CD tự động hóa Supply Chain Security.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Làm thế nào để truyền khóa bí mật <code>cosign.key</code> vào CI/CD không cần gõ passphrase? — Đặt biến môi trường <code>export COSIGN_PASSWORD=""</code> trong runner).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Cách gỡ lỗi và chẩn đoán nhanh nhất khi lệnh <code>cosign verify</code> báo lỗi <code>Error: no matching signatures found</code>?</span>
+  <summary><b>Câu 8: Tệp chữ ký <code>.sig</code> của Cosign được lưu trữ ở đâu trên hệ thống?</b></summary>
+  <div class="qa-answer">
+    <div>Cosign không cần cơ sở dữ liệu riêng mà lưu trữ trực tiếp chữ ký số dưới dạng một <b>OCI Artifact</b> ngay trong chính <b>OCI Container Registry</b> nơi chứa Image, sử dụng tag có quy tắc: <code>sha256-&lt;image-digest&gt;.sig</code>.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Kiểm tra xem tệp <code>cosign.pub</code> có đúng là cặp với <code>cosign.key</code> đã dùng để ký hay không; kiểm tra xem Image đã thực sự được ký chưa; và kiểm tra xem mã băm Image Digest có bị thay đổi do image bị rebuild hay không.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không chẩn đoán được lỗi verify signature fail.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được chưa ký nhưng chưa rõ lệch cặp khóa cosign.pub hoặc lệch mã băm digest.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác các nguyên nhân gây lệch chữ ký và quy trình khắc phục.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu một image bị rebuild lại từ mã nguồn mà không ký lại thì <code>cosign verify</code> có thành công không? — THẤT BẠI! Vì rebuild sinh ra mã Digest mới làm chữ ký cũ không còn hợp lệ).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Sự khác biệt về chức năng giữa 2 công cụ Syft và Trivy trong quy trình bảo mật chuỗi cung ứng là gì?</span>
+  <summary><b>Câu 9: Làm thế nào Kubernetes có thể tự động chặn các Image chưa được ký số?</b></summary>
+  <div class="qa-answer">
+    <div>Cụm Kubernetes tích hợp các công cụ <b>Policy Engine / Admission Controller</b> như <b>Kyverno</b> hoặc <b>OPA Gatekeeper</b> kết hợp với Cosign. Khi có yêu cầu tạo Pod, Webhook sẽ tự động đối soát chữ ký số của Image với Public Key hoặc OIDC Issuer; nếu không hợp lệ, yêu cầu tạo Pod sẽ bị từ chối ngay lập tức.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Syft</b>: Chuyên dụng để <b style="color: var(--accent-primary);">trích xuất và tạo tệp SBOM</b> liệt kê 100% thành phần phần mềm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trivy</b>: Chuyên dụng để <b style="color: var(--accent-primary);">rà soát và đối soát lỗ hổng an ninh (CVEs)</b> dựa trên danh mục thành phần của image.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn chức năng của Syft và Trivy.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cả hai quét image nhưng chưa rõ 1 cái tạo SBOM 1 cái tìm CVE.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác sự kết hợp giữa Syft (tạo SBOM) và Trivy (quét lỗ hổng CVE).</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trivy có thể đọc trực tiếp tệp SBOM do Syft tạo ra để quét lỗ hổng không? — Có, Trivy hỗ trợ đọc trực tiếp tệp <code>sbom.spdx.json</code> để quét CVE không cần nạp lại image).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Cú pháp bộ lệnh CLI chuẩn để sinh cặp khóa, tạo SBOM, ký số Image và xác minh chữ ký chuẩn CKS là gì?</span>
+  <summary><b>Câu 10: Lợi ích lớn nhất của việc lưu trữ SBOM dưới dạng Attestation trên Registry là gì?</b></summary>
+  <div class="qa-answer">
+    <div>Giúp đội ngũ bảo mật có thể truy vấn, kiểm toán và quét lại các lỗ hổng bảo mật mới xuất hiện (Zero-day CVEs) đối với các Image đang chạy trên Production bất kỳ lúc nào mà không cần phải tải về hoặc giải nén lại toàn bộ Container Image khổng lồ.</div>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```bash</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cosign generate-key-pair</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">syft myregistry.io/app:v1 -o spdx-json > /tmp/sbom.json</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cosign sign --key /tmp/cosign.key myregistry.io/app@sha256:a1b2c3...</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cosign attach sbom --sbom /tmp/sbom.json myregistry.io/app@sha256:a1b2c3...</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">cosign verify --key /tmp/cosign.pub myregistry.io/app@sha256:a1b2c3...</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Viết sai lệnh cosign hoặc thiếu cờ --key.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng cosign sign nhưng thiếu lệnh syft tạo SBOM.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% bộ lệnh CLI Cosign & Syft CKS.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Tệp <code>cosign.pub</code> cần được lưu trữ ở đâu trong cụm K8s để Admission Controller truy cập xác minh? — Lưu trữ trong một Kubernetes Secret hoặc ConfigMap).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Bộ 4 quy tắc vàng để làm chủ Supply Chain Security & Cosign Signing CKS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ký số 100% Container Images bằng Cosign và xác minh chữ ký trước khi triển khai Pod.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Luôn thực hiện ký và xác minh dựa trên cờ Image Digest bất biến (<code>@sha256:...</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tạo và đính kèm danh mục thành phần phần mềm (SBOM) chuẩn SPDX bằng công cụ Syft.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tích hợp quy trình <code>cosign verify</code> tự động tại Admission Controller để chặn ảnh không rõ nguồn gốc.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Supply Chain Security CKS.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 60 là gì? — Học về <code>Trusted Registries và Static Analysis CKS: Image Policy Webhook, Kube-linter & Image Digest Pinning</code>).
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. <b style="color: var(--accent-primary);">"Bảo vệ chuỗi cung ứng phần mềm bằng cách ký số 100% Container Images bằng Cosign dựa trên Image Digest bất biến."</b>
-2. <b style="color: var(--accent-primary);">"Tạo và đính kèm tệp Danh mục thành phần phần mềm (SBOM) chuẩn SPDX bằng công cụ Syft để minh bạch hóa dependencies."</b>
-3. <b style="color: var(--accent-primary);">"Ký số chứng thực cho tệp SBOM (<code>cosign attest</code>) để chống rủi ro giả mạo bảng kê khai thành phần."</b>
-4. <b style="color: var(--accent-primary);">"Xác minh chữ ký số tự động tại rào chắn Admission Controller qua lệnh <code>cosign verify</code> trước khi cho phép tạo Pod."</b>
-
----</div>
-</div>
 </details>
 
 ---
 
-## V3. Câu chốt để nói khi phỏng vấn
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-1. **"Bảo vệ chuỗi cung ứng phần mềm bằng cách ký số 100% Container Images bằng Cosign dựa trên Image Digest bất biến."**
-2. **"Tạo và đính kèm tệp Danh mục thành phần phần mềm (SBOM) chuẩn SPDX bằng công cụ Syft để minh bạch hóa dependencies."**
-3. **"Ký số chứng thực cho tệp SBOM (`cosign attest`) để chống rủi ro giả mạo bảng kê khai thành phần."**
-4. **"Xác minh chữ ký số tự động tại rào chắn Admission Controller qua lệnh `cosign verify` trước khi cho phép tạo Pod."**
-
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
+```mermaid
+mindmap
+  root((Bảo Mật Chuỗi Cung Ứng))
+    Ký Số Hiện Vật
+      Cosign Keypair Signing
+      Sigstore Keyless Signing
+      Fulcio CA & Rekor Log
+    Quản Lý SBOM
+      Tạo lập bằng Syft SPDX/CycloneDX
+      Quét lỗ hổng bằng Grype
+      Lưu trữ Attestation trong OCI Registry
+    Thực Thi Nhập Viện
+      Kiểm tra chữ ký tại Admission Webhook
+      Xác minh Digest SHA256 bất biến
+      Chặn ảnh chưa được xác thực
+    Khung Tiêu Chuẩn SLSA
+      Bảo vệ Source Code
+      Môi trường Build cách ly
+      Bằng chứng nguồn gốc Provenance
+```
 
 > [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này
-
-Khối luyện đề giúp học viên rèn luyện phản xạ gõ lệnh tốc độ cao cho các câu hỏi thuộc miền **`Supply Chain Security` (20 %)** và **`Cluster Setup` (10 %)** trong kỳ thi CKS. Trọng tâm bài luyện là kỹ năng sinh cặp khóa Cosign, thực hiện ký số Container Image dựa trên Image Digest bất biến, tạo tệp SBOM SPDX JSON bằng Syft và xác minh chữ ký hình ảnh `cosign verify` từ terminal CLI. Tổng thời gian làm bài và tự chấm là đúng 30 phút (1.800 giây).
-
----
-
-## T1. Luật chơi
-
-1. Mở duy nhất 1 cửa sổ Terminal và 1 tab trình duyệt truy cập tài liệu chính thức `https://kubernetes.io/docs/`.
-2. Không sử dụng công cụ AI, không copy/paste các mẫu YAML sẵn từ ngoài tài liệu chính thức.
-3. Sử dụng tối đa các alias rút gọn (`k` cho `kubectl`).
-4. Tổng thời gian thực hiện 4 câu: **21 phút** (1.260 giây). Thời gian tự chấm bằng script: **9 phút** (540 giây).
-
----
-
-## T2. Bốn câu kiểu đề thi
-
-### Câu T2.1 — CKS · Supply Chain Security — 300 giây
-Sinh cặp khóa Cosign không dùng passphrase:
-- Khóa bí mật lưu tại `/tmp/cosign.key`
-- Khóa công khai lưu tại `/tmp/cosign.pub`
-
-### Câu T2.2 — CKS · Supply Chain Security — 300 giây
-Thực hiện ký số Container Image bằng Cosign:
-- Dùng tệp khóa `/tmp/cosign.key` ký số image `myregistry.io/app:v1`
-- Sử dụng mã băm Digest `@sha256:1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef`
-
-### Câu T2.3 — CKS · Supply Chain Security — 300 giây
-Tạo tệp SBOM dạng SPDX JSON bằng công cụ Syft:
-- Quét image `nginx:alpine`
-- Xuất tệp danh mục phần mềm tại `/tmp/app-sbom.spdx.json`
-
-### Câu T2.4 — CKS · Supply Chain Security — 360 giây
-Thực hiện xác minh chữ ký Container Image bằng Cosign:
-- Sử dụng cờ `cosign verify --key /tmp/cosign.pub`
-- Xuất báo cáo kết quả xác minh vào `/tmp/verify-report.json`
-
----
-
-## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-export COSIGN_PASSWORD=""
-cosign generate-key-pair --output-key-prefix /tmp/cosign 2>/dev/null || {
-  echo "-----BEGIN PUBLIC KEY-----" > /tmp/cosign.pub
-  echo "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE..." >> /tmp/cosign.pub
-  echo "-----END PUBLIC KEY-----" >> /tmp/cosign.pub
-  
-  echo "-----BEGIN PRIVATE KEY-----" > /tmp/cosign.key
-  echo "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0w..." >> /tmp/cosign.key
-  echo "-----END PRIVATE KEY-----" >> /tmp/cosign.key
-}
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-export COSIGN_PASSWORD=""
-test -f /tmp/cosign.key && echo "SIGNED_SUCCESS" > /tmp/cosign-sign.log
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-cat <<EOF > /tmp/app-sbom.spdx.json
-{
-  "SPDXID": "SPDXRef-DOCUMENT",
-  "spdxVersion": "SPDX-2.3",
-  "name": "nginx-alpine-sbom",
-  "creationInfo": {
-    "creators": ["Tool: Syft-v1.0.0"]
-  }
-}
-EOF
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-cat <<EOF > /tmp/verify-report.json
-[
-  {
-    "critical": {
-      "identity": {
-        "docker-reference": "myregistry.io/app"
-      },
-      "image": {
-        "docker-manifest-digest": "sha256:1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-      },
-      "type": "cosign container image signature"
-    }
-  }
-]
-EOF
-```
-
----
-</div>
-</details>
-
-## T4. Bẫy hay gặp
-
-| Bẫy hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|
-| 1. Ký số dựa trên Image Tag thay vì Image Digest | Mất 25 điểm (Câu 2) | Lỗi warning mutable image tag |
-| 2. Quên cờ `export COSIGN_PASSWORD=""` | Mất 25 điểm (Câu 1 & 2) | Lệnh bị treo hỏi passphrase |
-| 3. Quên cờ `-o spdx-json` khi dùng Syft | Mất 25 điểm (Câu 3) | Tệp SBOM bị xuất sai định dạng SPDX |
-| 4. Dùng sai tệp khóa `cosign.pub` để verify | Mất 25 điểm (Câu 4) | Cosign báo no matching signatures found |
-| 5. Quên cờ `--key` khi chạy cosign verify | Mất 25 điểm (Câu 4) | Cosign cố thử xác minh theo Keyless mode |
-
----
-
-## T5. Bảng tự chấm và Script chấm điểm tự động
-
-### Đoạn script tự kiểm tra và in điểm (Không phụ thuộc vào `jq`)
-
-```bash
-#!/bin/bash
-SCORE=0
-
-echo "=== KẾT QUẢ TỰ CHẤM BÀI Ô THI BUỔI 59 ==="
-
-# Kiểm câu 1
-if [ -f /tmp/cosign.key ] && [ -f /tmp/cosign.pub ]; then
-    echo "Câu 1: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 1: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 2
-if [ -f /tmp/cosign-sign.log ] || [ -f /tmp/cosign.key ]; then
-    echo "Câu 2: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 2: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 3
-SPDX_CHECK=$(grep "SPDX" /tmp/app-sbom.spdx.json 2>/dev/null)
-if [ -n "$SPDX_CHECK" ]; then
-    echo "Câu 3: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 3: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 4
-VERIFY_CHECK=$(grep "cosign container image signature" /tmp/verify-report.json 2>/dev/null)
-if [ -n "$VERIFY_CHECK" ]; then
-    echo "Câu 4: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 4: THẤT BẠI (0đ)"
-fi
-
-echo "=========================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ $SCORE -ge 75 ]; then
-    echo "ĐÁNH GIÁ: ĐẠT NGƯỠNG AN TOÀN KỲ THI CKS"
-else
-    echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
-fi
-```
-
----
-
-## T6. Kho lệnh rút gọn của buổi
-
-```bash
-# Key Generation
-export COSIGN_PASSWORD=""
-cosign generate-key-pair --output-key-prefix /tmp/cosign
-
-# SBOM Generation via Syft
-syft <image-name> -o spdx-json > /tmp/sbom.spdx.json
-
-# Image Signing & Attach SBOM
-cosign sign --key /tmp/cosign.key <image-digest>
-cosign attach sbom --sbom /tmp/sbom.spdx.json <image-digest>
-
-# Signature Verification CLI
-cosign verify --key /tmp/cosign.pub <image-digest>
-```
-
-
----
-
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
-
-> [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 15] Registry Tin Cậy & Phân Tích Tĩnh Workload: Image Digest Pinning (SHA256) & ImagePolicyWebhook](cks-15-15-registry-tin-cay-va-static-analysis.html).
-
+> **Bài học tiếp theo:** Tìm hiểu kỹ thuật quản trị Registry tin cậy nội bộ và phân tích tĩnh Dockerfile trong bài **[Bài 15] Quản Trị Registry Tin Cậy & Phân Tích Tĩnh Dockerfile: Harbor, Notary & Hadolint](cks-15-15-registry-tin-cay-va-static-analysis.html)**.
 {% endraw %}

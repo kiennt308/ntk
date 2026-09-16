@@ -80,6 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Handle QuotaExceeded or Incognito mode restrictions gracefully
       }
       themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      if (typeof window.reRenderMermaidDiagrams === 'function') {
+        window.reRenderMermaidDiagrams(isDark);
+      }
     });
   }
 
@@ -314,9 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
         if (code) {
           let rawText = code.innerText;
-          // Strip bash prompt ($ or #) when copying commands (BUG-202)
-          if (['BASH', 'SHELL', 'ZSH'].includes(displayLang)) {
-            rawText = rawText.split('\n').map(line => line.replace(/^[$#]\s+/, '')).join('\n');
+          // Strip shell ($ or #) and PowerShell prompt when copying commands
+          if (['BASH', 'SHELL', 'ZSH', 'POWERSHELL', 'PS1', 'CLI'].includes(displayLang)) {
+            rawText = rawText.split('\n').map(line => line.replace(/^([$#]|PS\s*[^>]*>)\s+/, '')).join('\n');
           }
           copyTextToClipboard(rawText).then(() => {
             copyBtn.querySelector('span').textContent = 'Copied!';
@@ -965,21 +968,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  async function initMermaidDiagrams() {
-    if (typeof mermaid === 'undefined') return;
-
-    attachMermaidLightbox();
-
-    const mermaidCodes = document.querySelectorAll(
-      'code.language-mermaid, pre.language-mermaid, div.language-mermaid pre code, .highlighter-rouge.language-mermaid pre code, .language-mermaid pre'
-    );
-
-    if (mermaidCodes.length === 0) {
-      return;
-    }
-
-    const isDark = document.documentElement.classList.contains('dark-theme');
-    mermaid.initialize({
+  function getMermaidConfig(isDark) {
+    return {
       startOnLoad: false,
       theme: isDark ? 'dark' : 'default',
       themeVariables: {
@@ -995,7 +985,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clusterBorder: isDark ? '#334155' : '#cbd5e1',
         mainBkg: 'transparent',
         nodeBkg: 'transparent',
-        // Sequence Diagram Theme Variables
         actorBkg: 'transparent',
         actorBorder: isDark ? '#38bdf8' : '#0284c7',
         actorTextColor: isDark ? '#f8fafc' : '#0f172a',
@@ -1012,7 +1001,6 @@ document.addEventListener('DOMContentLoaded', () => {
         activationBorderColor: '#38bdf8',
         activationBkgColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(2, 132, 199, 0.1)',
         sequenceNumberColor: '#ffffff',
-        // Mindmap Theme Variables
         mindmapNodeBkg: isDark ? '#1e293b' : '#f1f5f9',
         mindmapNodeBorder: isDark ? '#38bdf8' : '#0284c7',
         mindmapEdgeColor: isDark ? '#94a3b8' : '#64748b',
@@ -1043,19 +1031,80 @@ document.addEventListener('DOMContentLoaded', () => {
         padding: 16
       },
       securityLevel: 'loose'
-    });
+    };
+  }
+
+  async function renderSingleMermaidDiagram(mermaidInner, rawContent, renderIndex) {
+    const renderId = 'mermaid-svg-' + renderIndex + '-' + Math.floor(Math.random() * 100000);
+    try {
+      const { svg } = await mermaid.render(renderId, rawContent.trim());
+      mermaidInner.innerHTML = svg;
+      const svgEl = mermaidInner.querySelector('svg');
+      if (svgEl) {
+        svgEl.querySelectorAll('polygon').forEach(poly => {
+          poly.setAttribute('fill', 'transparent');
+          poly.style.setProperty('fill', 'transparent', 'important');
+        });
+      }
+    } catch (err) {
+      console.warn('Mermaid render error on diagram ' + renderIndex + ':', err);
+      mermaidInner.innerHTML = `
+        <div class="mermaid-error-card">
+          <div class="mermaid-error-title">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span>Không thể dựng sơ đồ Mermaid</span>
+          </div>
+          <pre><code>${rawContent.trim()}</code></pre>
+        </div>
+      `;
+    }
+  }
+
+  window.reRenderMermaidDiagrams = async function(isDark) {
+    if (typeof mermaid === 'undefined') return;
+    try {
+      mermaid.initialize(getMermaidConfig(isDark));
+      const wrappers = document.querySelectorAll('.mermaid-wrapper[data-mermaid-src]');
+      for (let i = 0; i < wrappers.length; i++) {
+        const wrapper = wrappers[i];
+        const rawContent = wrapper.getAttribute('data-mermaid-src');
+        const inner = wrapper.querySelector('.mermaid');
+        if (rawContent && inner) {
+          await renderSingleMermaidDiagram(inner, rawContent, i);
+        }
+      }
+    } catch (e) {
+      console.warn('Mermaid re-render on theme change failed:', e);
+    }
+  };
+
+  async function initMermaidDiagrams() {
+    if (typeof mermaid === 'undefined') return;
+
+    attachMermaidLightbox();
+
+    const mermaidCodes = document.querySelectorAll(
+      'code.language-mermaid, pre.language-mermaid, div.language-mermaid pre code, .highlighter-rouge.language-mermaid pre code, .language-mermaid pre'
+    );
+
+    if (mermaidCodes.length === 0) {
+      return;
+    }
+
+    const isDark = document.documentElement.classList.contains('dark-theme');
+    mermaid.initialize(getMermaidConfig(isDark));
 
     for (let i = 0; i < mermaidCodes.length; i++) {
       const codeEl = mermaidCodes[i];
-      const rawContent = codeEl.textContent || codeEl.innerText;
+      const rawContent = (codeEl.textContent || codeEl.innerText || '').trim();
       const container = codeEl.closest('.highlighter-rouge') || codeEl.closest('pre') || codeEl;
 
       const mermaidWrapper = document.createElement('div');
       mermaidWrapper.className = 'mermaid-wrapper';
+      mermaidWrapper.setAttribute('data-mermaid-src', rawContent);
 
       const mermaidInner = document.createElement('div');
       mermaidInner.className = 'mermaid';
-      const renderId = 'mermaid-svg-' + i + '-' + Math.floor(Math.random() * 10000);
 
       const zoomHint = document.createElement('button');
       zoomHint.className = 'mermaid-zoom-btn';
@@ -1071,22 +1120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.parentNode.replaceChild(mermaidWrapper, container);
       }
 
-      try {
-        const { svg } = await mermaid.render(renderId, rawContent.trim());
-        mermaidInner.innerHTML = svg;
-        
-        // Zero Solid Fill: Sanitize polygon and decision node shapes
-        const svgEl = mermaidInner.querySelector('svg');
-        if (svgEl) {
-          svgEl.querySelectorAll('polygon').forEach(poly => {
-            poly.setAttribute('fill', 'transparent');
-            poly.style.setProperty('fill', 'transparent', 'important');
-          });
-        }
-      } catch (err) {
-        console.warn('Mermaid render error on diagram ' + i + ':', err);
-        mermaidInner.textContent = rawContent.trim();
-      }
+      await renderSingleMermaidDiagram(mermaidInner, rawContent, i);
 
       const clickHandler = (e) => {
         e.preventDefault();
@@ -1185,11 +1219,109 @@ document.addEventListener('DOMContentLoaded', () => {
         el.innerHTML = html;
       }
     });
+
+    // 4. Heading Anchor Permalinks
+    articleBody.querySelectorAll('h2, h3').forEach((header) => {
+      if (!header.id) return;
+      if (!header.querySelector('.heading-anchor')) {
+        const anchor = document.createElement('a');
+        anchor.className = 'heading-anchor';
+        anchor.href = '#' + header.id;
+        anchor.setAttribute('aria-label', `Liên kết neo tới ${header.textContent.trim()}`);
+        anchor.title = 'Sao chép liên kết mục này';
+        anchor.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>';
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          const cleanUrl = window.location.origin + window.location.pathname + '#' + header.id;
+          history.pushState(null, null, '#' + header.id);
+          header.scrollIntoView({ behavior: 'smooth' });
+          copyTextToClipboard(cleanUrl).then(() => {
+            showToast('Đã sao chép liên kết neo tới mục này!');
+          });
+        });
+        header.appendChild(anchor);
+      }
+    });
+  }
+
+  /* ==========================================================================
+     Interactive Multiple-Choice Quiz Engine (.quiz-card)
+     ========================================================================== */
+  function initInteractiveQuizzes() {
+    const quizCards = document.querySelectorAll('.quiz-card');
+    if (quizCards.length === 0) return;
+
+    quizCards.forEach((card, cardIndex) => {
+      const correctOpt = (card.getAttribute('data-correct') || '').toUpperCase().trim();
+      const options = card.querySelectorAll('.quiz-option');
+      const statusPill = card.querySelector('.quiz-status-pill');
+      const explanation = card.querySelector('.quiz-explanation');
+      const resetBtn = card.querySelector('.quiz-btn-reset');
+      let isAnswered = false;
+
+      options.forEach(optBtn => {
+        optBtn.addEventListener('click', () => {
+          if (isAnswered) return;
+          isAnswered = true;
+          const chosenOpt = (optBtn.getAttribute('data-opt') || '').toUpperCase().trim();
+
+          options.forEach(btn => {
+            btn.classList.add('disabled');
+          });
+
+          if (chosenOpt === correctOpt) {
+            optBtn.classList.add('correct');
+            if (statusPill) {
+              statusPill.textContent = 'Chính xác! (+10đ)';
+              statusPill.className = 'quiz-status-pill correct';
+            }
+            showToast('Chính xác! Bạn đã chọn đúng đáp án kỹ thuật.');
+          } else {
+            optBtn.classList.add('incorrect');
+            // Reveal the correct option
+            options.forEach(btn => {
+              if ((btn.getAttribute('data-opt') || '').toUpperCase().trim() === correctOpt) {
+                btn.classList.add('is-correct-hint');
+              }
+            });
+            if (statusPill) {
+              statusPill.textContent = 'Chưa chính xác';
+              statusPill.className = 'quiz-status-pill incorrect';
+            }
+          }
+
+          if (explanation) {
+            explanation.style.display = 'block';
+          }
+          if (resetBtn) {
+            resetBtn.style.display = 'inline-flex';
+          }
+        });
+      });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          isAnswered = false;
+          options.forEach(btn => {
+            btn.classList.remove('disabled', 'correct', 'incorrect', 'is-correct-hint');
+          });
+          if (statusPill) {
+            statusPill.textContent = 'Chưa làm';
+            statusPill.className = 'quiz-status-pill';
+          }
+          if (explanation) {
+            explanation.style.display = 'none';
+          }
+          resetBtn.style.display = 'none';
+        });
+      }
+    });
   }
 
   // Initial enhancements & render
   initArticleEnhancements();
   initMermaidDiagrams();
+  initInteractiveQuizzes();
 
   // Re-initialize MathJax if needed on dynamic changes
   if (window.MathJax && window.MathJax.typesetPromise) {

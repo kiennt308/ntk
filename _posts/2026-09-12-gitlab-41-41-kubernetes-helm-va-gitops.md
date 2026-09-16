@@ -405,7 +405,6 @@ git push origin main
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <summary class="qa-summary">
     <span class="qa-num-badge">Q05</span>
     <span>Làm sao để cấu hình phân quyền RBAC chi tiết cho từng dự án khi dùng chung một GitLab Agent?</span>
   </summary>

@@ -66,7 +66,21 @@
         processEnvironments: true
       },
       options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        skipHtmlTags: ['noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      startup: {
+        pageReady: () => {
+          // Preprocess any Kramdown <script type="math/tex"> tags into MathJax recognized elements
+          document.querySelectorAll('script[type^="math/tex"]').forEach(el => {
+            const isDisplay = el.getAttribute('type').includes('mode=display');
+            const math = el.textContent || el.innerText;
+            const span = document.createElement(isDisplay ? 'div' : 'span');
+            span.className = isDisplay ? 'math-display-wrapper' : 'math-inline-wrapper';
+            span.textContent = isDisplay ? `\\[${math}\\]` : `\\(${math}\\)`;
+            el.parentNode.replaceChild(span, el);
+          });
+          return MathJax.startup.defaultPageReady();
+        }
       }
     };
   </script>

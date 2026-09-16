@@ -1783,8 +1783,8 @@ blockquote cite::before {
   background: var(--accent-rose-light);
 }
 
-/* Code Highlighting Blocks */
-div.highlighter-rouge, figure.highlight, div[class*="language-"], pre.highlight {
+/* Code Highlighting Blocks (Outer Container) */
+div.highlighter-rouge, figure.highlight, div[class*="language-"] {
   position: relative;
   background-color: var(--bg-code);
   border: 1px solid var(--border-color);
@@ -1792,6 +1792,23 @@ div.highlighter-rouge, figure.highlight, div[class*="language-"], pre.highlight 
   margin: 2rem 0;
   overflow: hidden;
   box-shadow: var(--shadow-md);
+}
+
+/* Standalone pre block outside syntax wrappers */
+.article-body > pre:not(.highlight),
+pre:not(div.highlighter-rouge pre):not(div[class*="language-"] pre):not(figure.highlight pre) {
+  position: relative;
+  background-color: var(--bg-code);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin: 2rem 0;
+  padding: 1.25rem;
+  overflow-x: auto;
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-mono);
+  font-size: 0.925rem;
+  line-height: 1.6;
+  color: #f8fafc;
 }
 .code-collapsed {
   max-height: 380px !important;
@@ -1871,11 +1888,23 @@ div.highlighter-rouge, figure.highlight, div[class*="language-"], pre.highlight 
   color: #ffffff;
 }
 
-/* Default wrapped code block (Word Wrap is ON by default) */
+/* Default wrapped code block (Word Wrap is ON by default) - Triệt tiêu viền & khoảng đệm thừa bên trong */
 div.highlighter-rouge pre,
 figure.highlight pre,
+div[class*="language-"] pre,
+div.highlighter-rouge pre.highlight,
+figure.highlight pre.highlight,
+div[class*="language-"] pre.highlight,
 div.highlighter-rouge.code-wrapped pre,
-figure.highlight.code-wrapped pre {
+figure.highlight.code-wrapped pre,
+div[class*="language-"].code-wrapped pre {
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  outline: none !important;
   padding: 1.25rem;
   font-family: var(--font-mono);
   font-size: 0.925rem;
@@ -1887,9 +1916,37 @@ figure.highlight.code-wrapped pre {
   overflow-x: hidden;
 }
 
+/* Ensure code elements inside pre have no borders, margins or background */
+div.highlighter-rouge pre code,
+figure.highlight pre code,
+div[class*="language-"] pre code,
+pre.highlight code,
+pre code {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Reset any intermediate highlight container */
+div.highlighter-rouge div.highlight,
+figure.highlight div.highlight,
+div[class*="language-"] div.highlight {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 /* When word wrap is toggled OFF (Scroll mode) */
 div.highlighter-rouge:not(.code-wrapped) pre,
-figure.highlight:not(.code-wrapped) pre {
+figure.highlight:not(.code-wrapped) pre,
+div[class*="language-"]:not(.code-wrapped) pre {
   white-space: pre !important;
   word-break: normal !important;
   overflow-wrap: normal !important;
@@ -2471,10 +2528,16 @@ mark.search-highlight {
   .article-layout {
     grid-template-columns: 1fr !important;
   }
-  div.highlighter-rouge, pre {
+  div.highlighter-rouge, .article-body > pre {
     background: #f8fafc !important;
     color: #0f172a !important;
     border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+  }
+  div.highlighter-rouge pre {
+    border: none !important;
+    background: transparent !important;
+    padding: 1rem !important;
     box-shadow: none !important;
   }
   .article-body a[href^="http"]:after {

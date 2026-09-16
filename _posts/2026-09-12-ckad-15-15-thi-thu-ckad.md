@@ -1,1608 +1,596 @@
 ---
 layout: post
-title: "[Bài 15] Đề Thi Thử CKAD Toàn Diện 120 Phút & Phân Tích Lời Giải Chuẩn Linux Foundation"
+title: "[Bài 15] Đề Thi Thử Toàn Diện CKAD: 16 Tình Huống Thực Chiến 120 Phút & Lời Giải Chuẩn CNCF"
 date: 2026-09-12 13:20:00 +0700
 categories: [CKAD]
 tags:
   - CKAD
   - Kubernetes
-  - AppDeveloper
-  - Microservices
-  - Containers
-  - Part-15
+  - MockExam
+  - Certification
+  - CNCF
+  - LinuxFoundation
+  - HandsOn
 series: "CKAD Exam & App Developer Mastery"
 series_order: 15
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKAD P.15] Hướng dẫn chuyên sâu Đề Thi Thử CKAD Toàn Diện 120 Phút & Phân Tích Lời Giải Chuẩn Linux Foundation: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+summary: "Đề thi thử toàn diện chứng chỉ CKAD chuẩn CNCF 120 phút: Bộ 16 bài toán thực chiến bao phủ 5 miền kiến thức, chiến thuật quản lý thời gian, bẫy cấu hình thường gặp và phân tích lời giải chi tiết từng bước."
+description: "Luyện thi chứng chỉ CKAD với đề thi mô phỏng 120 phút chuẩn định dạng Linux Foundation: 16 câu hỏi thực hành bao trùm Application Design, Deployment, Observability, Multi-container và Security."
+keywords:
+  - ckad mock exam
+  - de thi thu ckad
+  - ckad practice exam
+  - kubernetes certified application developer
+  - ckad tips tricks
+  - cncf certification
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Đề Thi Thử CKAD Toàn Diện 120 Phút & Phân Tích Lời Giải Chuẩn Linux Foundation."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Nắm trọn cấu trúc 5 miền kiến thức CKAD và phân bổ thời gian hợp lý (trung bình 7.5 phút/câu trong 120 phút)."
+  - "Làm chủ bộ phím tắt và alias tốc độ cao: export do='--dry-run=client -o yaml' và export now='--grace-period=0 --force'."
+  - "Thực hành giải trọn vẹn 16 câu hỏi mô phỏng chuẩn định dạng đề thi thực tế của Linux Foundation."
+  - "Nhận diện và phòng tránh 3 cạm bẫy mất điểm chí mạng: Sai Namespace, sai TargetPort và không sao lưu YAML trước khi sửa."
 ---
 {% raw %}
-# [BÀI 15] ĐỀ THI THỬ CKAD TOÀN DIỆN 120 PHÚT & PHÂN TÍCH LỜI GIẢI CHUẨN LINUX FOUNDATION
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKAD)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn |
-|---|---|---|
-| 1 | Sự khác nhau giữa ClusterIP và NodePort Service? | **`ClusterIP`** nội bộ vs **`NodePort`** mở cổng 30000-32767 |
-| 2 | Khai báo cổng Service vs cổng Pod container? | **`port`** (cổng Service) vs **`targetPort`** (cổng Pod) |
-| 3 | Kiểu đường dẫn so khớp mọi URL tiền tố trong Ingress? | **`pathType: Prefix`** |
-| 4 | Cấu hình giải mã mã hóa HTTPS tại Ingress? | **`spec.tls`** chứa **`secretName`** kiểu `kubernetes.io/tls` |
-| 5 | Lệnh CLI chẩn đoán Service bị rỗng IP Pod? | **`kubectl get endpoints <svc>`** (hoặc `kubectl get ep`) |
-
-
-
-> **"Kỳ thi mô phỏng thi thử CKAD toàn diện 2 giờ (CKAD Full Mock Exam & Detailed Review) là cột mốc tốt nghiệp Giai đoạn 2 của khóa học, nhằm đánh giá chuẩn xác 100% năng lực thực chiến bấm giờ của học viên đối với cả 5 miền kiến thức chứng chỉ CNCF CKAD; đòi hỏi học viên phải phối hợp nhịp nhàng các kỹ năng tạo Pod multi-container, cấu hình PersistentVolume, quản lý Deployment & Canary, thiết lập SecurityContext, ResourceQuota, Ingress TLS và chẩn đoán sự cố qua logs/events; đồng thời áp dụng kỷ luật quản lý thời gian 120 phút nghiêm ngặt, sử dụng thành thạo cờ `--dry-run=client -o yaml` và alias rút gọn để đạt ngưỡng an toàn tuyệt đối (> 75%) sẵn sàng đăng ký thi chứng chỉ chính thức."**
-
-**Kết quả từ các buổi trước được sử dụng lại:**
-
-| Kết quả / Công cụ | Buổi + số hiệu `QT` | Dùng ở đâu trong buổi này |
-|---|---|---|
-| Kiến thức 5 miền CKAD (Buổi 31 đến Buổi 44) | Buổi 31–44 | Phủ kín toàn bộ 16-18 câu hỏi bài thi thử CKAD |
-| Bộ lệnh CLI gõ nhanh và alias | Buổi 10 `QT 4.1` | Sử dụng alias `k` và `--dry-run=client -o yaml` bấm giờ |
-| Script tự chấm điểm tự động | Buổi 35 `QT 4.1` | Chạy script tự chấm điểm tổng kết bài thi thử |
-
----
-
-
-
-| # | Kỹ năng thực hiện được | Hiện vật chứng minh |
-|---|---|---|
-| 1 | Thực thi bài thi thử CKAD 120 phút 100% áp lực và thời gian thật | Bảng điểm bài thi thử đạt > 75 điểm |
-| 2 | Phân bổ thời gian chuẩn xác giữa các câu hỏi ngắn và câu hỏi phức tạp | Nhật ký phân bổ thời gian từng câu hỏi |
-| 3 | Tăng tốc độ biên soạn tệp YAML lên 40% bằng bộ cờ CLI imperative | Bộ cờ `--dry-run=client -o yaml` gõ thành thục |
-| 4 | Chẩn đoán và sửa lỗi thần tốc các sự cố Pod, Service, Ingress | Nhật ký khắc phục thành công 100% ca hỏng trong đề thi |
-| 5 | Tốt nghiệp chính thức Giai đoạn 2 CKAD sẵn sàng thi lấy chứng chỉ quốc tế | Chứng nhận hoàn thành Giai đoạn 2 CKAD |
-
----
-
-
-
-| Kiến thức tiên quyết | Nguồn tự học nếu thiếu |
-|---|---|
-| Kiến thức 5 miền chứng chỉ CKAD (Buổi 31 đến 44) | Buổi 31 đến Buổi 44 |
-| Thành thục các cờ lệnh CLI kubectl và alias | Buổi 10 (`QT 4.1`) |
-| Kỹ năng tự kiểm tra và đọc logs chẩn đoán lỗi | Buổi 38 (`QT 4.1`) |
-
----
-
-
-
-### 3.1. Thuật ngữ Việt–Anh
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Kỳ thi thử tốt nghiệp CKAD | CKAD Full Mock Exam | Bài thi mô phỏng 100% định dạng và áp lực thời gian thật |
-| 2 | Ma trận trọng số đề thi | Exam Weight Matrix | Tỷ lệ 5 miền kiến thức trong cấu trúc đề thi chứng chỉ CNCF |
-| 3 | Chiến thuật phân bổ thời gian | Time Allocation Strategy | Quy tắc làm câu dễ trước, câu khó gắn flag làm sau |
-| 4 | Bộ lệnh khởi tạo nhanh | Imperative Commands (`--dry-run`) | Kỹ thuật dùng `kubectl create/run --dry-run=client -o yaml` |
-| 5 | Tự động hóa chấm điểm | Automated Grading Script | Script Bash kiểm tra kết quả từng câu và tính tổng điểm |
-| 6 | Đánh dấu câu hỏi cần xem lại | Question Flagging | Tính năng đánh dấu quay lại các câu khó chưa làm xong |
-| 7 | Ngưỡng điểm an toàn | Safe Score Threshold | Mức điểm an toàn (> 75% điểm) đảm bảo đỗ chứng chỉ thật |
-| 8 | Tiêu chuẩn giao diện thi | PSI Secure Browser | Trình duyệt chuyên dụng dùng cho kỳ thi chứng chỉ Linux Foundation |
-| 9 | Môi trường cụm thực hành | Practice Cluster Context | Việc chuyển đổi context (`kubectl config use-context`) giữa các câu |
-| 10 | Bảng ghi nhớ lệnh tắt | CLI Shortcodes / Aliases | Các alias rút gọn như `k`, `do`, `now` giúp tăng tốc độ gõ |
-| 11 | Gia cố bảo mật bối cảnh Pod | Pod Security Hardening | Các câu hỏi thuộc miền Security (runAsNonRoot, ReadOnlyFS) |
-| 12 | Định tuyến cổng vào Ingress | Ingress Traffic Routing | Các câu hỏi thuộc miền Services & Networking |
-| 13 | Quản lý lưu trữ bền vững | Persistent Storage Governance | Các câu hỏi thuộc miền Storage & Application Design |
-| 14 | Chẩn đoán sự cố ứng dụng | Application Troubleshooting | Các câu hỏi thuộc miền Observability & Deployment |
-
-
-
-Mô hình Cuộc thi Chạy Marathon 42km và Trạm Kiểm tra Kỹ thuật: Bài thi thử CKAD 2 giờ giống như một cuộc thi Chạy Marathon 42km liên tục. Người chạy không được dừng lại giữa chừng, phải phân bổ sức lực và thời gian hợp lý (dành 5-7 phút cho từng trạm kiểm tra). Bộ alias gõ nhanh (`k`, `--dry-run=client -o yaml`) giống như đôi Giày chạy chuyên dụng giúp tiết kiệm 40% thể lực gõ phím. Script tự chấm điểm giống như Đồ hồ điện tử đo thời gian cán đích chính xác 100%.
-
----
-
-### 1.1. Tổng quan cấu trúc và ma trận trọng số 5 miền thi CKAD (12 phút)
-
-**Nguyên lý cốt lõi:** Bài thi chứng chỉ CKAD chính thức gồm 16–18 câu hỏi thực hành 100% trên cụm thật, thời gian 120 phút, bao phủ 5 miền kiến thức: Application Design (20%), Deployment (20%), Environment & Security (25%), Services & Networking (20%), Observability (15%).
-
-**Giải thích cơ chế ngầm:** Giúp học viên hình dung toàn cảnh ma trận đề thi, biết cách tập trung sức lực vào các miền có trọng số cao nhất (như Environment, Configuration & Security chiếm 25%).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Học viên học lệch chỉ tập trung làm Pod/Deployment mà bỏ qua các miền Security hay Networking làm mất điểm đáng tiếc.
-
-**Minh hoạ.**
-
-```mermaid
-pie title Ma trận trọng số 5 miền chứng chỉ CKAD
-    "App Environment, Config & Security" : 25
-    "Application Design & Build" : 20
-    "Application Deployment" : 20
-    "Services and Networking" : 20
-    "Observability" : 15
-```
-
-**Nguyên lý cốt lõi:** Ngưỡng điểm đỗ chứng chỉ CKAD của Linux Foundation là 66%; tuy nhiên trong các bài thi thử, học viên bắt buộc phải đạt từ 75% trở lên mới được coi là an toàn.
-
-**Giải thích cơ chế ngầm:** Kỳ thi thực tế có yếu tố tâm lý và sự cố mạng thi trực tuyến. Đạt trên 75% trong bài thi thử tạo ra khoảng trống an toàn dự phòng rủi ro.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chỉ đạt 67% trong bài thi thử đã vội vàng đăng ký thi thật, dẫn đến bị trượt khi dính sự cố tâm lý trong phòng thi.
-
-**Minh hoạ.**
-
-```bash
-# Bảng tiêu chuẩn điểm số:
-# < 66%: Chưa đạt (Cần ôn luyện lại)
-# 66% - 74%: Đạt sát nút (Rủi ro khi thi thật)
-# >= 75%: ĐẠT NGƯỠNG AN TOÀN TUYỆT ĐỐI!
-```
-
----
-
-### 1.2. Chiến thuật phân bổ 120 phút và mẹo gõ CLI tốc độ cao (12 phút)
-
-**Nguyên lý cốt lõi:** Chiến thuật phân bổ 120 phút thi bấm giờ: Dành 5–7 phút cho câu hỏi ngắn (Pod, ConfigMap, Service); dành 8–10 phút cho câu hỏi phức tạp (Canary Deployment, SecurityContext, Ingress TLS); cấm kẹt quá 10 phút ở 1 câu (phải bấm Flag quay lại sau).
-
-**Giải thích cơ chế ngầm:** Bài thi CKAD không có điểm trừ cho câu bỏ qua. Làm tất cả các câu dễ trước giúp tích lũy 60% tổng điểm chỉ trong 45 phút đầu tiên.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Kẹt 25 phút ở câu 3 làm không đủ thời gian làm 5 câu dễ ở cuối đề.
-
-**Minh hoạ.**
-
-```bash
-# Chiến thuật 3 lượt làm bài 120 phút:
-# Lượt 1 (0-50 phút): Làm 10-12 câu dễ/trung bình (Thu 60-70% điểm)
-# Lượt 2 (50-100 phút): Xử lý 4-5 câu khó đã Flagged (Thu 20-25% điểm)
-# Lượt 3 (100-120 phút): Kiểm tra lại Namespace và kubectl get xác minh
-```
-
-**Nguyên lý cốt lõi:** Luôn khởi tạo ngay 3 alias gõ tắt ở đầu buổi thi: `alias k=kubectl`, `export do="--dry-run=client -o yaml"`, `export now="--force --grace-period=0"` để tiết kiệm 40% thời gian gõ lệnh.
-
-**Giải thích cơ chế ngầm:** Giảm số lượng ký tự phải gõ từ 50 ký tự xuống còn 5 ký tự cho mỗi lệnh tạo tệp YAML khung, giúp học viên thao tác tốc độ cao không bị muộn giờ.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Gõ thủ công toàn bộ chuỗi `--dry-run=client -o yaml` hàng chục lần làm mỏi tay và chậm tiến độ làm bài.
-
-**Minh hoạ.**
-
-```bash
-# Gõ 3 dòng này NGAY KHI MỞ TERMINAL THI:
-alias k=kubectl
-export do="--dry-run=client -o yaml"
-export now="--force --grace-period=0"
-
-# Ví dụ tạo khung Pod Nginx trong 2 giây:
-k run web --image=nginx $do > pod.yaml
-```
-
----
-
-### 1.3. Quy trình chữa đề và tự đánh giá năng lực (10 phút)
-
-**Nguyên lý cốt lõi:** Quy trình 3 bước giải mọi câu hỏi CKAD: (1) Đọc kỹ Namespace và Context cần thao tác; (2) Tạo nhanh khung YAML bằng lệnh imperative `--dry-run=client -o yaml`; (3) Apply và dùng `kubectl get` xác minh kết quả.
-
-**Giải thích cơ chế ngầm:** Quy trình chuẩn hóa này giúp học viên loại bỏ 99% các lỗi ngớ ngẩn (như tạo nhầm Namespace hoặc viết sai cú pháp YAML).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Nhảy vào viết thủ công tệp YAML từ đầu mà không kiểm tra Namespace hiện tại làm mất điểm toàn bộ câu đó.
-
-**Minh hoạ.**
-
-```bash
-# Quy trình 3 bước vàng:
-# Bước 1: Chuyển Namespace đúng
-k config set-context --current --namespace=prod
-
-# Bước 2: Tạo khung YAML
-k create deployment web --image=nginx $do > deploy.yaml
-
-# Bước 3: Apply và kiểm tra
-k apply -f deploy.yaml
-k get deploy web -n prod
-```
-
-**Nguyên lý cốt lõi:** Luôn kiểm tra cờ `--namespace` khi gõ lệnh. Làm sai Namespace sẽ bị script chấm điểm của Linux Foundation cho 0 điểm câu đó cho dù khai báo YAML đúng 100%.
-
-**Giải thích cơ chế ngầm:** Hệ thống tự động chấm điểm của kỳ thi kiểm tra sự tồn tại của đối tượng trong đúng Namespace được yêu cầu. Tạo sai Namespace đồng nghĩa với đối tượng không tồn tại.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tạo Pod thành công ở Namespace `default` trong khi đề bài yêu cầu ở Namespace `finance`.
-
-**Minh hoạ.**
-
-```bash
-# Luôn thêm cờ -n <namespace> rõ ràng trong lệnh k apply hoặc k get
-k apply -f pod.yaml -n finance
-```
-
-**Nguyên lý cốt lõi:** Khi Pod bị kẹt không Running, bộ 3 lệnh gỡ rối thần tốc cần gõ ngay là: `kubectl describe pod <name>`, `kubectl logs <name>`, và `kubectl get ep <svc>`.
-
-**Giải thích cơ chế ngầm:** Trong vòng 30 giây, bộ 3 lệnh này cho biết chính xác nguyên nhân Pod bị kẹt (ImagePullBackOff, CrashLoopBackOff, thiếu env hay rỗng Endpoints).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Ngồi đoán mò lý do Pod crash mà không gõ `kubectl describe` hay `kubectl logs` xem thông điệp lỗi.
-
-**Minh hoạ.**
-
-```bash
-# Bộ 3 lệnh gỡ rối thần tốc CKAD:
-k describe pod <pod-name> -n <ns>
-k logs <pod-name> -n <ns>
-k get ep <svc-name> -n <ns>
-```
-
----
-
-### 1.4. Đưa vào cụm thật (4 phút)
-
-**Nguyên lý cốt lõi:** Hoàn thành bài thi thử CKAD với kết quả > 75% đánh dấu học viên đã TỐT NGHIỆP THÀNH CÔNG GIAI ĐOẠN 2 của khóa học và hoàn toàn đủ tự tin đăng ký thi chứng chỉ CKAD quốc tế.
-
-**Giải thích cơ chế ngầm:** Chứng minh học viên đã làm chủ toàn bộ kỹ năng thiết kế, triển khai, cấu hình bảo mật, mạng và chẩn đoán ứng dụng trên Kubernetes theo chuẩn quốc tế CNCF.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chưa làm bài thi thử hoặc điểm thi thử dưới 60% mà vẫn đăng ký thi thật dẫn đến nguy cơ thi trượt cao.
-
-**Minh hoạ.**
-
-```bash
-# Lộ trình học viên sau Buổi 45:
-# 1. Đạt > 75% bài thi thử Buổi 45 -> Đăng ký thi chứng chỉ CKAD quốc tế!
-# 2. Chuyển tiếp sang Giai đoạn 3 (CKS - Buổi 46: Security Hardening Specialist).
-```
-
-**Áp vào cụm đang chạy thì làm gì trước:**
-1. Chuẩn bị môi trường Terminal thi thử sạch sẽ và cài đặt alias gõ tắt.
-2. Bật đồng hồ bấm giờ 120 phút đúng chuẩn áp lực thi thực tế.
-3. Chạy script tự chấm điểm ngay sau khi hết giờ.
-
-**Cái gì hỏng nếu áp thẳng lên prod:**
-- Dùng lệnh `k delete pod --all --force` nhầm trên Namespace Production sẽ làm gián đoạn toàn bộ dịch vụ đang chạy.
-
-**Đo trước — đo sau:**
-- Đo tổng thời gian hoàn thành 16 câu hỏi bài thi thử (mục tiêu < 105 phút).
-- Thống kê tỷ lệ phần trăm câu làm đúng trên tổng số 100 điểm.
-
-**Khi nào KHÔNG nên dùng:**
-- Không dùng cờ `--force --grace-period=0` để xóa Pods trừ khi bắt buộc phải xóa nhanh Pod bị kẹt.
-
----
-
-### 1.5. Bẫy hay gặp (2 phút)
-
-| Bẫy hay gặp | Vì sao dính | Làm đúng là |
-|---|---|---|
-| 1. Tạo tài nguyên nhầm Namespace | Quên kiểm tra cờ `-n <namespace>` khi apply | Luôn ghi nhớ cờ `-n <namespace>` trong lệnh apply |
-| 2. Kẹt quá 15 phút ở 1 câu khó | Mất bình tĩnh muốn làm xong ngay | Bấm Flag chuyển câu khác, quay lại sau |
-| 3. Gõ thủ công toàn bộ YAML từ đầu | Không thuộc lệnh imperative `--dry-run=client -o yaml` | Luôn dùng lệnh imperative sinh khung YAML |
-| 4. Quên kiểm tra lại trạng thái Pod sau apply | Pod bị kẹt `CrashLoopBackOff` mà tưởng đã xong | Chạy `k get pod` kiểm tra trạng thái Running |
-| 5. Đánh gõ sai tên Service trong Ingress spec | Quên kiểm tra tên Service qua `k get svc` | Dùng `kubectl get svc` copy tên Service chính xác |
-| 6. Sửa nhầm Context cụm | Bài thi có nhiều cụm K8s nhưng quên đổi context | Gõ lệnh `kubectl config use-context <name>` ở đầu mỗi câu |
-| 7. Quên mount `emptyDir` cho `readOnlyRootFilesystem` | Pod bị crash khi khởi động do không ghi được `/tmp` | Mount `emptyDir` volume vào `/tmp` |
-| 8. Gõ sai từ khóa `number` trong Ingress port | Dùng cú pháp cũ `servicePort` thay vì `port.number` | Kiểm tra đúng cú pháp `service.port.number: 80` |
-| 9. Quên cờ `immutable: true` khi đề yêu cầu ConfigMap bất biến | Bỏ sót điều kiện đề bài | Kiểm tra thuộc tính `immutable: true` |
-| 10. Service selector không khớp với Pod label | Gõ sai chữ hoa/thường hoặc thiếu nhãn | Dùng `kubectl get pod --show-labels` đối soát |
-| 11. Đặt ResourceQuota `hard` nhỏ hơn tài nguyên đang có | Làm cho Pod bị kẹt không scale được | Kiểm tra tài nguyên hiện tại trước khi đặt Quota |
-| 12. Không rà soát lại bài ở 10 phút cuối | Bỏ sót các câu làm dở dang | Dành 10 phút cuối rà soát lại toàn bộ kết quả |
-
----
-
-### 1.6. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    CKADExam[CKAD Full Mock Exam 120 Mins] --> Strategy[1. Chiến thuật 3 lượt: Câu dễ trước, câu khó Flag sau]
-    CKADExam --> Imperative[2. Tăng tốc CLI: alias k, export do='--dry-run=client -o yaml']
-    CKADExam --> Execution[3. Quy trình 3 bước: Namespace -> Imperative YAML -> Verify]
-    CKADExam --> Graduation[4. Graduation: > 75% Score -> Ready for Official CKAD Exam!]
-    
-    Troubleshoot[Gỡ rối thần tốc: describe pod, logs, get ep] --> Execution
-```
-
-**Năm điều phải nhớ:**
-1. **Phân bổ thời gian**: Làm câu dễ trước, cấm kẹt quá 10 phút ở 1 câu (bấm Flag quay lại sau).
-2. **Tăng tốc CLI**: Dùng ngay `alias k=kubectl` và `export do="--dry-run=client -o yaml"`.
-3. **Quy trình 3 bước**: Chuyển Namespace -> Sinh khung YAML -> Apply và xác minh Running.
-4. **Gỡ rối thần tốc**: Dùng `k describe pod`, `k logs`, `k get ep` khi có sự cố.
-5. **Ngưỡng an toàn**: Đạt > 75% điểm thi thử tốt nghiệp Giai đoạn 2 CKAD sẵn sàng đăng ký thi quốc tế.
-
----
-
-## §10. Câu hỏi tự kiểm tra (5 phút)
-
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Gồm 16–18 câu hỏi thực hành và thời gian làm bài là 120 phút (2 giờ).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Chiếm 25 % trọng số đề thi (miền có trọng số cao nhất).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Ngưỡng điểm đỗ chính thức là 66 %.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Để tạo ra khoảng trống an toàn dự phòng cho các rủi ro về tâm lý thi và sự cố mạng khi thi thật.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<code>alias k=kubectl</code>, <code>export do="--dry-run=client -o yaml"</code>, <code>export now="--force --grace-period=0"</code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Làm tất cả các câu dễ trước để tích lũy điểm; không kẹt quá 10 phút ở một câu khó (bấm Flag làm sau).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Script tự động chấm điểm sẽ cho 0 điểm câu đó vì không tìm thấy đối tượng trong Namespace yêu cầu.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<code>kubectl describe pod <name></code>, <code>kubectl logs <name></code>, và <code>kubectl get ep <svc></code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<code>kubectl create deployment web --image=nginx --dry-run=client -o yaml > deploy.yaml</code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Vì bài thi CKAD có thể sử dụng nhiều cụm Kubernetes khác nhau; làm câu hỏi trên sai cụm context sẽ bị 0 điểm.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Đánh dấu hoàn thành 100% <b style="color: var(--accent-primary);">Giai đoạn 2 (CKAD)</b> của khóa học.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Chinh phục chứng chỉ bảo mật chuyên sâu <b style="color: var(--accent-primary);">CKS (Certified Kubernetes Security Specialist)</b>.
-</div>
-</details>
-
----
-
-## §11. Tài liệu tham khảo
-
-| Nguồn | Địa chỉ URL | Ghi chú |
-|---|---|---|
-| CKAD Curriculum Guidelines | `https://github.com/cncf/curriculum` | Tài liệu chuẩn ma trận đề thi CNCF CKAD |
-| Linux Foundation Candidate Handbook | `https://docs.linuxfoundation.org/tc-docs/certification/` | Hướng dẫn thí sinh dự thi chứng chỉ CNCF |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
 > [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| Mã tiêu chí | Nội dung tiêu chí | Lệnh kiểm chứng | Kết quả kỳ vọng |
-|---|---|---|---|
-| TH1 | Khởi tạo môi trường thi thử `exam-ckad` và reset toàn bộ cụm | `kubectl get ns exam-ckad -o jsonpath='{.status.phase}'` | In ra `Active` |
-| TH2 | [Câu 1 - Design] Tạo Pod `multi-pod` chứa 2 container (Nginx & Busybox) | `kubectl get pod multi-pod -n exam-ckad -o jsonpath='{.spec.containers[*].name}'` | Hiển thị `app log-reader` |
-| TH3 | [Câu 2 - Design] Khởi tạo PV `pv-data` 2Gi và PVC `pvc-data` tương ứng | `kubectl get pvc pvc-data -n exam-ckad -o jsonpath='{.status.phase}'` | In ra `Bound` |
-| TH4 | [Câu 3 - Deployment] Tạo Deployment `web-deploy` 3 replicas & update | `kubectl get deploy web-deploy -n exam-ckad -o jsonpath='{.spec.replicas}'` | In ra `3` |
-| TH5 | [Câu 4 - Deployment] Triển khai Canary Deployment giả lập | `kubectl get deploy web-canary -n exam-ckad -o jsonpath='{.spec.replicas}'` | In ra `1` |
-| TH6 | [Câu 5 - Env & Sec] Tạo ConfigMap bất biến `static-config` | `kubectl get cm static-config -n exam-ckad -o jsonpath='{.immutable}'` | In ra `true` |
-| TH7 | [Câu 6 - Env & Sec] Tạo Pod `secure-app` có `runAsNonRoot: true` & `runAsUser` | `kubectl get pod secure-app -n exam-ckad -o jsonpath='{.spec.securityContext.runAsUser}'` | In ra `1000` |
-| TH8 | [Câu 7 - Env & Sec] Tạo ResourceQuota `app-quota` và LimitRange `app-limits` | `kubectl get quota app-quota -n exam-ckad -o jsonpath='{.spec.hard.pods}'` | In ra `5` |
-| TH9 | [Câu 8 - Networking] Tạo Service `web-service` kiểu `ClusterIP` | `kubectl get svc web-service -n exam-ckad -o jsonpath='{.spec.ports[0].port}'` | In ra `80` |
-| TH10 | [Câu 9 - Networking] Tạo Ingress `web-ingress` routing Host `exam.com` | `kubectl get ingress web-ingress -n exam-ckad -o jsonpath='{.spec.rules[0].host}'` | In ra `exam.com` |
-| TH11 | [Câu 10 - Observability] Chẩn đoán Pod `broken-pod` và sửa lỗi | `kubectl get pod broken-pod -n exam-ckad -o jsonpath='{.status.phase}'` | In ra `Running` |
-| TH12 | [Câu 11 - Observability] Thao tác `kubectl top` trích xuất thông số | `kubectl top pods -n exam-ckad --no-headers 2>&1 \| grep -q "web-deploy"` | Trích xuất metrics thành công |
-| TH13 | Chạy script tự chấm điểm tổng kết bài thi thử `exam-ckad` | `bash /tmp/check-ckad-exam.sh 2>&1 \| grep -q "ĐẠT NGƯỠNG AN TOÀN"` | In kết quả > 75/100 điểm |
+> **Mục tiêu kỹ thuật bài học**:
+> - Đánh giá toàn diện năng lực thực chiến bấm giờ đối với cả 5 miền kiến thức CKAD.
+> - Rèn luyện phản xạ thao tác CLI với tốc độ dưới 5 phút cho mỗi kịch bản triển khai.
+> - Nắm vững quy trình xử lý sự cố 3 bước: Chuyển Context/Namespace -> Sinh YAML mẫu qua dry-run -> Xác minh trạng thái qua lệnh kiểm tra.
+> - Làm chủ kỹ năng giải quyết các câu hỏi phức tạp kết hợp nhiều thành phần (Multi-container + SecurityContext + PersistentVolume + Ingress + NetworkPolicy).
 
 ---
 
-## L1. Điều kiện tiên quyết về môi trường
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Chiến Thuật Vượt Qua Kỳ Thi CKAD 120 Phút
 
-| Kiểm tra | Lệnh thực hiện | Kết quả kỳ vọng |
-|---|---|---|
-| Cụm Kubernetes ba node | `kubectl get nodes` | `cp-01`, `worker-01`, `worker-02` ở trạng thái `Ready` |
-| Context đúng môi trường lab | `kubectl config current-context` | Đúng context cụm `kubeadm` |
-| Bật alias gõ nhanh | `alias k=kubectl` | Sẵn sàng gõ phím tốc độ cao |
-
----
-
-## L2. Kiến trúc bài thi thử CKAD Full Mock Exam
+Kỳ thi **CKAD (Certified Kubernetes Application Developer)** của CNCF / Linux Foundation là bài thi thực hành 100% trên môi trường dòng lệnh (Command Line Interface). Trong vòng **120 phút**, thí sinh phải giải quyết khoảng **16 đến 19 câu hỏi** thực tế trên nhiều cụm Kubernetes khác nhau.
 
 ```mermaid
-graph TD
-    subgraph Namespace exam-ckad
-        PodMulti[Câu 1: Pod multi-pod app & log-reader]
-        PV_PVC[Câu 2: PV pv-data & PVC pvc-data]
-        DeployWeb[Câu 3 & 4: Deployment web-deploy & web-canary]
-        Security[Câu 5 & 6 & 7: SecurityContext, ConfigMap & Quota]
-        Networking[Câu 8 & 9: Service web-service & Ingress web-ingress]
-        Observability[Câu 10 & 11: Broken-pod fix & kubectl top metrics]
+pie title Phân Bổ 5 Miền Trọng Số Đề Thi CKAD
+    "Application Environment, Config & Security (25%)" : 25
+    "Application Design and Build (20%)" : 20
+    "Application Deployment (20%)" : 20
+    "Services and Networking (20%)" : 20
+    "Application Observability & Maintenance (15%)" : 15
+```
+
+### 1.1. Quy Trình 3 Bước Xử Lý Mọi Câu Hỏi Trong Phòng Thi
+
+Để đạt điểm số an toàn (> 75%), bạn không bao giờ được viết YAML từ đầu bằng tay. Hãy áp dụng nghiêm ngặt quy trình 3 bước:
+
+```mermaid
+flowchart TD
+    subgraph Step1["Bước 1: Chuyển Ngữ Cảnh & Namespace"]
+        C1["Đọc kỹ đề bài & copy lệnh đổi Context"] --> C2["kubectl config set-context --current --namespace=<ns>"]
     end
-    
-    Script[Script tự chấm check-ckad-exam.sh] -->|"Chấm điểm 100%"| exam-ckad
+
+    subgraph Step2["Bước 2: Tạo Khung YAML Siêu Tốc"]
+        Y1["kubectl run / create $do > task.yaml"] --> Y2["Vim chỉnh sửa các trường phức tạp"]
+        Y2 --> Y3["kubectl apply -f task.yaml"]
+    end
+
+    subgraph Step3["Bước 3: Xác Minh Ngay Lập Tức"]
+        V1["kubectl get <resource> -n <ns>"] --> V2["kubectl describe / logs"]
+        V2 --> V3["Chuyển sang câu tiếp theo"]
+    end
+
+    Step1 --> Step2 --> Step3
+
+    style Step1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style Step2 fill:none,stroke:#10b981,stroke-width:2px
+    style Step3 fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
 
-## L3. Bước 1: Khởi tạo môi trường thi thử và alias (10 phút)
+### 1.2. Thiết Lập Môi Trường Terminal Tốc Độ Cao (30 Giây Đầu Tiên)
 
-### Thao tác 1.1: Cài đặt Alias gõ nhanh và tạo Namespace `exam-ckad`
+Ngay khi bước vào phòng thi, hãy dán ngay đoạn cấu hình sau vào terminal để tiết kiệm hàng chục phút gõ lệnh:
 
 ```bash
+# 1. Thiết lập alias cho kubectl và autocompletion
 alias k=kubectl
+complete -o default -F __start_kubectl k
+
+# 2. Biến tắt sinh YAML dry-run và xóa nhanh
 export do="--dry-run=client -o yaml"
-export now="--force --grace-period=0"
+export now="--grace-period=0 --force"
 
-kubectl create namespace exam-ckad
-```
-
-**CHECKPOINT 1 — Kiểm tra Namespace `exam-ckad`.**
-
-```bash
-kubectl get ns exam-ckad -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
+# 3. Tối ưu hóa file cấu hình vim ~/.vimrc
+cat <<EOF > ~/.vimrc
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set number
+set autoindent
+EOF
 ```
 
 ---
 
-## L4. Bước 2: Thực thi Miền 1 — Application Design and Build (25 phút)
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-### Thao tác 2.1: [Câu 1] Tạo Pod `multi-pod` chứa 2 container
+| STT | Tên Kịch Bản Thực Chiến | Miền Kiến Thức CKAD | Trọng Số Điểm | Độ Khó | Thời Gian Chuẩn |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Q1** | Multi-container Pod (Sidecar Pattern) | Application Design and Build | 7% | Medium | 6 phút |
+| **Q2** | InitContainer & Shared Volume Storage | Application Design and Build | 6% | Easy | 5 phút |
+| **Q3** | SecurityContext (runAsNonRoot & ReadOnly) | Environment, Config & Security | 7% | Medium | 6 phút |
+| **Q4** | Capabilities & fsGroup Permissions | Environment, Config & Security | 6% | Medium | 6 phút |
+| **Q5** | ConfigMap & Secret Projected Volumes | Environment, Config & Security | 6% | Easy | 4 phút |
+| **Q6** | Immutable ConfigMap & Rolling Update | Environment, Config & Security | 6% | Easy | 5 phút |
+| **Q7** | Batch Job với Parallelism & BackoffLimit | Application Design and Build | 6% | Easy | 5 phút |
+| **Q8** | CronJob với Deadline & History Limits | Application Design and Build | 6% | Medium | 6 phút |
+| **Q9** | Deployment Canary Strategy & Weighting | Application Deployment | 7% | Hard | 8 phút |
+| **Q10** | RollingUpdate Rollback & History | Application Deployment | 6% | Easy | 4 phút |
+| **Q11** | Health Probes (Startup & Readiness) | Observability & Maintenance | 7% | Medium | 6 phút |
+| **Q12** | Container Log Analysis & Debugging | Observability & Maintenance | 6% | Easy | 4 phút |
+| **Q13** | Service Discovery & Port Mapping | Services and Networking | 6% | Easy | 4 phút |
+| **Q14** | Ingress Routing Đa Path & TLS Secret | Services and Networking | 7% | Hard | 8 phút |
+| **Q15** | NetworkPolicy Default-Deny & Ingress | Services and Networking | 8% | Hard | 9 phút |
+| **Q16** | ResourceQuota & LimitRange Troubleshooting | Environment, Config & Security | 6% | Medium | 6 phút |
+
+---
+
+## 3. Kiến Trúc Môi Trường & Luồng Thực Thi Mẫu
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Candidate as Thí Sinh (Candidate)
+    participant Term as Terminal Console
+    participant K8s as Kubernetes Cluster
+    participant Judge as Hệ Thống Chấm Điểm Tự Động
+
+    Candidate->>Term: Đọc câu hỏi Q1 -> Copy lệnh đổi context
+    Candidate->>Term: k run my-pod --image=nginx $do > q1.yaml
+    Candidate->>Term: vim q1.yaml (Thêm sidecar container & emptyDir)
+    Candidate->>Term: k apply -f q1.yaml
+    Candidate->>K8s: Tạo Pod multi-container
+    Candidate->>Term: k get pod my-pod (Kiểm tra READY 2/2)
+    Candidate->>Term: Chuyển sang Q2
+    Note over Judge: Khi hết 120 phút, Bot kiểm tra etcd State
+    Judge->>K8s: Verify Pods, Labels, Ports, SecurityContext
+    Judge-->>Candidate: Cấp chứng chỉ CKAD (Score >= 75%)
+```
+
+---
+
+## 4. Phân Tích Cạm Bẫy Thực Chiến: "3 Bẫy Mất Điểm Đau Đớn Nhất Trong Phòng Thi CKAD"
+
+### Tình Huống Thực Tế
+Nhiều thí sinh có kiến thức kỹ thuật rất tốt nhưng vẫn bị trượt kỳ thi với điểm số 60-70%. Khi phân tích lại, hầu hết đều rơi vào 3 cạm bẫy kinh điển:
+
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+[EXAM AUDIT LOG]
+Question 04: FAIL (Score: 0/7)
+Expected: Pod "secure-worker" in namespace "finance-prod"
+Actual: Pod "secure-worker" was created in namespace "default"!
+Result: Resource not found in target namespace. 0 Points awarded.
+```
+
+### 5-Whys Root Cause Analysis:
+1. **Bẫy 1: Quên chuyển Namespace hoặc Context**: Mỗi câu hỏi đều yêu cầu một Namespace/Context cụ thể. Nếu làm đúng 100% cấu hình nhưng nằm ở namespace `default`, bot chấm điểm tự động sẽ quét namespace mục tiêu và ghi nhận `0 điểm`.
+2. **Bẫy 2: Nhầm lẫn giữa `port` và `targetPort` trong Service / Ingress**: Service mở cổng `port: 80` nhưng container lắng nghe ở cổng `8080`. Nếu khai báo nhầm `targetPort: 80`, Ingress sẽ trả về lỗi `502 Bad Gateway` và bài thi bị chấm rớt phần networking.
+3. **Bẫy 3: Sửa trực tiếp Pod đang chạy mà không sao lưu**: Dùng `kubectl edit pod` sửa sai cú pháp, Pod bị xóa mất trong khi file mới không apply được, mất trắng 10-15 phút để viết lại từ đầu.
+4. **Giải pháp chuẩn:** 
+   - Đầu mỗi câu hỏi, luôn chạy lệnh chuyển context và set namespace mặc định: `kubectl config set-context --current --namespace=<ns>`.
+   - Luôn tạo file YAML trung gian: `k get <res> <name> -o yaml > res.yaml && cp res.yaml res.yaml.bak`.
+
+---
+
+## 5. Hands-on Lab: Bộ Đề Thi Thử Thực Chiến 16 Câu Hỏi & Lời Giải Chuẩn (8 Nhóm Kỹ Năng / 8 Bước)
+
+| Bước | Nhóm Bài Toán Mô Phỏng | Kỹ Năng Đo Lường |
+| :--- | :--- | :--- |
+| **1** | Multi-container & Storage Sharing | Tạo Pod 2 containers chia sẻ volume `emptyDir` |
+| **2** | Pod Hardening & SecurityContext | Cấu hình `runAsNonRoot`, `readOnlyRootFilesystem`, `capabilities` |
+| **3** | Dynamic & Secure Configuration | Projected Volumes từ ConfigMap & Secret |
+| **4** | Batch Processing Workloads | Job với `completions`, `parallelism` & CronJob lịch định kỳ |
+| **5** | Deployment Lifecycle Management | Rolling Update, Canary Release và Rollback |
+| **6** | Container Observability & Probes | Liveness Probe, Readiness Probe & Startup Probe |
+| **7** | L4 & L7 Services and Ingress | ClusterIP Service & Ingress Routing TLS |
+| **8** | Resource Governance & NetworkPolicy | ResourceQuota, LimitRange & Zero-Trust NetworkPolicy |
+
+---
+
+### Bước 1: Khởi Tạo Multi-Container Pod Chia Sẻ Volume (Câu 1 & 2)
+
+**Yêu cầu**: Tạo Pod `app-logger` trong namespace `ckad-lab` gồm:
+- Container chính `app`: image `busybox:1.36`, lệnh ghi log timestamp vào `/var/log/app.log` mỗi 1 giây.
+- Container phụ `sidecar`: image `busybox:1.36`, lệnh đọc file `/var/log/app.log` và in ra stdout.
 
 ```bash
-cat <<EOF | kubectl apply -f -
+kubectl create namespace ckad-lab --dry-run=client -o yaml | kubectl apply -f -
+kubectl config set-context --current --namespace=ckad-lab
+```
+
+Tạo file `q1-multicontainer.yaml`:
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: multi-pod
-  namespace: exam-ckad
+  name: app-logger
+  namespace: ckad-lab
 spec:
-  containers:
-    - name: app
-      image: nginx:alpine
-      volumeMounts:
-        - name: log-vol
-          mountPath: /var/log/nginx
-    - name: log-reader
-      image: busybox:1.36
-      command: ["sh", "-c", "tail -f /var/log/nginx/access.log"]
-      volumeMounts:
-        - name: log-vol
-          mountPath: /var/log/nginx
   volumes:
-    - name: log-vol
-      emptyDir: {}
-EOF
-```
-
-**CHECKPOINT 2 — Kiểm tra 2 container trong `multi-pod`.**
-
-```bash
-kubectl get pod multi-pod -n exam-ckad -o jsonpath='{.spec.containers[*].name}' | grep -q "log-reader" && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
-
-### Thao tác 2.2: [Câu 2] Khởi tạo PV `pv-data` và PVC `pvc-data`
-
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-data
-spec:
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /mnt/data
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-data
-  namespace: exam-ckad
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
-EOF
-```
-
-**CHECKPOINT 3 — Xác minh PVC `pvc-data` ở trạng thái `Bound`.**
-
-```bash
-sleep 3
-kubectl get pvc pvc-data -n exam-ckad -o jsonpath='{.status.phase}' | grep -qx Bound && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
-
----
-
-## L5. Bước 3: Thực thi Miền 2 — Application Deployment (25 phút)
-
-### Thao tác 3.1: [Câu 3] Tạo Deployment `web-deploy` 3 replicas và RollingUpdate
-
-```bash
-kubectl create deployment web-deploy --image=nginx:1.24 --replicas=3 -n exam-ckad
-kubectl set image deployment/web-deploy nginx=nginx:1.25 -n exam-ckad
-```
-
-**CHECKPOINT 4 — Kiểm tra `web-deploy` 3 replicas.**
-
-```bash
-kubectl get deploy web-deploy -n exam-ckad -o jsonpath='{.spec.replicas}' | grep -qx 3 && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
-
-### Thao tác 3.2: [Câu 4] Triển khai Canary Deployment `web-canary` 1 replica
-
-```bash
-kubectl create deployment web-canary --image=nginx:mainline-alpine --replicas=1 -n exam-ckad
-```
-
-**CHECKPOINT 5 — Kiểm tra Canary Deployment `web-canary`.**
-
-```bash
-kubectl get deploy web-canary -n exam-ckad -o jsonpath='{.spec.replicas}' | grep -qx 1 && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
-
----
-
-## L6. Bước 4: Thực thi Miền 3 — Environment, Configuration & Security (25 phút)
-
-### Thao tác 4.1: [Câu 5] Tạo ConfigMap bất biến `static-config`
-
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: static-config
-  namespace: exam-ckad
-immutable: true
-data:
-  ENV: "production"
-EOF
-```
-
-**CHECKPOINT 6 — Kiểm tra thuộc tính `immutable: true`.**
-
-```bash
-kubectl get cm static-config -n exam-ckad -o jsonpath='{.immutable}' | grep -qx true && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-### Thao tác 4.2: [Câu 6] Tạo Pod `secure-app` có SecurityContext gia cố
-
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: secure-app
-  namespace: exam-ckad
-spec:
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
+  - name: log-storage
+    emptyDir: {}
   containers:
-    - name: web
-      image: nginx:alpine
-      securityContext:
-        readOnlyRootFilesystem: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
-          add: ["NET_BIND_SERVICE"]
-      volumeMounts:
-        - name: tmp-dir
-          mountPath: /tmp
-        - name: cache-dir
-          mountPath: /var/cache/nginx
-        - name: run-dir
-          mountPath: /var/run
-  volumes:
-    - name: tmp-dir
-      emptyDir: {}
-    - name: cache-dir
-      emptyDir: {}
-    - name: run-dir
-      emptyDir: {}
-EOF
+  - name: app
+    image: busybox:1.36
+    command: ["sh", "-c", "while true; do date >> /var/log/app.log; sleep 1; done"]
+    volumeMounts:
+    - name: log-storage
+      mountPath: /var/log
+  - name: sidecar
+    image: busybox:1.36
+    command: ["sh", "-c", "tail -f /var/log/app.log"]
+    volumeMounts:
+    - name: log-storage
+      mountPath: /var/log
 ```
-
-**CHECKPOINT 7 — Kiểm tra `runAsUser: 1000` trong Pod `secure-app`.**
-
 ```bash
-kubectl get pod secure-app -n exam-ckad -o jsonpath='{.spec.securityContext.runAsUser}' | grep -qx 1000 && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
-
-### Thao tác 4.3: [Câu 7] Tạo ResourceQuota và LimitRange
-
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: app-quota
-  namespace: exam-ckad
-spec:
-  hard:
-    requests.cpu: "4"
-    requests.memory: 4Gi
-    pods: "10"
----
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: app-limits
-  namespace: exam-ckad
-spec:
-  limits:
-    - type: Container
-      defaultRequest:
-        cpu: 100m
-        memory: 128Mi
-      default:
-        cpu: 200m
-        memory: 256Mi
-EOF
-```
-
-**CHECKPOINT 8 — Kiểm tra ResourceQuota `pods: "10"`.**
-
-```bash
-kubectl get quota app-quota -n exam-ckad -o jsonpath='{.spec.hard.pods}' | grep -qx 10 && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
+kubectl apply -f q1-multicontainer.yaml
+kubectl wait --for=condition=ready pod/app-logger --timeout=30s
+kubectl logs app-logger -c sidecar | head -n 3
 ```
 
 ---
 
-## L7. Bước 5: Thực thi Miền 4 & 5 — Services, Networking & Observability (25 phút)
+### Bước 2: Thiết Lập Pod Hardening Với SecurityContext (Câu 3 & 4)
 
-### Thao tác 5.1: [Câu 8] Tạo Service `web-service` kiểu ClusterIP
+**Yêu cầu**: Tạo Pod `secure-vault` chạy image `busybox:1.36` (lệnh `sleep 3600`) với các tiêu chuẩn an ninh:
+- Chạy dưới UID `2000` và GID `3000`.
+- Bắt buộc `runAsNonRoot: true`.
+- Hệ thống tệp đĩa gốc chỉ đọc `readOnlyRootFilesystem: true`.
+- Mount `emptyDir` vào `/tmp` để ứng dụng ghi file tạm.
+- Tước bỏ toàn bộ đặc quyền `drop: ["ALL"]` và chỉ thêm `add: ["NET_BIND_SERVICE"]`.
 
-```bash
-kubectl expose deployment web-deploy --name=web-service --port=80 --target-port=80 -n exam-ckad
-```
-
-**CHECKPOINT 9 — Kiểm tra cổng 80 của `web-service`.**
-
-```bash
-kubectl get svc web-service -n exam-ckad -o jsonpath='{.spec.ports[0].port}' | grep -qx 80 && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
-
-### Thao tác 5.2: [Câu 9] Tạo TLS Secret và Ingress `web-ingress`
-
-```bash
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /tmp/exam-tls.key -out /tmp/exam-tls.crt -subj "/CN=exam.com" 2>/dev/null
-
-kubectl create secret tls exam-tls-secret --cert=/tmp/exam-tls.crt --key=/tmp/exam-tls.key -n exam-ckad 2>/dev/null || true
-
-cat <<EOF | kubectl apply -f -
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: web-ingress
-  namespace: exam-ckad
-spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - exam.com
-      secretName: exam-tls-secret
-  rules:
-    - host: exam.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: web-service
-                port:
-                  number: 80
-EOF
-```
-
-**CHECKPOINT 10 — Kiểm tra Host `exam.com` trong Ingress.**
-
-```bash
-kubectl get ingress web-ingress -n exam-ckad -o jsonpath='{.spec.rules[0].host}' | grep -qx "exam.com" && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
-
-### Thao tác 5.3: [Câu 10] Chẩn đoán và sửa Pod `broken-pod`
-
-```bash
-# Tạo Pod lỗi giả lập:
-cat <<EOF | kubectl apply -f -
+Tạo file `q2-security.yaml`:
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: broken-pod
-  namespace: exam-ckad
-spec:
-  containers:
-    - name: app
-      image: nginx:alpine
-      command: ["sh", "-c", "nginx -g 'daemon off;'"]
-EOF
-```
-
-**CHECKPOINT 11 — Kiểm tra `broken-pod` ở trạng thái `Running`.**
-
-```bash
-sleep 4
-kubectl get pod broken-pod -n exam-ckad -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
-
-### Thao tác 5.4: [Câu 11] Thực thi `kubectl top` quan sát metrics
-
-**CHECKPOINT 12 — Trích xuất metrics thành công.**
-
-```bash
-kubectl get pods -n exam-ckad >/dev/null && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
-
----
-
-## L8. Chạy Script tự chấm điểm tổng kết bài thi (10 phút)
-
-### Thao tác 8.1: Tạo và chạy script tự chấm bài thi `check-ckad-exam.sh`
-
-```bash
-cat <<'EOF' > /tmp/check-ckad-exam.sh
-#!/bin/bash
-SCORE=0
-echo "=========================================================="
-echo "=== KẾT QUẢ TỰ CHẤM BÀI THI THỬ CKAD (FULL MOCK EXAM) ==="
-echo "=========================================================="
-
-# Check 1: Multi-pod
-multi_cnt=$(kubectl get pod multi-pod -n exam-ckad -o jsonpath='{.spec.containers[*].name}' 2>/dev/null)
-if [[ "$multi_cnt" == *"log-reader"* ]]; then
-    echo "Câu 1 (Design): ĐẠT (+10đ)"
-    SCORE=$((SCORE + 10))
-else
-    echo "Câu 1 (Design): THẤT BẠI (0đ)"
-fi
-
-# Check 2: PVC
-pvc_st=$(kubectl get pvc pvc-data -n exam-ckad -o jsonpath='{.status.phase}' 2>/dev/null)
-if [ "$pvc_st" == "Bound" ]; then
-    echo "Câu 2 (Storage): ĐẠT (+10đ)"
-    SCORE=$((SCORE + 10))
-else
-    echo "Câu 2 (Storage): THẤT BẠI (0đ)"
-fi
-
-# Check 3: Deploy
-dep_rep=$(kubectl get deploy web-deploy -n exam-ckad -o jsonpath='{.spec.replicas}' 2>/dev/null)
-if [ "$dep_rep" == "3" ]; then
-    echo "Câu 3 (Deployment): ĐẠT (+10đ)"
-    SCORE=$((SCORE + 10))
-else
-    echo "Câu 3 (Deployment): THẤT BẠI (0đ)"
-fi
-
-# Check 4: ConfigMap Immutable
-cm_imm=$(kubectl get cm static-config -n exam-ckad -o jsonpath='{.immutable}' 2>/dev/null)
-if [ "$cm_imm" == "true" ]; then
-    echo "Câu 4 (ConfigMap): ĐẠT (+10đ)"
-    SCORE=$((SCORE + 10))
-else
-    echo "Câu 4 (ConfigMap): THẤT BẠI (0đ)"
-fi
-
-# Check 5: SecurityContext
-sec_usr=$(kubectl get pod secure-app -n exam-ckad -o jsonpath='{.spec.securityContext.runAsUser}' 2>/dev/null)
-if [ "$sec_usr" == "1000" ]; then
-    echo "Câu 5 (Security): ĐẠT (+15đ)"
-    SCORE=$((SCORE + 15))
-else
-    echo "Câu 5 (Security): THẤT BẠI (0đ)"
-fi
-
-# Check 6: Quota
-quota_p=$(kubectl get quota app-quota -n exam-ckad -o jsonpath='{.spec.hard.pods}' 2>/dev/null)
-if [ "$quota_p" == "10" ]; then
-    echo "Câu 6 (Quota): ĐẠT (+15đ)"
-    SCORE=$((SCORE + 15))
-else
-    echo "Câu 6 (Quota): THẤT BẠI (0đ)"
-fi
-
-# Check 7: Service
-svc_p=$(kubectl get svc web-service -n exam-ckad -o jsonpath='{.spec.ports[0].port}' 2>/dev/null)
-if [ "$svc_p" == "80" ]; then
-    echo "Câu 7 (Service): ĐẠT (+15đ)"
-    SCORE=$((SCORE + 15))
-else
-    echo "Câu 7 (Service): THẤT BẠI (0đ)"
-fi
-
-# Check 8: Ingress
-ing_h=$(kubectl get ingress web-ingress -n exam-ckad -o jsonpath='{.spec.rules[0].host}' 2>/dev/null)
-if [ "$ing_h" == "exam.com" ]; then
-    echo "Câu 8 (Ingress): ĐẠT (+15đ)"
-    SCORE=$((SCORE + 15))
-else
-    echo "Câu 8 (Ingress): THẤT BẠI (0đ)"
-fi
-
-echo "=========================================================="
-echo "TỔNG ĐIỂM BÀI THI THỬ CKAD: $SCORE / 100"
-if [ $SCORE -ge 75 ]; then
-    echo "ĐÁNH GIÁ: ĐẠT NGƯỠNG AN TOÀN - CHÚC MỪNG BẠN ĐÃ TỐT NGHIỆP GIAI ĐOẠN 2 CKAD!"
-else
-    echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN RÀ SOÁT LẠI CÁC CÂU LỖI TRƯỚC KHI ĐĂNG KÝ THI THẬT"
-fi
-echo "=========================================================="
-EOF
-
-bash /tmp/check-ckad-exam.sh
-```
-
-**CHECKPOINT 13 — Xác minh tổng điểm đạt ngưỡng an toàn > 75 điểm.**
-
-```bash
-bash /tmp/check-ckad-exam.sh | grep -q "ĐẠT NGƯỠNG AN TOÀN" && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
-
----
-
-## L9. Xử lý sự cố thường gặp trong bài thi
-
-| Triệu chứng lỗi | Nguyên nhân gốc rễ | Cách sửa triệt để |
-|---|---|---|
-| 1. Script chấm điểm báo 0 điểm do sai Namespace | Quên cờ `-n exam-ckad` khi apply đối tượng | Thêm `-n exam-ckad` vào tất cả các lệnh apply |
-| 2. Pod `secure-app` kẹt `CreateContainerConfigError` | Ảnh Nginx chạy root nhưng thiếu `emptyDir` mount vào `/tmp` | Mount `emptyDir` volume vào các thư mục ghi tạm |
-| 3. PVC `pvc-data` kẹt ở trạng thái `Pending` | Dung lượng PVC lớn hơn dung lượng PV hoặc sai AccessMode | Đảm bảo `storage` và `accessModes` của PVC khớp với PV |
-| 4. Ingress trả về 404 Not Found | Gõ sai tên Service backend hoặc sai `pathType` | Kiểm tra đúng tên Service và dùng `pathType: Prefix` |
-| 5. Service `web-service` có Endpoints rỗng | Deployment nhãn không khớp với Service selector | Dùng `kubectl get pod --show-labels` đối soát |
-| 6. Quên cờ `immutable: true` cho ConfigMap | Quên chỉ định thuộc tính bất biến | Bổ sung `immutable: true` trong ConfigMap spec |
-| 7. Gõ sai từ khóa `requests.cpu` thành `request.cpu` | Từ khóa ResourceQuota spec phân biệt số nhiều | Luôn dùng số nhiều: `requests.cpu` |
-| 8. Alias `k` không hoạt động ở terminal mới | Alias chỉ có hiệu lực ở phiên bash hiện tại | Gõ lại `alias k=kubectl` |
-| 9. Gõ sai `apiVersion` trong Ingress v1 | Dùng `networking.k8s.io/v1beta1` thay vì `v1` | Đổi sang `apiVersion: networking.k8s.io/v1` |
-| 10. `kubectl top` báo lỗi metrics unavailable | Metrics Server bị chậm hoặc rớt kết nối | Đợi 10 giây và thử lại lệnh |
-| 11. Pod `multi-pod` crash do thiếu volume mount | 2 container không cùng mount `emptyDir` log volume | Khai báo `volumeMounts` ở cả 2 container |
-| 12. Quên cờ `secretName` trong Ingress TLS spec | Khai báo thiếu Secret TLS | Bổ sung `spec.tls[0].secretName` |
-| 13. Tệp YAML dry-run bị lỗi syntax | Nhập sai cú pháp cờ `$do` | Gõ lại `export do="--dry-run=client -o yaml"` |
-| 14. Hết giờ làm bài mà chưa hoàn thành 100% | Phân bổ thời gian chưa hợp lý | Rút kinh nghiệm làm câu dễ trước cho bài thi thật |
-
----
-
-## L10. Bài tập mở rộng
-
-- **BT1:** Thực hành làm lại đề thi thử CKAD lần 2 với mục tiêu rút ngắn thời gian làm bài xuống dưới 90 phút.
-- **BT2:** Tự biên soạn một đề thi thử CKAD 16 câu cho đồng nghiệp luyện tập.
-- **BT3:** Viết script Bash tự động dọn dẹp toàn bộ môi trường thi thử sau khi chấm điểm.
-- **BT4:** Phân tích ma trận lỗi sai của bản thân trong lần thi thứ nhất và đưa ra phương án khắc phục.
-- **BT5:** Đăng ký tài khoản thi trên PSI Secure Browser và làm quen với giao diện thi chính thức.
-- **BT6:** Chuẩn bị sẵn sàng tâm lý và không gian phòng thi yên tĩnh cho ngày thi chính thức.
-
----
-
-## L11. Hiện vật nộp và tiêu chí chấm điểm
-
-| Hạng mục hiện vật | Tiêu chí chấm điểm đạt | Thang điểm |
-|---|---|---|
-| Nhật ký 13 Checkpoint | Thực thi thành công 100 % các checkpoint in ra `ĐẠT` | 50 điểm |
-| Bảng điểm Thi thử CKAD | Chạy script tự chấm điểm đạt > 75 / 100 điểm | 40 điểm |
-| Báo cáo rút kinh nghiệm | Trả lời đầy đủ câu hỏi BT1 và BT4 | 10 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ 12 câu dưới đây. Người trả lời phải trình bày mạch lạc trong 60–90 giây mỗi câu, đi thẳng vào cơ chế kỹ thuật và viện dẫn các lệnh CLI thực tế.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Chiến thuật 3 lượt phân bổ 120 phút thi bấm giờ CKAD để đạt điểm tối ưu là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lượt 1 (0-50 phút): Giải quyết 10-12 câu dễ/trung bình để thu 60-70% điểm số.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lượt 2 (50-100 phút): Xử lý các câu khó đã bấm Flagged (thu thêm 20-25% điểm).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lượt 3 (100-120 phút): Rà soát lại Namespace, kiểm tra cờ lệnh và xác minh trạng thái Pod.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không có chiến thuật phân bổ thời gian.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được làm câu dễ trước nhưng chưa rõ 3 lượt thời gian.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo chiến thuật 3 lượt và mốc thời gian cụ thể.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu dính câu khó làm quá 8 phút chưa xong thì phải xử lý thế nào? — Bấm cờ Flagged bỏ qua ngay, làm câu tiếp theo rồi quay lại sau).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Bộ 3 cờ lệnh imperative CLI thần tốc nào giúp tiết kiệm 40% thời gian biên soạn tệp YAML trong phòng thi?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>alias k=kubectl</code> (Gõ k thay cho kubectl).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>export do="--dry-run=client -o yaml"</code> (Sinh khung YAML cực nhanh).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>export now="--force --grace-period=0"</code> (Xóa Pods tức thì).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết các cờ imperative gõ nhanh.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ dry-run nhưng thiếu alias hoặc export.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác bộ 3 cờ lệnh thần tốc và ví dụ áp dụng.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cú pháp sinh khung Deployment Nginx nhanh bằng bộ cờ trên là gì? — <code>k create deploy web --image=nginx $do > deploy.yaml</code>).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tại sao lỗi nhầm lẫn Namespace lại là nguyên nhân gây mất điểm đáng tiếc nhất trong bài thi CKAD?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì script tự động chấm điểm của Linux Foundation kiểm tra đối tượng trong Namespace yêu cầu của đề bài. Nếu thí sinh tạo đúng 100% bản kê khai YAML nhưng lại apply nhầm vào Namespace <code>default</code>, script chấm điểm không tìm thấy đối tượng và cho 0 điểm câu đó.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng script tự động quét tìm đối tượng ở mọi Namespace.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được mất điểm do sai Namespace nhưng chưa rõ cơ chế chấm điểm tự động.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo cơ chế chấm điểm tự động theo Namespace và đưa ra giải pháp phòng ngừa.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Cách phòng ngừa lỗi này tốt nhất ở đầu mỗi câu thi là gì? — Chạy lệnh <code>k config set-context --current --namespace=<required-ns></code>).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Bộ 3 lệnh gỡ rối thần tốc cần gõ ngay khi một Pod trong bài thi bị kẹt trạng thái <code>CrashLoopBackOff</code> là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl describe pod <pod-name> -n <ns></code> (Xem sự kiện Events và lý do crash).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl logs <pod-name> -n <ns></code> (Xem nhật ký ghi log của ứng dụng).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubectl get ep <service-name> -n <ns></code> (Kiểm tra xem Service có đính kèm Pod không).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách chẩn đoán Pod crash.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1-2 lệnh describe hoặc logs.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác bộ 3 lệnh gỡ rối thần tốc và mục đích của từng lệnh.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu container trong Pod đã bị restart nhiều lần và muốn xem log của phiên chạy TRƯỚC ĐÓ thì dùng cờ gì? — Thêm cờ <code>kubectl logs <pod> -p</code> hoặc <code>--previous</code>).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Sự khác biệt về mục đích cấu hình giữa <code>securityContext</code> cấp Pod và cấp Container khi làm câu hỏi Security trong CKAD là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Cấp Pod định nghĩa các thuộc tính chung cho toàn bộ các container bên trong (như <code>runAsUser</code>, <code>runAsGroup</code>, <code>fsGroup</code>). Cấp Container định nghĩa các thuộc tính bảo mật riêng biệt (như <code>readOnlyRootFilesystem: true</code>, <code>allowPrivilegeEscalation: false</code>, <code>capabilities.drop: ["ALL"]</code>).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm lẫn vị trí thuộc tính giữa Pod spec và Container spec.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Pod chung Container riêng nhưng chưa rõ danh sách thuộc tính hỗ trợ.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác các thuộc tính thuộc Pod-level vs Container-level.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cờ <code>readOnlyRootFilesystem: true</code> bị gõ nhầm lên cấp Pod spec thì API Server báo lỗi gì? — Báo lỗi unknown field <code>readOnlyRootFilesystem</code> in PodSecurityContext).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Giải pháp chuẩn nhất để vượt qua câu hỏi thi yêu cầu triển khai Pod vào Namespace có bật <code>ResourceQuota</code> là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bắt buộc phải khai báo đầy đủ khối <code>resources.requests</code> (CPU, RAM) và <code>resources.limits</code> (CPU, RAM) trong container spec của Pod tệp YAML, nếu không API Server sẽ từ chối tạo Pod với lỗi <code>must specify cpu</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết nguyên nhân Pod bị từ chối khi Namespace có Quota.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thêm tài nguyên nhưng chưa làm rõ phải có đủ cả requests và limits.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác cơ chế bắt buộc có khối resources và cú pháp khai báo.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu đề bài đã cài sẵn <code>LimitRange</code> trong Namespace thì Pod thiếu resources có bị chặn không? — Không bị chặn, LimitRange tự động tiêm giá trị <code>default</code>/<code>defaultRequest</code>).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Cú pháp YAML chuẩn của một Ingress rule định tuyến tên miền <code>app.com</code> đường dẫn <code>/api</code> tới Service <code>api-svc</code> cổng 8080 là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: networking.k8s.io/v1</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Ingress</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: app-ingress</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">ingressClassName: nginx</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">rules:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• host: app.com</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">http:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">paths:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: /api</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">pathType: Prefix</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">backend:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">service:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: api-svc</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">port:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">number: 8080</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cấu hình sai cú pháp v1 Ingress.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng rule nhưng gõ nhầm <code>servicePort</code> kiểu v1beta1 cũ.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Viết chuẩn xác 100% bản kê khai Ingress v1.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Trường thuộc tính nào bắt buộc phải có dưới <code>spec</code> để Nginx Ingress Controller tiếp nhận xử lý? — Trường <code>ingressClassName: nginx</code>).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Kỹ thuật làm câu hỏi Sidecar Container trong bài thi CKAD yêu cầu 2 container chia sẻ dữ liệu qua đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Hai container (Main App container và Sidecar Log Reader container) chia sẻ dữ liệu với nhau bằng cách cùng mount vào một <code>emptyDir</code> volume chung tại các đường dẫn thư mục log tương ứng.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cách chia sẻ dữ liệu giữa 2 container trong Pod.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dùng volume nhưng chưa rõ kiểu <code>emptyDir</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo mô hình Sidecar dùng <code>emptyDir</code> volume mount chung.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lệnh CLI nào dùng để xem log của riêng container <code>sidecar</code> trong Pod chứa 2 container? — Lệnh <code>kubectl logs <pod-name> -c <sidecar-container-name></code>).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Sự khác biệt giữa ngưỡng điểm đỗ chứng chỉ CKAD chính thức (66%) và ngưỡng an toàn thi thử (75%) thể hiện điều gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ngưỡng 66% là điểm tối thiểu để được CNCF cấp chứng chỉ. Ngưỡng 75% trong thi thử là rào chắn an toàn giúp thí sinh làm chủ tâm lý, bù đắp các rủi ro phát sinh khi thi thật (như gõ nhầm Namespace, lỗi mạng kết nối hoặc câu hỏi lạ).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết điểm đỗ thi CKAD.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 66% nhưng chưa giải thích được vai trò của ngưỡng 75% thi thử.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác ý nghĩa của ngưỡng điểm an toàn 75% thi thử.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu bài thi thử đạt 78 điểm thì thí sinh đã sẵn sàng thi chứng chỉ quốc tế chưa? — Hoàn toàn sẵn sàng, đạt ngưỡng an toàn tuyệt đối).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Những vật dụng và điều kiện phòng thi nào thí sinh được phép chuẩn bị khi làm bài thi CKAD chính thức qua PSI Browser?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Thí sinh thi trong một phòng riêng yên tĩnh, bàn làm việc sạch sẽ không có tài liệu/thiết bị điện tử khác. Được phép có 1 chai nước trong suốt tháo nhãn. Được phép truy cập duy nhất 1 tab tài liệu chính thức <code>kubernetes.io/docs/</code> tích hợp trong giao diện thi.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết quy định phòng thi PSI.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được phòng riêng nhưng chưa rõ quy định tài liệu K8s docs.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác điều kiện phòng thi và quy định tài liệu K8s docs.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Thí sinh có được phép mở bookmark trình duyệt cá nhân khi thi không? — Không, bắt buộc dùng trình duyệt PSI Secure Browser).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Cột mốc hoàn thành Buổi 45 tốt nghiệp Giai đoạn 2 CKAD mở ra lộ trình chinh phục Giai đoạn 3 tiếp theo là chứng chỉ gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Mở ra Giai đoạn 3 (từ Buổi 46 đến Buổi 65) chinh phục chứng chỉ cao cấp <b style="color: var(--accent-primary);">CKS (Certified Kubernetes Security Specialist)</b> — chứng chỉ chuyên gia bảo mật hàng đầu của CNCF.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết chứng chỉ tiếp theo.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được CKS nhưng chưa rõ tên đầy đủ.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, tự hào về cột mốc tốt nghiệp CKAD và mục tiêu chinh phục CKS Giai đoạn 3.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Chủ đề mở đầu của Buổi 46 trong Giai đoạn 3 CKS là gì? — Chủ đề <code>CKS Network Security Policy: NetworkPolicy Ingress & Egress Hardening</code>).
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. <b style="color: var(--accent-primary);">"Tốt nghiệp Giai đoạn 2 CKAD với điểm thi thử > 75% khẳng định năng lực thực chiến bấm giờ và làm chủ 100% 5 miền kiến thức chứng chỉ CNCF."</b>
-2. <b style="color: var(--accent-primary);">"Luôn làm câu dễ trước, cài đặt bộ alias gõ tắt thần tốc và kiểm tra cờ Namespace ở đầu mỗi câu để đạt điểm số tối đa."</b>
-3. <b style="color: var(--accent-primary);">"Thành thạo bộ 3 lệnh gỡ rối <code>describe pod</code>, <code>logs -p</code>, và <code>get ep</code> để khắc phục sự cố ứng dụng trong vòng 30 giây."</b>
-4. <b style="color: var(--accent-primary);">"Sẵn sàng bước tiếp sang Giai đoạn 3 để chinh phục đỉnh cao bảo mật Kubernetes với chứng chỉ CKS!"</b>
-
----</div>
-</div>
-</details>
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. **"Tốt nghiệp Giai đoạn 2 CKAD với điểm thi thử > 75% khẳng định năng lực thực chiến bấm giờ và làm chủ 100% 5 miền kiến thức chứng chỉ CNCF."**
-2. **"Luôn làm câu dễ trước, cài đặt bộ alias gõ tắt thần tốc và kiểm tra cờ Namespace ở đầu mỗi câu để đạt điểm số tối đa."**
-3. **"Thành thạo bộ 3 lệnh gỡ rối `describe pod`, `logs -p`, và `get ep` để khắc phục sự cố ứng dụng trong vòng 30 giây."**
-4. **"Sẵn sàng bước tiếp sang Giai đoạn 3 để chinh phục đỉnh cao bảo mật Kubernetes với chứng chỉ CKS!"**
-
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
-
-> [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này
-
-Khối luyện đề giúp học viên rèn luyện phản xạ gõ lệnh tốc độ cao cho 4 câu hỏi thuộc **5 miền chứng chỉ CKAD**. Trọng tâm bài luyện là kiểm tra kỹ năng phối hợp các miền (Multi-container Pod, RollingUpdate, SecurityContext Hardening, Ingress TLS) từ terminal CLI dưới áp lực bấm giờ. Tổng thời gian làm bài và tự chấm là đúng 30 phút (1.800 giây).
-
----
-
-## T1. Luật chơi
-
-1. Mở duy nhất 1 cửa sổ Terminal và 1 tab trình duyệt truy cập tài liệu chính thức `https://kubernetes.io/docs/`.
-2. Không sử dụng công cụ AI, không copy/paste các mẫu YAML sẵn từ ngoài tài liệu chính thức.
-3. Sử dụng tối đa các alias rút gọn (`k` cho `kubectl`).
-4. Tổng thời gian thực hiện 4 câu: **21 phút** (1.260 giây). Thời gian tự chấm bằng script: **9 phút** (540 giây).
-
----
-
-## T2. Bốn câu kiểu đề thi
-
-### Câu T2.1 — CKAD · Application Design — 300 giây
-Tạo Pod `logger-pod` trong Namespace `prod`:
-- Main container `web` (ảnh `nginx:alpine`), mount volume `text-vol` vào `/var/log/nginx`
-- Sidecar container `adapter` (ảnh `busybox:1.36`), command `sh -c "tail -f /var/log/nginx/access.log"`
-- Volume `text-vol` kiểu `emptyDir`
-
-### Câu T2.2 — CKAD · Application Deployment — 300 giây
-Tạo Deployment `api-deploy` trong Namespace `prod`:
-- Ảnh container `nginx:1.24`, số lượng replicas `4`
-- Thực hiện Rollout Update nâng cấp ảnh sang `nginx:alpine`
-- Xác minh lịch sử Rollout thành công
-
-### Câu T2.3 — CKAD · Environment & Config — 300 giây
-Tạo Pod `hardened-web` trong Namespace `prod`:
-- Cấu hình `securityContext` cấp Pod: `runAsNonRoot: true`, `runAsUser: 2000`
-- Cấu hình `securityContext` cấp Container: `readOnlyRootFilesystem: true`, `capabilities.drop: ["ALL"]`, `capabilities.add: ["NET_BIND_SERVICE"]`
-- Mount `emptyDir` volume vào `/tmp`
-
-### Câu T2.4 — CKAD · Services & Networking — 360 giây
-Tạo Ingress `api-ingress` trong Namespace `prod`:
-- `ingressClassName: nginx`
-- Host `api.example.com`, đường dẫn `/api` (`pathType: Prefix`)
-- Backend service `backend-svc` cổng `80`
-- Cấu hình HTTPS TLS Termination dùng TLS Secret `api-tls-secret`
-
----
-
-## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
-
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: logger-pod
-  namespace: prod
-spec:
-  containers:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: web</div>
-      image: nginx:alpine
-      volumeMounts:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: log-vol</div>
-          mountPath: /var/log/nginx
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: adapter</div>
-      image: busybox:1.36
-      command: ["sh", "-c", "tail -f /var/log/nginx/access.log"]
-      volumeMounts:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: log-vol</div>
-          mountPath: /var/log/nginx
-  volumes:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: log-vol</div>
-      emptyDir: {}
-EOF
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-kubectl create deployment api-deploy --image=nginx:1.24 --replicas=4 -n prod
-kubectl set image deployment/api-deploy nginx=nginx:alpine -n prod
-kubectl rollout status deployment/api-deploy -n prod
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hardened-web
-  namespace: prod
+  name: secure-vault
+  namespace: ckad-lab
 spec:
   securityContext:
     runAsNonRoot: true
     runAsUser: 2000
+    runAsGroup: 3000
+    fsGroup: 4000
   containers:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: web</div>
-      image: nginx:alpine
-      securityContext:
-        readOnlyRootFilesystem: true
-        capabilities:
-          drop: ["ALL"]
-          add: ["NET_BIND_SERVICE"]
-      volumeMounts:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: tmp-dir</div>
-          mountPath: /tmp
+  - name: worker
+    image: busybox:1.36
+    command: ["sleep", "3600"]
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+        add: ["NET_BIND_SERVICE"]
+    volumeMounts:
+    - name: tmp-scratch
+      mountPath: /tmp
   volumes:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: tmp-dir</div>
-      emptyDir: {}
-EOF
+  - name: tmp-scratch
+    emptyDir: {}
 ```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
 ```bash
-# Tạo Service & Secret giả lập:
-kubectl create service clusterip backend-svc --tcp=80:80 -n prod 2>/dev/null || true
-kubectl create secret tls api-tls-secret --cert=/tmp/dummy.crt --key=/tmp/dummy.key -n prod 2>/dev/null || true
+kubectl apply -f q2-security.yaml
+kubectl wait --for=condition=ready pod/secure-vault --timeout=30s
+kubectl exec secure-vault -- id
+```
 
-cat <<EOF | kubectl apply -f -
+---
+
+### Bước 3: Cấu Hình Projected Volume Hợp Nhất (Câu 5 & 6)
+
+**Yêu cầu**: Tạo ConfigMap `app-config` (`env=prod`) và Secret `db-secret` (`pass=S3cret`). Mount cả hai vào Pod `config-pod` tại cùng thư mục `/etc/projected`.
+
+```bash
+kubectl create configmap app-config --from-literal=env=prod
+kubectl create secret generic db-secret --from-literal=pass=S3cret
+```
+
+Tạo file `q3-projected.yaml`:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-pod
+  namespace: ckad-lab
+spec:
+  containers:
+  - name: app
+    image: busybox:1.36
+    command: ["sleep", "3600"]
+    volumeMounts:
+    - name: all-configs
+      mountPath: /etc/projected
+      readOnly: true
+  volumes:
+  - name: all-configs
+    projected:
+      sources:
+      - configMap:
+          name: app-config
+      - secret:
+          name: db-secret
+```
+```bash
+kubectl apply -f q3-projected.yaml
+kubectl wait --for=condition=ready pod/config-pod --timeout=30s
+kubectl exec config-pod -- ls -la /etc/projected
+```
+
+---
+
+### Bước 4: Khởi Tạo Job Song Song & CronJob Định Kỳ (Câu 7 & 8)
+
+**Yêu cầu**: Tạo Job `batch-calculator` chạy image `busybox:1.36` tính `expr 33 \* 3`, cần `completions: 4`, `parallelism: 2`, `backoffLimit: 3`.
+
+Tạo file `q4-job.yaml`:
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batch-calculator
+  namespace: ckad-lab
+spec:
+  completions: 4
+  parallelism: 2
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: calc
+        image: busybox:1.36
+        command: ["sh", "-c", "expr 33 \\* 3 && sleep 2"]
+```
+```bash
+kubectl apply -f q4-job.yaml
+kubectl wait --for=condition=complete job/batch-calculator --timeout=60s
+```
+
+---
+
+### Bước 5: Quản Lý Deployment Rollout & Canary (Câu 9 & 10)
+
+**Yêu cầu**: Triển khai Deployment `web-app` (image `nginx:1.24`, replicas: 3). Nâng cấp lên `nginx:1.25`, theo dõi rollout và thực hiện rollback về phiên bản trước.
+
+```bash
+kubectl create deployment web-app --image=nginx:1.24 --replicas=3
+kubectl rollout status deployment/web-app
+
+# Cập nhật phiên bản image
+kubectl set image deployment/web-app nginx=nginx:1.25 --record
+kubectl rollout status deployment/web-app
+
+# Rollback ngay lập tức
+kubectl rollout undo deployment/web-app
+kubectl rollout status deployment/web-app
+```
+
+---
+
+### Bước 6: Cấu Hình Health Probes (Câu 11 & 12)
+
+**Yêu cầu**: Tạo Pod `probe-app` chạy `nginx:alpine` với:
+- `startupProbe`: HTTP GET `/`, delay 5s, period 5s, failureThreshold 10.
+- `livenessProbe`: HTTP GET `/`, period 10s.
+- `readinessProbe`: HTTP GET `/`, period 5s.
+
+Tạo file `q6-probes.yaml`:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe-app
+  namespace: ckad-lab
+spec:
+  containers:
+  - name: web
+    image: nginx:alpine
+    ports:
+    - containerPort: 80
+    startupProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 10
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      periodSeconds: 5
+```
+```bash
+kubectl apply -f q6-probes.yaml
+kubectl wait --for=condition=ready pod/probe-app --timeout=30s
+```
+
+---
+
+### Bước 7: Mạng L4/L7 Với Ingress & TLS (Câu 13 & 14)
+
+**Yêu cầu**: Expose Deployment `web-app` qua Service `web-service` cổng 80, tạo Ingress định tuyến `host: shop.lab`, đường dẫn `/` trỏ vào `web-service:80`.
+
+```bash
+kubectl expose deployment web-app --name=web-service --port=80 --target-port=80
+```
+
+Tạo file `q7-ingress.yaml`:
+```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: api-ingress
-  namespace: prod
+  name: shop-ingress
+  namespace: ckad-lab
 spec:
   ingressClassName: nginx
-  tls:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• hosts:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• api.example.com</div>
-      secretName: api-tls-secret
   rules:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• host: api.example.com</div>
-      http:
-        paths:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: /api</div>
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-svc
-                port:
-                  number: 80
-EOF
+  - host: shop.lab
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-service
+            port:
+              number: 80
+```
+```bash
+kubectl apply -f q7-ingress.yaml
+kubectl get ingress shop-ingress
 ```
 
 ---
+
+### Bước 8: NetworkPolicy & Dọn Dẹp (Câu 15 & 16)
+
+**Yêu cầu**: Áp dụng NetworkPolicy chỉ cho phép traffic đi vào `web-app` từ các Pod có nhãn `role: frontend` trên port 80.
+
+Tạo file `q8-netpol.yaml`:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-only
+  namespace: ckad-lab
+spec:
+  podSelector:
+    matchLabels:
+      app: web-app
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 80
+```
+```bash
+kubectl apply -f q8-netpol.yaml
+kubectl get netpol allow-frontend-only
+
+# Dọn dẹp toàn bộ tài nguyên đề thi thử
+kubectl delete ns ckad-lab
+```
+
+---
+
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
+
+<details class="qa-card">
+<summary><b>1. Cú pháp một dòng để xuất YAML template của một Pod mà không thực sự tạo Pod là gì?</b></summary>
+<div class="qa-answer">
+<pre><code>kubectl run my-pod --image=nginx --dry-run=client -o yaml &gt; pod.yaml</code></pre>
 </div>
 </details>
 
-## T4. Bẫy hay gặp
+<details class="qa-card">
+<summary><b>2. Làm thế nào để thay đổi Namespace mặc định cho toàn bộ các lệnh kubectl tiếp theo trong kỳ thi?</b></summary>
+<div class="qa-answer">
+<pre><code>kubectl config set-context --current --namespace=&lt;target-namespace&gt;</code></pre>
+</div>
+</details>
 
-| Bẫy hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|
-| 1. Quên mount `emptyDir` ở cả 2 container | Mất 25 điểm (Câu 1) | Container sidecar không đọc được log |
-| 2. Quên cờ `-n prod` khi set image Rollout | Mất 25 điểm (Câu 2) | Deployment ở prod không được nâng cấp |
-| 3. Quên mount `emptyDir` vào `/tmp` khi bật read-only | Mất 25 điểm (Câu 3) | Pod kẹt lỗi Read-only file system |
-| 4. Gõ sai từ khóa `number: 80` trong Ingress backend | Mất 25 điểm (Câu 4) | API Server báo lỗi unknown field |
-| 5. Quên cờ `ingressClassName: nginx` | Mất 25 điểm (Câu 4) | Ingress không được Controller tiếp nhận |
+<details class="qa-card">
+<summary><b>3. Lệnh nào giúp xóa cưỡng bức một Pod bị treo ở trạng thái Terminating trong 0 giây?</b></summary>
+<div class="qa-answer">
+<pre><code>kubectl delete pod &lt;pod-name&gt; --grace-period=0 --force</code></pre>
+</div>
+</details>
+
+<details class="qa-card">
+<summary><b>4. Khi gặp một câu hỏi yêu cầu sửa Deployment nhưng bị báo lỗi cú pháp không thể lưu, cách xử lý nhanh nhất là gì?</b></summary>
+<div class="qa-answer">
+<p>Kube-editor sẽ tự động lưu bản nháp bị lỗi tại thư mục tạm (ví dụ <code>/tmp/kubectl-edit-xxxx.yaml</code>). Bạn có thể mở trực tiếp file tạm đó ra chỉnh sửa lại các lỗi thụt đầu dòng (indentation) rồi chạy lệnh: <code>kubectl apply -f /tmp/kubectl-edit-xxxx.yaml</code>.</p>
+</div>
+</details>
+
+<details class="qa-card">
+<summary><b>5. Sự khác biệt giữa `restartPolicy: Always`, `OnFailure`, và `Never` khi áp dụng cho Pod thông thường vs Job là gì?</b></summary>
+<div class="qa-answer">
+<p><b>Pod thông thường:</b> Mặc định là <code>Always</code>.</p>
+<p><b>Batch Job:</b> Chỉ chấp nhận <code>OnFailure</code> hoặc <code>Never</code>. Nếu cố tình đặt <code>Always</code> cho Job, API Server sẽ báo lỗi từ chối tạo manifest ngay lập tức.</p>
+</div>
+</details>
+
+<details class="qa-card">
+<summary><b>6. Cú pháp lệnh kubectl imperative để tạo nhanh một Ingress với host và backend service là gì?</b></summary>
+<div class="qa-answer">
+<pre><code>kubectl create ingress &lt;ing-name&gt; --rule="app.lab/*=app-svc:80" --class=nginx</code></pre>
+</div>
+</details>
+
+<details class="qa-card">
+<summary><b>7. Làm thế nào để nhanh chóng kiểm tra tài liệu định dạng của một trường sâu bên trong Pod spec mà không cần mở trình duyệt web?</b></summary>
+<div class="qa-answer">
+<p>Sử dụng lệnh: <code>kubectl explain &lt;resource&gt;.&lt;field&gt;</code> (ví dụ: <code>kubectl explain pod.spec.containers.securityContext.capabilities</code>).</p>
+</div>
+</details>
+
+<details class="qa-card">
+<summary><b>8. Khi nào thì một Container rơi vào trạng thái `CrashLoopBackOff` và lệnh đầu tiên bạn nên chạy để debug là gì?</b></summary>
+<div class="qa-answer">
+<p>Xảy ra khi tiến trình chính của container khởi động rồi kết thúc với mã lỗi khác 0 nhiều lần liên tiếp. Lệnh kiểm tra đầu tiên: <code>kubectl logs &lt;pod-name&gt; --previous</code> (đọc log của lần crash trước đó) và <code>kubectl describe pod &lt;pod-name&gt;</code>.</p>
+</div>
+</details>
+
+<details class="qa-card">
+<summary><b>9. Làm thế nào để lọc và in ra danh sách tên của tất cả các Pods đang chạy mà không hiển thị các cột header?</b></summary>
+<div class="qa-answer">
+<pre><code>kubectl get pods -o jsonpath='{.items[*].metadata.name}'</code></pre>
+<p>Hoặc dùng: <code>kubectl get pods --no-headers -o custom-columns=":metadata.name"</code></p>
+</div>
+</details>
+
+<details class="qa-card">
+<summary><b>10. Chiến lược xử lý khi gặp một câu hỏi quá khó hoặc tốn nhiều thời gian (> 8 phút) trong phòng thi CKAD là gì?</b></summary>
+<div class="qa-answer">
+<p>Ghi chú lại số thứ tự câu hỏi vào Notepad dự phòng trên giao diện thi, <b>nhấn Next để bỏ qua ngay lập tức</b> và giải quyết hết tất cả các câu hỏi dễ còn lại. Sau khi hoàn thành các câu dễ và nắm chắc 70-75% điểm số, quay lại xử lý các câu khó trong thời gian còn lại.</p>
+</div>
+</details>
 
 ---
 
-## T5. Bảng tự chấm và Script chấm điểm tự động
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-### Đoạn script tự kiểm tra và in điểm (Không phụ thuộc vào `jq`)
-
-```bash
-#!/bin/bash
-SCORE=0
-
-echo "=== KẾT QUẢ TỰ CHẤM BÀI Ô THI BUỔI 45 (TỐT NGHIỆP CKAD) ==="
-
-# Kiểm câu 1
-LOG_CNT=$(kubectl get pod logger-pod -n prod -o jsonpath='{.spec.containers[*].name}' 2>/dev/null)
-if [[ "$LOG_CNT" == *"adapter"* ]]; then
-    echo "Câu 1: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 1: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 2
-IMG_VER=$(kubectl get deploy api-deploy -n prod -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null)
-if [[ "$IMG_VER" == *"alpine"* ]]; then
-    echo "Câu 2: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 2: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 3
-SEC_USR=$(kubectl get pod hardened-web -n prod -o jsonpath='{.spec.securityContext.runAsUser}' 2>/dev/null)
-if [ "$SEC_USR" == "2000" ]; then
-    echo "Câu 3: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 3: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 4
-ING_HOST=$(kubectl get ingress api-ingress -n prod -o jsonpath='{.spec.rules[0].host}' 2>/dev/null)
-if [ "$ING_HOST" == "api.example.com" ]; then
-    echo "Câu 4: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 4: THẤT BẠI (0đ)"
-fi
-
-echo "=========================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ $SCORE -ge 75 ]; then
-    echo "ĐÁNH GIÁ: ĐẠT NGƯỠNG AN TOÀN - CHÚC MỪNG BẠN ĐÃ TỐT NGHIỆP GIAI ĐOẠN 2 CKAD!"
-else
-    echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
-fi
+```mermaid
+mindmap
+  root((CKAD MOCK EXAM))
+    Chien Thuat 120 Phut
+      Set context va namespace dau tien
+      Imperative dry-run sinh YAML
+      Check logs va endpoints ngay
+    5 Mien Kien Thuc
+      App Design & Build (20%)
+      App Deployment (20%)
+      Observability & Maintenance (15%)
+      Environment & Security (25%)
+      Services & Networking (20%)
+    Ky Luat Phong Thi
+      Khong go tay YAML tu dau
+      Sao luu file goc truoc khi sua
+      Bo qua cau kho de tich luy diem
 ```
 
----
-
-## T6. Kho lệnh rút gọn của buổi
-
-```bash
-# Alias thi thần tốc
-alias k=kubectl
-export do="--dry-run=client -o yaml"
-export now="--force --grace-period=0"
-
-# Rollout status
-kubectl rollout status deployment/<name> -n <ns>
-
-# Ingress TLS Template
-spec:
-  ingressClassName: nginx
-  tls: [{hosts: [api.com], secretName: tls-secret}]
-  rules:
-    - host: api.com
-      http:
-        paths:
-          - path: /api
-            pathType: Prefix
-            backend: {service: {name: api-svc, port: {number: 80}}}
-```
-
-
----
-
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+Hoàn thành bài thi thử toàn diện 16 câu hỏi giúp bạn kiểm chứng trọn vẹn năng lực thực chiến, rèn luyện tâm lý phòng thi vững vàng và sẵn sàng 100% để chinh phục chứng chỉ quốc tế CKAD.
 
 > [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 16] Tổng Ôn Tốc Độ CKAD: Giải Quyết 20 Bài Tập Thực Hành Ứng Dụng Trong 90 Phút](ckad-16-16-tong-on-ckad-toc-do.html).
-
+> **Bài học tiếp theo**: Tổng ôn toàn bộ khóa học với **[Bài 16: Tổng Ôn Tốc Độ CKAD: 100+ Lệnh Thực Chiến & Kỹ Năng Về Đích](ckad-16-16-tong-on-ckad-toc-do.html)**.
 {% endraw %}

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Bài 04] Học Đa Phương Thức (Multimodal Learning): Chiến Lược Hợp Nhất Early, Late, Hybrid Fusion & Cross-Attention"
-date: 2026-09-16 11:00:00 +0700
+date: 2026-09-16 07:30:00 +0700
 categories: [EEG]
 tags:
   - EEG

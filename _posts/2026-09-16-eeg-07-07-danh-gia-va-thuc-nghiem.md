@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Bài 07] Đánh Giá & Thực Nghiệm: Cross-Validation Subject-Independent, Metrics F1/AUC, Ablation Study & Phân Tích Thống Kê"
-date: 2026-09-16 14:00:00 +0700
+date: 2026-09-16 07:00:00 +0700
 categories: [EEG]
 tags:
   - EEG

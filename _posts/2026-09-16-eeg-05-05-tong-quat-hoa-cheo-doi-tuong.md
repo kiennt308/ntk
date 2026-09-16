@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Bài 05] Tổng Quát Hóa Chéo Đối Tượng (Cross-Subject Generalization): Domain Adaptation, DANN, MMD & Contrastive Learning"
-date: 2026-09-16 12:00:00 +0700
+date: 2026-09-16 07:20:00 +0700
 categories: [EEG]
 tags:
   - EEG

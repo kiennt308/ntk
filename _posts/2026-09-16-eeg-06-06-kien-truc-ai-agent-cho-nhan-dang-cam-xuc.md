@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Bài 06] Kiến Trúc AI Agent Cho Nhận Dạng Cảm Xúc Thời Gian Thực: Streaming Pipeline, Multi-Agent & Edge Deployment"
-date: 2026-09-16 13:00:00 +0700
+date: 2026-09-16 07:10:00 +0700
 categories: [EEG]
 tags:
   - EEG

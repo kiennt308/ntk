@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Bài 02] Xử Lý Tín Hiệu Y Sinh Cơ Bản: Bộ Lọc Số, Khử Nhiễu ICA, Biến Đổi Sóng Con Wavelet & Trích Xuất Đặc Trưng"
-date: 2026-09-16 09:00:00 +0700
+date: 2026-09-16 07:50:00 +0700
 categories: [EEG]
 tags:
   - EEG

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Bài 03] Học Sâu Cho Tín Hiệu Y Sinh: Kiến Trúc CNN Không Gian-Thời Gian, BiLSTM, EEGNet & Vision Transformer"
-date: 2026-09-16 10:00:00 +0700
+date: 2026-09-16 07:40:00 +0700
 categories: [EEG]
 tags:
   - EEG

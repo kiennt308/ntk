@@ -3,12 +3,26 @@ layout: post
 title: "[Bài 01] Tổng Quan Về Cảm Xúc & Tín Hiệu Y Sinh: Mô Hình Circumplex, Điện Não Đồ EEG, ECG & GSR"
 date: 2026-09-16 08:00:00 +0700
 categories: [EEG]
-tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
+tags:
+  - EEG
+  - BCI
+  - EmotionRecognition
+  - SignalProcessing
+  - AffectiveComputing
+  - Neuroscience
 series: "EEG & Emotion Recognition AI"
 series_order: 1
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=1200&q=80"
 summary: "Khám phá bản chất sinh lý thần kinh của cảm xúc, mô hình không gian 2D Valence-Arousal, cơ chế phát sinh sóng não EEG theo chuẩn 10-20, chỉ số bất đối xứng sóng Alpha (FAA), các tín hiệu ngoại biên ECG/HRV/GSR và thuật toán trích xuất đặc trưng Differential Entropy (DE)."
+description: "Tổng quan toàn diện về tín hiệu y sinh trong AI nhận dạng cảm xúc: Mô hình Circumplex của Russell, cơ chế phát sinh sóng não EEG theo chuẩn 10-20, chỉ số bất đối xứng sóng Alpha (FAA), và thuật toán trích xuất Differential Entropy."
+keywords:
+  - eeg emotion recognition
+  - circumplex model
+  - valence arousal
+  - frontal alpha asymmetry
+  - differential entropy
+  - biomedical signals
 tldr:
   - "Cảm xúc là phản ứng phức hợp gồm trải nghiệm chủ quan, hoạt động thần kinh tự chủ (ANS) và biểu hiện hành vi."
   - "Mô hình Circumplex của Russell định vị mọi trạng thái cảm xúc trên hệ tọa độ 2D: Valence (Hóa trị) và Arousal (Mức độ kích thích)."
@@ -17,15 +31,19 @@ tldr:
   - "Đặc trưng Differential Entropy (DE) vượt trội hơn PSD truyền thống trong phân loại cảm xúc nhờ tính ổn định dải động phương sai."
 ---
 {% raw %}
-# Tổng Quan Về Cảm Xúc & Tín Hiệu Y Sinh: Mô Hình Circumplex, Điện Não Đồ EEG, ECG & GSR
-
-Trong kỷ nguyên giao tiếp thông minh giữa người và máy (**Human-Computer Interaction - HCI**) cùng sự phát triển vũ bão của trí tuệ nhân tạo, khả năng thấu hiểu trạng thái cảm xúc con người (**Affective Computing**) đã trở thành một trong những mục tiêu nghiên cứu đột phá nhất. Thay vì chỉ dựa vào các biểu hiện bên ngoài có thể bị che giấu hoặc giả mạo như nét mặt hay giọng nói, việc thu thập và phân tích trực tiếp các **tín hiệu y sinh** (<span class="badge badge--purple">Biomedical Signals</span>) từ hệ thần kinh trung ương và ngoại biên mở ra cánh cửa giải mã chân thực nhất trạng thái tâm lý và cảm xúc của con người.
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Thấu hiểu cơ chế sinh học thần kinh phát sinh tín hiệu điện thế sau synapse (PSP) vỏ não và hệ thần kinh tự chủ (ANS).
+> - Nắm vững biểu diễn toán học của mô hình cảm xúc không gian 2D Valence-Arousal (Russell Circumplex Model).
+> - Phân loại và phân tích 5 dải tần sóng não EEG: Delta (0.5-4Hz), Theta (4-8Hz), Alpha (8-13Hz), Beta (13-30Hz), Gamma (>30Hz).
+> - Tính toán chỉ số bất đối xứng sóng Alpha vùng trán (Frontal Alpha Asymmetry - FAA) và chứng minh công thức Differential Entropy (DE).
+> - Thiết lập pipeline tiền xử lý và trích xuất đặc trưng đa phương thức (Multimodal Feature Extraction) bằng Python.
 
 ---
 
-## 1. Bản Chất Sinh Học Của Cảm Xúc
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Bản Chất Sinh Lý & Không Gian Cảm Xúc
 
-Cảm xúc (*emotion*) không đơn thuần là một cảm giác trừu tượng mà là một chuỗi phản ứng sinh lý thần kinh phức tạp liên quan đến ba thành phần cốt lõi:
+Trong kỷ nguyên giao tiếp thông minh giữa người và máy (**Human-Computer Interaction - HCI**) cùng sự phát triển vũ bão của trí tuệ nhân tạo, khả năng thấu hiểu trạng thái cảm xúc con người (**Affective Computing**) đã trở thành một trong những mục tiêu nghiên cứu đột phá nhất. Thay vì chỉ dựa vào các biểu hiện bên ngoài có thể bị che giấu hoặc giả mạo như nét mặt hay giọng nói, việc thu thập và phân tích trực tiếp các **tín hiệu y sinh** (Biomedical Signals) từ hệ thần kinh trung ương và ngoại biên mở ra cánh cửa giải mã chân thực nhất trạng thái tâm lý và cảm xúc của con người.
 
 ```mermaid
 flowchart LR
@@ -46,33 +64,7 @@ flowchart LR
     style E3 fill:none,stroke:#f59e0b,stroke-width:1.5px
 ```
 
-* **Trải nghiệm chủ quan:** Cách cá nhân tự ý thức và gọi tên cảm xúc của bản thân (vui vẻ, sợ hãi, buồn bã).
-* **Phản ứng sinh lý:** Các biến đổi tức thời bên trong cơ thể được điều khiển bởi <strong style="color: var(--accent-primary);">Hệ thần kinh tự chủ (Autonomic Nervous System - ANS)</strong> và <strong style="color: var(--accent-primary);">Hệ thần kinh trung ương (CNS)</strong> như thay đổi nhịp tim, điện não, độ dẫn da và trương lực cơ.
-* **Biểu hiện hành vi:** Các phản xạ vận động ra bên ngoài như dãn đồng tử, co cơ mặt, biến đổi ngữ điệu âm thanh.
-
-> [!NOTE]
-> **PHÂN BIỆT CẢM XÚC (EMOTION) VÀ TÂM TRẠNG (MOOD):**
-> Cảm xúc là phản ứng ngắn hạn (kéo dài từ vài giây đến vài phút) xuất hiện do một tác nhân kích thích cụ thể. Ngược lại, tâm trạng là trạng thái cảm xúc nền kéo dài (vài giờ hoặc vài ngày) với cường độ thấp hơn và thường không gắn liền với một sự kiện kích hoạt rõ ràng.
-
----
-
-## 2. Các Mô Hình Biểu Diễn Cảm Xúc Trong AI
-
-Để máy tính và các thuật toán học máy có thể xử lý, cảm xúc cần được chuẩn hóa thành các mô hình toán học rõ ràng:
-
-### 2.1. Mô hình cảm xúc rời rạc (Discrete Emotion Model)
-Được đề xuất bởi nhà tâm lý học **Paul Ekman**, mô hình này phân chia phổ cảm xúc của con người thành $6$ loại cảm xúc cơ bản mang tính phổ quát sinh học trên toàn thế giới:
-1. <span class="badge badge--emerald">Vui vẻ (Happy)</span>
-2. <span class="badge badge--primary">Buồn bã (Sad)</span>
-3. <span class="badge badge--rose">Giận dữ (Angry)</span>
-4. <span class="badge badge--rose">Sợ hãi (Fear)</span>
-5. <span class="badge badge--amber">Ngạc nhiên (Surprise)</span>
-6. <span class="badge badge--purple">Ghê tởm (Disgust)</span>
-
-* **Ưu điểm:** Rất trực quan, phù hợp cho bài toán phân loại đa lớp thông thường (*Multi-class Classification*).
-* **Hạn chế:** Không thể diễn tả được các trạng thái cảm xúc pha trộn (vừa vui mừng vừa âu lo) và thiếu tính liên tục về cường độ.
-
-### 2.2. Mô hình không gian 2 chiều Circumplex của Russell
+### 1.1. Không Gian Cảm Xúc 2D Circumplex Của Russell
 
 Nhà tâm lý học James Russell (1980) đã trừu tượng hóa mọi trạng thái cảm xúc thành các điểm tọa độ $(v, a)$ trong không gian hai chiều liên tục:
 
@@ -111,91 +103,24 @@ flowchart TD
     style Q4 fill:none,stroke:#06b6d4,stroke-width:1.5px
 ```
 
-1. <strong style="color: var(--accent-emerald);">Trục Hoành - Valence (Hóa trị cảm xúc):</strong> Trải dài từ Tiêu cực ($-1$) đến Tích cực ($+1$), biểu thị mức độ dễ chịu hay khó chịu.
-2. <strong style="color: var(--accent-amber);">Trục Tung - Arousal (Mức độ kích hoạt sinh lý):</strong> Trải dài từ Thấp ($-1$) đến Cao ($+1$), biểu thị mức độ tỉnh táo, hưng phấn và năng lượng thần kinh.
-
-Vector trạng thái cảm xúc $e$ được định nghĩa:
-
-$$e = (v, a) \quad \text{với } v, a \in [-1, 1]$$
-
-Khoảng cách Euclidean giữa hai trạng thái cảm xúc $e_1 = (v_1, a_1)$ và $e_2 = (v_2, a_2)$:
-
-$$d(e_1, e_2) = \sqrt{(v_1 - v_2)^2 + (a_1 - a_2)^2}$$
-
-### 2.3. Bảng So Sánh Các Mô Hình Cảm Xúc
-
-| Tiêu Chí So Sánh | Mô Hình Rời Rạc (Discrete) | Mô Hình Không Gian Circumplex |
-| :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | **Cấu trúc nhãn** | Nhãn danh định hữu hạn ($6 - 9$ nhãn cơ bản) | Không gian vector thực liên tục $(v, a) \in \mathbb{R}^2$ |
-| <span class="badge badge--cyan">02</span> | **Dạng bài toán AI** | Phân loại đa lớp (*Multi-class Classification*) | Hồi quy (*Regression*) hoặc Phân loại góc phần tư (*Quadrant*) |
-| <span class="badge badge--emerald">03</span> | **Dataset tiêu biểu** | SEED, FACED, SEED-IV | DEAP, DREAMER, MAHNOB-HCI |
-| <span class="badge badge--amber">04</span> | **Khả năng khái quát** | Bị gò bó trong các khuôn mẫu cứng | Biểu diễn được toàn bộ các sắc thái chuyển tiếp mịn |
+1. **Trục Hoành - Valence (Hóa trị cảm xúc):** Trải dài từ Tiêu cực ($-1$) đến Tích cực ($+1$), biểu thị mức độ dễ chịu hay khó chịu.
+2. **Trục Tung - Arousal (Mức độ kích hoạt sinh lý):** Trải dài từ Thấp ($-1$) đến Cao ($+1$), biểu thị mức độ tỉnh táo, hưng phấn và năng lượng thần kinh.
 
 ---
 
-## 3. Hệ Thần Kinh Tự Chủ (ANS) & Các Tín Hiệu Y Sinh
+### 1.2. Phân Tích 5 Dải Tần Số Sóng Não EEG
 
-Khi gặp kích thích cảm xúc, **Hệ thần kinh tự chủ (ANS)** tự động điều phối cơ thể thông qua hai nhánh đối kháng:
-
-```mermaid
-flowchart TD
-    subgraph ANS["⚡ HỆ THỐNG ĐIỀU HÒA THẦN KINH TỰ CHỦ (ANS)"]
-        direction TB
-        SNS["🔴 HỆ GIAO CẢM (SNS)<br/>Chiến đấu hoặc Bỏ chạy (Fight or Flight)"]
-        PNS["🟢 HỆ PHÓ GIAO CẢM (PNS)<br/>Nghỉ ngơi và Phục hồi (Rest and Digest)"]
-    end
-
-    SNS -->|"Kích hoạt"| OUT_SNS["• Nhịp tim tăng vọt (HR ↑)<br/>• Độ dẫn da tăng (GSR ↑)<br/>• Dãn phế quản, ức chế tiêu hóa<br/>• Arousal Cao (Sợ hãi / Giận dữ)"]
-    PNS -->|"Kích hoạt"| OUT_PNS["• Nhịp tim chậm lại (HR ↓)<br/>• Tăng biến thiên nhịp tim (RMSSD ↑)<br/>• Tăng cường tiêu hóa, co đồng tử<br/>• Arousal Thấp (Thư giãn / Bình yên)"]
-
-    style ANS fill:none,stroke:#6366f1,stroke-width:1.75px
-    style SNS fill:none,stroke:#f43f5e,stroke-width:1.5px
-    style PNS fill:none,stroke:#10b981,stroke-width:1.5px
-    style OUT_SNS fill:none,stroke:#f59e0b,stroke-width:1.5px
-    style OUT_PNS fill:none,stroke:#06b6d4,stroke-width:1.5px
-```
-
-### 3.1. Bảng Tổng Hợp Các Loại Tín Hiệu Y Sinh
-
-| Tín Hiệu | Bản Chất Vật Lý Đo Lường | Mối Liên Hệ Với Cảm Xúc | Ưu Điểm Nổi Bật | Thách Thức Kỹ Thuật |
-| :---: | :--- | :--- | :--- | :--- |
-| <span class="badge badge--purple">EEG</span> | Điện thế sau synapse vỏ não | Phản ánh hoạt động nhận thức và cảm xúc sâu | Độ phân giải thời gian cao (mili-giây) | Tỷ số SNR thấp, nhiều nhiễu cơ học |
-| <span class="badge badge--rose">ECG</span> | Hoạt động điện thế cơ tim | Kích hoạt giao cảm/phó giao cảm qua HRV | Tín hiệu mạnh, dạng sóng chuẩn rõ ràng | Độ trễ phản ứng chậm hơn EEG |
-| <span class="badge badge--amber">GSR</span> | Độ dẫn điện bề mặt da | Đo lường thuần túy mức độ kích thích Arousal | Cảm biến đơn giản, độ nhạy cao với stress | Không phân biệt được chiều Valence |
-| <span class="badge badge--indigo">EMG</span> | Điện thế co cơ bề mặt | Phát hiện vi biểu cảm cơ mặt (chau mày, cười) | Bắt trọn phản ứng cảm xúc vi mô tức thì | Rất nhạy cảm với chuyển động cơ thể |
-
----
-
-## 4. Tín Hiệu Điện Não Đồ (EEG) & Chuẩn Quốc Tế 10-20
-
-**EEG** (*Electroencephalogram*) là tín hiệu y sinh trung tâm trong các nghiên cứu BCI (*Brain-Computer Interface*). Tín hiệu này phản ánh sự thay đổi điện thế do dòng ion phát sinh trong quá trình truyền xung thần kinh qua các synapse của hàng triệu nơ-ron hình tháp (*pyramidal neurons*) ở vỏ não.
-
-### 4.1. Hệ thống định vị điện cực chuẩn quốc tế 10-20
-Quy tắc 10-20 chia hộp sọ thành các khoảng cách tỷ lệ $10\%$ và $20\%$ giữa các mốc giải phẫu: **Nasion** (gốc sống mũi) và **Inion** (ụ chẩm sau gáy):
-
-* **Ký tự chữ cái biểu thị vùng não:**
-  * <span class="badge badge--primary">Fp</span>: Thùy cực trán (*Frontopolar*)
-  * <span class="badge badge--cyan">F</span>: Thùy trán (*Frontal*)
-  * <span class="badge badge--indigo">C</span>: Vùng trung tâm (*Central*)
-  * <span class="badge badge--purple">T</span>: Thùy thái dương (*Temporal*)
-  * <span class="badge badge--amber">P</span>: Thùy đỉnh (*Parietal*)
-  * <span class="badge badge--rose">O</span>: Thùy chẩm (*Occipital*)
-* **Ký tự số theo sau:**
-  * Số **lẻ** ($1, 3, 5, 7$): Thuộc bán cầu não **trái**.
-  * Số **chẵn** ($2, 4, 6, 8$): Thuộc bán cầu não **phải**.
-  * Chữ **z** (*Zero*): Nằm trên trục giữa đường phân cách đỉnh đầu (*Midline*).
-
-### 4.2. Năm dải tần số đặc trưng của tín hiệu EEG
+Điện não đồ (EEG) ghi lại điện thế sau synapse của hàng triệu nơ-ron hình tháp vỏ não, phân rã thành 5 dải tần chính:
 
 ```mermaid
 flowchart LR
-    subgraph BANDS["🌊 5 DẢI TẦN SỐ ĐIỆN NÃO ĐỒ (EEG BANDS)"]
+    subgraph BANDS["🌊 5 DẢI TẦN SỐ SÓNG NÃO EEG"]
         direction TB
-        D["Delta (0.5 - 3.5 Hz)<br/>Giấc ngủ sâu, vô thức"]
-        T["Theta (4.0 - 7.5 Hz)<br/>Buồn ngủ, thiền, ức chế"]
-        A["Alpha (8.0 - 13.0 Hz)<br/>Thư giãn, tĩnh tâm, FAA"]
-        B["Beta (14.0 - 30.0 Hz)<br/>Tập trung, lo âu, Arousal cao"]
-        G["Gamma (31.0 - 50.0 Hz)<br/>Xử lý nhận thức đa giác quan"]
+        D["Delta: 0.5 - 4 Hz<br/>(Ngủ sâu, hồi phục thể chất)"]
+        T["Theta: 4 - 8 Hz<br/>(Mơ màng, sáng tạo, thiền định)"]
+        A["Alpha: 8 - 13 Hz<br/>(Thư giãn, tĩnh tâm, ức chế vỏ não)"]
+        B["Beta: 13 - 30 Hz<br/>(Tập trung, tư duy logic, căng thẳng)"]
+        G["Gamma: > 30 Hz<br/>(Xử lý nhận thức cao cấp, gắn kết thông tin)"]
     end
 
     D --> T --> A --> B --> G
@@ -208,52 +133,22 @@ flowchart LR
     style G fill:none,stroke:#ec4899,stroke-width:1.5px
 ```
 
-```python
-import numpy as np
-from scipy.signal import butter, filtfilt
+---
 
-def extract_band(signal: np.ndarray, fs: int, low_freq: float, high_freq: float, order: int = 5) -> np.ndarray:
-    """
-    Trích xuất dải tần số EEG bằng bộ lọc số Butterworth Bandpass hai chiều (zero-phase filtfilt).
-    """
-    nyquist = 0.5 * fs
-    low = low_freq / nyquist
-    high = high_freq / nyquist
-    b, a = butter(order, [low, high], btype='band')
-    filtered_signal = filtfilt(b, a, signal)
-    return filtered_signal
-```
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-### 4.3. Chỉ số bất đối xứng sóng Alpha vùng trán (Frontal Alpha Asymmetry - FAA)
-Một trong những phát hiện sinh lý thần kinh quan trọng nhất về cảm xúc là mối tương quan nghịch giữa công suất sóng Alpha và mức độ kích hoạt vỏ não:
-* **Bán cầu não trái:** Chi phối hệ thống động cơ **tiếp cận** (*Approach System* - hứng thú, vui vẻ, tích cực).
-* **Bán cầu não phải:** Chi phối hệ thống động cơ **né tránh** (*Withdrawal System* - sợ hãi, lo âu, tiêu cực).
-
-Chỉ số **FAA** được tính bằng sự chênh lệch logarit công suất sóng Alpha giữa điện cực F4 (trán phải) và F3 (trán trái):
-
-$$\text{FAA} = \ln(P_{\alpha, F4}) - \ln(P_{\alpha, F3})$$
-
-* $\text{FAA} > 0$: Công suất Alpha bên phải cao hơn $\rightarrow$ Vỏ não trán trái hoạt động mạnh hơn $\rightarrow$ <b style="color: var(--accent-emerald);">Cảm xúc tích cực (Approach Motivation)</b>.
-* $\text{FAA} < 0$: Công suất Alpha bên trái cao hơn $\rightarrow$ Vỏ não trán phải hoạt động mạnh hơn $\rightarrow$ <b style="color: var(--accent-rose);">Cảm xúc tiêu cực (Withdrawal Motivation)</b>.
-
-```python
-def compute_faa(eeg_f3: np.ndarray, eeg_f4: np.ndarray, fs: int = 128) -> float:
-    """
-    Tính chỉ số bất đối xứng sóng Alpha vùng trán (FAA) giữa hai kênh F3 và F4.
-    """
-    alpha_f3 = extract_band(eeg_f3, fs, 8.0, 13.0)
-    alpha_f4 = extract_band(eeg_f4, fs, 8.0, 13.0)
-    
-    power_f3 = np.mean(alpha_f3 ** 2)
-    power_f4 = np.mean(alpha_f4 ** 2)
-    
-    faa = float(np.log(power_f4 + 1e-12) - np.log(power_f3 + 1e-12))
-    return faa
-```
+| Tiêu Chí So Sánh | Điện Não Đồ (EEG) | Biến Thiên Nhịp Tim (ECG/HRV) | Phản Ứng Da Điện (GSR/EDA) | Điện Cơ Mặt (fEMG) |
+| :--- | :--- | :--- | :--- | :--- |
+| **Hệ thần kinh chi phối** | Hệ thần kinh trung ương (CNS) | Hệ thần kinh tự chủ (SNS + PNS) | Hệ thần kinh giao cảm (SNS đơn hướng) | Thần kinh vận động mặt |
+| **Độ phân giải thời gian** | Rất cao ($1 - 10\ \text{ms}$) | Trung bình (từng nhịp tim $\approx 1\ \text{s}$) | Chậm ($1 - 5\ \text{s}$) | Cao ($10 - 50\ \text{ms}$) |
+| **Độ nhạy cảm xúc** | Nhạy cả Valence & Arousal | Nhạy cả Valence & Arousal (RMSSD, LF/HF) | **Chỉ nhạy với Arousal** | Nhạy đặc biệt với Valence |
+| **Nhiễu tín hiệu chính** | EOG (mắt), EMG (cơ), Điện lưới 50Hz | Nhiễu thở, lệch baseline, trôi điện cực | Trôi nhiệt độ, ẩm mồ hôi nền | Cử động nhai, nói chuyện |
+| **Đặc trưng AI tối ưu** | **Differential Entropy (DE), FAA** | RMSSD, SDNN, LF/HF ratio | SCL (Tonic), SCR (Phasic amplitude) | Mean Absolute Value (MAV), RMS |
+| **Đánh giá triển khai thực tế** | Đòi hỏi đội mũ điện cực phức tạp | Dễ đo bằng vòng đeo tay thông minh | Cảm biến 2 đầu ngón tay đơn giản | Dán điện cực mặt gây vướng víu |
 
 ---
 
-## 5. Các Tín Hiệu Y Sinh Ngoại Biên Bổ Trợ
+## 3. Kiến Trúc Môi Trường & Luồng Thực Thi Mẫu
 
 ```mermaid
 sequenceDiagram
@@ -265,67 +160,57 @@ sequenceDiagram
 
     Vid->>Sub: Phát đoạn video gây sợ hãi (High Arousal, Low Valence)
     Sub->>Sen: Hệ SNS kích hoạt: Tiết mồ hôi, co cơ, tim đập nhanh
-    Sen->>Pipe: Truyền dòng dữ liệu thô đa kênh
-    Note over Pipe: Tính toán SDNN, RMSSD, Phasic SCR, DE Bands
+    Sen->>Pipe: Truyền dòng dữ liệu thô đa kênh (Raw Signals)
+    Note over Pipe: Lọc số Bandpass, tính SDNN, RMSSD, Phasic SCR, DE Bands
     Pipe-->>Sub: Dự đoán trạng thái: Sợ Hãi (Valence: -0.82, Arousal: +0.76)
 ```
 
-### 5.1. Tín hiệu điện tim (ECG) & Biến thiên nhịp tim (HRV)
-Phân tích khoảng cách giữa các đỉnh R sóng tim ($RR\text{-interval}$) cho ra các chỉ số HRV phản ánh trực tiếp sức khỏe và cảm xúc:
-* **SDNN:** Độ lệch chuẩn các khoảng RR, đo tổng mức độ biến thiên nhịp tim.
-* **RMSSD:** Căn bậc hai trung bình bình phương các sai phân liên tiếp, phản ánh hoạt động của <span class="badge badge--emerald">Hệ phó giao cảm (PNS)</span>.
-* **Tỷ số LF/HF:** Đo sự cân bằng giữa hệ giao cảm và phó giao cảm:
-  $$\text{LF/HF} = \frac{\text{Power}_{0.04 - 0.15\text{Hz}}}{\text{Power}_{0.15 - 0.40\text{Hz}}}$$
-
-### 5.2. Độ dẫn điện da (GSR / EDA)
-Được cấu thành từ hai thành phần:
-1. **SCL (Tonic component):** Mức độ dẫn điện nền biến thiên chậm theo thời gian.
-2. **SCR (Phasic component):** Các xung đáp ứng nhanh xuất hiện sau $1 - 5\ \text{s}$ gặp kích thích đột ngột.
-
----
-
-## 6. Trích Xuất Đặc Trưng: Differential Entropy (DE)
-
-Trong các bài toán nhận dạng cảm xúc từ EEG, **Differential Entropy (DE)** được chứng minh là đặc trưng mạnh mẽ và ổn định nhất, vượt trội hoàn toàn so với Mật độ phổ công suất (**PSD**).
-
-### 6.1. Chứng minh toán học Differential Entropy
-Entropy vi phân mở rộng khái niệm Shannon entropy cho biến ngẫu nhiên liên tục $X$ có hàm mật độ xác suất $f(x)$:
-
-$$h(X) = -\int_{-\infty}^{+\infty} f(x) \ln f(x) \, dx$$
-
-Khi một đoạn tín hiệu EEG trong một dải tần số xác định tuân theo phân phối chuẩn Gaussian $X \sim \mathcal{N}(\mu, \sigma^2)$:
-
-$$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \ exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$$
-
-Khai triển biểu thức tích phân:
-
-$$h(X) = -\int_{-\infty}^{+\infty} f(x) \left[ -\frac{1}{2}\ln(2\pi\sigma^2) - \frac{(x-\mu)^2}{2\sigma^2} \right] dx = \frac{1}{2}\ln(2\pi e \sigma^2)$$
-
-Do phương sai $\sigma^2$ đồng thời đại diện cho năng lượng công suất của đoạn tín hiệu, ta có công thức trích xuất đặc trưng DE:
-
-$$\text{DE} = \frac{1}{2}\ln\left(2\pi e \cdot \text{Var}(X)\right)$$
+### Mã Nguồn Pipeline Trích Xuất Đặc Trưng Y Sinh
 
 ```python
+import numpy as np
+from scipy.signal import butter, filtfilt
+
+def extract_band(signal: np.ndarray, fs: int, low_freq: float, high_freq: float, order: int = 5) -> np.ndarray:
+    """
+    Trích xuất dải tần số EEG bằng bộ lọc số Butterworth Bandpass hai chiều (filtfilt).
+    """
+    nyquist = 0.5 * fs
+    low = low_freq / nyquist
+    high = high_freq / nyquist
+    b, a = butter(order, [low, high], btype='band')
+    return filtfilt(b, a, signal)
+
 def compute_de(signal: np.ndarray) -> float:
     """
     Tính đặc trưng Differential Entropy (DE) cho một đoạn tín hiệu EEG đã lọc dải tần.
+    DE = 0.5 * ln(2 * pi * e * variance)
     """
     variance = np.var(signal, ddof=1)
     if variance <= 1e-12:
         variance = 1e-12
     return float(0.5 * np.log(2.0 * np.pi * np.e * variance))
+
+def compute_faa(eeg_f3: np.ndarray, eeg_f4: np.ndarray, fs: int = 128) -> float:
+    """
+    Tính chỉ số bất đối xứng sóng Alpha vùng trán (FAA) giữa hai kênh F3 và F4.
+    FAA = ln(Power_Alpha_F4) - ln(Power_Alpha_F3)
+    """
+    alpha_f3 = extract_band(eeg_f3, fs, 8.0, 13.0)
+    alpha_f4 = extract_band(eeg_f4, fs, 8.0, 13.0)
+    power_f3 = np.mean(alpha_f3 ** 2)
+    power_f4 = np.mean(alpha_f4 ** 2)
+    return float(np.log(power_f4 + 1e-12) - np.log(power_f3 + 1e-12))
 ```
 
 ---
 
-## 7. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: "Lệch Phân Phối Sinh Trắc Học & Rò Rỉ Dữ Liệu Train/Test"
 
-### Tình Huống Sự Cố Thực Tế:
-<span class="badge badge--rose">🕒 02:30 AM</span> Trong một nghiên cứu xây dựng mô hình AI nhận dạng cảm xúc từ tập dữ liệu **DEAP** (32 người tham gia), nhóm nghiên cứu ghi nhận độ chính xác kỷ lục lên tới **$98.5\%$** khi phân loại 2 mức Valence (High vs Low) bằng mô hình MLP và SVM. Tuy nhiên, khi chuyển sang thử nghiệm thực tế (*Real-world Online Testing*) trên các đối tượng mới trong phòng lab, độ chính xác của hệ thống sụt giảm thảm hại xuống chỉ còn **$51.2\%$** (tương đương đoán ngẫu nhiên).
+### Tình Huống Thực Tế
+Trong một nghiên cứu xây dựng mô hình AI nhận dạng cảm xúc từ tập dữ liệu **DEAP** (32 người tham gia), nhóm nghiên cứu ghi nhận độ chính xác kỷ lục lên tới **$98.5\%$** khi phân loại 2 mức Valence (High vs Low) bằng mô hình MLP và SVM. Tuy nhiên, khi chuyển sang thử nghiệm thực tế (*Real-world Online Testing*) trên các đối tượng mới trong phòng lab, độ chính xác của hệ thống sụt giảm thảm hại xuống chỉ còn **$51.2\%$** (tương đương đoán ngẫu nhiên).
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Khi kiểm tra ma trận nhầm lẫn và log đánh giá kiểm thử chéo người tham gia (*Cross-Subject Testing*), mô hình hoàn toàn mất khả năng tổng quát hóa:
-
 ```text
 ================================================================================
 CRITICAL EVALUATION REPORT: SUBJECT-INDEPENDENT BENCHMARK FAILURE
@@ -347,216 +232,256 @@ CRITICAL EVALUATION REPORT: SUBJECT-INDEPENDENT BENCHMARK FAILURE
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. <span class="badge badge--primary">Why 1</span> **Tại sao độ chính xác kiểm thử ban đầu đạt $98.5\%$ nhưng thực tế chỉ đạt $51.2\%$?** $\rightarrow$ Do mô hình bị học vẹt (*Data Leakage*) các đặc trưng định danh cá nhân (*Subject Biometrics*) thay vì học các đặc trưng cảm xúc tổng quát.
-2. <span class="badge badge--primary">Why 2</span> **Tại sao đặc trưng cá nhân lại bị rò rỉ vào tập kiểm thử?** $\rightarrow$ Do pipeline tiền xử lý đã trộn lẫn ngẫu nhiên toàn bộ các đoạn cửa sổ thời gian (*Epochs*) của tất cả người tham gia rồi mới chia tập `train_test_split(test_size=0.2)`.
-3. <span class="badge badge--primary">Why 3</span> **Tại sao việc trộn cửa sổ thời gian lại làm rò rỉ thông tin cá nhân?** $\rightarrow$ Vì các cửa sổ thời gian liên tiếp của cùng một người trong cùng một phiên ghi có độ tương đồng tín hiệu nền rất cao (cùng hình dạng hộp sọ, cùng trở kháng điện cực).
-4. <span class="badge badge--primary">Why 4</span> **Tại sao chuẩn hóa Z-Score toàn cục cũng góp phần gây rò rỉ?** $\rightarrow$ Việc tính toán `mean` và `std` trên toàn bộ tập dữ liệu trước khi chia phân tách đã bơm thông tin phân phối của tập Test vào tập Train.
-5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE & AI Y Sinh:**
-   - <span class="badge badge--rose">Cấm Random Split</span> Tuyệt đối không dùng random shuffle split trên chuỗi tín hiệu y sinh.
-   - <span class="badge badge--cyan">Áp dụng LOSO Cross-Validation</span> Luôn sử dụng chiến lược **Leave-One-Subject-Out (LOSO)**: Dùng dữ liệu của $N-1$ người để train và kiểm thử trên người thứ $N$.
-   - <span class="badge badge--emerald">Fit Scaler On Train Only</span> Chỉ tính toán giá trị chuẩn hóa Z-score/MinMax trên tập Train và biến đổi (*transform*) cho tập Test.
+1. **Tại sao độ chính xác kiểm thử ban đầu đạt $98.5\%$ nhưng thực tế chỉ đạt $51.2\%$?** Do mô hình bị học vẹt (*Data Leakage*) các đặc trưng định danh cá nhân (*Subject Biometrics*) thay vì học các đặc trưng cảm xúc tổng quát.
+2. **Tại sao đặc trưng cá nhân lại bị rò rỉ vào tập kiểm thử?** Do pipeline tiền xử lý đã trộn lẫn ngẫu nhiên toàn bộ các đoạn cửa sổ thời gian (*Epochs*) của tất cả người tham gia rồi mới chia tập `train_test_split(test_size=0.2)`.
+3. **Tại sao việc trộn cửa sổ thời gian lại làm rò rỉ thông tin cá nhân?** Vì các cửa sổ thời gian liên tiếp của cùng một người trong cùng một phiên ghi có độ tương đồng tín hiệu nền rất cao (cùng hình dạng hộp sọ, cùng trở kháng điện cực).
+4. **Tại sao chuẩn hóa Z-Score toàn cục cũng góp phần gây rò rỉ?** Việc tính toán `mean` và `std` trên toàn bộ tập dữ liệu trước khi chia phân tách đã bơm thông tin phân phối của tập Test vào tập Train.
+5. **Giải pháp chuẩn:** Luôn sử dụng chiến lược **Leave-One-Subject-Out (LOSO)**: Dùng dữ liệu của $N-1$ người để huấn luyện và kiểm thử trên người thứ $N$; đồng thời chỉ tính toán scaler trên tập Train.
 
 ---
 
-## 8. Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Q&A Accordion)
+## 5. Hands-on Lab: Pipeline Xử Lý & Trích Xuất Đặc Trưng Y Sinh DE, FAA, HRV (8 Bước)
+
+| Bước | Mục Tiêu Kỹ Thuật | Lệnh / Script Thực Hiện Chính |
+| :--- | :--- | :--- |
+| **1** | Khởi tạo môi trường Python và sinh tín hiệu giả lập | `python 1_generate_synthetic_signals.py` |
+| **2** | Áp dụng bộ lọc dải tần Butterworth 5 dải sóng não | `python 2_bandpass_filtering.py` |
+| **3** | Trích xuất đặc trưng Differential Entropy (DE) | `python 3_extract_de_features.py` |
+| **4** | Tính toán chỉ số Frontal Alpha Asymmetry (FAA) | `python 4_compute_faa_index.py` |
+| **5** | Xử lý tín hiệu điện tim ECG và phát hiện đỉnh R | `python 5_ecg_qrs_detection.py` |
+| **6** | Trích xuất các chỉ số HRV (SDNN, RMSSD, LF/HF) | `python 6_hrv_features.py` |
+| **7** | Phân tách thành phần Tonic/Phasic của tín hiệu GSR | `python 7_gsr_decomposition.py` |
+| **8** | Đóng gói Vector đặc trưng đa phương thức (Multimodal Vector) | `python 8_multimodal_vector_export.py` |
+
+---
+
+### Bước 1: Khởi Tạo Môi Trường Python & Dữ Liệu Tín Hiệu Y Sinh
+
+```python
+import numpy as np
+
+# Thiết lập tham số lấy mẫu
+fs = 128  # Tần số lấy mẫu 128 Hz chuẩn DEAP
+duration = 10  # 10 giây dữ liệu
+t = np.linspace(0, duration, duration * fs, endpoint=False)
+
+# Sinh tín hiệu EEG giả lập đa dải tần (Delta, Theta, Alpha, Beta, Gamma)
+np.random.seed(42)
+eeg_f3 = (
+    1.5 * np.sin(2 * np.pi * 2.0 * t)   # Delta (2 Hz)
+    + 0.8 * np.sin(2 * np.pi * 6.0 * t)   # Theta (6 Hz)
+    + 2.0 * np.sin(2 * np.pi * 10.0 * t)  # Alpha (10 Hz)
+    + 0.5 * np.sin(2 * np.pi * 20.0 * t)  # Beta (20 Hz)
+    + 0.2 * np.random.randn(len(t))       # Gaussian noise
+)
+
+eeg_f4 = (
+    1.5 * np.sin(2 * np.pi * 2.0 * t)
+    + 0.8 * np.sin(2 * np.pi * 6.0 * t)
+    + 0.8 * np.sin(2 * np.pi * 10.0 * t)  # Alpha thấp hơn F3 (Tích cực)
+    + 0.5 * np.sin(2 * np.pi * 20.0 * t)
+    + 0.2 * np.random.randn(len(t))
+)
+```
+
+---
+
+### Bước 2: Áp Dụng Bộ Lọc Dải Tần Butterworth 5 Dải Sóng Não
+
+```python
+bands = {
+    'Delta': (0.5, 4.0),
+    'Theta': (4.0, 8.0),
+    'Alpha': (8.0, 13.0),
+    'Beta': (13.0, 30.0),
+    'Gamma': (30.0, 45.0)
+}
+
+f3_bands = {name: extract_band(eeg_f3, fs, low, high) for name, (low, high) in bands.items()}
+f4_bands = {name: extract_band(eeg_f4, fs, low, high) for name, (low, high) in bands.items()}
+```
+
+---
+
+### Bước 3: Trích Xuất Đặc Trưng Differential Entropy (DE) Cho Từng Dải Tần
+
+```python
+de_f3 = {name: compute_de(sig) for name, sig in f3_bands.items()}
+de_f4 = {name: compute_de(sig) for name, sig in f4_bands.items()}
+
+print("DE Đặc trưng kênh F3:", {k: round(v, 4) for k, v in de_f3.items()})
+print("DE Đặc trưng kênh F4:", {k: round(v, 4) for k, v in de_f4.items()})
+```
+
+---
+
+### Bước 4: Tính Toán Chỉ Số Frontal Alpha Asymmetry (FAA)
+
+```python
+faa_score = compute_faa(eeg_f3, eeg_f4, fs)
+print(f"Chỉ số Frontal Alpha Asymmetry (FAA): {faa_score:.4f}")
+# FAA > 0 -> Xu hướng tiếp cận (Approach Motivation / Tích cực)
+```
+
+---
+
+### Bước 5: Phát Hiện Đỉnh R Sóng Tim ECG
+
+```python
+from scipy.signal import find_peaks
+
+# Giả lập tín hiệu ECG với các đỉnh R cách nhau ~0.8s (75 bpm)
+ecg_signal = np.sin(2 * np.pi * 1.25 * t) ** 10 + 0.05 * np.random.randn(len(t))
+peaks, _ = find_peaks(ecg_signal, distance=fs * 0.5, height=0.5)
+rr_intervals = np.diff(peaks) / fs  # Khoảng RR tính theo giây
+print(f"Số lượng đỉnh R phát hiện: {len(peaks)}, Khoảng RR trung bình: {np.mean(rr_intervals):.3f}s")
+```
+
+---
+
+### Bước 6: Trích Xuất Các Chỉ Số Biến Thiên Nhịp Tim HRV (SDNN & RMSSD)
+
+```python
+sdnn = np.std(rr_intervals, ddof=1) * 1000  # ms
+rmssd = np.sqrt(np.mean(np.diff(rr_intervals) ** 2)) * 1000  # ms
+print(f"HRV SDNN: {sdnn:.2f} ms | RMSSD: {rmssd:.2f} ms")
+```
+
+---
+
+### Bước 7: Phân Tách Thành Phần Nền và Đáp Ứng Của Tín Hiệu GSR
+
+```python
+# Tín hiệu GSR gồm mức nền Tonic biến thiên chậm và xung Phasic đáp ứng nhanh
+tonic_scl = 2.0 + 0.1 * np.linspace(0, 1, len(t))
+phasic_scr = 0.5 * np.exp(-((t - 4.0) ** 2) / 0.2)  # Xung kích thích tại giây thứ 4
+gsr_signal = tonic_scl + phasic_scr + 0.02 * np.random.randn(len(t))
+
+# Phân tách bằng bộ lọc thông thấp (Tonic) và thông cao (Phasic)
+b_low, a_low = butter(3, 0.1 / (0.5 * fs), btype='low')
+extracted_tonic = filtfilt(b_low, a_low, gsr_signal)
+extracted_phasic = gsr_signal - extracted_tonic
+print(f"Biên độ đỉnh Phasic SCR cực đại: {np.max(extracted_phasic):.4f} uS")
+```
+
+---
+
+### Bước 8: Đóng Gói Vector Đặc Trưng Đa Phương Thức (Multimodal Feature Vector)
+
+```python
+# Hợp nhất toàn bộ đặc trưng vào 1 vector huấn luyện
+multimodal_features = np.array([
+    de_f3['Delta'], de_f3['Theta'], de_f3['Alpha'], de_f3['Beta'], de_f3['Gamma'],
+    de_f4['Delta'], de_f4['Theta'], de_f4['Alpha'], de_f4['Beta'], de_f4['Gamma'],
+    faa_score,
+    sdnn,
+    rmssd,
+    float(np.max(extracted_phasic))
+])
+print(f"Vector đặc trưng đa phương thức (Shape: {multimodal_features.shape}):\n", np.round(multimodal_features, 3))
+```
+
+---
+
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Sự khác biệt căn bản giữa tín hiệu điện thế vỏ não EEG và tín hiệu điện tim ECG là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>1. Sự khác biệt căn bản giữa tín hiệu điện thế vỏ não EEG và tín hiệu điện tim ECG là gì?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">EEG đo lường các <b style="color: var(--accent-primary);">điện thế sau synapse</b> phát sinh từ hệ thần kinh trung ương (vỏ não) với biên độ cực nhỏ (10-100 uV) và tỷ số SNR thấp. Ngược lại, ECG ghi nhận hoạt động khử cực cơ tim do <b style="color: var(--accent-emerald);">hệ thần kinh tự chủ (ANS)</b> điều khiển với biên độ lớn hơn (khoảng 1 mV) và dạng sóng P-QRS-T có chu kỳ giải phẫu rất rõ ràng.</div>
+<p>EEG đo lường các <b>điện thế sau synapse (PSP)</b> phát sinh từ hệ thần kinh trung ương (vỏ não) với biên độ cực nhỏ (10-100 uV) và tỷ số SNR thấp. Ngược lại, ECG ghi nhận hoạt động khử cực cơ tim do <b>hệ thần kinh tự chủ (ANS)</b> điều khiển với biên độ lớn hơn (khoảng 1 mV) và dạng sóng P-QRS-T có chu kỳ giải phẫu rất rõ ràng.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tại sao mô hình không gian Circumplex 2D của Russell lại được ưa chuộng hơn mô hình phân loại rời rạc trong nghiên cứu BCI?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>2. Tại sao mô hình không gian Circumplex 2D của Russell lại được ưa chuộng hơn mô hình phân loại rời rạc trong nghiên cứu BCI?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">Mô hình Circumplex biểu diễn cảm xúc như một <b style="color: var(--accent-primary);">không gian vector liên tục</b> gồm hai trục Valence và Arousal. Điều này phản ánh chính xác tính chất mờ và sự biến chuyển dần của trạng thái tâm lý, cho phép áp dụng các giải thuật hồi quy toán học và đánh giá khoảng cách hình học, thay vì ép buộc cảm xúc vào một số ít các nhãn rời rạc cứng nhắc.</div>
+<p>Mô hình Circumplex biểu diễn cảm xúc như một <b>không gian vector liên tục</b> gồm hai trục Valence và Arousal. Điều này phản ánh chính xác tính chất mờ và sự biến chuyển dần của trạng thái tâm lý, cho phép áp dụng các giải thuật hồi quy toán học và đánh giá khoảng cách hình học, thay vì ép buộc cảm xúc vào một số ít các nhãn rời rạc cứng nhắc.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Chỉ số Frontal Alpha Asymmetry (FAA) dương mang ý nghĩa sinh lý thần kinh gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>3. Chỉ số Frontal Alpha Asymmetry (FAA) dương mang ý nghĩa sinh lý thần kinh gì?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">Do công suất sóng Alpha tỷ lệ nghịch với mức độ kích hoạt vỏ não, khi <code>FAA = ln(P_F4) - ln(P_F3) &gt; 0</code> đồng nghĩa công suất Alpha ở bán cầu phải lớn hơn bên trái, tức là <b style="color: var(--accent-emerald);">vỏ não trán trái đang hoạt động mạnh hơn trán phải</b>. Trán trái liên quan đến hệ thống động cơ tiếp cận (Approach Motivation), phản ánh trạng thái cảm xúc tích cực hoặc vui vẻ.</div>
+<p>Do công suất sóng Alpha tỷ lệ nghịch với mức độ kích hoạt vỏ não, khi <code>FAA = ln(P_F4) - ln(P_F3) &gt; 0</code> đồng nghĩa công suất Alpha ở bán cầu phải lớn hơn bên trái, tức là <b>vỏ não trán trái đang hoạt động mạnh hơn trán phải</b>. Trán trái liên quan đến hệ thống động cơ tiếp cận (Approach Motivation), phản ánh trạng thái cảm xúc tích cực hoặc vui vẻ.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Tại sao tín hiệu phản ứng da điện (GSR/EDA) chỉ phản ánh được trục Arousal mà không phản ánh được trục Valence?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>4. Tại sao tín hiệu phản ứng da điện (GSR/EDA) chỉ phản ánh được trục Arousal mà không phản ánh được trục Valence?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">Tuyến mồ hôi ngoại tiết ở da chỉ được chi phối đơn hướng bởi <b style="color: var(--accent-rose);">Hệ thần kinh giao cảm (SNS)</b>. Dù đối tượng trải qua cảm xúc hưng phấn tột độ (Valence dương) hay hoảng sợ tột độ (Valence âm), hệ giao cảm đều phát tín hiệu làm tăng tiết mồ hôi và tăng độ dẫn da, do đó GSR chỉ đo được cường độ kích thích thần kinh (Arousal).</div>
+<p>Tuyến mồ hôi ngoại tiết ở da chỉ được chi phối đơn hướng bởi <b>Hệ thần kinh giao cảm (SNS)</b>. Dù đối tượng trải qua cảm xúc hưng phấn tột độ (Valence dương) hay hoảng sợ tột độ (Valence âm), hệ giao cảm đều phát tín hiệu làm tăng tiết mồ hôi và tăng độ dẫn da, do đó GSR chỉ đo được cường độ kích thích thần kinh (Arousal).</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao đặc trưng Differential Entropy (DE) lại vượt trội hơn Power Spectral Density (PSD) trong phân loại cảm xúc EEG?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>5. Tại sao đặc trưng Differential Entropy (DE) lại vượt trội hơn Power Spectral Density (PSD) trong phân loại cảm xúc EEG?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">Nhờ sử dụng hàm Logarit tự nhiên trên phương sai của tín hiệu phân phối Gauss: <code>DE = 0.5 * ln(2 * pi * e * Var(X))</code>, DE thực hiện <b style="color: var(--accent-cyan);">nén dải động phi tuyến</b> của năng lượng tín hiệu. Điều này giúp giảm thiểu độ nhạy cảm với các biến động biên độ bất thường và triệt tiêu phương sai giữa các phiên đo, mang lại độ phân tách lớp cao hơn cho mô hình học máy.</div>
+<p>Nhờ sử dụng hàm Logarit tự nhiên trên phương sai của tín hiệu phân phối Gauss: <code>DE = 0.5 * ln(2 * pi * e * Var(X))</code>, DE thực hiện <b>nén dải động phi tuyến</b> của năng lượng tín hiệu. Điều này giúp giảm thiểu độ nhạy cảm với các biến động biên độ bất thường và triệt tiêu phương sai giữa các phiên đo, mang lại độ phân tách lớp cao hơn cho mô hình học máy.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Ý nghĩa của chỉ số RMSSD trong phân tích biến thiên nhịp tim (HRV) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>6. Ý nghĩa của chỉ số RMSSD trong phân tích biến thiên nhịp tim (HRV) là gì?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">RMSSD (Root Mean Square of Successive Differences) phản ánh trực tiếp mức độ hoạt động của <b style="color: var(--accent-emerald);">hệ thần kinh phó giao cảm (PNS)</b> tác động lên nút xoang tim. Giá trị RMSSD cao biểu thị trạng thái cơ thể đang thư giãn, tĩnh tâm và phục hồi tốt; ngược lại RMSSD giảm mạnh khi cá nhân rơi vào trạng thái căng thẳng hoặc quá tải cảm xúc.</div>
+<p>RMSSD (Root Mean Square of Successive Differences) phản ánh trực tiếp mức độ hoạt động của <b>hệ thần kinh phó giao cảm (PNS)</b> tác động lên nút xoang tim. Giá trị RMSSD cao biểu thị trạng thái cơ thể đang thư giãn, tĩnh tâm và phục hồi tốt; ngược lại RMSSD giảm mạnh khi cá nhân rơi vào trạng thái căng thẳng hoặc quá tải cảm xúc.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Điện thế sau synapse (Postsynaptic Potential) đóng vai trò gì trong việc hình thành tín hiệu EEG đo được ngoài da đầu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>7. Điện thế sau synapse (Postsynaptic Potential) đóng vai trò gì trong việc hình thành tín hiệu EEG đo được ngoài da đầu?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">Điện thế hoạt động (Action Potential) của một sợi trục diễn ra quá nhanh (1-2 ms) nên khó tích lũy đồng bộ. Trong khi đó, các điện thế sau synapse (EPSP và IPSP) kéo dài từ 10-100 ms tại các đuôi gai nơ-ron hình tháp xếp song song trong vỏ não tạo thành một <b style="color: var(--accent-primary);">lưỡng cực điện (dipole) không gian</b>. Khi hàng triệu nơ-ron cùng khử cực đồng bộ, điện trường này đủ mạnh để lan truyền qua xương sọ đến các điện cực EEG.</div>
+<p>Điện thế hoạt động (Action Potential) của một sợi trục diễn ra quá nhanh (1-2 ms) nên khó tích lũy đồng bộ. Trong khi đó, các điện thế sau synapse (EPSP và IPSP) kéo dài từ 10-100 ms tại các đuôi gai nơ-ron hình tháp xếp song song trong vỏ não tạo thành một <b>lưỡng cực điện (dipole) không gian</b>. Khi hàng triệu nơ-ron cùng khử cực đồng bộ, điện trường này đủ mạnh để lan truyền qua xương sọ đến các điện cực EEG.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao hai cơ mặt Corrugator Supercilii và Zygomaticus Major lại là hai vị trí đo EMG quan trọng nhất cho nhận dạng cảm xúc?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>8. Tại sao hai cơ mặt Corrugator Supercilii và Zygomaticus Major lại là hai vị trí đo EMG quan trọng nhất cho nhận dạng cảm xúc?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">Cơ <b style="color: var(--accent-rose);">Corrugator Supercilii</b> (cơ chau mày) co lại khi có kích thích khó chịu, đau đớn hoặc tức giận, tương quan trực tiếp với <code>Valence tiêu cực</code>. Ngược lại, cơ <b style="color: var(--accent-emerald);">Zygomaticus Major</b> (cơ gò má lớn) kéo khóe môi lên khi mỉm cười, tương quan trực tiếp với <code>Valence tích cực</code>. Sự kết hợp của hai kênh này cung cấp thước đo sinh lý rất nhạy cho chiều hóa trị cảm xúc.</div>
+<p>Cơ <b>Corrugator Supercilii</b> (cơ chau mày) co lại khi có kích thích khó chịu, đau đớn hoặc tức giận, tương quan trực tiếp với <code>Valence tiêu cực</code>. Ngược lại, cơ <b>Zygomaticus Major</b> (cơ gò má lớn) kéo khóe môi lên khi mỉm cười, tương quan trực tiếp với <code>Valence tích cực</code>. Sự kết hợp của hai kênh này cung cấp thước đo sinh lý rất nhạy cho chiều hóa trị cảm xúc.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Trong hệ thống chuẩn quốc tế 10-20, điện cực Fp1 và Fp2 nằm ở vị trí nào và thường bị ảnh hưởng bởi loại nhiễu nào nhất?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>9. Trong hệ thống chuẩn quốc tế 10-20, điện cực Fp1 và Fp2 nằm ở vị trí nào và thường bị ảnh hưởng bởi loại nhiễu nào nhất?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">Fp1 và Fp2 nằm ở vùng cực trán (ngay phía trên lông mày bên trái và phải). Do vị trí sát mắt, hai kênh này chịu ảnh hưởng nghiêm trọng nhất từ <b style="color: var(--accent-amber);">nhiễu điện nhãn EOG (Electrooculogram)</b> sinh ra do cử động chớp mắt và đảo mắt, với biên độ nhiễu có thể lớn gấp 10 lần tín hiệu EEG thực.</div>
+<p>Fp1 và Fp2 nằm ở vùng cực trán (ngay phía trên lông mày bên trái và phải). Do vị trí sát mắt, hai kênh này chịu ảnh hưởng nghiêm trọng nhất từ <b>nhiễu điện nhãn EOG (Electrooculogram)</b> sinh ra do cử động chớp mắt và đảo mắt, với biên độ nhiễu có thể lớn gấp 10 lần tín hiệu EEG thực.</p>
 </div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Chiến lược kiểm thử chéo người tham gia (Leave-One-Subject-Out - LOSO) giải quyết vấn đề gì trong các hệ thống AI cảm xúc?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
+<summary><b>10. Chiến lược kiểm thử chéo người tham gia (Leave-One-Subject-Out - LOSO) giải quyết vấn đề gì trong các hệ thống AI cảm xúc?</b></summary>
 <div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin-bottom: 8px;">LOSO đảm bảo dữ liệu của đối tượng kiểm thử hoàn toàn <b style="color: var(--accent-rose);">chưa từng xuất hiện trong quá trình huấn luyện</b>. Điều này giúp loại trừ hoàn toàn nguy cơ rò rỉ dữ liệu sinh trắc học cá nhân, phản ánh chính xác khả năng tổng quát hóa thực tế của mô hình khi triển khai cho một người dùng hoàn toàn mới (Subject-Independent).</div>
+<p>LOSO đảm bảo dữ liệu của đối tượng kiểm thử hoàn toàn <b>chưa từng xuất hiện trong quá trình huấn luyện</b>. Điều này giúp loại trừ hoàn toàn nguy cơ rò rỉ dữ liệu sinh trắc học cá nhân, phản ánh chính xác khả năng tổng quát hóa thực tế của mô hình khi triển khai cho một người dùng hoàn toàn mới (Subject-Independent).</p>
 </div>
 </details>
 
 ---
 
-## 9. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+
+```mermaid
+mindmap
+  root((CẢM XÚC & TÍN HIỆU Y SINH))
+    Khong Gian 2D Russell
+      Valence (-1 den +1)
+      Arousal (-1 den +1)
+      4 Goc phan tu cam xuc
+    Song Nao EEG
+      Delta, Theta, Alpha, Beta, Gamma
+      He thong 10-20 quoc te
+      Chi so FAA F3/F4
+    Tin Hieu Ngoai Bien
+      ECG / HRV (SDNN, RMSSD)
+      GSR / EDA (Tonic SCL, Phasic SCR)
+      fEMG co mat
+    Dac Trung AI
+      Differential Entropy (DE)
+      Nen dai dong phi tuyen
+      Zero-Leakage LOSO Validation
+```
 
 Nắm vững cơ sở sinh lý thần kinh của cảm xúc, mô hình không gian 2D Valence-Arousal, hệ thống điện cực EEG 10-20 cùng các chỉ số then chốt như **FAA** và đặc trưng **Differential Entropy (DE)** là nền tảng cốt lõi trước khi bước vào xây dựng các pipeline tiền xử lý và học sâu chuyên sâu.
 
 > [!TIP]
-> **BÀI HỌC TIẾP THEO:**
-> Trong **[[Bài 02] Xử Lý Tín Hiệu Y Sinh Cơ Bản: Bộ Lọc Số, Khử Nhiễu ICA, Biến Đổi Sóng Con Wavelet & Trích Xuất Đặc Trưng](eeg-02-02-xu-ly-tin-hieu-y-sinh-co-ban.html)**, chúng ta sẽ trực tiếp thực hành xử lý tín hiệu: Xây dựng bộ lọc số Bandpass/Notch khử nhiễu điện lưới 50Hz, phân tích thành phần độc lập (**ICA**) để bóc tách nhiễu mắt EOG, và kỹ thuật Wavelet Transform bảo toàn độ phân giải thời gian - tần số.
+> **Bài học tiếp theo**: Khám phá các kỹ thuật tiền xử lý chuyên sâu với **[Bài 02: Xử Lý Tín Hiệu Y Sinh Cơ Bản: Bộ Lọc Số, Khử Nhiễu ICA, Biến Đổi Sóng Con Wavelet & Trích Xuất Đặc Trưng](eeg-02-02-xu-ly-tin-hieu-y-sinh-co-ban.html)**.
 {% endraw %}

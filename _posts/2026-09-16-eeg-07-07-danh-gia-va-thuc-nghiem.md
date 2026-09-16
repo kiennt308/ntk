@@ -3,12 +3,28 @@ layout: post
 title: "[Bài 07] Đánh Giá & Thực Nghiệm: Cross-Validation Subject-Independent, Metrics F1/AUC, Ablation Study & Phân Tích Thống Kê"
 date: 2026-09-16 14:00:00 +0700
 categories: [EEG]
-tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
+tags:
+  - EEG
+  - BCI
+  - EvaluationProtocol
+  - CrossValidation
+  - StatisticalSignificance
+  - AblationStudy
+  - ModelEvaluation
 series: "EEG & Emotion Recognition AI"
 series_order: 7
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
 summary: "Thiết lập chuẩn mực khoa học trong nghiên cứu AI y sinh: Phân tích giao thức Leave-One-Subject-Out (LOSO), hệ chỉ số đa chiều F1/Kappa/Confusion Matrix, kiểm định thống kê Paired t-Test & Wilcoxon, hiệu chỉnh so sánh bội Bonferroni/FDR và trực quan hóa XAI với t-SNE."
+description: "Làm chủ phương pháp đánh giá thực nghiệm và phân tích thống kê trong BCI y sinh: Giao thức LOSO, hệ chỉ số Cohen Kappa, ROC-AUC, kiểm định t-Test, Wilcoxon, hiệu chỉnh Bonferroni và Ablation Study."
+keywords:
+  - eeg evaluation metrics
+  - leave one subject out loso
+  - cohen kappa affective computing
+  - statistical significance testing eeg
+  - bonferroni correction p hacking
+  - ablation study deep learning
+  - tsne latent space clustering
 tldr:
   - "Giao thức Leave-One-Subject-Out (LOSO) là tiêu chuẩn bắt buộc để đo lường năng lực tổng quát hóa thực tế của hệ thống BCI."
   - "Hệ số đồng thuận Cohen's Kappa (kappa) loại bỏ yếu tố đoán ngẫu nhiên, phản ánh chính xác độ tin cậy của mô hình trên tập dữ liệu mất cân bằng."
@@ -17,28 +33,34 @@ tldr:
   - "Nghiên cứu triệt tiêu (Ablation Study) định lượng chính xác tỷ trọng đóng góp độc lập của từng module trong hệ thống học sâu."
 ---
 {% raw %}
-# Đánh Giá & Thực Nghiệm: Cross-Validation Subject-Independent, Metrics F1/AUC, Ablation Study & Phân Tích Thống Kê
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Hiểu rõ sự khác biệt giữa 3 giao thức đánh giá chuẩn mực: **Within-Subject**, **Cross-Subject (LOSO)**, và **Temporal Train-Test Split**.
+> - Nắm vững hệ chỉ số đo lường đa chiều: **Accuracy**, **Macro/Weighted F1-Score**, **Cohen's Kappa ($\kappa$)**, và **ROC-AUC / PR-AUC**.
+> - Triển khai quy trình kiểm định ý nghĩa thống kê khoa học (**Shapiro-Wilk**, **Paired Student's t-Test**, **Wilcoxon Signed-Rank Test**).
+> - Áp dụng kỹ thuật hiệu chỉnh so sánh bội (**Bonferroni Correction**, **Benjamini-Hochberg FDR**) nhằm triệt tiêu hoàn toàn lỗi **P-Hacking**.
+> - Thiết kế ma trận nghiên cứu triệt tiêu (**Ablation Study**) và trực quan hóa không gian ẩn (**t-SNE Embedding Clustering**).
+
+---
+
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Đánh Giá Khoa Học Trong AI Y Sinh
 
 Trong nghiên cứu khoa học và phát triển hệ thống trí tuệ nhân tạo y sinh (**Biomedical AI**), việc đạt được độ chính xác cao trên tập dữ liệu huấn luyện không có nhiều ý nghĩa nếu không được kiểm chứng qua các **giao thức đánh giá nghiêm ngặt** (**Rigorous Evaluation Protocols**), các **chỉ số đo lường đa chiều** (**Multi-Dimensional Metrics**) và các **phép kiểm định thống kê khoa học** (**Statistical Significance Testing**).
 
 Một công bố khoa học hay một sản phẩm BCI chỉ thực sự đáng tin cậy khi chứng minh được khả năng tổng quát hóa trên người dùng mới (**Subject-Independent Generalization**) và loại trừ hoàn toàn các cạm bẫy rò rỉ dữ liệu (*Data Leakage*).
 
----
-
-## 1. Ba Giao Thức Đánh Giá Chuẩn Mực Trong BCI
-
 ```mermaid
 flowchart TD
-    subgraph PROTOCOLS["🧪 3 GIAO THỨC ĐÁNH GIÁ TRONG AI Y SINH"]
+    subgraph PROTOCOLS["🧪 3 GIAO THỨC ĐÁNH GIÁ CHUẨN MỰC TRONG BCI"]
         direction TB
-        P1["1. WITHIN-SUBJECT EVALUATION<br/>(Train/Test trên cùng một cá nhân)"]
+        P1["1. WITHIN-SUBJECT EVALUATION<br/>(Train & Test trên cùng một cá nhân)"]
         P2["2. CROSS-SUBJECT / LOSO EVALUATION<br/>(Train trên N-1 người, Test trên 1 người mới toanh)"]
         P3["3. TEMPORAL TRAIN-TEST SPLIT<br/>(Train trên nửa đầu phiên đo, Test trên nửa cuối)"]
     end
 
     P1 -->|"Xác định"| UP_BOUND["Cận trên lý thuyết tối đa (Personalized Upper Bound)"]
     P2 -->|"Xác định"| REAL_WORLD["Hiệu năng thực tế khi triển khai thương mại (Zero-shot)"]
-    P3 -->|"Triệt tiêu"| NO_LEAK["Loại bỏ 100% rò rỉ tương quan thời gian lân cận"]
+    P3 -->|"Triệt tiêu"| NO_LEAK["Loại bỏ 100% rò rỉ tự tương quan thời gian lân cận"]
 
     style PROTOCOLS fill:none,stroke:#6366f1,stroke-width:1.75px
     style P1 fill:none,stroke:#3b82f6,stroke-width:1.5px
@@ -49,231 +71,66 @@ flowchart TD
     style NO_LEAK fill:none,stroke:#06b6d4,stroke-width:1.5px
 ```
 
-### 1.1. Cài Đặt Giao Thức Leave-One-Subject-Out (LOSO) Bằng PyTorch
+### 1.1. Hệ Thống Chỉ Số Đo Lường Đa Chiều
 
-```python
-import numpy as np
-import torch
-from sklearn.metrics import accuracy_score, f1_score
+Khi dữ liệu cảm xúc bị mất cân bằng mẫu (*Class Imbalance* - ví dụ: trạng thái Bình thường chiếm $70\%$, Giận dữ chiếm $10\%$), chỉ số Accuracy trở nên vô dụng. Ta cần một bộ chỉ số toàn diện:
 
-class LOSOEvaluator:
-    def __init__(self, model_class, model_args, device: str = 'cuda'):
-        self.model_class = model_class
-        self.model_args = model_args
-        self.device = device
-        
-    def evaluate(self, subjects_dict: dict, epochs: int = 30, lr: float = 0.001) -> dict:
-        """
-        subjects_dict: {'sub_01': {'x': Tensor, 'y': Tensor}, ...}
-        """
-        subject_ids = list(subjects_dict.keys())
-        results = {}
-        
-        for test_id in subject_ids:
-            # 1. Tách tập Train (N-1 người) và Test (1 người)
-            train_x = torch.cat([subjects_dict[s]['x'] for s in subject_ids if s != test_id]).to(self.device)
-            train_y = torch.cat([subjects_dict[s]['y'] for s in subject_ids if s != test_id]).to(self.device)
-            test_x = subjects_dict[test_id]['x'].to(self.device)
-            test_y = subjects_dict[test_id]['y'].to(self.device)
-            
-            # 2. Khởi tạo lại trọng số mô hình từ đầu
-            model = self.model_class(**self.model_args).to(self.device)
-            optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-            criterion = torch.nn.CrossEntropyLoss()
-            
-            # 3. Huấn luyện
-            model.train()
-            for ep in range(epochs):
-                optimizer.zero_grad()
-                loss = criterion(model(train_x), train_y)
-                loss.backward()
-                optimizer.step()
-                
-            # 4. Kiểm thử trên đối tượng chưa từng xuất hiện
-            model.eval()
-            with torch.no_grad():
-                preds = model(test_x).argmax(dim=-1).cpu().numpy()
-                y_true = test_y.cpu().numpy()
-                
-                acc = accuracy_score(y_true, preds)
-                f1 = f1_score(y_true, preds, average='weighted')
-                results[test_id] = {'acc': acc, 'f1': f1}
-                
-        accs = [r['acc'] for r in results.values()]
-        f1s = [r['f1'] for r in results.values()]
-        return {
-            'mean_acc': np.mean(accs),
-            'std_acc': np.std(accs),
-            'mean_f1': np.mean(f1s),
-            'std_f1': np.std(f1s),
-            'per_subject': results
-        }
-```
+1. **Cohen's Kappa ($\kappa$):** Đo lường mức độ đồng thuận giữa dự đoán của AI và nhãn thực tế sau khi **loại trừ xác suất trùng hợp ngẫu nhiên**:
+   $$\kappa = \frac{p_o - p_e}{1 - p_e}$$
+   Trong đó $p_o$ là độ chính xác quan sát được ($\text{Accuracy}$), và $p_e$ là xác suất trùng hợp ngẫu nhiên lý thuyết.
+2. **Macro-Averaged F1-Score:** Tính trung bình cộng F1 của tất cả các lớp cảm xúc, bảo vệ quyền lợi của các lớp thiểu số.
+3. **Area Under the ROC Curve (ROC-AUC):** Đo năng lực phân tách ngưỡng xác suất giữa các trạng thái cảm xúc.
 
 ---
 
-## 2. Hệ Chỉ Số Đo Lường Đa Chiều (Evaluation Metrics)
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-Khi tập dữ liệu cảm xúc bị mất cân bằng mẫu (*Class Imbalance* - ví dụ: trạng thái bình thường chiếm $70\%$, sợ hãi chiếm $10\%$), chỉ số **Accuracy** sẽ phản ánh sai lệch nghiêm trọng chất lượng của mô hình.
-
-### 2.1. Hệ Số Đồng Thuận Cohen’s Kappa ($\kappa$)
-
-Cohen’s Kappa đo lường mức độ đồng thuận giữa dự đoán của AI và nhãn thực tế sau khi **đã loại trừ toàn bộ yếu tố trùng hợp ngẫu nhiên**:
-
-$$\kappa = \frac{p_o - p_e}{1 - p_e}$$
-
-* $p_o$: Độ chính xác quan sát được ($\text{Accuracy}$).
-* $p_e$: Xác suất trùng hợp ngẫu nhiên lý thuyết dựa trên phân phối biên của ma trận nhầm lẫn.
-
-| Giá Trị $\kappa$ | Mức Độ Đồng Thuận & Độ Tin Cậy | Đánh Giá Ứng Dụng Y Sinh |
-| :---: | :--- | :--- |
-| <span class="badge badge--rose">$< 0.20$</span> | Rất kém / Đoán mò ngẫu nhiên (*Slight*) | Không thể sử dụng |
-| <span class="badge badge--amber">$0.21 - 0.40$</span> | Tương đối (*Fair*) | Cần cải tiến thuật toán |
-| <span class="badge badge--primary">$0.41 - 0.60$</span> | Trung bình khá (*Moderate*) | Đạt ngưỡng chấp nhận nghiên cứu |
-| <span class="badge badge--cyan">$0.61 - 0.80$</span> | Rất tốt (*Substantial*) | Chuẩn mực cho thiết bị y tế |
-| <span class="badge badge--emerald">$0.81 - 1.00$</span> | Gần như hoàn hảo (*Almost Perfect*) | Đạt độ tin cậy vàng lâm sàng |
-
-```python
-from sklearn.metrics import cohen_kappa_score, confusion_matrix, classification_report
-
-def evaluate_multi_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
-    cm = confusion_matrix(y_true, y_pred)
-    kappa = cohen_kappa_score(y_true, y_pred)
-    acc = accuracy_score(y_true, y_pred)
-    macro_f1 = f1_score(y_true, y_pred, average='macro')
-    weighted_f1 = f1_score(y_true, y_pred, average='weighted')
-    
-    return {
-        'accuracy': acc,
-        'cohen_kappa': kappa,
-        'macro_f1': macro_f1,
-        'weighted_f1': weighted_f1,
-        'confusion_matrix': cm
-    }
-```
+| Tiêu Chí So Sánh | Within-Subject Cross-Val | K-Fold Ngẫu Nhiên (Trial-Level) | Leave-One-Subject-Out (LOSO) | Temporal Chronological Split |
+| :--- | :--- | :--- | :--- | :--- |
+| **Bản chất chia tập** | Chia ngẫu nhiên theo trial của 1 người | Xáo trộn toàn bộ mẫu của tất cả người đo | Train trên $N-1$ người, Test trên $1$ người còn lại | Chia theo trục thời gian (đầu/cuối session) |
+| **Nguy cơ rò rỉ dữ liệu** | Thấp nếu không gối cửa sổ | <span class="badge badge--rose">Cực kỳ nghiêm trọng (99%)</span> | <span class="badge badge--emerald">Không có nguy cơ rò rỉ cá nhân</span> | <span class="badge badge--emerald">Triệt tiêu rò rỉ thời gian</span> |
+| **Độ phức tạp tính toán** | Thấp ($K$ lần trên 1 đối tượng) | Thấp ($K$ folds cố định) | Cao ($N$ lần lặp cho $N$ đối tượng) | Thấp (1 lần chia duy nhất) |
+| **Độ chính xác kỳ vọng** | Rất cao ($85\% - 95\%$) | Cao ảo ($95\% - 99\%$) | Thực tế ($60\% - 82\%$) | Trung bình ($70\% - 85\%$) |
+| **Mục đích sử dụng** | Đánh giá trần tối đa cá nhân hóa | ❌ Cấm tuyệt đối trong y sinh | ✅ Đánh giá triển khai Zero-Shot | Đánh giá độ trôi tín hiệu thời gian |
+| **Khả năng thương mại** | Cần người dùng calibrate 30 phút | Không có giá trị thực tế | Người dùng đội mũ dùng ngay lập tức | Đánh giá độ mỏi/thích nghi dài hạn |
 
 ---
 
-## 3. Kiểm Định Ý Nghĩa Thống Kê (Statistical Significance Testing)
+## 3. Kiến Trúc Môi Trường & Luồng Thực Thi Mẫu
 
-Để khẳng định "Mô hình Mamba vượt trội hơn mô hình CNN", sự chênh lệch độ chính xác bắt buộc phải vượt qua bài kiểm định giả thuyết thống kê để chứng minh không phải do ngẫu nhiên:
+Quy trình đánh giá thực nghiệm chuẩn mực khoa học bao gồm 4 giai đoạn khép kín: Tách dữ liệu LOSO $\rightarrow$ Huấn luyện từ đầu $\rightarrow$ Đánh giá đa chỉ số $\rightarrow$ Kiểm định ý nghĩa thống kê và trực quan hóa t-SNE.
 
 ```mermaid
-flowchart TD
-    subgraph STAT_DECISION["📊 CÂY QUYẾT ĐỊNH KIỂM ĐỊNH THỐNG KÊ"]
-        direction TB
-        INPUT_D["Hiệu số độ chính xác giữa 2 mô hình:<br/>d = Acc_A - Acc_B (trên N đối tượng)"]
-        TEST_NORM{"Kiểm định phân phối chuẩn<br/>(Shapiro-Wilk Test)"}
-        PARAM["Kiểm định tham số:<br/>Paired Student's t-Test (stats.ttest_rel)"]
-        NON_PARAM["Kiểm định phi tham số:<br/>Wilcoxon Signed-Rank Test (stats.wilcoxon)"]
-        DECIDE{"p-value < 0.05?"}
-        SIG["✅ Khác biệt có ý nghĩa thống kê thực thụ"]
-        NOT_SIG["❌ Không đủ bằng chứng khẳng định vượt trội"]
+sequenceDiagram
+    autonumber
+    participant D as Pipeline Dữ Liệu
+    participant L as Bộ Điều Phối LOSO
+    participant M as Mô Hình AI (Mamba/DGCNN)
+    participant E as Bộ Đo Đa Chỉ Số
+    participant S as Kiểm Định Thống Kê & t-SNE
+
+    D->>L: Cung cấp Dict {Subject_ID: (Tensors, Labels)}
+    loop Cho từng đối tượng Test k = 1..N
+        L->>M: Khởi tạo trọng số ngẫu nhiên mới
+        L->>M: Huấn luyện trên tập N-1 đối tượng còn lại
+        M->>E: Dự đoán trên đối tượng thứ k (Zero-Shot)
+        E->>L: Trả về Accuracy, F1, Kappa, ConfMatrix của đối tượng k
     end
-
-    INPUT_D --> TEST_NORM
-    TEST_NORM -->|"p > 0.05 (Phân phối chuẩn)"| PARAM
-    TEST_NORM -->|"p ≤ 0.05 (Không chuẩn / N nhỏ)"| NON_PARAM
-    PARAM --> DECIDE
-    NON_PARAM --> DECIDE
-    DECIDE -->|"Đạt chuẩn"| SIG
-    DECIDE -->|"Không đạt"| NOT_SIG
-
-    style STAT_DECISION fill:none,stroke:#6366f1,stroke-width:1.75px
-    style INPUT_D fill:none,stroke:#64748b,stroke-width:1.5px
-    style TEST_NORM fill:none,stroke:#f59e0b,stroke-width:1.75px
-    style PARAM fill:none,stroke:#3b82f6,stroke-width:1.5px
-    style NON_PARAM fill:none,stroke:#8b5cf6,stroke-width:1.5px
-    style DECIDE fill:none,stroke:#f59e0b,stroke-width:1.75px
-    style SIG fill:none,stroke:#10b981,stroke-width:2px
-    style NOT_SIG fill:none,stroke:#f43f5e,stroke-width:1.5px
-```
-
-```python
-from scipy import stats
-
-def statistical_significance_test(accs_a: list, accs_b: list) -> dict:
-    diffs = np.array(accs_a) - np.array(accs_b)
-    
-    # 1. Kiểm tra giả định phân phối chuẩn bằng Shapiro-Wilk
-    _, p_norm = stats.shapiro(diffs)
-    
-    # 2. Chọn phép kiểm định phù hợp
-    if p_norm > 0.05:
-        stat, p_val = stats.ttest_rel(accs_a, accs_b)
-        test_type = "Paired Student's t-Test"
-    else:
-        stat, p_val = stats.wilcoxon(accs_a, accs_b)
-        test_type = "Wilcoxon Signed-Rank Test"
-        
-    return {
-        'test_applied': test_type,
-        'statistic': stat,
-        'p_value': p_val,
-        'is_statistically_significant': bool(p_val < 0.05),
-        'mean_improvement': float(np.mean(diffs))
-    }
-```
-
-### 3.1. Hiệu Chỉnh So Sánh Bội (Bonferroni & Benjamini-Hochberg FDR)
-Khi so sánh đồng thời $M$ cặp mô hình, xác suất xuất hiện sai lầm loại I (báo cáo vượt trội giả mạo) tăng theo công thức:
-
-$$\alpha_{\text{total}} = 1 - (1 - \alpha)^M$$
-
-* **Hiệu chỉnh Bonferroni:** Chia ngưỡng ý nghĩa: $\alpha_{\text{adjusted}} = \frac{0.05}{M}$.
-* **Hiệu chỉnh Benjamini-Hochberg (FDR):** Kiểm soát tỷ lệ phát hiện sai trên các giá trị $p\text{-value}$ được sắp xếp tăng dần.
-
----
-
-## 4. Nghiên Cứu Triệt Tiêu (Ablation Study) & Khả Năng Giải Thích (XAI)
-
-**Ablation Study** là kỹ thuật tháo rời từng thành phần của kiến trúc để đo lường chính xác giá trị đóng góp độc lập:
-
-### 4.1. Bảng Ma Trận Nghiên Cứu Triệt Tiêu (Benchmark DEAP)
-
-| Cấu Hình Kiến Trúc | Accuracy | F1-Score | Mức Độ Suy Giảm ($\Delta$) | Giá Trị $p$-Value |
-| :---: | :---: | :---: | :---: | :---: |
-| <span class="badge badge--emerald">Mô hình hoàn chỉnh (Full MAS)</span> | **$82.5\%$** | **$0.814$** | **Baseline** | — |
-| <span class="badge badge--primary">Triệt tiêu Adaptation Agent</span> | $76.5\%$ | $0.752$ | $-6.0\%$ | $p < 0.001$ |
-| <span class="badge badge--cyan">Triệt tiêu Cross-Modal Attention</span> | $77.2\%$ | $0.760$ | $-5.3\%$ | $p = 0.002$ |
-| <span class="badge badge--purple">Triệt tiêu Dynamic Graph CNN (DGCNN)</span> | $78.4\%$ | $0.771$ | $-4.1\%$ | $p = 0.008$ |
-| <span class="badge badge--amber">Triệt tiêu Tín hiệu ngoại biên (AUX)</span> | $75.0\%$ | $0.738$ | $-7.5\%$ | $p < 0.001$ |
-| <span class="badge badge--rose">Baseline CNN truyền thống</span> | $62.0\%$ | $0.605$ | $-20.5\%$ | $p < 0.001$ |
-
----
-
-## 5. Trực Quan Hóa Không Gian Biểu Diễn Ẩn Bằng t-SNE
-
-```python
-import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE
-
-def plot_tsne_clusters(features: np.ndarray, labels: np.ndarray):
-    """
-    Trực quan hóa không gian vector ẩn để kiểm tra mức độ phân tách cụm cảm xúc.
-    """
-    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
-    embeds_2d = tsne.fit_transform(features)
-    
-    plt.figure(figsize=(8, 6))
-    scatter = plt.scatter(embeds_2d[:, 0], embeds_2d[:, 1], c=labels, cmap='viridis', alpha=0.8)
-    plt.colorbar(scatter, label='Emotion Class ID')
-    plt.title("t-SNE Latent Space Clustering (Subject-Independent)")
-    plt.xlabel("t-SNE Component 1")
-    plt.ylabel("t-SNE Component 2")
-    plt.grid(True, linestyle='--', alpha=0.5)
+    L->>S: Tập hợp mảng hiệu năng N đối tượng
+    S->>S: Kiểm định Shapiro-Wilk (Chuẩn/Phi chuẩn)
+    S->>S: Chạy Paired t-Test / Wilcoxon Signed-Rank
+    S->>S: Chiếu không gian ẩn 128d -> 2D qua t-SNE
+    S-->>D: Xuất báo cáo khoa học & Ma trận nhầm lẫn
 ```
 
 ---
 
-## 6. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: P-Hacking & So Sánh Bội Không Hiệu Chỉnh
 
 ### Tình Huống Sự Cố Thực Tế:
-<span class="badge badge--rose">🕒 05:20 AM</span> Một bài báo khoa học về BCI nhận dạng cảm xúc công bố mô hình đạt độ chính xác kỷ lục **$96.8\%$** khi so sánh đồng thời 12 biến thể kiến trúc khác nhau trên tập dữ liệu DEAP. Tuy nhiên, khi gửi bài báo đến hội đồng thẩm định của tạp chí hàng đầu (*IEEE Transactions on Affective Computing*), bài báo bị từ chối thẳng thừng (*Desk Reject*) với kết luận mắc lỗi **P-Hacking** và **So sánh bội không hiệu chỉnh** (**Uncorrected Multiple Hypothesis Testing**).
+<span class="badge badge--rose">🕒 05:20 AM</span> Một nhóm nghiên cứu BCI công bố mô hình đạt độ chính xác kỷ lục **$96.8\%$** khi so sánh đồng thời 12 biến thể kiến trúc khác nhau trên tập dữ liệu DEAP. Tuy nhiên, khi gửi bài báo đến hội đồng thẩm định của tạp chí hàng đầu (*IEEE Transactions on Affective Computing*), bài báo bị từ chối thẳng thừng (*Desk Reject*) với kết luận mắc lỗi **P-Hacking** và **So sánh bội không hiệu chỉnh** (**Uncorrected Multiple Hypothesis Testing**).
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-Phân tích thống kê từ hội đồng phản biện chỉ ra rằng trong số 12 bài kiểm định được nhóm tác giả tuyên bố $p < 0.05$, có tới 9 bài kiểm định trở thành không có ý nghĩa sau khi áp dụng chuẩn Bonferroni:
-
 ```text
 ================================================================================
 PEER REVIEW AUDIT: MULTIPLE HYPOTHESIS TESTING VIOLATION (P-HACKING)
@@ -283,10 +140,10 @@ PEER REVIEW AUDIT: MULTIPLE HYPOTHESIS TESTING VIOLATION (P-HACKING)
 [FATAL] Family-Wise Error Rate (FWER): alpha_total = 1 - (1 - 0.05)^12 = 45.96%!
 
 >> MULTIPLE COMPARISON AUDIT TABLE:
-   - Comparison 01 (Mamba vs CNN)      : p = 0.0002  < 0.00416  [VALID SIGNIFICANCE]
-   - Comparison 02 (EEGNet vs LSTM)    : p = 0.0120  > 0.00416  [FALSE DISCOVERY / TYPE I ERROR]
-   - Comparison 03 (Cross-Attn vs Concat): p = 0.0340 > 0.00416 [FALSE DISCOVERY / TYPE I ERROR]
-   - Comparison 04 (Gated vs Linear)   : p = 0.0480  > 0.00416  [FALSE DISCOVERY / TYPE I ERROR]
+   - Comparison 01 (Mamba vs CNN)        : p = 0.0002 < 0.00416  [VALID SIGNIFICANCE]
+   - Comparison 02 (EEGNet vs LSTM)      : p = 0.0120 > 0.00416  [FALSE DISCOVERY / TYPE I ERROR]
+   - Comparison 03 (Cross-Attn vs Concat): p = 0.0340 > 0.00416  [FALSE DISCOVERY / TYPE I ERROR]
+   - Comparison 04 (Gated vs Linear)     : p = 0.0480 > 0.00416  [FALSE DISCOVERY / TYPE I ERROR]
 
 [CONCLUSION] The claimed superiority of sub-modules was purely driven by random noise!
 The authors committed P-Hacking by publishing nominal p-values without Bonferroni correction.
@@ -305,7 +162,223 @@ The authors committed P-Hacking by publishing nominal p-values without Bonferron
 
 ---
 
-## 7. Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Q&A Accordion)
+## 5. Hands-on Lab: Xây Dựng Pipeline Đánh Giá LOSO, Phân Tích Thống Kê & t-SNE (8 Bước)
+
+| Bước | Mục Tiêu Kỹ Thuật | Đầu Ra Kiểm Tra |
+| :---: | :--- | :--- |
+| **1** | Tạo dữ liệu giả lập đa đối tượng | 10 đối tượng, mỗi đối tượng 100 trials, 32 kênh EEG |
+| **2** | Định nghĩa kiến trúc mô hình đánh giá | Backbone Deep Learning trích xuất 128d features |
+| **3** | Xây dựng LOSO Cross-Validation Engine | Vòng lặp huấn luyện $N-1$ đối tượng và test 1 đối tượng |
+| **4** | Lập trình hàm tính chỉ số đa chiều | Accuracy, Macro F1, Weighted F1, Cohen's Kappa |
+| **5** | Kiểm tra phân phối chuẩn Shapiro-Wilk | Giá trị $p$-value kiểm định phân phối hiệu sai |
+| **6** | Kiểm định thống kê Paired t-Test / Wilcoxon | Báo cáo ý nghĩa thống kê và mức cải thiện trung bình |
+| **7** | Áp dụng hiệu chỉnh so sánh bội Bonferroni/FDR | Lọc các so sánh đạt chuẩn sau hiệu chỉnh |
+| **8** | Trích xuất không gian vector ẩn và vẽ t-SNE | Biểu đồ phân cụm 2D không gian đặc trưng cảm xúc |
+
+### Bước 1: Khởi Tạo Môi Trường & Dữ Liệu Đa Đối Tượng Giả Lập
+
+```python
+import numpy as np
+import torch
+import torch.nn as nn
+from sklearn.metrics import accuracy_score, f1_score, cohen_kappa_score, confusion_matrix
+from scipy import stats
+
+np.random.seed(42)
+torch.manual_seed(42)
+
+# Giả lập 10 đối tượng, mỗi đối tượng có 100 trials, 32 kênh EEG, 128 điểm mẫu (1s)
+num_subjects = 10
+trials_per_sub = 100
+num_channels = 32
+time_points = 128
+num_classes = 3
+
+synthetic_db = {}
+for sub_id in range(1, num_subjects + 1):
+    x = torch.randn(trials_per_sub, num_channels, time_points)
+    # Gán nhãn có độ lệch nhẹ theo từng cá nhân
+    y = torch.randint(0, num_classes, (trials_per_sub,))
+    synthetic_db[f"sub_{sub_id:02d}"] = {'x': x, 'y': y}
+
+print(f"[Lab 07 Step 1] Da khoi tao {num_subjects} doi tuong, moi doi tuong {trials_per_sub} trials.")
+```
+
+### Bước 2: Định Nghĩa Kiến Trúc Trích Xuất Đặc Trưng & Phân Loại
+
+```python
+class EEGClassifier(nn.Module):
+    def __init__(self, in_channels: int = 32, num_classes: int = 3, latent_dim: int = 128):
+        super().__init__()
+        self.encoder = nn.Sequential(
+            nn.Conv1d(in_channels, 64, kernel_size=7, stride=2, padding=3),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool1d(16),
+            nn.Flatten(),
+            nn.Linear(64 * 16, latent_dim),
+            nn.ReLU()
+        )
+        self.head = nn.Linear(latent_dim, num_classes)
+        
+    def forward(self, x: torch.Tensor, return_features: bool = False):
+        feats = self.encoder(x)
+        logits = self.head(feats)
+        if return_features:
+            return logits, feats
+        return logits
+
+print("[Lab 07 Step 2] Khoi tao thanh cong kien truc EEGClassifier voi latent_dim=128.")
+```
+
+### Bước 3: Triển Khai Giao Thức Leave-One-Subject-Out (LOSO)
+
+```python
+def run_loso_evaluation(data_dict: dict, epochs: int = 5, lr: float = 0.005):
+    sub_keys = list(data_dict.keys())
+    results = {}
+    all_embeddings = []
+    all_labels = []
+    
+    for test_sub in sub_keys:
+        # Tách N-1 tập huấn luyện và 1 tập kiểm thử
+        train_x = torch.cat([data_dict[k]['x'] for k in sub_keys if k != test_sub])
+        train_y = torch.cat([data_dict[k]['y'] for k in sub_keys if k != test_sub])
+        test_x = data_dict[test_sub]['x']
+        test_y = data_dict[test_sub]['y']
+        
+        model = EEGClassifier()
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+        criterion = nn.CrossEntropyLoss()
+        
+        # Huấn luyện
+        model.train()
+        for ep in range(epochs):
+            optimizer.zero_grad()
+            out = model(train_x)
+            loss = criterion(out, train_y)
+            loss.backward()
+            optimizer.step()
+            
+        # Kiểm thử
+        model.eval()
+        with torch.no_grad():
+            logits, feats = model(test_x, return_features=True)
+            preds = logits.argmax(dim=-1).numpy()
+            y_true = test_y.numpy()
+            
+            acc = accuracy_score(y_true, preds)
+            f1 = f1_score(y_true, preds, average='macro')
+            kappa = cohen_kappa_score(y_true, preds)
+            
+            results[test_sub] = {'acc': acc, 'macro_f1': f1, 'kappa': kappa}
+            all_embeddings.append(feats.numpy())
+            all_labels.append(y_true)
+            
+    return results, np.concatenate(all_embeddings), np.concatenate(all_labels)
+
+loso_results, embeddings, labels = run_loso_evaluation(synthetic_db)
+print(f"[Lab 07 Step 3] Hoan tat LOSO. Acc trung binh: {np.mean([r['acc'] for r in loso_results.values()]):.4f}")
+```
+
+### Bước 4: Lập Trình Hàm Đánh Giá Hệ Chỉ Số Đa Chiều
+
+```python
+def compute_comprehensive_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
+    acc = accuracy_score(y_true, y_pred)
+    macro_f1 = f1_score(y_true, y_pred, average='macro')
+    weighted_f1 = f1_score(y_true, y_pred, average='weighted')
+    kappa = cohen_kappa_score(y_true, y_pred)
+    cm = confusion_matrix(y_true, y_pred)
+    
+    return {
+        'accuracy': float(acc),
+        'macro_f1': float(macro_f1),
+        'weighted_f1': float(weighted_f1),
+        'cohen_kappa': float(kappa),
+        'confusion_matrix': cm.tolist()
+    }
+
+demo_metrics = compute_comprehensive_metrics(np.random.randint(0, 3, 100), np.random.randint(0, 3, 100))
+print(f"[Lab 07 Step 4] Demo Cohen Kappa: {demo_metrics['cohen_kappa']:.4f}")
+```
+
+### Bước 5: Kiểm Tra Giả Định Phân Phối Chuẩn (Shapiro-Wilk Test)
+
+```python
+# Giả lập kết quả so sánh giữa 2 mô hình (Mô hình mới vs Baseline) trên 10 đối tượng
+accs_model_a = np.array([0.78, 0.81, 0.75, 0.84, 0.79, 0.83, 0.80, 0.77, 0.82, 0.85])
+accs_model_b = np.array([0.71, 0.74, 0.69, 0.78, 0.73, 0.75, 0.72, 0.70, 0.76, 0.79])
+
+differences = accs_model_a - accs_model_b
+shapiro_stat, p_normality = stats.shapiro(differences)
+
+print(f"[Lab 07 Step 5] Shapiro-Wilk Statistic: {shapiro_stat:.4f}, p-value: {p_normality:.4f}")
+if p_normality > 0.05:
+    print(">> Du lieu thoa man gia dinh phan phoi chuan (Chon Paired Student's t-Test).")
+else:
+    print(">> Du lieu khong tuan theo phan phoi chuan (Chon Wilcoxon Signed-Rank Test).")
+```
+
+### Bước 6: Kiểm Định Ý Nghĩa Thống Kê (Paired t-Test / Wilcoxon)
+
+```python
+def evaluate_significance(a_scores: np.ndarray, b_scores: np.ndarray) -> dict:
+    diffs = a_scores - b_scores
+    _, p_norm = stats.shapiro(diffs)
+    
+    if p_norm > 0.05:
+        stat, p_val = stats.ttest_rel(a_scores, b_scores)
+        test_used = "Paired Student's t-Test"
+    else:
+        stat, p_val = stats.wilcoxon(a_scores, b_scores)
+        test_used = "Wilcoxon Signed-Rank Test"
+        
+    return {
+        'test_applied': test_used,
+        'statistic': float(stat),
+        'p_value': float(p_val),
+        'mean_improvement_pct': float(np.mean(diffs) * 100),
+        'is_significant': bool(p_val < 0.05)
+    }
+
+sig_report = evaluate_significance(accs_model_a, accs_model_b)
+print(f"[Lab 07 Step 6] {sig_report['test_applied']}: p-value = {sig_report['p_value']:.6f} (Y nghia: {sig_report['is_significant']})")
+```
+
+### Bước 7: Hiệu Chỉnh So Sánh Bội (Bonferroni & Benjamini-Hochberg)
+
+```python
+def bonferroni_correction(p_values: list, alpha: float = 0.05) -> list:
+    m = len(p_values)
+    alpha_adj = alpha / m
+    return [{'p_raw': p, 'alpha_adj': alpha_adj, 'is_significant': p < alpha_adj} for p in p_values]
+
+raw_p_list = [0.0002, 0.0120, 0.0340, 0.0480]
+corrected_res = bonferroni_correction(raw_p_list)
+print("[Lab 07 Step 7] Ket qua hieu chinh Bonferroni cho 4 p-values:")
+for idx, r in enumerate(corrected_res, 1):
+    print(f"  P{idx}: p={r['p_raw']:.4f} vs alpha_adj={r['alpha_adj']:.5f} -> Dat: {r['is_significant']}")
+```
+
+### Bước 8: Trích Xuất Không Gian Vector Ẩn & Phân Cụm t-SNE
+
+```python
+from sklearn.manifold import TSNE
+
+def generate_tsne_embedding(feats: np.ndarray, perplexity: int = 15):
+    # Chiếu giảm chiều từ 128d xuống 2D
+    tsne = TSNE(n_components=2, perplexity=perplexity, random_state=42)
+    coords_2d = tsne.fit_transform(feats)
+    return coords_2d
+
+coords_2d = generate_tsne_embedding(embeddings[:300])
+print(f"[Lab 07 Step 8] Hoan tat chieu giam chieu t-SNE. Shape 2D embedding: {coords_2d.shape}")
+```
+
+---
+
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
 
 <details class="qa-card">
 <summary class="qa-summary">
@@ -499,7 +572,28 @@ The authors committed P-Hacking by publishing nominal p-values without Bonferron
 
 ---
 
-## 8. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+
+```mermaid
+mindmap
+  root((Đánh Giá & Thực Nghiệm BCI))
+    Giao Thức Kiểm Chuẩn
+      LOSO Subject-Independent
+      Within-Subject Upper Bound
+      Temporal Chronological Split
+    Hệ Chỉ Số Đa Chiều
+      Accuracy & Macro-F1
+      Cohen Kappa Loại Bỏ Ngẫu Nhiên
+      ROC-AUC & PR-AUC
+    Kiểm Định Ý Nghĩa Thống Kê
+      Shapiro-Wilk Test
+      Paired Student t-Test
+      Wilcoxon Signed-Rank Test
+      Bonferroni & FDR Correction
+    Khả Năng Giải Thích XAI
+      Ablation Study Module Tỷ Trọng
+      t-SNE 2D Clustering
+```
 
 Nắm vững các phương pháp đánh giá chuẩn mực từ **Giao thức LOSO**, **Hệ số Cohen’s Kappa**, **Kiểm định Paired t-Test / Wilcoxon**, **Ablation Study** đến **Trực quan hóa t-SNE** là thước đo bảo chứng chất lượng và giá trị học thuật cho toàn bộ công trình AI y sinh.
 

@@ -3,336 +3,353 @@ layout: post
 title: "[Bài 08] Các Bộ Dữ Liệu Benchmark Phổ Biến: Khai Thác Chuẩn DEAP, SEED, DREAMER, MAHNOB-HCI & FACED"
 date: 2026-09-16 15:00:00 +0700
 categories: [EEG]
-tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
+tags:
+  - EEG
+  - BCI
+  - DEAPDataset
+  - SEEDDataset
+  - DREAMER
+  - MultimodalDatasets
+  - DataLoader
+  - CrossDatasetTransfer
 series: "EEG & Emotion Recognition AI"
 series_order: 8
 difficulty: Intermediate
+thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "Khám phá chi tiết các bộ dữ liệu benchmark quốc tế chuẩn mực trong BCI nhận dạng cảm xúc: DEAP, SEED, DREAMER, AMIGOS, MAHNOB-HCI và FACED. Phân tích cấu trúc file, giao thức kích thích cảm xúc, thiết kế Unified DataLoader đa định dạng, chiến lược xử lý bất tương thích kênh (Channel Incompatibility) và kỹ thuật Cross-Dataset Transfer."
-tldr: "Bài viết cung cấp bức tranh toàn cảnh về các tập dữ liệu EEG/đa phương thức chuẩn mực thế giới: so sánh số lượng kênh, phiên đo, nhãn liên tục/rời rạc, kèm code Python Unified DataLoader, bộ giải quyết lệch kênh Spherical Spline và phân tích 5-Whys về rò rỉ I/O bộ nhớ khi đọc dataset lớn."
+description: "Làm chủ các bộ dữ liệu benchmark y sinh chuẩn mực trong nhận dạng cảm xúc: DEAP, SEED, DREAMER, MAHNOB-HCI. Lập trình Unified DataLoader PyTorch, giải quyết lệch kênh bằng Spherical Spline và tối ưu hóa Memory-Mapped HDF5."
+keywords:
+  - eeg benchmark datasets
+  - deap dataset python dataloader
+  - seed dataset sjtu eeg
+  - dreamer dataset affective computing
+  - spherical spline channel interpolation
+  - hdf5 memmap eeg big data
+  - cross dataset transfer learning
+tldr:
+  - "Bộ dữ liệu chuẩn mực (DEAP, SEED, DREAMER, FACED, MAHNOB-HCI) là thước đo bắt buộc để bảo chứng tính tái lập và so sánh công bằng trong BCI."
+  - "DEAP tiên phong mô hình liên tục Valence-Arousal với 32 kênh EEG + 8 kênh ngoại vi; SEED chuyên sâu 62 kênh đo lặp lại qua 3 phiên độc lập."
+  - "DREAMER và AMIGOS mô phỏng môi trường thực tế với thiết bị đeo 14 kênh không dây giá rẻ Emotiv EPOC."
+  - "Giải quyết bất tương thích số lượng kênh qua phép nội suy không gian màng cầu (Spherical Spline Interpolation)."
+  - "Cấu trúc lưu trữ Memory-Mapped HDF5 triệt tiêu hoàn toàn nguy cơ tràn bộ nhớ RAM khi huấn luyện đa tập dữ liệu lớn."
 ---
-
 {% raw %}
-## 8.0. Mục Tiêu Học Tập & Chuẩn Đầu Ra
-
-Trong kỷ nguyên khoa học dữ liệu và học sâu y sinh, tính tái lập (*Reproducibility*) và khả năng so sánh định lượng công bằng giữa các thuật toán phụ thuộc hoàn toàn vào các **bộ dữ liệu chuẩn mực (Standard Benchmarks)**. Việc thu thập tín hiệu điện não đồ (EEG) đạt chuẩn y tế lâm sàng đòi hỏi hệ thống điện cực đắt đỏ (như BioSemi ActiveTwo, ESI NeuroScan), môi trường phòng cách ly điện từ Faraday và quy trình đạo đức sinh học nghiêm ngặt.
-
-<span class="badge badge--primary">Mục tiêu 1</span> **Phân tích toàn diện thông số kỹ thuật:** Nắm vững cấu trúc phần cứng, giao thức kích thích (*Stimulus Induction Protocol*), số kênh điện cực và dải tần lấy mẫu của các tập dữ liệu cốt lõi: **DEAP, SEED, DREAMER, AMIGOS, FACED, MAHNOB-HCI**.
-
-<span class="badge badge--success">Mục tiêu 2</span> **Làm chủ không gian nhãn cảm xúc:** Phân biệt và chuẩn hóa giữa mô hình cảm xúc liên tục đa chiều (*Valence-Arousal-Dominance*) và mô hình cảm xúc rời rạc (*Discrete Emotion States: Positive / Neutral / Negative / 6 Basic Emotions*).
-
-<span class="badge badge--warning">Mục tiêu 3</span> **Xây dựng Unified Multimodal DataLoader:** Lập trình kiến trúc nạp dữ liệu thống nhất xử lý đa định dạng tệp tin (`.dat`, `.mat`, `.bdf`, `.h5`), tự động loại bỏ baseline thời gian thực và đồng bộ tần số lấy mẫu (*Resampling*).
-
-<span class="badge badge--danger">Mục tiêu 4</span> **Giải quyết bài toán bất tương thích kênh (Channel Incompatibility):** Áp dụng kỹ thuật ánh xạ không gian và nội suy màng cầu (*Spherical Spline Interpolation*) để chuyển đổi biểu diễn giữa các hệ thống điện cực $14$, $32$, $62$, $128$ kênh trong bài toán thích ứng miền chéo tập dữ liệu (*Cross-Dataset Transfer Learning*).
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững thông số kỹ thuật, cấu trúc tệp tin và giao thức kích thích của 6 bộ dữ liệu Benchmark hàng đầu: **DEAP, SEED, DREAMER, AMIGOS, FACED, MAHNOB-HCI**.
+> - Phân biệt bản chất giữa mô hình cảm xúc liên tục đa chiều (**Valence-Arousal-Dominance**) và mô hình rời rạc (**Positive / Neutral / Negative / 6 Basic Emotions**).
+> - Xây dựng kiến trúc **Unified Multimodal DataLoader** xử lý đa định dạng tệp tin (`.dat`, `.mat`, `.h5`), tự động loại trừ baseline thời gian thực và đồng bộ tần số lấy mẫu.
+> - Giải quyết bài toán bất tương thích kênh giữa các thiết bị ($14$, $32$, $62$, $128$ kênh) bằng thuật toán nội suy không gian màng cầu (**Spherical Spline Interpolation**).
+> - Tối ưu hóa I/O bộ nhớ với cấu trúc **Memory-Mapped HDF5 / Zarr**, loại bỏ 100% nguy cơ sập tiến trình Out-Of-Memory (OOM).
 
 ---
 
-## 8.1. Tổng Quan Về Các Bộ Dữ Liệu Benchmark Quốc Tế
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Hệ Sinh Thái Dữ Liệu Benchmark Trong BCI Y Sinh
+
+Trong kỷ nguyên khoa học dữ liệu và học sâu y sinh, tính tái lập (*Reproducibility*) và khả năng so sánh định lượng công bằng giữa các thuật toán phụ thuộc hoàn toàn vào các **bộ dữ liệu chuẩn mực (Standard Benchmarks)**. 
+
+Việc thu thập tín hiệu điện não đồ (EEG) đạt chuẩn y tế lâm sàng đòi hỏi hệ thống điện cực đắt đỏ (BioSemi ActiveTwo, ESI NeuroScan), môi trường phòng cách ly điện từ Faraday và quy trình đạo đức sinh học nghiêm ngặt. Do đó, việc hiểu sâu cấu trúc và đặc tính của các bộ dữ liệu quốc tế mở là nền tảng cho mọi nghiên cứu sinh học thần kinh tính toán.
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': {'background': 'transparent', 'mainBkg': 'transparent'}}}%%
 flowchart TD
-    classDef main fill:none,stroke:#00e5ff,stroke-width:2px,color:#00e5ff;
-    classDef deap fill:none,stroke:#7c4dff,stroke-width:2px,color:#b388ff;
-    classDef seed fill:none,stroke:#00e676,stroke-width:2px,color:#69f0ae;
-    classDef mob fill:none,stroke:#ffab00,stroke-width:2px,color:#ffd740;
-    classDef dense fill:none,stroke:#ff1744,stroke-width:2px,color:#ff5252;
+    subgraph DATA_ECOSYSTEM["🌐 HỆ SINH THÁI DỮ LIỆU BENCHMARK TRONG BCI & CẢM XÚC"]
+        direction TB
+        ROOT["Kho Dữ Liệu Chuẩn Quốc Tế"]
+        DEAP["DEAP (2012)<br/>• 32 Người, 32 EEG + 8 Ngoại vi<br/>• Thang VADL (1-9), 40 Music Videos"]
+        SEED["SEED (2015)<br/>• 15 Người, 62 Kênh EEG NeuroScan<br/>• 3 Phiên Đo Lặp Lại, 3 Lớp Rời Rạc"]
+        WEARABLE["DREAMER & AMIGOS<br/>• Thiết Bị Đeo Không Dây 14 Kênh<br/>• Mô Phỏng Môi Trường Thực Tế Consumer"]
+        HIGH_DENSE["FACED & MAHNOB-HCI<br/>• 128 Kênh EEG Siêu Dày<br/>• Đồng Bộ Video Biểu Cảm & Eye Tracking"]
+    end
 
-    Root["Hệ Sinh Thái Benchmark Dữ Liệu EEG & Đa Phương Thức"]:::main
+    ROOT --> DEAP
+    ROOT --> SEED
+    ROOT --> WEARABLE
+    ROOT --> HIGH_DENSE
 
-    Root --> DEAP_Node["DEAP (2012)<br/>• 32 Người, 32 EEG + 8 Ngoại vi<br/>• Thang VADL (1-9), 40 Music Videos"]:::deap
-    Root --> SEED_Node["SEED (2015)<br/>• 15 Người, 62 EEG Channels<br/>• 3 Sessions Lặp Lại, 3 Lớp Rời Rạc"]:::seed
-    Root --> DREAM_Node["DREAMER & AMIGOS<br/>• Thiết bị đeo di động 14 kênh<br/>• AMIGOS 40 Người (Quy mô lớn)"]:::mob
-    Root --> DENSE_Node["FACED & MAHNOB-HCI<br/>• 128 Kênh EEG Siêu Dày<br/>• Đồng bộ Vi biểu cảm & Eye Tracking"]:::dense
+    style DATA_ECOSYSTEM fill:none,stroke:#6366f1,stroke-width:1.75px
+    style ROOT fill:none,stroke:#64748b,stroke-width:1.5px
+    style DEAP fill:none,stroke:#3b82f6,stroke-width:1.5px
+    style SEED fill:none,stroke:#10b981,stroke-width:2px
+    style WEARABLE fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style HIGH_DENSE fill:none,stroke:#8b5cf6,stroke-width:1.5px
+```
+
+### 1.1. Cây Quyết Định Lựa Chọn Tập Dữ Liệu
+
+```mermaid
+flowchart TD
+    subgraph DECISION_TREE["🧭 CÂY QUYẾT ĐỊNH LỰA CHỌN TẬP DỮ LIỆU BCI"]
+        direction TB
+        START["Bắt Đầu: Xác Định Mục Tiêu Nghiên Cứu"]
+        Q1{"Mục tiêu nghiên cứu chính là gì?"}
+        D1["Chọn DEAP (32 người, 32 kênh EEG + 8 ngoại vi)"]
+        D2["Chọn SEED (3 Phiên đo lặp lại, 62 kênh NeuroScan)"]
+        D3["Chọn DREAMER hoặc AMIGOS (14 kênh Emotiv EPOC)"]
+        D4["Chọn MAHNOB-HCI hoặc FACED (128 kênh, Eye-tracking)"]
+    end
+
+    START --> Q1
+    Q1 -->|"So sánh chuẩn học sâu quốc tế"| D1
+    Q1 -->|"Đánh giá trôi tín hiệu theo thời gian"| D2
+    Q1 -->|"Phát triển thiết bị BCI đeo di động Edge"| D3
+    Q1 -->|"Hòa hợp Đa phương thức Não + Mắt + Mặt"| D4
+
+    style DECISION_TREE fill:none,stroke:#6366f1,stroke-width:1.75px
+    style START fill:none,stroke:#64748b,stroke-width:1.5px
+    style Q1 fill:none,stroke:#f59e0b,stroke-width:1.75px
+    style D1 fill:none,stroke:#3b82f6,stroke-width:1.5px
+    style D2 fill:none,stroke:#10b981,stroke-width:2px
+    style D3 fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style D4 fill:none,stroke:#8b5cf6,stroke-width:1.5px
 ```
 
 ---
 
-## 8.2. Chi Tiết Kiến Trúc Từng Bộ Dữ Liệu Cốt Lõi
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-### 8.2.1. DEAP (Database for Emotion Analysis using Physiological Signals)
+| Bộ Dữ Liệu | Số Đối Tượng | Kênh EEG | Tín Hiệu Ngoại Vi | Số Phiên Đo | Mô Hình Cảm Xúc | Tần Số Lấy Mẫu ($F_s$) | Trường Hợp Sử Dụng Tối Ưu |
+| :--- | :---: | :---: | :--- | :---: | :--- | :---: | :--- |
+| <span class="badge badge--primary">DEAP (2012)</span> | 32 | 32 | ECG, GSR, EMG, Resp, Temp, BVP | 1 (40 trials) | V-A-D-L (1.0 - 9.0) | 128 Hz | Chuẩn vàng so sánh thuật toán chung |
+| <span class="badge badge--emerald">SEED (2015)</span> | 15 | 62 | Không | 3 (Cách tuần) | 3 Lớp (Pos / Neu / Neg) | 200 Hz | Domain Adaptation theo thời gian & GNN |
+| <span class="badge badge--amber">DREAMER (2018)</span> | 23 | 14 (Emotiv) | ECG (2 kênh) | 1 (18 trials) | V-A-D (1.0 - 5.0) | 128 Hz | Edge BCI & Thiết bị đeo tiêu dùng |
+| <span class="badge badge--cyan">AMIGOS (2018)</span> | 40 | 14 | ECG, GSR, Respiration | 1 (16 trials) | V-A (1.0 - 9.0) | 128 Hz | Cross-Subject quy mô người dùng lớn |
+| <span class="badge badge--purple">FACED (2020)</span> | 10 | 128 | Video biểu cảm khuôn mặt | 1 (40 trials) | 6 Lớp cơ bản Ekman | 250 Hz | Định vị nguồn não mật độ cao |
+| <span class="badge badge--rose">MAHNOB-HCI</span> | 27 | 32 | Video, Eye Tracking, ECG, GSR | 1 (20 trials) | V-A-D (1.0 - 9.0) | 256 Hz | Hòa hợp đa phương thức Não + Mắt + Mặt |
 
-Được công bố năm 2012 bởi nhóm nghiên cứu quốc tế thuộc Queen Mary University of London, Đại học Geneva và USI Thụy Sĩ, **DEAP** là "thước đo chuẩn vàng" lâu đời nhất trong lĩnh vực nhận dạng cảm xúc sinh lý.
+---
 
-```text
-============================ CẤU TRÚC DỮ LIỆU FILE DEAP (.DAT) ============================
-Subject File: s01.dat -> s32.dat (Python Dictionary lưu dạng latin1 pickle)
-+-----------------------------------------------------------------------------------------+
-| ['data']   : Tensor Shape (40 trials, 40 channels, 8064 samples)                       |
-|              - 40 Trials : 40 video âm nhạc (mỗi video 60s + 3s baseline)               |
-|              - 40 Channels: Kênh 0-31 là EEG chuẩn 10-20; Kênh 32-39 là Tín hiệu Ngoại vi|
-|                (32-33: hEOG/vEOG, 34-35: EMG Zygomaticus/Trapezius, 36: GSR,            |
-|                 37: Respiration, 38: Plethysmograph Nhiệt độ, 39: Blood Volume)         |
-|              - 8064 Samples: 63 giây x 128 Hz lấy mẫu                                   |
-| ['labels'] : Ma trận Shape (40 trials, 4 metrics)                                       |
-|              - Cột 0: Valence (1.0 - 9.0)                                               |
-|              - Cột 1: Arousal (1.0 - 9.0)                                               |
-|              - Cột 2: Dominance (1.0 - 9.0)                                             |
-|              - Cột 3: Liking (1.0 - 9.0)                                                |
-+-----------------------------------------------------------------------------------------+
+## 3. Kiến Trúc Môi Trường & Luồng Thực Thi Mẫu
+
+Quy trình nạp dữ liệu đa nguồn thống nhất và chuyển đổi không gian điện cực được mô hình hóa qua luồng tương tác giữa **Unified DataLoader**, **Spherical Remapper** và **Memmap Engine**:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant D as Nguồn Tệp Thô (.dat / .mat / .bdf)
+    participant L as Unified Multimodal DataLoader
+    participant S as Spherical Spline Remapper (3D)
+    participant H as Memory-Mapped HDF5 Buffer
+    participant P as PyTorch Multi-Worker DataLoader
+
+    D->>L: Đọc tệp tin thô với encoding thích hợp (latin1/matlab)
+    L->>L: Tách Baseline (3s đầu) & Cắt tín hiệu kích thích
+    L->>S: Gửi ma trận kênh không khớp (62 kênh -> 14 kênh)
+    S->>S: Nội suy RBF Thin-Plate trên mặt cầu 3D
+    S->>H: Ghi mảng Tensor đã chuẩn hóa vào bộ nhớ đệm Disk (.h5)
+    H-->>P: Cung cấp con trỏ bộ nhớ ảo (Zero-Copy RAM Slice)
+    P-->>P: Phân phối Batch song song tới GPU không nghẽn luồng
 ```
 
+---
+
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Tràn Bộ Nhớ RAM 128GB Khi Nạp Đa Tập Dữ Liệu Lớn
+
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 03:15 AM</span> Nhóm kỹ sư nghiên cứu huấn luyện mô hình đa tập dữ liệu (*Multi-Dataset Foundation Model*) kết hợp toàn bộ $150\text{ GB}$ dữ liệu DEAP và $40\text{ GB}$ dữ liệu SEED trực tiếp vào `torch.utils.data.Dataset` thông qua mảng NumPy in-memory. Sau 5 epoch, hệ thống máy chủ Linux bị kernel **OOM Killer** tiêu diệt tiến trình, làm gián đoạn toàn bộ đợt thử nghiệm.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+================================================================================
+CRITICAL SYSTEM FAILURE: KERNEL OUT-OF-MEMORY (OOM) KILLER TRIGGERED
+================================================================================
+[ALERT] System Physical Memory Exhaustion: 128.00 GB / 128.00 GB (100.0%)
+[FATAL] Out of memory: Kill process 84210 (python) score 982 or sacrifice child
+[FATAL] Killed process 84210 (python), UID 1001, total-vm:134217728kB, anon-rss:129845120kB
+
+>> PYTORCH MULTI-PROCESSING WORKER CRASH:
+Traceback (most recent call last):
+  File "train_foundation.py", line 184, in <module>
+    for batch_idx, (data, label) in enumerate(dataloader):
+  File "/usr/local/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 630, in _next_data
+    return self._process_data(data)
+RuntimeError: DataLoader worker (pid 84215) is killed by signal: Killed.
+================================================================================
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao hệ thống gặp lỗi Out-Of-Memory (OOM)?** $\rightarrow$ Do tiến trình Python chiếm dụng vượt quá $128\text{ GB}$ RAM vật lý trên server.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Python chiếm dụng lượng RAM lớn đến vậy?** $\rightarrow$ Vì toàn bộ dữ liệu thô (`.dat` và `.mat`) được giải nén đồng thời vào RAM trong hàm `__init__` của `Dataset`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao không nạp theo từng batch khi cần (Lazy Loading)?** $\rightarrow$ Vì lập trình viên mở tệp tin pickle/matlab độc lập trong hàm `__getitem__` lặp đi lặp lại hàng nghìn lần mỗi giây, gây tắc nghẽn Disk I/O Thrashing.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao mở tệp lặp đi lặp lại lại gây tắc nghẽn I/O Disk nghiêm trọng?** $\rightarrow$ Vì mỗi lần gọi `pickle.load()`, hệ thống phải phân tích cú pháp toàn bộ cấu trúc file lớn, khiến tốc độ đọc đĩa tụt về $0\text{ MB/s}$.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn kiến trúc Big Data Y Sinh:**
+   - <span class="badge badge--emerald">Sử Dụng Cấu Trúc HDF5 Memory-Mapped</span> Chuyển đổi toàn bộ dữ liệu thô sang tệp tin HDF5 (`.h5`) hỗ trợ `h5py` Memory-Mapping, cho phép truy xuất trực tiếp các lát cắt Tensor từ đĩa cứng với dung lượng RAM chiếm dụng $< 500\text{ MB}$.
+   - <span class="badge badge--cyan">Mở File Trễ Trong Worker Process</span> Mở `h5py.File` bên trong hàm `__getitem__` khi tiến trình worker khởi chạy lần đầu để tránh lỗi xung đột tiến trình cha-con (Forking Deadlock).
+
+---
+
+## 5. Hands-on Lab: Xây Dựng Unified Multimodal DataLoader & Cross-Dataset Transfer Engine (8 Bước)
+
+| Bước | Mục Tiêu Kỹ Thuật | Đầu Ra Kiểm Tra |
+| :---: | :--- | :--- |
+| **1** | Khởi tạo cấu trúc dữ liệu DEAP mô phỏng | File giả lập `s01.dat` cấu trúc 40 trials $\times$ 40 channels $\times$ 8064 samples |
+| **2** | Lập trình DEAP Subject Loader chuẩn latin1 | Phân tách 3s baseline và 60s stimulus EEG + AUX |
+| **3** | Khởi tạo cấu trúc dữ liệu SEED mô phỏng | Mảng 62 kênh NeuroScan $200\text{ Hz}$ và nhãn 3 lớp |
+| **4** | Lập trình SEED Session Loader | Nạp cấu trúc đa phiên đo lặp lại |
+| **5** | Lập trình thuật toán Spherical Spline Interpolation | Chuyển đổi ma trận kênh không khớp bằng RBF 3D |
+| **6** | Lập trình bộ chuyển đổi dữ liệu sang HDF5 | Tệp `benchmark_dataset.h5` nén zlib chunked |
+| **7** | Xây dựng MemmappedEEGDataset cho PyTorch | DataLoader truy xuất bộ nhớ ảo không tốn RAM |
+| **8** | Kiểm thử Cross-Dataset Pipeline hoàn chỉnh | Chạy kiểm thử nạp batch và đo lường thông lượng I/O |
+
+### Bước 1: Khởi Tạo Môi Trường & Dữ Liệu DEAP Giả Lập
+
 ```python
+import os
 import pickle
 import numpy as np
 import torch
-from torch.utils.data import Dataset
 
+os.makedirs("./sample_datasets/deap", exist_ok=True)
+os.makedirs("./sample_datasets/seed", exist_ok=True)
+
+# Tạo 1 file DEAP giả lập chuẩn: 40 trials, 40 channels, 8064 samples
+# Kênh 0-31: EEG, Kênh 32-39: Ngoại vi
+dummy_deap_data = {
+    'data': np.random.randn(40, 40, 8064).astype(np.float32),
+    'labels': np.random.uniform(1.0, 9.0, size=(40, 4)).astype(np.float32) # V, A, D, L
+}
+
+with open("./sample_datasets/deap/s01.dat", "wb") as f:
+    pickle.dump(dummy_deap_data, f, protocol=2)
+
+print("[Lab 08 Step 1] Da tao thanh cong file DEAP gia lap: s01.dat (40 trials x 40 channels x 8064 samples)")
+```
+
+### Bước 2: Lập Trình DEAP Subject Loader Xử Lý Baseline & Encoding
+
+```python
 class DEAPSubjectLoader:
     def __init__(self, data_path: str):
         self.data_path = data_path
         
     def load_trial_data(self, subject_id: int):
-        """
-        Nạp dữ liệu thô và phân tách baseline cho 1 đối tượng DEAP (s01 - s32)
-        """
-        file_path = f"{self.data_path}/s{subject_id:02d}.dat"
+        file_path = os.path.join(self.data_path, f"s{subject_id:02d}.dat")
         with open(file_path, 'rb') as f:
             subject_dict = pickle.load(f, encoding='latin1')
             
-        raw_data = subject_dict['data']    # (40, 40, 8064)
-        raw_labels = subject_dict['labels']# (40, 4)
+        raw_data = subject_dict['data']     # (40, 40, 8064)
+        raw_labels = subject_dict['labels'] # (40, 4)
         
-        # Tách riêng 3s baseline đầu (3 * 128 = 384 samples) và 60s kích thích (7680 samples)
-        baseline = raw_data[:, :32, :384]   # (40 trials, 32 EEG channels, 384)
-        eeg_stimulus = raw_data[:, :32, 384:] # (40 trials, 32 EEG channels, 7680)
-        physio_aux = raw_data[:, 32:, 384:]   # (40 trials, 8 Peripheral channels, 7680)
+        # 3s baseline đầu (3 * 128 = 384 mẫu) và 60s kích thích (7680 mẫu)
+        baseline_eeg = raw_data[:, :32, :384]
+        stimulus_eeg = raw_data[:, :32, 384:]
+        stimulus_aux = raw_data[:, 32:, 384:]
         
         return {
-            'baseline_eeg': baseline,
-            'eeg': eeg_stimulus,
-            'peripheral': physio_aux,
+            'baseline_eeg': baseline_eeg,
+            'eeg': stimulus_eeg,
+            'aux': stimulus_aux,
             'labels': raw_labels
         }
+
+deap_loader = DEAPSubjectLoader("./sample_datasets/deap")
+deap_sample = deap_loader.load_trial_data(1)
+print(f"[Lab 08 Step 2] DEAP EEG stimulus shape: {deap_sample['eeg'].shape}, AUX shape: {deap_sample['aux'].shape}")
 ```
 
----
-
-### 8.2.2. SEED (SJTU Emotion EEG Dataset)
-
-Được phát triển bởi Phòng thí nghiệm Trí tuệ tính toán và Não bộ (BCMI Lab) thuộc Đại học Giao thông Thượng Hải (**SJTU**), SEED là tập dữ liệu tiêu chuẩn cho các bài toán phân loại trạng thái cảm xúc rời rạc và kiểm chuẩn tính ổn định theo thời gian.
-
-- **Thiết kế thực nghiệm đa phiên (Multi-Session Stability):** Mỗi đối tượng trong số 15 người tham gia thí nghiệm lặp lại qua **$3\text{ phiên đo riêng biệt (Sessions)}$** với khoảng cách giữa các phiên từ $1$ đến $2$ tuần. Đây là tập dữ liệu duy nhất cho phép kiểm chứng trực tiếp tính thoái hóa phân phối tín hiệu theo thời gian (*Longitudinal Domain Shift*).
-- **Mật độ cảm biến cao:** Hệ thống ESI NeuroScan $62\text{ kênh EEG}$ chuyên dụng, phân giải không gian vượt trội so với DEAP.
-- **Kích thích cảm xúc bằng điện ảnh:** $15\text{ trích đoạn phim}$ độ dài $\sim 4\text{ phút/đoạn}$, mang lại trạng thái cảm xúc tự nhiên, mãnh liệt và duy trì bền bỉ hơn so với clip ca nhạc ngắn.
+### Bước 3: Khởi Tạo Dữ Liệu SEED Giả Lập (62 Kênh, 200 Hz)
 
 ```python
 import scipy.io as sio
-import numpy as np
 
-class SEEDSessionLoader:
-    def __init__(self, seed_mat_dir: str):
-        self.seed_mat_dir = seed_mat_dir
-        # Nhãn cố định của 15 video: 1: Positive, 0: Neutral, -1: Negative
-        self.ground_truth_labels = np.array([1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 0, 1, -1])
-        
-    def load_session(self, subject_name: str, session_id: int):
-        """
-        Nạp tệp tin MATLAB .mat từ SEED Dataset cho 1 subject tại 1 session cụ thể
-        """
-        mat_file = f"{self.seed_mat_dir}/{session_id}/{subject_name}.mat"
-        mat_data = sio.loadmat(mat_file)
-        
-        session_trials = []
-        for trial_idx in range(1, 16):
-            # Tên biến trong file .mat có dạng: <tên_subject>_eeg<trial_idx>
-            channel_key = f"{subject_name.lower()}_eeg{trial_idx}"
-            if channel_key in mat_data:
-                # Shape: (62 channels, Time Samples @ 200Hz)
-                session_trials.append(mat_data[channel_key])
-                
-        return session_trials, self.ground_truth_labels
+dummy_seed_data = {}
+for trial_idx in range(1, 16):
+    # Mỗi trial 62 kênh, 4000 điểm mẫu (20s @ 200Hz)
+    dummy_seed_data[f"sub01_eeg{trial_idx}"] = np.random.randn(62, 4000).astype(np.float32)
+
+sio.savemat("./sample_datasets/seed/sub01.mat", dummy_seed_data)
+print("[Lab 08 Step 3] Da tao file SEED gia lap: sub01.mat voi 15 trials 62 kenh.")
 ```
 
----
-
-### 8.2.3. DREAMER, AMIGOS, FACED & MAHNOB-HCI
-
-1. **DREAMER (2018):**
-   - Sử dụng phần cứng thương mại giá rẻ **Emotiv EPOC** không dây với $14\text{ điện cực khô/ẩm}$ ($128\text{ Hz}$) kèm cảm biến ECG.
-   - Thử nghiệm trên $23\text{ người}$ với $18\text{ đoạn trích phim}$ từ $65$ đến $393\text{ giây}$.
-   - Cung cấp dữ liệu chuẩn thực tế cho các ứng dụng BCI tiêu dùng và thiết bị đeo (*Wearable Emotion AI*).
-2. **AMIGOS (2018):**
-   - Đạt quy mô đối tượng lớn nhất ($40\text{ người}$), tích hợp $14\text{ kênh EEG}$, $2\text{ kênh ECG}$, $1\text{ kênh GSR}$ và nhịp thở.
-   - Phục vụ kiểm tra mức độ đa dạng xã hội và tổng quát hóa chéo đối tượng (*Cross-Subject Generalization*).
-3. **FACED (2020) & MAHNOB-HCI (2012):**
-   - **FACED:** Hệ thống $128\text{ kênh EEG}$ siêu dày, ghi nhận $6\text{ cảm xúc cơ bản của Ekman}$ và video biểu cảm khuôn mặt.
-   - **MAHNOB-HCI:** Hòa hợp đa phương thức hoàn chỉnh: $32\text{ kênh EEG}$, video khuôn mặt độ phân giải cao ghi nhận Action Units, máy bám bắt ánh nhìn (*Eye Tracking*) và điện tim.
-
----
-
-## 8.3. Bảng Ma Trận So Sánh Toàn Diện Các Bộ Dữ Liệu
-
-<div class="table-responsive">
-<table class="table">
-<thead>
-<tr>
-<th style="text-align:center;">Bộ Dữ Liệu</th>
-<th style="text-align:center;">Số Đối Tượng</th>
-<th style="text-align:center;">Kênh EEG</th>
-<th style="text-align:center;">Tín Hiệu Ngoại Vi</th>
-<th style="text-align:center;">Phiên Đo</th>
-<th style="text-align:center;">Mô Hình Cảm Xúc</th>
-<th style="text-align:center;">Tần Số Fs</th>
-<th style="text-align:center;">Ứng Dụng Tối Ưu</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"><span class="badge badge--primary">DEAP</span></td>
-<td style="text-align:center;">32</td>
-<td style="text-align:center;">32</td>
-<td style="text-align:center;">ECG, GSR, EMG, Resp, Temp</td>
-<td style="text-align:center;">1 (40 trials)</td>
-<td style="text-align:center;">V-A-D-L (1-9)</td>
-<td style="text-align:center;">128 Hz</td>
-<td style="text-align:center;">Benchmark thuật toán chung</td>
-</tr>
-<tr>
-<td style="text-align:center;"><span class="badge badge--success">SEED</span></td>
-<td style="text-align:center;">15</td>
-<td style="text-align:center;">62</td>
-<td style="text-align:center;">Không</td>
-<td style="text-align:center;">3 (Cách tuần)</td>
-<td style="text-align:center;">3 Lớp (Pos/Neu/Neg)</td>
-<td style="text-align:center;">200 Hz</td>
-<td style="text-align:center;">Độ ổn định thời gian & GNN</td>
-</tr>
-<tr>
-<td style="text-align:center;"><span class="badge badge--warning">DREAMER</span></td>
-<td style="text-align:center;">23</td>
-<td style="text-align:center;">14 (Emotiv)</td>
-<td style="text-align:center;">ECG</td>
-<td style="text-align:center;">1 (18 trials)</td>
-<td style="text-align:center;">V-A-D (1-5)</td>
-<td style="text-align:center;">128 Hz</td>
-<td style="text-align:center;">Thiết bị đeo Edge BCI</td>
-</tr>
-<tr>
-<td style="text-align:center;"><span class="badge badge--info">AMIGOS</span></td>
-<td style="text-align:center;">40</td>
-<td style="text-align:center;">14</td>
-<td style="text-align:center;">ECG, GSR, Respiration</td>
-<td style="text-align:center;">1 (16 trials)</td>
-<td style="text-align:center;">V-A (1-9)</td>
-<td style="text-align:center;">128 Hz</td>
-<td style="text-align:center;">Cross-Subject quy mô lớn</td>
-</tr>
-<tr>
-<td style="text-align:center;"><span class="badge badge--danger">FACED</span></td>
-<td style="text-align:center;">10</td>
-<td style="text-align:center;">128</td>
-<td style="text-align:center;">Video biểu cảm</td>
-<td style="text-align:center;">1 (40 trials)</td>
-<td style="text-align:center;">6 Lớp Ekman</td>
-<td style="text-align:center;">250 Hz</td>
-<td style="text-align:center;">Định vị nguồn não mật độ cao</td>
-</tr>
-<tr>
-<td style="text-align:center;"><span class="badge badge--secondary">MAHNOB</span></td>
-<td style="text-align:center;">27</td>
-<td style="text-align:center;">32</td>
-<td style="text-align:center;">Video, Eye Tracking, ECG</td>
-<td style="text-align:center;">1 (20 trials)</td>
-<td style="text-align:center;">V-A-D (1-9)</td>
-<td style="text-align:center;">256 Hz</td>
-<td style="text-align:center;">Hòa hợp Đa phương thức Não + Mắt</td>
-</tr>
-</tbody>
-</table>
-</div>
-
----
-
-## 8.4. Cây Quyết Định Chọn Tập Dữ Liệu Nghiên Cứu
-
-```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': {'background': 'transparent', 'mainBkg': 'transparent'}}}%%
-flowchart TD
-    classDef start fill:none,stroke:#00e5ff,stroke-width:2px,color:#00e5ff;
-    classDef branch fill:none,stroke:#ffd600,stroke-width:2px,color:#ffff00;
-    classDef leaf fill:none,stroke:#00e676,stroke-width:2px,color:#69f0ae;
-
-    Start["Bắt đầu: Lựa chọn Dataset cho Đề án BCI"]:::start
-    Start --> Q1{"Mục tiêu nghiên cứu chính là gì?"}:::branch
-
-    Q1 -->|"So sánh chuẩn học sâu quốc tế"| D1["Chọn DEAP (32 người, 32 kênh)"]:::leaf
-    Q1 -->|"Đánh giá trôi tín hiệu theo thời gian"| D2["Chọn SEED (3 Phiên đo lặp lại)"]:::leaf
-    Q1 -->|"Phát triển thiết bị BCI đeo di động"| D3["Chọn DREAMER hoặc AMIGOS (14 kênh)"]:::leaf
-    Q1 -->|"Hòa hợp tín hiệu Não + Thị giác + Mắt"| D4["Chọn MAHNOB-HCI hoặc FACED"]:::leaf
-```
-
----
-
-## 8.5. Giải Quyết Bất Tương Thích Kênh (Cross-Dataset Channel Mapping)
-
-Khi thực hiện **Cross-Dataset Transfer Learning** (ví dụ: Huấn luyện trên SEED 62 kênh và suy luận trên DREAMER 14 kênh), mô hình gặp lỗi không khớp chiều đầu vào. Hai chiến lược kỹ thuật cốt lõi:
-
-1. **Trích xuất kênh giao thoa (Common Channel Intersect):** Chỉ giữ lại tập hợp các điện cực có mặt trên cả hai thiết bị theo quy chuẩn quốc tế 10-20 (như: $F_3, F_4, C_3, C_4, P_3, P_4, O_1, O_2, F_z, C_z, P_z$).
-2. **Nội suy không gian màng cầu (Spherical Spline Interpolation):** Tái tạo lại điện thế bề mặt trên toàn bộ da đầu $3D$ từ tập $N$ cảm biến ban đầu, sau đó lấy mẫu lại tại vị trí $M$ cảm biến đích.
+### Bước 4: Lập Trình SEED Session Loader Đa Phiên
 
 ```python
-import numpy as np
+class SEEDSessionLoader:
+    def __init__(self, data_path: str):
+        self.data_path = data_path
+        # Nhãn 15 video: 1: Positive, 0: Neutral, -1: Negative
+        self.labels = np.array([1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 0, 1, -1])
+        
+    def load_session(self, subject_name: str):
+        file_path = os.path.join(self.data_path, f"{subject_name}.mat")
+        mat_data = sio.loadmat(file_path)
+        
+        trials = []
+        for i in range(1, 16):
+            key = f"{subject_name.lower()}_eeg{i}"
+            if key in mat_data:
+                trials.append(mat_data[key])
+        return trials, self.labels
+
+seed_loader = SEEDSessionLoader("./sample_datasets/seed")
+seed_trials, seed_y = seed_loader.load_session("sub01")
+print(f"[Lab 08 Step 4] SEED Trials nap duoc: {len(seed_trials)}, So kenh trial 0: {seed_trials[0].shape[0]}")
+```
+
+### Bước 5: Lập Trình Thuật Toán Nội Suy Màng Cầu (Spherical Spline Interpolation)
+
+```python
 from scipy.interpolate import Rbf
 
-def spherical_spline_channel_remapping(source_data, source_coords_3d, target_coords_3d):
+def spherical_spline_channel_remapping(source_data: np.ndarray, src_coords_3d: np.ndarray, tgt_coords_3d: np.ndarray) -> np.ndarray:
     """
     Nội suy không gian chuyển đổi tín hiệu EEG giữa 2 bộ định vị điện cực khác nhau
-    Args:
-        source_data: Tensor tín hiệu nguồn (Channels_Src, Time_Samples)
-        source_coords_3d: Tọa độ không gian (x, y, z) của điện cực nguồn (Channels_Src, 3)
-        target_coords_3d: Tọa độ không gian (x, y, z) của điện cực đích (Channels_Tgt, 3)
-    Returns:
-        target_data: Tensor tín hiệu đích đã nội suy (Channels_Tgt, Time_Samples)
     """
-    src_x, src_y, src_z = source_coords_3d[:, 0], source_coords_3d[:, 1], source_coords_3d[:, 2]
-    tgt_x, tgt_y, tgt_z = target_coords_3d[:, 0], target_coords_3d[:, 1], target_coords_3d[:, 2]
+    src_x, src_y, src_z = src_coords_3d[:, 0], src_coords_3d[:, 1], src_coords_3d[:, 2]
+    tgt_x, tgt_y, tgt_z = tgt_coords_3d[:, 0], tgt_coords_3d[:, 1], tgt_coords_3d[:, 2]
     
     num_time_steps = source_data.shape[1]
-    num_target_channels = len(target_coords_3d)
-    remapped_data = np.zeros((num_target_channels, num_time_steps), dtype=np.float32)
+    num_tgt_channels = len(tgt_coords_3d)
+    remapped_data = np.zeros((num_tgt_channels, num_time_steps), dtype=np.float32)
     
-    # Thực hiện Radial Basis Function (RBF) Spline cho từng bước thời gian
+    # Thực hiện RBF Thin-Plate cho từng thời điểm
     for t in range(num_time_steps):
-        rbf_interpolator = Rbf(src_x, src_y, src_z, source_data[:, t], function='thin_plate')
-        remapped_data[:, t] = rbf_interpolator(tgt_x, tgt_y, tgt_z)
+        rbf = Rbf(src_x, src_y, src_z, source_data[:, t], function='thin_plate')
+        remapped_data[:, t] = rbf(tgt_x, tgt_y, tgt_z)
         
     return remapped_data
+
+# Giả lập tọa độ 32 kênh nguồn và 14 kênh đích trên mặt cầu r=1.0
+src_coords = np.random.randn(32, 3)
+src_coords /= np.linalg.norm(src_coords, axis=1, keepdims=True)
+tgt_coords = np.random.randn(14, 3)
+tgt_coords /= np.linalg.norm(tgt_coords, axis=1, keepdims=True)
+
+test_src_signal = np.random.randn(32, 128) # 32 kênh, 128 mẫu (1s)
+remapped_signal = spherical_spline_channel_remapping(test_src_signal, src_coords, tgt_coords)
+print(f"[Lab 08 Step 5] Remapping thanh cong tu {test_src_signal.shape} -> {remapped_signal.shape}")
 ```
 
----
-
-## 8.6. Phân Tích Sự Cố Kỹ Thuật (5-Whys Incident Post-Mortem)
-
-<div class="incident-card" style="border-left: 4px solid #ff1744; background: rgba(255, 23, 68, 0.05); padding: 16px; margin: 20px 0; border-radius: 4px;">
-<h4 style="color: #ff5252; margin-top: 0;">SỰ CỐ HỆ THỐNG: Huấn luyện mô hình đa tập dữ liệu gây tràn bộ nhớ RAM 128GB và sập tiến trình PyTorch DataLoader</h4>
-
-**Bối cảnh:** Nhóm kỹ sư nạp toàn bộ $150\text{ GB}$ dữ liệu DEAP và $40\text{ GB}$ dữ liệu SEED trực tiếp vào `torch.utils.data.Dataset` thông qua mảng NumPy in-memory. Sau 5 epoch, hệ thống Linux bị kernel OOM Killer tiêu diệt tiến trình.
-
-```text
-======================= 5-WHYS ROOT CAUSE ANALYSIS =======================
-1. Tại sao hệ thống gặp lỗi Out-Of-Memory (OOM)?
-   -> Vì tiến trình Python chiếm dụng vượt quá 128GB RAM vật lý trên server.
-2. Tại sao Python chiếm dụng lượng RAM lớn đến vậy?
-   -> Vì toàn bộ dữ liệu thô (.dat và .mat) được giải nén đồng thời vào RAM trong hàm __init__ của Dataset.
-3. Tại sao không nạp theo từng batch khi cần (Lazy Loading)?
-   -> Vì lập trình viên mở tệp tin pickle/matlab độc lập trong hàm __getitem__ lặp đi lặp lại hàng nghìn lần mỗi giây.
-4. Tại sao mở tệp tin lặp đi lặp lại lại gây tắc nghẽn I/O Disk nghiêm trọng?
-   -> Vì mỗi lần gọi pickle.load() hệ thống phải phân tích cú pháp toàn bộ cấu trúc file lớn, gây Disk I/O Thrashing.
-5. Tại sao không sử dụng cấu trúc Memory-Mapped File chuẩn cho Big Data Y Sinh?
-   -> GỐC RỄ: Thiếu kiến trúc lưu trữ chuẩn hóa dạng HDF5 (.h5) hoặc Zarr hỗ trợ Memory-Mapping (numpy.memmap), cho phép truy xuất trực tiếp các lát cắt Tensor từ đĩa cứng với dung lượng RAM gần như bằng 0.
-```
-
-**Giải pháp khắc phục:** Chuyển đổi toàn bộ dữ liệu thành định dạng **HDF5 / Memmap** để PyTorch DataLoader chỉ đọc lát cắt bộ nhớ khi tiến trình worker yêu cầu:
+### Bước 6: Chuyển Đổi Dữ Liệu Sang Định Dạng Chuẩn Memory-Mapped HDF5
 
 ```python
 import h5py
-import torch
-from torch.utils.data import Dataset
+
+h5_path = "./sample_datasets/unified_eeg.h5"
+num_samples = 500
+channels = 32
+seq_len = 128
+
+with h5py.File(h5_path, 'w') as h5f:
+    # Tạo Chunked Dataset cho phép đọc stream tốc độ cao
+    h5f.create_dataset('eeg', shape=(num_samples, channels, seq_len), dtype='float32', chunks=(32, channels, seq_len))
+    h5f.create_dataset('labels', shape=(num_samples,), dtype='int64', chunks=(32,))
+    
+    # Ghi dữ liệu giả lập theo từng chunk
+    for i in range(0, num_samples, 100):
+        h5f['eeg'][i:i+100] = np.random.randn(100, channels, seq_len).astype(np.float32)
+        h5f['labels'][i:i+100] = np.random.randint(0, 3, size=(100,)).astype(np.int64)
+
+print(f"[Lab 08 Step 6] Da tao file HDF5 chuan Memory-Mapped tai: {h5_path}")
+```
+
+### Bước 7: Xây Dựng MemmappedEEGDataset Cho PyTorch
+
+```python
+from torch.utils.data import Dataset, DataLoader
 
 class MemmappedEEGDataset(Dataset):
     def __init__(self, h5_file_path: str):
         self.h5_file_path = h5_file_path
-        # Không mở file và nạp mảng vào RAM tại __init__ để tránh lỗi Fork trong PyTorch Multi-worker
         self.h5_file = None
         with h5py.File(h5_file_path, 'r') as f:
             self.total_samples = f['eeg'].shape[0]
@@ -342,137 +359,249 @@ class MemmappedEEGDataset(Dataset):
         
     def __getitem__(self, idx):
         if self.h5_file is None:
+            # Mở file trễ trong từng worker process của PyTorch
             self.h5_file = h5py.File(self.h5_file_path, 'r')
             
-        # Truy xuất trực tiếp slice từ ổ đĩa qua buffer bộ nhớ ảo của HDF5
         eeg_tensor = torch.from_numpy(self.h5_file['eeg'][idx]).float()
         label_tensor = torch.tensor(self.h5_file['labels'][idx]).long()
         return eeg_tensor, label_tensor
+
+dataset = MemmappedEEGDataset(h5_path)
+print(f"[Lab 08 Step 7] Khoi tao MemmappedEEGDataset voi {len(dataset)} mau. RAM chiem dung: < 1MB.")
 ```
-</div>
+
+### Bước 8: Kiểm Thử PyTorch DataLoader Đa Luồng Với Zero Memory Overhead
+
+```python
+dataloader = DataLoader(dataset, batch_size=64, shuffle=True, num_workers=2)
+
+batch_count = 0
+for batch_eeg, batch_lbl in dataloader:
+    batch_count += 1
+    assert batch_eeg.shape == (batch_eeg.size(0), 32, 128)
+    assert batch_lbl.shape == (batch_eeg.size(0),)
+
+print(f"[Lab 08 Step 8] Kiem thu thanh cong {batch_count} batches qua PyTorch DataLoader!")
+```
 
 ---
 
-## 8.7. Bộ Câu Hỏi Khảo Sát Năng Lực & Phỏng Vấn Chuyên Sâu (10 Q&A)
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 1: Phân tích sự khác biệt cốt lõi về giao thức kích thích cảm xúc giữa DEAP (Video âm nhạc 1 phút) và SEED (Trích đoạn phim điện ảnh 4 phút)?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Phân tích kỹ thuật:</b>
-<ul>
-<li><b>DEAP:</b> Sử dụng 40 clip âm nhạc ngắn 1 phút. Âm nhạc có ưu thế kích hoạt nhanh cảm xúc tự chủ (Arousal và Liking), nhưng do thời lượng ngắn nên cảm xúc người tham gia thường biến thiên nhanh và dễ bị nhiễu bởi thị hiếu âm nhạc cá nhân.</li>
-<li><b>SEED:</b> Sử dụng 15 trích đoạn phim có thời lượng dài (~4 phút). Phim điện ảnh xây dựng bối cảnh tâm lý theo diễn biến cốt truyện sâu sắc, giúp kích thích trạng thái cảm xúc thuần khiết, sâu lắng và bền bỉ hơn, giảm thiểu hiện tượng "mệt mỏi thích nghi" (habituation) của não bộ.</li>
-</ul>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân tích sự khác biệt cốt lõi về giao thức kích thích cảm xúc giữa DEAP (Video âm nhạc 1 phút) và SEED (Trích đoạn phim điện ảnh 4 phút)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">DEAP sử dụng 40 clip âm nhạc ngắn 1 phút kích hoạt nhanh mức độ hưng phấn (Arousal) nhưng dễ bị biến thiên theo sở thích cá nhân. Ngược lại, <b style="color: var(--accent-emerald);">SEED sử dụng 15 trích đoạn phim dài 4 phút</b> với mạch kịch bản tâm lý sâu, kích hoạt trạng thái cảm xúc thuần khiết, sâu lắng và bền bỉ hơn, hạn chế tối đa hiện tượng mỏi thích nghi của não bộ.</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 2: Tại sao bộ dữ liệu SEED lại là lựa chọn vàng để kiểm chuẩn độ trôi tín hiệu theo thời gian (Cross-Session Generalization)?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Giải thích chi tiết:</b>
-<p>SEED là bộ dữ liệu hiếm hoi thực hiện thí nghiệm lặp lại trên cùng 15 người qua <b>3 phiên đo riêng biệt (Sessions)</b> cách nhau 1 đến 2 tuần. Tín hiệu EEG của cùng một người tại 2 tuần khác nhau bị biến đổi mạnh mẽ do trở kháng tiếp xúc điện cực thay đổi, vị trí đặt mũ lệch vài milimet và trạng thái tâm sinh lý khác nhau. Nhờ đó, SEED là thước đo chuẩn để đánh giá các thuật toán Domain Adaptation và Continual Learning.</p>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao bộ dữ liệu SEED lại là lựa chọn vàng để kiểm chuẩn độ trôi tín hiệu theo thời gian (Cross-Session Generalization)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">SEED thực hiện đo lặp lại trên cùng 15 đối tượng qua <b style="color: var(--accent-primary);">3 phiên đo riêng biệt (Sessions)</b> cách nhau 1 đến 2 tuần. Trở kháng da đầu, vị trí dịch chuyển mũ vài milimet và tâm lý thay đổi giữa các tuần tạo ra sự dịch chuyển miền phân phối dữ liệu (Domain Shift) thực tế, cho phép kiểm chứng chính xác năng lực thích ứng miền của mô hình.</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 3: Tính toán chính xác dung lượng RAM cần thiết để lưu trữ toàn bộ Tensor dữ liệu thô của bộ dữ liệu DEAP dưới định dạng float32?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Công thức và tính toán:</b>
-<p>Tổng số phần tử trong toàn bộ 32 đối tượng DEAP:</p>
-<p>$$N = 32\text{ subjects} \times 40\text{ trials} \times 40\text{ channels} \times 8064\text{ samples} = 412,876,800\text{ phần tử}$$</p>
-<p>Dưới định dạng số thực dấu phẩy động chuẩn đơn <code>float32</code> (4 bytes/phần tử):</p>
-<p>$$\text{Dung lượng} = \frac{412,876,800 \times 4\text{ bytes}}{1024^3} \approx 1.538\text{ GB (RAM thuần)}$$</p>
-<p><i>Lưu ý:</i> Mặc dù Tensor mảng thuần chỉ chiếm ~1.54 GB, nhưng khi giải nén bằng cấu trúc đối tượng Python Dictionary qua pickle không tối ưu, dung lượng chiếm dụng trên RAM thực tế có thể phình to lên đến 6 - 8 GB.</p>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tính toán chính xác dung lượng RAM cần thiết để lưu trữ toàn bộ Tensor dữ liệu thô của bộ dữ liệu DEAP dưới định dạng float32?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">Tổng số phần tử: 32 đối tượng x 40 trials x 40 kênh x 8064 mẫu = 412,876,800 phần tử. Với định dạng float32 (4 bytes/phần tử), dung lượng RAM thuần là <b style="color: var(--accent-cyan);">~1.538 GB</b>. Tuy nhiên, nếu nạp qua Python Dictionary pickle không tối ưu, cấu trúc đối tượng có thể phình to lên 6 - 8 GB RAM.</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 4: Trình bày quy tắc phân ngưỡng nhãn liên tục trong DEAP để chuyển hóa thành bài toán phân loại 4 trạng thái cảm xúc (HVHA, HVLA, LVLA, LVHA)?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Quy tắc chuẩn:</b>
-<p>Thang đo SAM trong DEAP dao động từ 1.0 đến 9.0. Ngưỡng phân chia tiêu chuẩn trung vị là <b>5.0</b>:</p>
-<ul>
-<li><b>HVHA (High Valence - High Arousal):</b> Valence &ge; 5.0 và Arousal &ge; 5.0 (Hào hứng, Vui sướng).</li>
-<li><b>HVLA (High Valence - Low Arousal):</b> Valence &ge; 5.0 và Arousal &lt; 5.0 (Thư giãn, Bình yên).</li>
-<li><b>LVLA (Low Valence - Low Arousal):</b> Valence &lt; 5.0 và Arousal &lt; 5.0 (Buồn bã, Trầm cảm).</li>
-<li><b>LVHA (Low Valence - High Arousal):</b> Valence &lt; 5.0 và Arousal &ge; 5.0 (Tức giận, Lo âu, Căng thẳng).</li>
-</ul>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trình bày quy tắc phân ngưỡng nhãn liên tục trong DEAP để chuyển hóa thành bài toán phân loại 4 trạng thái cảm xúc (HVHA, HVLA, LVLA, LVHA)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">Thang đo SAM trong DEAP dao động từ 1.0 đến 9.0 với ngưỡng phân định trung vị là <b style="color: var(--accent-amber);">5.0</b>: (1) HVHA (V &ge; 5, A &ge; 5: Vui sướng, hào hứng); (2) HVLA (V &ge; 5, A &lt; 5: Thư giãn, bình yên); (3) LVLA (V &lt; 5, A &lt; 5: Buồn bã, chán nản); (4) LVHA (V &lt; 5, A &ge; 5: Tức giận, sợ hãi, căng thẳng).</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 5: Trong SEED Dataset, có bao nhiêu phần tử độc lập cần lưu trữ trong ma trận kề khoảng cách không gian giữa 62 điện cực?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Công thức tổ hợp:</b>
-<p>Ma trận khoảng cách không gian $D \in \mathbb{R}^{62 \times 62}$ là ma trận đối xứng ($D_{ij} = D_{ji}$) và có đường chéo chính bằng $0$ ($D_{ii} = 0$). Số phần tử độc lập nằm ở nửa ma trận tam giác trên là:</p>
-<p>$$\text{Số phần tử} = \frac{N(N - 1)}{2} = \frac{62 \times (62 - 1)}{2} = \frac{62 \times 61}{2} = 1891\text{ phần tử}$$</p>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Trong SEED Dataset, có bao nhiêu phần tử độc lập cần lưu trữ trong ma trận kề khoảng cách không gian giữa 62 điện cực?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">Ma trận đối xứng kích thước 62 x 62 với đường chéo chính bằng 0. Số phần tử độc lập ở nửa ma trận tam giác trên là: <b style="color: var(--accent-primary);">N*(N-1)/2 = 62*61/2 = 1,891 phần tử</b>. Việc chỉ lưu 1,891 phần tử giúp tiết kiệm đáng kể bộ nhớ khi xây dựng Graph Neural Network (GNN).</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 6: Trình bày ưu điểm và giới hạn của bộ dữ liệu DREAMER khi sử dụng thiết bị thương mại Emotiv EPOC 14 kênh?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Đánh giá chuyên sâu:</b>
-<ul>
-<li><b>Ưu điểm:</b> Dữ liệu phản ánh độ nhiễu thực tế của các thiết bị BCI giá rẻ ($&lt; \$1,000$). Cung cấp minh chứng cho thấy thuật toán có thể hoạt động được trong đời sống hàng ngày mà không cần mũ điện cực y tế cồng kềnh.</li>
-<li><b>Giới hạn:</b> Tín hiệu có SNR (Signal-to-Noise Ratio) thấp, chỉ có 14 điện cực nên không thể áp dụng các kỹ thuật phân tích định vị nguồn não sâu (Source Localization) hoặc mô hình đồ thị dày đặc.</li>
-</ul>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Trình bày ưu điểm và giới hạn của bộ dữ liệu DREAMER khi sử dụng thiết bị thương mại Emotiv EPOC 14 kênh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;"><b style="color: var(--accent-emerald);">Ưu điểm:</b> Cung cấp dữ liệu thực tế từ thiết bị BCI đeo di động giá rẻ, chứng minh tính khả thi khi ứng dụng thương mại. <b style="color: var(--accent-rose);">Giới hạn:</b> Tỷ số tín hiệu trên nhiễu (SNR) thấp, chỉ có 14 điện cực nên không thể thực hiện các phân tích định vị nguồn não sâu (Source Localization).</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 7: Tính toán tổng số lượng mẫu cửa sổ trượt (Sliding Windows) thu được từ toàn bộ 32 đối tượng DEAP với cửa sổ 1s, độ trượt 0.5s?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Các bước tính toán:</b>
-<ol>
-<li>Mỗi trial kéo dài 60s thời gian kích thích (sau khi bỏ 3s baseline).</li>
-<li>Số đoạn cửa sổ từ 1 trial với độ dài $W = 1\text{s}$ và bước trượt $S = 0.5\text{s}$:
-$$\text{Số windows/trial} = \frac{T - W}{S} + 1 = \frac{60 - 1}{0.5} + 1 = 118 + 1 = 119\text{ windows}$$</li>
-<li>Tổng số mẫu huấn luyện cho toàn bộ dataset:
-$$\text{Tổng mẫu} = 32\text{ subjects} \times 40\text{ trials} \times 119\text{ windows} = 152,320\text{ mẫu dữ liệu}$$</li>
-</ol>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tính toán tổng số lượng mẫu cửa sổ trượt (Sliding Windows) thu được từ toàn bộ 32 đối tượng DEAP với cửa sổ 1s, độ trượt 0.5s?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">Mỗi trial 60s có (60 - 1) / 0.5 + 1 = 119 cửa sổ trượt. Tổng số mẫu huấn luyện thu được trên toàn bộ dataset: <b style="color: var(--accent-cyan);">32 đối tượng x 40 trials x 119 windows = 152,320 mẫu</b>, cung cấp lượng dữ liệu dồi dào cho các mạng học sâu hiện đại.</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 8: Tại sao việc nạp file .dat bằng pickle lại gặp lỗi UnicodeDecodeError khi chuyển đổi giữa Python 2 và Python 3?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Nguyên nhân và giải pháp:</b>
-<p>DEAP ban đầu được tuần tự hóa (serialized) bằng Python 2 với kiểu dữ liệu chuỗi byte ASCII mặc định. Trong Python 3, chuỗi mặc định là Unicode UTF-8. Khi giải mã mảng nhị phân không phải văn bản thuần, pickle ném ngoại lệ <code>UnicodeDecodeError</code>.</p>
-<p><b>Giải pháp bắt buộc:</b> Thiết lập tham số giải mã <code>encoding='latin1'</code> hoặc <code>encoding='bytes'</code> trong hàm <code>pickle.load(f, encoding='latin1')</code>.</p>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao việc nạp file .dat trong DEAP bằng pickle lại gặp lỗi UnicodeDecodeError trong môi trường Python 3?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">Tập dữ liệu DEAP được tạo bằng Python 2 với kiểu chuỗi byte ASCII mặc định. Khi Python 3 giải mã mặc định bằng UTF-8, nó ném lỗi giải mã ký tự. Bắt buộc phải thêm tham số <b style="color: var(--accent-primary);">encoding='latin1'</b> hoặc <b style="color: var(--accent-primary);">encoding='bytes'</b> trong lệnh <code>pickle.load(f, encoding='latin1')</code>.</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 9: So sánh mật độ bao phủ điện cực trung bình (cm²/cực) giữa DREAMER (14 kênh), DEAP (32 kênh) và FACED (128 kênh) với diện tích da đầu 500 cm²?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Bảng định lượng:</b>
-<ul>
-<li><b>DREAMER (14 kênh):</b> $\frac{500\text{ cm}^2}{14} \approx 35.71\text{ cm}^2/\text{cực}$ (Độ phân giải thưa thớt).</li>
-<li><b>DEAP (32 kênh):</b> $\frac{500\text{ cm}^2}{32} = 15.625\text{ cm}^2/\text{cực}$ (Độ phân giải tiêu chuẩn lâm sàng).</li>
-<li><b>FACED (128 kênh):</b> $\frac{500\text{ cm}^2}{128} \approx 3.91\text{ cm}^2/\text{cực}$ (Độ phân giải siêu dày đặc, tối ưu cho định vị nguồn não).</li>
-</ul>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>So sánh mật độ bao phủ điện cực trung bình (cm²/cực) giữa DREAMER (14 kênh), DEAP (32 kênh) và FACED (128 kênh) với diện tích da đầu 500 cm²?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">DREAMER (14 cực): 500 / 14 = <b style="color: var(--accent-amber);">35.71 cm²/cực</b> (thưa thớt). DEAP (32 cực): 500 / 32 = <b style="color: var(--accent-primary);">15.63 cm²/cực</b> (chuẩn lâm sàng). FACED (128 cực): 500 / 128 = <b style="color: var(--accent-emerald);">3.91 cm²/cực</b> (siêu dày đặc, lý tưởng cho phân tích lan truyền dòng điện cục bộ).</div>
 </div>
 </details>
 
-<details class="qa-card" style="margin-bottom: 12px; border: 1px solid #30363d; border-radius: 6px; padding: 12px; background: rgba(13, 17, 23, 0.5);">
-<summary style="font-weight: 600; cursor: pointer; color: #58a6ff;">Câu 10: Thiết kế chiến lược đánh giá Cross-Dataset Transfer Learning từ DEAP sang SEED?</summary>
-<div style="margin-top: 10px; color: #c9d1d9;">
-<b>Quy trình 4 bước chuẩn mực:</b>
-<ol>
-<li><b>Đồng bộ kênh:</b> Trích xuất tập hợp các kênh chung giữa 32 kênh DEAP và 62 kênh SEED theo chuẩn 10-20 (như FP1, FP2, F3, F4, C3, C4, P3, P4, O1, O2...).</li>
-<li><b>Đồng bộ tần số lấy mẫu:</b> Tái lấy mẫu (Resample) tín hiệu SEED từ 200 Hz về 128 Hz (tần số của DEAP).</li>
-<li><b>Đồng bộ nhãn:</b> Lọc dữ liệu DEAP thành 3 lớp rời rạc: Positive ($V \ge 6.0$), Neutral ($4.0 < V < 6.0$) và Negative ($V \le 4.0$) để tương thích với nhãn 3 lớp của SEED.</li>
-<li><b>Huấn luyện thích ứng miền:</b> Sử dụng mạng Domain-Adversarial Neural Network (DANN) với hàm mất mát MMD để giảm thiểu sự khác biệt phân phối giữa nguồn (DEAP) và đích (SEED).</li>
-</ol>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>0
+    <span>Trình bày 4 bước chuẩn mực để thiết lập bài toán Cross-Dataset Transfer Learning từ DEAP sang SEED?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <div style="margin-bottom: 8px;">4 bước gồm: (1) <b style="color: var(--accent-primary);">Đồng bộ kênh</b>: Trích xuất các kênh chung theo chuẩn 10-20 (FP1, FP2, F3, F4, C3, C4, P3, P4, O1, O2...); (2) <b style="color: var(--accent-emerald);">Đồng bộ tần số lấy mẫu</b>: Resample SEED từ 200 Hz về 128 Hz; (3) <b style="color: var(--accent-cyan);">Đồng bộ nhãn</b>: Phân cụm nhãn DEAP thành 3 lớp rời rạc tương ứng Pos / Neu / Neg; (4) <b style="color: var(--accent-amber);">Domain Adaptation</b>: Áp dụng DANN hoặc MMD Loss để căn chỉnh phân phối đặc trưng.</div>
 </div>
 </details>
 
 ---
 
-## 8.8. Tổng Kết Bài Học & Lộ Trình Tiếp Theo
+## 7. Tổng Kết & Lộ Trình Toàn Khóa Học
 
-Trong bài học này, chúng ta đã khai phá toàn diện các kho tài nguyên dữ liệu mở chuẩn mực thế giới trong nghiên cứu BCI và AI cảm xúc. Việc thấu hiểu cấu trúc vật lý, phương thức kích thích và đặc tính nhãn của từng tập dữ liệu là tiền đề tiên quyết để xây dựng các mô hình học sâu vững chắc.
+```mermaid
+mindmap
+  root((Hệ Sinh Thái Benchmark BCI))
+    Các Bộ Dữ Liệu Cốt Lõi
+      DEAP 32 Kênh EEG + 8 Ngoại Vi
+      SEED 62 Kênh NeuroScan 3 Phiên Đo
+      DREAMER & AMIGOS Thiết Bị Đeo 14 Kênh
+      FACED & MAHNOB Đa Phương Thức Não Mắt
+    Kỹ Thuật Xử Lý Khác Biệt Kênh
+      Common Channel Intersect
+      Spherical Spline Interpolation 3D
+    Tối Ưu Hóa Dữ Liệu Lớn
+      Memory-Mapped HDF5 File
+      Lazy Loading Trong PyTorch Worker
+      Tránh OOM Killer & Thrashing
+```
 
-👉 **Khám phá bài học tiếp theo:** [Bài 09: Tổng Kết & Hướng Phát Triển Tương Lai: Foundation Models Cho BCI, Giải Thích Được (XAI), Đạo Đức Sinh Học & Roadmap](eeg-09-09-ket-luan-va-huong-phat-trien.html)
+Chúc mừng bạn đã hoàn thành trọn vẹn chuỗi **8 bài học chuyên sâu về EEG & Emotion Recognition AI**. Từ nền tảng giải phẫu học thần kinh, tiền xử lý Fourier/Wavelet/ICA, mô hình hóa không gian - thời gian với DGCNN và Mamba, học đa phương thức, thích ứng miền chéo đối tượng, kiến trúc AI Agent thời gian thực cho đến phương pháp đánh giá khoa học và khai thác các kho dữ liệu benchmark chuẩn mực thế giới.
+
+> [!TIP]
+> **HOÀN THÀNH SERIES CHUYÊN ĐỀ:**
+> Bạn đã sẵn sàng triển khai các dự án BCI và AI y sinh thực chiến đạt chuẩn xuất bản khoa học quốc tế cũng như các ứng dụng công nghiệp chất lượng cao!
 {% endraw %}

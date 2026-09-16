@@ -20,9 +20,23 @@ tldr:
   - "Làm chủ cơ chế điều phối concurrent/limit trong config.toml, Kubernetes Pod Executor và Autoscaling Fleeting plugin."
   - "Giám sát tải hệ thống Runner qua Prometheus Metrics, tối ưu dung lượng hàng đợi theo định luật Little."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Thiết kế và vận hành hệ thống GitLab Runner quy mô lớn: Xây dựng kiến trúc Runner Autoscaling trên AWS EC2/Docker Machine và Kubernetes HPA, giám sát hiệu năng với Prometheus."
+keywords:
+  - gitlab runner scaling
+  - gitlab docker autoscaling
+  - gitlab kubernetes runner hpa
+  - gitlab runner monitoring
 ---
+
 {% raw %}
-# [BÀI 13] MỞ RỘNG QUY MÔ & QUẢN TRỊ HỆ THỐNG RUNNER (RUNNER SCALING & ORCHESTRATION)
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Mở Rộng Quy Mô & Quản Trị Hệ Thống Runner (Runner Scaling & Orchestration).
+> - Làm chủ cơ chế điều phối concurrent/limit trong config.toml, Kubernetes Pod Executor và Autoscaling Fleeting plugin.
+> - Giám sát tải hệ thống Runner qua Prometheus Metrics, tối ưu dung lượng hàng đợi theo định luật Little.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

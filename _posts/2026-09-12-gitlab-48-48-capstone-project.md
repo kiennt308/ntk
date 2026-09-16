@@ -27,6 +27,12 @@ tldr:
   - "Triển khai Multi-Layer DevSecOps Security Gates: Secret Detection, SAST (Semgrep), SCA (Trivy), Container Scan."
   - "Đóng gói container an toàn với Rootless Kaniko, ký số Cosign và triển khai Kubernetes qua ArgoCD GitOps."
   - "Bảo vệ hạ tầng với Terraform CI/CD, OIDC AWS/GCP, đo lường DORA metrics và tự động rollback khi có sự cố."
+description: "Dự án Capstone tổng thể: Thiết kế và xây dựng Pipeline Enterprise DevSecOps toàn diện từ mã nguồn, kiểm thử, quét bảo mật, ký số đến triển khai GitOps Đa đám mây."
+keywords:
+  - gitlab capstone project
+  - gitlab enterprise devsecops pipeline
+  - gitlab production reference architecture
+  - gitlab full lifecycle
 ---
 
 {% raw %}

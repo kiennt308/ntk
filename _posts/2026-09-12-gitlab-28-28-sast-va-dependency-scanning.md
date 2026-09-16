@@ -23,9 +23,23 @@ tldr:
   - "Triển khai Software Composition Analysis (SCA) phát hiện lỗ hổng CVEs và cấp phép mã nguồn bằng Trivy."
   - "Chuẩn hóa định dạng báo cáo gl-sast-report.json và xử lý cảnh báo giả (False Positives) qua ruleset tùy chỉnh."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Tích hợp kiểm tra bảo mật mã nguồn tĩnh (SAST) và quét lỗ hổng thư viện phụ thuộc (Dependency Scanning) theo chuẩn DevSecOps Shift-Left trong GitLab CI."
+keywords:
+  - gitlab sast scanning
+  - gitlab dependency scanning
+  - gitlab semgrep gl-sast
+  - gitlab software composition analysis
 ---
+
 {% raw %}
-# [BÀI 28] TÍCH HỢP SAST & DEPENDENCY SCANNING TRONG GITLAB CI: SEMGREP, SONARQUBE & TRIVY
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững tư duy bảo mật Shift-Left và cơ chế phân tích cú pháp AST (Abstract Syntax Tree) của SAST.
+> - Tích hợp toàn diện Semgrep OSS, SonarQube và GitLab SAST Analyzer vào Pipeline.
+> - Triển khai Software Composition Analysis (SCA) phát hiện lỗ hổng CVEs và cấp phép mã nguồn bằng Trivy.
+> - Chuẩn hóa định dạng báo cáo gl-sast-report.json và xử lý cảnh báo giả (False Positives) qua ruleset tùy chỉnh.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

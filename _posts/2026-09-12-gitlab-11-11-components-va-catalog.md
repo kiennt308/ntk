@@ -20,9 +20,23 @@ tldr:
   - "Đóng gói các khối CI/CD thành các Lego Blocks có kiểm soát kiểu dữ liệu đầu vào với spec:inputs."
   - "Phát hành và quản lý phiên bản SemVer trên Enterprise CI/CD Catalog, chia sẻ an toàn toàn tổ chức."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Xây dựng và phát hành các thành phần CI/CD tái sử dụng với GitLab CI/CD Components và CI/CD Catalog: Đóng gói module pipeline có phiên bản Semantic Versioning và input parameters an toàn."
+keywords:
+  - gitlab ci cd components
+  - gitlab ci cd catalog
+  - gitlab component inputs
+  - gitlab modular pipeline
 ---
+
 {% raw %}
-# [BÀI 11] HIỆN ĐẠI HÓA CI/CD VỚI GITLAB CI/CD COMPONENTS & CI/CD CATALOG
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Hiện Đại Hóa CI/CD Với GitLab CI/CD Components & CI/CD Catalog.
+> - Đóng gói các khối CI/CD thành các Lego Blocks có kiểm soát kiểu dữ liệu đầu vào với spec:inputs.
+> - Phát hành và quản lý phiên bản SemVer trên Enterprise CI/CD Catalog, chia sẻ an toàn toàn tổ chức.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

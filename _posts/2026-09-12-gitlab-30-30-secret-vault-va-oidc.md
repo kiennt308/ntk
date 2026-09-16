@@ -23,9 +23,23 @@ tldr:
   - "Sử dụng cú pháp secrets: native trong GitLab CI để tự động nạp bí mật từ Vault KV Store vào Job."
   - "Tự động cấp phát Dynamic Database Credentials có thời hạn ngắn (TTL 15 phút) tự hủy sau khi build."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Quản lý bí mật doanh nghiệp không mật khẩu (Keyless) với HashiCorp Vault và GitLab OIDC: Tự động cấp phát JWT token tạm thời và nạp dynamic secrets vào Job an toàn."
+keywords:
+  - gitlab hashicorp vault
+  - gitlab oidc authentication
+  - gitlab vault jwt auth
+  - gitlab keyless secrets
 ---
+
 {% raw %}
-# [BÀI 30] QUẢN LÝ BÍ MẬT VỚI HASHICORP VAULT & OIDC FEDERATION TRONG GITLAB CI
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Xóa bỏ rủi ro bảo mật của Static CI/CD Variables và làm chủ kiến trúc Keyless OIDC Authentication.
+> - Cấu hình Vault JWT/OIDC Auth Engine với các quy tắc ràng buộc chặt chẽ (Bound Claims: sub, project_id, ref).
+> - Sử dụng cú pháp secrets: native trong GitLab CI để tự động nạp bí mật từ Vault KV Store vào Job.
+> - Tự động cấp phát Dynamic Database Credentials có thời hạn ngắn (TTL 15 phút) tự hủy sau khi build.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

@@ -23,9 +23,23 @@ tldr:
   - "Cấu hình Scan Result Policies tự động yêu cầu phê duyệt bảo mật (Security Approval Gates) khi có lỗ hổng mới."
   - "Thiết lập cơ chế tách biệt quyền hạn (Separation of Duties - SoD) và lưu trữ nhật ký kiểm toán bất biến."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Xây dựng và thực thi chính sách tuân thủ bắt buộc với GitLab Compliance Pipelines: Đảm bảo 100% dự án áp dụng Security Gates và lưu vết bằng chứng kiểm toán Audit Trails."
+keywords:
+  - gitlab compliance framework
+  - gitlab compliance pipeline
+  - gitlab audit events
+  - gitlab soc2 iso27001
 ---
+
 {% raw %}
-# [BÀI 33] PIPELINE COMPLIANCE & SECURITY POLICIES TOÀN DOANH NGHIỆP TRONG GITLAB CI
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý quản trị tuân thủ cấp Enterprise (Enterprise Compliance & Security Governance).
+> - Làm chủ cơ chế Scan Execution Policies (SEP) ép buộc chạy job quét bảo mật mà lập trình viên không thể ghi đè.
+> - Cấu hình Scan Result Policies tự động yêu cầu phê duyệt bảo mật (Security Approval Gates) khi có lỗ hổng mới.
+> - Thiết lập cơ chế tách biệt quyền hạn (Separation of Duties - SoD) và lưu trữ nhật ký kiểm toán bất biến.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

@@ -20,9 +20,23 @@ tldr:
   - "Chuyển đổi Pipeline tuần tự sang kiến trúc DAG (Directed Acyclic Graph) giúp rút ngắn 40-70% thời gian chờ đợi."
   - "Làm chủ kỹ thuật phân mảnh kiểm thử parallel sharding và ma trận Cartesian parallel: matrix."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Tăng tốc đột phá thời gian chạy Pipeline với Directed Acyclic Graph (DAG) needs và Parallel Matrix: Xây dựng đồ thị thực thi phi tuyến tính và ma trận kiểm thử song song đa biến thể."
+keywords:
+  - gitlab ci needs dag
+  - gitlab parallel matrix
+  - gitlab directed acyclic graph
+  - gitlab pipeline optimization
 ---
+
 {% raw %}
-# [BÀI 08] TỐI ƯU HÓA DAG PIPELINE, NEEDS & PARALLEL MATRIX: LOẠI BỎ NGHẼN CỔ CHAI TRONG CI/CD
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tối Ưu Hóa DAG Pipeline, Needs & Parallel Matrix: Loại Bỏ Nghẽn Cổ Chai Trong CI/CD.
+> - Chuyển đổi Pipeline tuần tự sang kiến trúc DAG (Directed Acyclic Graph) giúp rút ngắn 40-70% thời gian chờ đợi.
+> - Làm chủ kỹ thuật phân mảnh kiểm thử parallel sharding và ma trận Cartesian parallel: matrix.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

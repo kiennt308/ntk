@@ -20,9 +20,23 @@ tldr:
   - "Làm chủ cơ chế hợp nhất YAML tầng thấp, phân biệt deep-merge của extends và giới hạn biên giới của YAML Anchors."
   - "Sử dụng cú pháp !reference để tái sử dụng script linh hoạt và ghim chặt ref cho include:project chuẩn Enterprise."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Kỹ thuật tái sử dụng cấu hình nâng cao trong GitLab CI: Khai thác include (local, project, template), kế thừa extends và YAML Anchors để chuẩn hóa bộ khung pipeline dùng chung toàn doanh nghiệp."
+keywords:
+  - gitlab ci include
+  - gitlab ci extends
+  - gitlab yaml anchors
+  - gitlab reusable templates
 ---
+
 {% raw %}
-# [BÀI 10] TÁI SỬ DỤNG CẤU HÌNH CI/CD: INCLUDE, EXTENDS, YAML ANCHORS & HIDDEN JOBS
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tái Sử Dụng Cấu Hình CI/CD: Include, Extends, YAML Anchors & Hidden Jobs.
+> - Làm chủ cơ chế hợp nhất YAML tầng thấp, phân biệt deep-merge của extends và giới hạn biên giới của YAML Anchors.
+> - Sử dụng cú pháp !reference để tái sử dụng script linh hoạt và ghim chặt ref cho include:project chuẩn Enterprise.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

@@ -23,9 +23,23 @@ tldr:
   - "Tự động sinh CHANGELOG.md và tạo GitLab Release đính kèm Binary Assets mà không cần can thiệp thủ công."
   - "Xử lý triệt để bẫy vòng lặp vô tận (Infinite CI Trigger Loop) khi CI bot push tag hoặc commit ngược về repo."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Tự động hóa đánh phiên bản Semantic Versioning và phát hành GitLab Releases: Tích hợp semantic-release, trích xuất changelog tự động từ Conventional Commits và tạo Git Tag an toàn."
+keywords:
+  - gitlab semantic versioning
+  - gitlab release cli
+  - gitlab changelog generation
+  - gitlab git tag automation
 ---
+
 {% raw %}
-# [BÀI 27] TỰ ĐỘNG HÓA VERSIONING & RELEASE: SEMANTIC-RELEASE, GITVERSION & CHANGELOG
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững quy chuẩn Semantic Versioning 2.0.0 (MAJOR.MINOR.PATCH) và Conventional Commits.
+> - So sánh chuyên sâu Semantic-Release (JS-ecosystem) và GitVersion (GitFlow/Trunk-based analyzer).
+> - Tự động sinh CHANGELOG.md và tạo GitLab Release đính kèm Binary Assets mà không cần can thiệp thủ công.
+> - Xử lý triệt để bẫy vòng lặp vô tận (Infinite CI Trigger Loop) khi CI bot push tag hoặc commit ngược về repo.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

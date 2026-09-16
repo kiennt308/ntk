@@ -20,9 +20,23 @@ tldr:
   - "Thiết kế ma trận chẩn đoán sự cố 4 trục, phân tích trường failure_reason từ REST API và giải quyết pipeline pending/timeout."
   - "Làm chủ cơ chế retry thông minh, điều phối race condition với resource_group và tự động hủy job thừa bằng interruptible."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Phương pháp luận gỡ rối và khắc phục sự cố Pipeline chuyên nghiệp: Phân tích trace log 8 pha, khoanh vùng lỗi hạ tầng vs mã nguồn, kỹ thuật dry-run và chẩn đoán sự cố runner không tiếp nhận job."
+keywords:
+  - gitlab pipeline debugging
+  - gitlab runner trace logs
+  - gitlab troubleshooting silent failure
+  - gitlab ci dry run
 ---
+
 {% raw %}
-# [BÀI 07] KỸ THUẬT GỠ RỐI PIPELINE (TROUBLESHOOTING & DEBUGGING): DOC-PHA.SH, FAILURE_REASON, CI_DEBUG_TRACE, TIMEOUT/RETRY & RESOURCE GROUP
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kỹ Thuật Gỡ Rối Pipeline (Troubleshooting & Debugging): doc-pha.sh, failure_reason, CI_DEBUG_TRACE, Timeout/Retry & Resource Group.
+> - Thiết kế ma trận chẩn đoán sự cố 4 trục, phân tích trường failure_reason từ REST API và giải quyết pipeline pending/timeout.
+> - Làm chủ cơ chế retry thông minh, điều phối race condition với resource_group và tự động hủy job thừa bằng interruptible.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

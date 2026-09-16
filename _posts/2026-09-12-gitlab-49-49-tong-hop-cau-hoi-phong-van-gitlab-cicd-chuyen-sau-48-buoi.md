@@ -21,6 +21,12 @@ tldr:
   - "Làm chủ kiến trúc tầng thấp: Coordinator, Runner Daemon, Ephemeral Containers và OIDC Federation."
   - "Phân tích sắc bén các bài toán tối ưu hóa Pipeline, Caching đa tầng, bảo mật chuỗi cung ứng SLSA/SBOM."
   - "Tự tin chinh phục các vòng phỏng vấn kỹ thuật cấp độ Senior DevOps, DevSecOps Architect và Platform Lead."
+description: "Cẩm nang tổng hợp 100+ câu hỏi phỏng vấn kỹ thuật chuyên sâu bao phủ toàn bộ 48 bài học: Từ kiến trúc tầng thấp GitLab Runner, cú pháp pipeline nâng cao, DevSecOps, OIDC Đa đám mây, GitOps đến đo lường DORA và FinOps."
+keywords:
+  - gitlab interview questions
+  - gitlab devsecops master guide
+  - gitlab runner interview
+  - gitlab pipeline senior architect
 ---
 
 {% raw %}

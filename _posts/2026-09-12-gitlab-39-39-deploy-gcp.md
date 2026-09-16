@@ -23,9 +23,23 @@ tldr:
   - "Làm chủ cơ chế phân chia lưu lượng (Traffic Splitting & Canary) tự động trên Google Cloud Run."
   - "Triển khai an toàn lên Google Kubernetes Engine (GKE) Autopilot với gcloud và kubectl."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Triển khai ứng dụng lên Google Cloud Platform (GCP) với Workload Identity Federation và GitLab CI: Quản lý quyền hạn IAM tối thiểu, deploy GKE và Cloud Run không cần Service Account Key."
+keywords:
+  - gitlab deploy gcp oidc
+  - gitlab workload identity federation
+  - gitlab gke cloud run
+  - gitlab gcp auth
 ---
+
 {% raw %}
-# [BÀI 39] TRIỂN KHAI ỨNG DỤNG LÊN GCP: GOOGLE KUBERNETES ENGINE (GKE), CLOUD RUN & ARTIFACT REGISTRY
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Xác thực không khóa chuẩn Enterprise với Google Cloud thông qua Workload Identity Federation.
+> - Đóng gói và đẩy OCI Container Images lên Google Artifact Registry bằng Kaniko.
+> - Làm chủ cơ chế phân chia lưu lượng (Traffic Splitting & Canary) tự động trên Google Cloud Run.
+> - Triển khai an toàn lên Google Kubernetes Engine (GKE) Autopilot với gcloud và kubectl.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

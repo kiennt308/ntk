@@ -22,9 +22,23 @@ tldr:
   - "Bảo vệ tài nguyên nhạy cảm bằng chính sách IP Allowlisting và bắt buộc 2FA/WebAuthn."
   - "Thiết lập cơ chế Streaming Audit Events thời gian thực sang Splunk/Elasticsearch phục vụ kiểm toán."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Quản lý phân quyền truy cập (RBAC), nhóm dự án và nhật ký kiểm toán tuân thủ (Audit Events) trong GitLab: Kiểm soát toàn diện quyền hạn từ Developer đến Owner."
+keywords:
+  - gitlab rbac permissions
+  - gitlab group project member roles
+  - gitlab audit logs compliance
+  - gitlab access control
 ---
+
 {% raw %}
-# [BÀI 45] QUẢN TRỊ COMPLIANCE, AUDIT & PHÂN QUYỀN CHI TIẾT TRONG GITLAB
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững ma trận phân quyền nâng cao: Custom Roles, Service Accounts và Group Inheritance.
+> - Đồng bộ hóa danh tính tự động với SAML 2.0 Single Sign-On (Okta/Azure AD) và SCIM User Provisioning.
+> - Bảo vệ tài nguyên nhạy cảm bằng chính sách IP Allowlisting và bắt buộc 2FA/WebAuthn.
+> - Thiết lập cơ chế Streaming Audit Events thời gian thực sang Splunk/Elasticsearch phục vụ kiểm toán.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

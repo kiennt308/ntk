@@ -20,9 +20,23 @@ tldr:
   - "Phân biệt bản chất npm ci vs npm install, quản trị PNPM Store và tối ưu hóa TypeScript typecheck tsc --noEmit."
   - "Tăng tốc kiểm thử với Vitest Parallel Sharding và tích hợp báo cáo JUnit/Cobertura chuẩn mực."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Xây dựng Pipeline chuyên sâu cho ứng dụng Node.js & TypeScript: Tối ưu hóa pnpm/npm caching, kiểm thử tự động với Vitest/Jest, sinh coverage report và đóng gói dist artifact."
+keywords:
+  - gitlab ci nodejs
+  - gitlab typescript pipeline
+  - gitlab pnpm npm caching
+  - gitlab vitest jest
 ---
+
 {% raw %}
-# [BÀI 16] CI/CD CHUYÊN SÂU CHO NODE.JS & TYPESCRIPT: PNPM/YARN/NPM, MONOREPO TURBOREPO & VITEST
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về CI/CD Chuyên Sâu Cho Node.js & TypeScript: PNPM/Yarn/NPM, Monorepo Turborepo & Vitest.
+> - Phân biệt bản chất npm ci vs npm install, quản trị PNPM Store và tối ưu hóa TypeScript typecheck tsc --noEmit.
+> - Tăng tốc kiểm thử với Vitest Parallel Sharding và tích hợp báo cáo JUnit/Cobertura chuẩn mực.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

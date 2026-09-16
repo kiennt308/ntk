@@ -22,9 +22,23 @@ tldr:
   - "Triển khai hệ thống Rào chắn kiểm soát chất lượng và an ninh đa chiều (Unified Quality & Security Gate)."
   - "Thực hành đồ án tích hợp End-to-End với 8 bước hoàn chỉnh có tiêu chuẩn nghiệm thu khắt khe."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Bài kiểm tra thực hành giữa kỳ số 2: Giải quyết 12 kịch bản thực chiến toàn diện về Pipeline phức tạp, Caching, Bảo mật DevSecOps và Tối ưu hóa hiệu năng trong GitLab CI."
+keywords:
+  - gitlab midterm exam
+  - gitlab practice scenarios
+  - gitlab hands on assessment
+  - gitlab exam solutions
 ---
+
 {% raw %}
-# [BÀI 35] KIỂM TRA GIỮA KỲ 2: XÂY DỰNG HỆ THỐNG DEVSECOPS CI/CD TOÀN DIỆN CHUẨN DOANH NGHIỆP
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Tổng hợp và kiểm chứng toàn diện kiến thức Phase 3 (Đóng gói & Phân phối) và Phase 4 (An ninh & DevSecOps).
+> - Xây dựng kiến trúc Pipeline chuẩn Enterprise kết hợp Kaniko, Semgrep, Trivy, Vault OIDC và Cosign.
+> - Triển khai hệ thống Rào chắn kiểm soát chất lượng và an ninh đa chiều (Unified Quality & Security Gate).
+> - Thực hành đồ án tích hợp End-to-End với 8 bước hoàn chỉnh có tiêu chuẩn nghiệm thu khắt khe.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

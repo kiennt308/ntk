@@ -20,9 +20,24 @@ tldr:
   - "Làm chủ mô hình dữ liệu: 4 đường vào (Git, Cache, Artifacts, Variables) và 2 đường ra (Artifacts, Exit Code), tuyệt đối không tồn tại đường thứ năm."
   - "Hiểu sâu 8 pha thực thi tuần tự của Job và cơ chế tách biệt Process giữa step_script và after_script."
   - "Kiểm soát 4 chế độ hỏng của Pipeline và áp dụng kỹ thuật Assertions để triệt tiêu hoàn toàn lỗi hỏng im lặng (Silent Failures)."
+description: "Khám phá toàn diện kiến trúc thực thi job trong GitLab CI/CD: Mô hình môi trường dùng một lần (ephemeral), 8 pha vòng đời job, 4 đường vào 2 đường ra, cơ chế cô lập container và kỹ thuật phòng chống lỗi hỏng im lặng trong Enterprise Pipeline."
+keywords:
+  - gitlab ci cd architecture
+  - gitlab runner coordinator
+  - gitlab ephemeral job
+  - gitlab job lifecycle
+  - gitlab 8 phases
 ---
+
 {% raw %}
-# [BÀI 01] KIẾN TRÚC GITLAB CI/CD & MÔ HÌNH THỰC THI JOB: GITLAB SERVER, RUNNER, COORDINATOR & VÒNG ĐỜI PIPELINE
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững bản chất kiến trúc GitLab CI/CD: Coordinator điều phối, Runner nhận job và Executor dựng môi trường thực thi dùng một lần (Ephemeral).
+> - Làm chủ mô hình dữ liệu: 4 đường vào (Git, Cache, Artifacts, Variables) và 2 đường ra (Artifacts, Exit Code), tuyệt đối không tồn tại đường thứ năm.
+> - Hiểu sâu 8 pha thực thi tuần tự của Job và cơ chế tách biệt Process giữa step_script và after_script.
+> - Kiểm soát 4 chế độ hỏng của Pipeline và áp dụng kỹ thuật Assertions để triệt tiêu hoàn toàn lỗi hỏng im lặng (Silent Failures).
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

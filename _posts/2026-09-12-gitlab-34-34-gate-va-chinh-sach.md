@@ -23,9 +23,23 @@ tldr:
   - "Tự động hóa chính sách Zero-Tolerance đối với lỗ hổng Critical và Secret bị rò rỉ."
   - "Tích hợp ngưỡng hiệu năng (k6 p99 latency < 200ms) vào quy trình kiểm thử trước khi bàn giao."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Thiết lập các cổng kiểm soát chất lượng (Quality Gates) và an ninh (Security Gates) tự động: Cấu hình Scan Result Policies, Merge Request Approval Rules và ngưỡng chặn lỗi."
+keywords:
+  - gitlab security gates
+  - gitlab quality gates
+  - gitlab scan result policy
+  - gitlab approval rules
 ---
+
 {% raw %}
-# [BÀI 34] QUALITY & SECURITY GATES TOÀN DIỆN: ĐỊNH NGHĨA, ĐO LƯỜNG & TỰ ĐỘNG HÓA CHẶN RELEASE
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Xây dựng khung tiêu chuẩn đo lường 4 chiều: Code Quality, Security, Reliability và Performance Gates.
+> - Lập trình kịch bản đánh giá rào chắn hợp nhất (Unified Gate Evaluator) bằng Python/Bash trong GitLab CI.
+> - Tự động hóa chính sách Zero-Tolerance đối với lỗ hổng Critical và Secret bị rò rỉ.
+> - Tích hợp ngưỡng hiệu năng (k6 p99 latency < 200ms) vào quy trình kiểm thử trước khi bàn giao.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

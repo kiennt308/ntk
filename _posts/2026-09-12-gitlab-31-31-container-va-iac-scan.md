@@ -24,9 +24,23 @@ tldr:
   - "Tập trung hóa hàng ngàn kết quả quét bảo mật về nền tảng Vulnerability Management DefectDojo qua REST API."
   - "Thiết lập Security Gate tự động chặn triển khai khi phát hiện cấu hình IaC nguy hiểm (Critical Misconfigurations)."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Quét lỗ hổng Container Image với Trivy và kiểm tra cấu hình Infrastructure as Code (IaC) với Checkov/tfsec: Tự động chặn các rủi ro an ninh trước khi triển khai hạ tầng."
+keywords:
+  - gitlab container scanning
+  - gitlab trivy scanner
+  - gitlab iac scanning
+  - gitlab checkov tfsec
 ---
+
 {% raw %}
-# [BÀI 31] QUÉT LỖ HỔNG CONTAINER & IAC: TRIVY, CHECKOV, KICS & DEFECTDOJO
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Làm chủ quy trình quét Container Image đa tầng (OS Packages & Application Dependencies) với Trivy.
+> - Phát hiện cấu hình sai lệch trong Terraform, Kubernetes Manifests và Dockerfile bằng Checkov & KICS.
+> - Tập trung hóa hàng ngàn kết quả quét bảo mật về nền tảng Vulnerability Management DefectDojo qua REST API.
+> - Thiết lập Security Gate tự động chặn triển khai khi phát hiện cấu hình IaC nguy hiểm (Critical Misconfigurations).
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

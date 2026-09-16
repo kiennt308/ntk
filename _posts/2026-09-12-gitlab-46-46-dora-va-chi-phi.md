@@ -21,6 +21,12 @@ tldr:
   - "Xây dựng dashboard giám sát thời gian thực với Prometheus GitLab Runner Exporter và Grafana."
   - "Áp dụng chiến lược FinOps: Quản trị hạn ngạch compute minutes, runner autoscaling và dọn dẹp artifacts/registry."
   - "Vượt qua các câu hỏi phỏng vấn hóc búa về DORA metrics và tối ưu chi phí hạ tầng CI/CD."
+description: "Đo lường và cải tiến hiệu suất kỹ thuật với 4 chỉ số DORA trong GitLab: Thiết lập Value Stream Analytics và áp dụng chiến lược FinOps tối ưu chi phí hạ tầng CI/CD."
+keywords:
+  - gitlab dora metrics
+  - gitlab value stream analytics
+  - gitlab finops ci cd cost
+  - gitlab runner compute minutes
 ---
 
 {% raw %}

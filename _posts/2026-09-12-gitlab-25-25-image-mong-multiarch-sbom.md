@@ -23,9 +23,23 @@ tldr:
   - "Tự động sinh Software Bill of Materials (SBOM) chuẩn CycloneDX / SPDX bằng công cụ Syft."
   - "Thiết lập quy trình tạo chữ ký số và xác thực nguồn gốc phần mềm SLSA Level 2/3 Attestation."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Kỹ thuật đóng gói Container Image mỏng nhẹ, Multi-architecture (AMD64/ARM64) với Docker Buildx và tự động sinh bản kê khai phần mềm (SBOM) với Syft và Grype."
+keywords:
+  - gitlab slim container image
+  - gitlab multi arch buildx
+  - gitlab docker buildx bake
+  - gitlab syft grype sbom
 ---
+
 {% raw %}
-# [BÀI 25] TỐI ƯU HÓA CONTAINER: IMAGE SIÊU MỎNG, MULTI-ARCH (ARM/X86), SBOM & SLSA
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững kỹ thuật nén dung lượng container xuống dưới 20MB với Scratch, Distroless và Chiseled Ubuntu.
+> - Làm chủ cơ chế OCI Manifest List và quy trình Build Multi-Arch (ARM64 & AMD64) trên GitLab Runner.
+> - Tự động sinh Software Bill of Materials (SBOM) chuẩn CycloneDX / SPDX bằng công cụ Syft.
+> - Thiết lập quy trình tạo chữ ký số và xác thực nguồn gốc phần mềm SLSA Level 2/3 Attestation.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

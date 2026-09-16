@@ -20,9 +20,22 @@ tldr:
   - "Làm chủ kỹ thuật Cache Relocation đưa thư mục đệm của 6 ngôn ngữ vào trong $CI_PROJECT_DIR."
   - "Chuẩn hóa giao diện 4 Stage (Lint, Test, Build, Publish) và tích hợp báo cáo JUnit/Cobertura toàn doanh nghiệp."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Xây dựng khung chuẩn hóa Pipeline đa ngôn ngữ (Polyglot CI/CD Framework) cấp Enterprise: Thiết kế base template dùng chung cho Node.js, Java, Python, Go, .NET và PHP."
+keywords:
+  - gitlab multi language framework
+  - gitlab enterprise polyglot ci
+  - gitlab standardized pipeline template
 ---
+
 {% raw %}
-# [BÀI 15] KHUNG CHUẨN CI/CD ĐA NGÔN NGỮ & ĐA NỀN TẢNG (POLYGLOT CI/CD FRAMEWORK)
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Khung Chuẩn CI/CD Đa Ngôn Ngữ & Đa Nền Tảng (Polyglot CI/CD Framework).
+> - Làm chủ kỹ thuật Cache Relocation đưa thư mục đệm của 6 ngôn ngữ vào trong $CI_PROJECT_DIR.
+> - Chuẩn hóa giao diện 4 Stage (Lint, Test, Build, Publish) và tích hợp báo cáo JUnit/Cobertura toàn doanh nghiệp.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

@@ -20,9 +20,23 @@ tldr:
   - "Giải quyết triệt để sự cố 'Hai MR xanh nhưng main đỏ' bằng Merged Results Pipelines và Merge Trains."
   - "Triệt tiêu 100% hiện tượng Duplicate Pipelines bằng khối workflow: rules: chuẩn mực."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Tự động hóa quy trình kiểm thử và tích hợp Merge Request với MR Pipelines và Merge Trains: Đảm bảo chất lượng mã nguồn trước khi hợp nhất và ngăn chặn xung đột tích hợp trên nhánh chính."
+keywords:
+  - gitlab merge request pipelines
+  - gitlab merge trains
+  - gitlab merged results pipeline
+  - gitlab mr automation
 ---
+
 {% raw %}
-# [BÀI 12] MERGE REQUEST PIPELINES, MERGE TRAINS & CHIẾN LƯỢC KIỂM THỬ TRƯỚC MERGE
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Merge Request Pipelines, Merge Trains & Chiến Lược Kiểm Thử Trước Merge.
+> - Giải quyết triệt để sự cố 'Hai MR xanh nhưng main đỏ' bằng Merged Results Pipelines và Merge Trains.
+> - Triệt tiêu 100% hiện tượng Duplicate Pipelines bằng khối workflow: rules: chuẩn mực.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

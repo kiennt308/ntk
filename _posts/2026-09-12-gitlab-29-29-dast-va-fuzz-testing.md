@@ -23,9 +23,23 @@ tldr:
   - "Làm chủ kỹ thuật API Fuzzing kiểm tra độ bền của REST/GraphQL endpoints với dữ liệu đột biến ngẫu nhiên."
   - "Cấu hình xác thực tự động (Form-based Login & Bearer Token) cho DAST Scanner khi quét sâu."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Triển khai kiểm thử bảo mật động (DAST) với OWASP ZAP và kiểm thử tự động Fuzz Testing trên GitLab CI để phát hiện sớm các lỗ hổng bảo mật thời gian chạy."
+keywords:
+  - gitlab dast scanning
+  - gitlab zap dast
+  - gitlab api fuzz testing
+  - gitlab dynamic security analysis
 ---
+
 {% raw %}
-# [BÀI 29] DAST & FUZZ TESTING: OWASP ZAP, API FUZZING & DAST PROXY TRONG GITLAB CI
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý kiểm thử Black-Box DAST và phân biệt quét thụ động (Passive) vs chủ động (Active Scan).
+> - Tích hợp OWASP ZAP (Zed Attack Proxy) vào GitLab CI để tấn công mô phỏng tự động.
+> - Làm chủ kỹ thuật API Fuzzing kiểm tra độ bền của REST/GraphQL endpoints với dữ liệu đột biến ngẫu nhiên.
+> - Cấu hình xác thực tự động (Form-based Login & Bearer Token) cho DAST Scanner khi quét sâu.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

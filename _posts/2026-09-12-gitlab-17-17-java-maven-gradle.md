@@ -20,9 +20,23 @@ tldr:
   - "Làm chủ cơ chế di dời cache .m2 / .gradle, tắt Gradle Daemon và kiểm soát an toàn tương thích runtime với --release 17."
   - "Tích hợp báo cáo Surefire JUnit XML, chuyển đổi JaCoCo sang Cobertura và đóng gói container không cần Docker qua Google Jib."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Xây dựng Pipeline hiệu năng cao cho ứng dụng Java: Cấu hình Maven local repository cache, Gradle Build Cache daemon, phân tích SonarQube và đóng gói Spring Boot JAR container."
+keywords:
+  - gitlab ci java
+  - gitlab maven cache
+  - gitlab gradle build cache
+  - gitlab spring boot docker
 ---
+
 {% raw %}
-# [BÀI 17] CI/CD CHUYÊN SÂU CHO JAVA ENTERPRISE: MAVEN, GRADLE, MULTI-MODULE & JACOCO COVERAGE
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về CI/CD Chuyên Sâu Cho Java Enterprise: Maven, Gradle, Multi-Module & JaCoCo Coverage.
+> - Làm chủ cơ chế di dời cache .m2 / .gradle, tắt Gradle Daemon và kiểm soát an toàn tương thích runtime với --release 17.
+> - Tích hợp báo cáo Surefire JUnit XML, chuyển đổi JaCoCo sang Cobertura và đóng gói container không cần Docker qua Google Jib.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

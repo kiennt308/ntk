@@ -23,9 +23,23 @@ tldr:
   - "Tự động hóa vòng đời Ephemeral Review Apps với cơ chế dừng tự động auto_stop_in và job dọn dẹp on_stop."
   - "Thiết lập cơ chế Rollback một chạm (One-Click Environment Rollback) khi xảy ra sự cố Production."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Quản lý môi trường triển khai (Environments), Dynamic Review Apps, thời gian đóng băng phát hành (Deploy Freeze) và quy trình phê duyệt thủ công cấp Production."
+keywords:
+  - gitlab environments deployments
+  - gitlab deploy freeze
+  - gitlab manual approvals
+  - gitlab dynamic review apps
 ---
+
 {% raw %}
-# [BÀI 36] QUẢN LÝ MÔI TRƯỜNG (ENVIRONMENTS), DEPLOYMENT TIERS & MANUAL APPROVAL GATES
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý quản lý môi trường (GitLab Environments) và phân tầng Deployment Tiers chuẩn Enterprise.
+> - Làm chủ cơ chế Protected Environments và cấu hình rào chắn phê duyệt thủ công (Manual Approval Gates).
+> - Tự động hóa vòng đời Ephemeral Review Apps với cơ chế dừng tự động auto_stop_in và job dọn dẹp on_stop.
+> - Thiết lập cơ chế Rollback một chạm (One-Click Environment Rollback) khi xảy ra sự cố Production.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

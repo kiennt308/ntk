@@ -23,9 +23,23 @@ tldr:
   - "Đóng gói và triển khai Serverless Lambda Functions (ZIP & Container runtime) trong GitLab CI."
   - "Triển khai chiến lược phát hành không gián đoạn dịch vụ (Zero-Downtime Rolling Update) trên AWS."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Triển khai tự động hóa hạ tầng và ứng dụng lên Amazon Web Services (AWS) thông qua GitLab OIDC: Cấu hình AssumeRoleWithWebIdentity, đẩy container lên ECR và cập nhật EKS/ECS."
+keywords:
+  - gitlab deploy aws oidc
+  - gitlab assume role arn
+  - gitlab ecs eks terraform
+  - gitlab aws credentials
 ---
+
 {% raw %}
-# [BÀI 38] TRIỂN KHAI ỨNG DỤNG LÊN AWS: ECS FARGATE, EKS CLUSTER & SERVERLESS LAMBDA
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Làm chủ quy trình phát hành OCI Image lên AWS ECR và cập nhật Task Definition trên ECS Fargate.
+> - Xác thực không khóa với AWS EKS thông qua aws eks update-kubeconfig và IAM OIDC Role.
+> - Đóng gói và triển khai Serverless Lambda Functions (ZIP & Container runtime) trong GitLab CI.
+> - Triển khai chiến lược phát hành không gián đoạn dịch vụ (Zero-Downtime Rolling Update) trên AWS.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

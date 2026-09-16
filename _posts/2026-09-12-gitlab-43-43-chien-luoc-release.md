@@ -24,9 +24,23 @@ tldr:
   - "Tích hợp Feature Flags (GitLab Native / Unleash) tách biệt hoàn toàn giữa Deploy và Release."
   - "Thiết lập cơ chế tự động Rollback Canary khi chỉ số lỗi HTTP 5xx hoặc p99 Latency tăng vọt."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Thiết kế và thực thi các chiến lược phát hành hiện đại: Triển khai Blue/Green, Canary Releases theo trọng số lưu lượng và quản lý tính năng linh hoạt với Feature Flags."
+keywords:
+  - gitlab release strategy
+  - gitlab blue green deployment
+  - gitlab canary releases
+  - gitlab feature flags unleash
 ---
+
 {% raw %}
-# [BÀI 43] CHIẾN LƯỢC PHÁT HÀNH LŨY TIẾN: CANARY, BLUE-GREEN, A/B TESTING & FEATURE FLAGS
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý giảm thiểu bán kính thiệt hại (Blast Radius Reduction) qua Progressive Delivery.
+> - So sánh chuyên sâu 4 chiến lược phát hành: Recreate, Rolling Update, Blue-Green và Canary.
+> - Tích hợp Feature Flags (GitLab Native / Unleash) tách biệt hoàn toàn giữa Deploy và Release.
+> - Thiết lập cơ chế tự động Rollback Canary khi chỉ số lỗi HTTP 5xx hoặc p99 Latency tăng vọt.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

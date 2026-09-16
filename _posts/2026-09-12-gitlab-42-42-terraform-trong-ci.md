@@ -23,9 +23,23 @@ tldr:
   - "Tích hợp công cụ FinOps Infracost dự toán chi phí Cloud trước khi thực thi lệnh apply."
   - "Thiết lập Pipeline định kỳ tự động phát hiện sai lệch hạ tầng (Drift Detection Scheduled Pipeline)."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Tự động hóa quản trị hạ tầng dạng mã (IaC) với Terraform / OpenTofu trong GitLab CI: Cấu hình GitLab-managed Terraform State, kiểm tra tfsec và tự động phê duyệt terraform apply."
+keywords:
+  - gitlab terraform pipeline
+  - gitlab opentofu ci
+  - gitlab terraform http backend
+  - gitlab tfsec checkov
 ---
+
 {% raw %}
-# [BÀI 42] TỰ ĐỘNG HÓA QUẢN LÝ HẠ TẦNG VỚI TERRAFORM & OPENTOFU TRONG GITLAB CI
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Làm chủ cơ chế lưu trữ và khóa trạng thái hạ tầng GitLab Managed Terraform State qua HTTP Backend.
+> - Hiển thị chi tiết thay đổi hạ tầng (Terraform Plan) trực tiếp trên giao diện GitLab Merge Request Widget.
+> - Tích hợp công cụ FinOps Infracost dự toán chi phí Cloud trước khi thực thi lệnh apply.
+> - Thiết lập Pipeline định kỳ tự động phát hiện sai lệch hạ tầng (Drift Detection Scheduled Pipeline).
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

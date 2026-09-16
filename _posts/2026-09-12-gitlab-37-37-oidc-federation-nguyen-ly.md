@@ -23,9 +23,23 @@ tldr:
   - "Thiết lập GCP Workload Identity Federation kết hợp Service Account Impersonation."
   - "Cấu hình Azure AD / Microsoft Entra ID Federated Identity Credentials cho GitLab CI."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Nguyên lý hoạt động tầng sâu của OpenID Connect (OIDC) Federation: Xây dựng cơ chế xác thực không dùng khóa dài hạn (Keyless Authentication) giữa GitLab và các Cloud Providers."
+keywords:
+  - gitlab oidc federation
+  - gitlab id token jwt
+  - gitlab keyless cloud auth
+  - gitlab federated identity
 ---
+
 {% raw %}
-# [BÀI 37] OIDC FEDERATION VỚI CLOUD PROVIDERS: AWS IAM, GCP WORKLOAD IDENTITY & AZURE AD
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Xóa bỏ hoàn toàn Access Keys tĩnh dài hạn khi tương tác với các nhà cung cấp Public Cloud.
+> - Làm chủ cơ chế AWS sts:AssumeRoleWithWebIdentity và cấu hình Trust Policy theo JWT sub claim.
+> - Thiết lập GCP Workload Identity Federation kết hợp Service Account Impersonation.
+> - Cấu hình Azure AD / Microsoft Entra ID Federated Identity Credentials cho GitLab CI.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

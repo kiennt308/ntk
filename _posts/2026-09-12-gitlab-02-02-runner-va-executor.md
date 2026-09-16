@@ -20,9 +20,24 @@ tldr:
   - "Phân loại 4 loại Executor trên trục cô lập: Shell (0 cô lập), Docker (cô lập hệ tệp), Kubernetes (cô lập tài nguyên) và Custom."
   - "Nhận diện rủi ro bảo mật nghiêm trọng khi mount Docker Socket (/var/run/docker.sock) vào Runner Container."
   - "Kiểm soát 3 điều kiện độc lập để Runner nhận Job và phương pháp đo đạc chống nghẽn hàng đợi (Queue Latency vs Execution Duration)."
+description: "Phân tích chuyên sâu kiến trúc GitLab Runner và các bộ điều phối Executor: So sánh Shell, Docker, Kubernetes, SSH, giải mã cấu hình config.toml, cơ chế concurrency và kiến trúc Autoscaling Runner cấp Enterprise."
+keywords:
+  - gitlab runner executor
+  - gitlab docker executor
+  - gitlab kubernetes executor
+  - gitlab runner autoscaling
+  - gitlab config toml
 ---
+
 {% raw %}
-# [BÀI 02] GITLAB RUNNER & CÁC LOẠI EXECUTOR: SHELL, DOCKER, KUBERNETES EXECUTOR & CƠ CHẾ ĐĂNG KÝ TOKEN MỚI
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý hai tệp cấu hình: .gitlab-ci.yml (Job làm gì) và config.toml (Job chạy ở đâu và với quyền gì).
+> - Phân loại 4 loại Executor trên trục cô lập: Shell (0 cô lập), Docker (cô lập hệ tệp), Kubernetes (cô lập tài nguyên) và Custom.
+> - Nhận diện rủi ro bảo mật nghiêm trọng khi mount Docker Socket (/var/run/docker.sock) vào Runner Container.
+> - Kiểm soát 3 điều kiện độc lập để Runner nhận Job và phương pháp đo đạc chống nghẽn hàng đợi (Queue Latency vs Execution Duration).
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

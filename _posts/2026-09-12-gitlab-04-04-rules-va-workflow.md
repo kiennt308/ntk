@@ -20,9 +20,23 @@ tldr:
   - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
   - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Khai thác sức mạnh của từ khóa rules và workflow trong GitLab CI: Xây dựng logic điều kiện động với $CI_COMMIT_BRANCH, rules:exists, rules:changes và kỹ thuật tránh duplicate pipeline."
+keywords:
+  - gitlab ci rules
+  - gitlab workflow rules
+  - gitlab conditional execution
+  - gitlab rules exists changes
 ---
+
 {% raw %}
-# [BÀI 04] ĐIỀU KHIỂN LUỒNG THỰC THI NÂNG CAO VỚI RULES & WORKFLOW: RULES:IF, CHANGES, EXISTS & WORKFLOW:RULES
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Điều Khiển Luồng Thực Thi Nâng Cao Với Rules & Workflow: rules:if, changes, exists & workflow:rules.
+> - Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả.
+> - Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

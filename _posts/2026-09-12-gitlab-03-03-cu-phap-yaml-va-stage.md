@@ -20,7 +20,14 @@ tldr:
   - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
   - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Làm chủ cú pháp YAML cốt lõi và thiết kế thứ tự thực thi Stages trong .gitlab-ci.yml: Phân tích cơ chế đồng bộ barrier, vòng đời script/before_script/after_script và kỹ thuật dập tắt lỗi ngầm."
+keywords:
+  - gitlab ci yaml syntax
+  - gitlab stages order
+  - gitlab script before_script after_script
+  - gitlab pipeline flow
 ---
+
 {% raw %}
 # [BÀI 03] CÚ PHÁP YAML CỐT LÕI & THIẾT KẾ STAGES: .GITLAB-CI.YML, PIPELINE EXECUTION ORDER & ĐIỀU PHỐI TUYẾN TÍNH
 

@@ -20,9 +20,23 @@ tldr:
   - "Làm chủ thứ tự ưu tiên 9 nấc biến, cơ chế Masked/Protected, File-type variables và mở rộng biến an toàn."
   - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Quản trị biến môi trường và bí mật bảo mật trong GitLab CI: Phân cấp mức độ ưu tiên biến, kỹ thuật Masking/Protection, xử lý File-type variables và phòng chống rò rỉ credentials trên log trace."
+keywords:
+  - gitlab ci variables
+  - gitlab secret masking
+  - gitlab protected variables
+  - gitlab file type variables
 ---
+
 {% raw %}
-# [BÀI 06] QUẢN LÝ BIẾN & BẢO MẬT SECRETS: CI/CD VARIABLES, MASKED / PROTECTED VARIABLES & FILE-TYPE VARIABLES
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Lý Biến & Bảo Mật Secrets: CI/CD Variables, Masked / Protected Variables & File-type Variables.
+> - Làm chủ thứ tự ưu tiên 9 nấc biến, cơ chế Masked/Protected, File-type variables và mở rộng biến an toàn.
+> - Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

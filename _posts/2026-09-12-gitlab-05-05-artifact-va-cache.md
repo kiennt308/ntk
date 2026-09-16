@@ -20,7 +20,14 @@ tldr:
   - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
   - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Phân biệt bản chất kỹ thuật giữa Cache đa tầng và Artifacts trong GitLab CI/CD: Tối ưu hóa hiệu năng tái sử dụng dependency, cấu hình distributed S3 cache và truyền tệp tin an toàn giữa các job."
+keywords:
+  - gitlab cache vs artifacts
+  - gitlab cache key paths
+  - gitlab artifacts reports
+  - gitlab multi-tier caching
 ---
+
 {% raw %}
 # [BÀI 05] QUẢN TRỊ DỮ LIỆU TẠM THỜI: PHÂN BIỆT ARTIFACTS VS CACHING, S3 MINIO BACKEND & TỐI ƯU TỐC ĐỘ BUILD
 

@@ -24,6 +24,12 @@ tldr:
   - "Xử lý triệt để lỗi hạ tầng SSL/TLS certificate, Docker daemon socket permissions, CI_JOB_TOKEN và cache corruption."
   - "Vận hành công cụ gỡ rối chuyên sâu với CI_DEBUG_TRACE, GitLab Interactive Web Terminal và Runner System Logs."
   - "Luyện tập 10 câu hỏi tình huống thực chiến phỏng vấn cấp độ Senior SRE / DevOps Lead."
+description: "Chuyên đề nâng cao về Xử lý Sự cố & Khắc phục thảm họa trong GitLab CI/CD: Quy trình chẩn đoán 4 bước, khôi phục Pipeline khẩn cấp và phân tích nguyên nhân gốc rễ (Post-mortem)."
+keywords:
+  - gitlab troubleshooting masterclass
+  - gitlab runner error logs
+  - gitlab pipeline incident response
+  - gitlab post mortem
 ---
 
 {% raw %}

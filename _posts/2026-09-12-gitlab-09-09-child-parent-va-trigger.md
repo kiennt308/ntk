@@ -20,9 +20,23 @@ tldr:
   - "Làm chủ cơ chế Bridge Job, chiến lược đồng bộ strategy: depend và sinh pipeline động (Dynamic Child Pipeline)."
   - "Thiết lập phân quyền CI_JOB_TOKEN và điều phối multi-project trigger liên repository an toàn."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Thiết kế kiến trúc Pipeline phân tầng với Child/Parent Pipelines và Multi-project Triggers: Tách biệt quyền hạn microservices, tạo dynamic pipeline bằng YAML artifact và điều phối liên dự án."
+keywords:
+  - gitlab child parent pipeline
+  - gitlab dynamic child pipeline
+  - gitlab multi project trigger
+  - gitlab downstream pipeline
 ---
+
 {% raw %}
-# [BÀI 09] ĐIỀU PHỐI PIPELINE ĐA TẦNG: CHILD/PARENT PIPELINES & MULTI-PROJECT TRIGGERS
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Điều Phối Pipeline Đa Tầng: Child/Parent Pipelines & Multi-Project Triggers.
+> - Làm chủ cơ chế Bridge Job, chiến lược đồng bộ strategy: depend và sinh pipeline động (Dynamic Child Pipeline).
+> - Thiết lập phân quyền CI_JOB_TOKEN và điều phối multi-project trigger liên repository an toàn.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

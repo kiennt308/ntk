@@ -23,9 +23,23 @@ tldr:
   - "Triển khai Serverless Microservices lên Azure Container Apps (KEDA & Envoy)."
   - "Thực thi chiến lược Zero-Downtime Deployment Slots Swap trên Azure App Service."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Tự động hóa quy trình triển khai lên Microsoft Azure thông qua OIDC Workload Identity: Xác thực ứng dụng Azure AD, cấp quyền Azure RBAC và triển khai lên Azure Kubernetes Service (AKS)."
+keywords:
+  - gitlab deploy azure oidc
+  - gitlab azure workload identity
+  - gitlab aks azure container apps
+  - gitlab azure auth
 ---
+
 {% raw %}
-# [BÀI 40] TRIỂN KHAI ỨNG DỤNG LÊN AZURE: AZURE KUBERNETES SERVICE (AKS), APP SERVICE & CONTAINER APPS
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Làm chủ cơ chế xác thực không khóa với Microsoft Entra ID (Azure AD) Federated Identity Credentials.
+> - Đóng gói và đẩy OCI Images lên Azure Container Registry (ACR) bằng Kaniko.
+> - Triển khai Serverless Microservices lên Azure Container Apps (KEDA & Envoy).
+> - Thực thi chiến lược Zero-Downtime Deployment Slots Swap trên Azure App Service.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

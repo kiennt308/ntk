@@ -22,9 +22,23 @@ tldr:
   - "Cấu hình MinIO S3 Distributed Cache tối ưu hóa tốc độ tải và lưu cache cho hàng ngàn jobs đồng thời."
   - "Xây dựng hệ thống giám sát Prometheus Metrics theo dõi độ trễ hàng đợi (Queue Latency) và tài nguyên."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Vận hành và quản trị hệ thống GitLab Runner cấp Doanh nghiệp: Thiết lập hệ thống giám sát Prometheus Runner Exporter, Grafana Dashboard và chính sách bảo mật máy chủ Runner."
+keywords:
+  - gitlab runner management enterprise
+  - gitlab runner prometheus monitoring
+  - gitlab runner tuning
+  - gitlab runner security
 ---
+
 {% raw %}
-# [BÀI 44] QUẢN LÝ & TỐI ƯU HÓA GITLAB RUNNER QUY MÔ DOANH NGHIỆP (RUNNER FLEETS & SCALING)
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý phân tầng Runner Fleets: Instance Runners, Group Runners và Dedicated Project Runners.
+> - Làm chủ cơ chế tự động co giãn Kubernetes Runner Pods kết hợp AWS Karpenter / GKE Autoscaler.
+> - Cấu hình MinIO S3 Distributed Cache tối ưu hóa tốc độ tải và lưu cache cho hàng ngàn jobs đồng thời.
+> - Xây dựng hệ thống giám sát Prometheus Metrics theo dõi độ trễ hàng đợi (Queue Latency) và tài nguyên.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

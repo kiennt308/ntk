@@ -20,9 +20,23 @@ tldr:
   - "Phân tích 3 nhóm thời gian thực thi (Overhead, Queue, Compute) và xác định chính xác đường găng (Critical Path)."
   - "Áp dụng 5 kỹ thuật tối ưu hóa đỉnh cao giúp rút ngắn 60-80% thời gian thực thi Pipeline."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
+description: "Cẩm nang tối ưu hóa toàn diện thời gian chạy Pipeline: Kỹ thuật phân tầng Caching, thu nhỏ kích thước Docker Image, chạy song song DAG và loại bỏ các bước chờ lãng phí tài nguyên."
+keywords:
+  - gitlab pipeline speed optimization
+  - gitlab fast build cache
+  - gitlab pipeline performance tuning
+  - gitlab dag optimization
 ---
+
 {% raw %}
-# [BÀI 14] TỐI ƯU HÓA THỜI GIAN PIPELINE: CACHING ĐA TẦNG, FAST-FEEDBACK & DOCKER LAYER CACHING
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tối Ưu Hóa Thời Gian Pipeline: Caching Đa Tầng, Fast-Feedback & Docker Layer Caching.
+> - Phân tích 3 nhóm thời gian thực thi (Overhead, Queue, Compute) và xác định chính xác đường găng (Critical Path).
+> - Áp dụng 5 kỹ thuật tối ưu hóa đỉnh cao giúp rút ngắn 60-80% thời gian thực thi Pipeline.
+> - Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

@@ -23,9 +23,23 @@ tldr:
   - "Tự động sinh và đính kèm SBOM Attestation vào Container Registry trong GitLab CI/CD."
   - "Thiết lập chính sách Kyverno / Gatekeeper trên Kubernetes để từ chối các Image chưa được ký số."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Đảm bảo tính toàn vẹn chuỗi cung ứng phần mềm với SLSA Framework: Tự động ký số Container Image bằng Cosign (Sigstore), quản lý khóa KMS và kiểm tra nguồn gốc Provenance."
+keywords:
+  - gitlab slsa provenance
+  - gitlab cosign image signing
+  - gitlab supply chain security
+  - gitlab sigstore
 ---
+
 {% raw %}
-# [BÀI 32] CHUỖI CUNG ỨNG PHẦN MỀM AN TOÀN: SLSA FRAMEWORK, SBOM & COSIGN KÝ SỐ
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững 4 cấp độ bảo mật của SLSA Framework (Supply-chain Levels for Software Artifacts).
+> - Làm chủ cơ chế ký số không khóa (Keyless Signing) với Sigstore Cosign, Fulcio CA và Rekor Transparency Log.
+> - Tự động sinh và đính kèm SBOM Attestation vào Container Registry trong GitLab CI/CD.
+> - Thiết lập chính sách Kyverno / Gatekeeper trên Kubernetes để từ chối các Image chưa được ký số.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

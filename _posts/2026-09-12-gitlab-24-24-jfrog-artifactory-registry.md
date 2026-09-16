@@ -23,9 +23,23 @@ tldr:
   - "Triển khai chiến lược Immutability, Checksum Verification và dọn dẹp vòng đời (Retention Policies)."
   - "Tích hợp xác thực CI/CD không khóa (OIDC/Project Access Tokens) an toàn không lộ mật khẩu."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Tích hợp GitLab CI với JFrog Artifactory và GitLab Container Registry: Quản lý vòng đời artifact nhị phân, cấu hình Dependency Proxy và xác thực an toàn qua CI_JOB_TOKEN."
+keywords:
+  - gitlab jfrog artifactory
+  - gitlab container registry
+  - gitlab generic package registry
+  - gitlab dependency proxy
 ---
+
 {% raw %}
-# [BÀI 24] QUẢN TRỊ REGISTRY & BINARY ARTIFACTS: JFROG ARTIFACTORY, HARBOR, NEXUS & GITLAB PACKAGE REGISTRY
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Nắm vững nguyên lý Universal Artifact Management và phân loại Local, Remote Proxy, Virtual Repositories.
+> - So sánh kỹ thuật toàn diện giữa JFrog Artifactory, Harbor Registry, Sonatype Nexus và GitLab Package Registry.
+> - Triển khai chiến lược Immutability, Checksum Verification và dọn dẹp vòng đời (Retention Policies).
+> - Tích hợp xác thực CI/CD không khóa (OIDC/Project Access Tokens) an toàn không lộ mật khẩu.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

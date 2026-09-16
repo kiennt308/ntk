@@ -23,9 +23,23 @@ tldr:
   - "Triển khai quy trình kiểm thử Helm chuyên nghiệp: Linting, Schema Validation và Chart Testing (ct) trên Kind."
   - "Kết hợp linh hoạt Helm Templating và Kustomize Overlays cho mô hình triển khai đa môi trường."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Đóng gói, kiểm thử và phân phối Helm Charts dưới dạng OCI Artifacts trên GitLab Package Registry: Tự động hóa helm lint, versioning chart và triển khai an toàn."
+keywords:
+  - gitlab helm chart packaging
+  - gitlab oci registry helm
+  - gitlab chartmuseum
+  - gitlab helm lint template
 ---
+
 {% raw %}
-# [BÀI 26] ĐÓNG GÓI HELM CHART, KUSTOMIZE & PHÂN PHỐI OCI PACKAGES TRÊN GITLAB
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Làm chủ cơ chế OCI-based Helm Charts thay thế phương pháp lưu trữ HTTP Chart Repository truyền thống.
+> - Xây dựng chiến lược phân tách rõ ràng giữa version của Helm Chart và appVersion của mã nguồn ứng dụng.
+> - Triển khai quy trình kiểm thử Helm chuyên nghiệp: Linting, Schema Validation và Chart Testing (ct) trên Kind.
+> - Kết hợp linh hoạt Helm Templating và Kustomize Overlays cho mô hình triển khai đa môi trường.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

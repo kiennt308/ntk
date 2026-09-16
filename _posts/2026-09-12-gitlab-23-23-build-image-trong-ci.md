@@ -23,9 +23,23 @@ tldr:
   - "Tối ưu hóa tốc độ build qua Multi-Stage Dockerfile kết hợp Remote Registry Caching."
   - "Xây dựng Pipeline đóng gói OCI Container không cần quyền root chuẩn Kubernetes Runner."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Kỹ thuật xây dựng Container Image an toàn trong CI: So sánh Kaniko, Buildah rootless và Docker-in-Docker (dind), tối ưu hóa BuildKit layer cache và bảo vệ Docker socket."
+keywords:
+  - gitlab build docker image
+  - gitlab kaniko ci
+  - gitlab buildah rootless
+  - gitlab dind vs socket
 ---
+
 {% raw %}
-# [BÀI 23] BUILD CONTAINER IMAGE TRONG CI: KANIKO, BUILDAH, ROOTLESS & DOCKER-IN-DOCKER (DIND)
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Phân tích rủi ro an ninh nghiêm trọng của Docker-in-Docker (Privileged Mode) và Socket Mounting.
+> - Làm chủ cơ chế Userspace Snapshotting của Google Kaniko và Rootless Build của Red Hat Buildah.
+> - Tối ưu hóa tốc độ build qua Multi-Stage Dockerfile kết hợp Remote Registry Caching.
+> - Xây dựng Pipeline đóng gói OCI Container không cần quyền root chuẩn Kubernetes Runner.
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

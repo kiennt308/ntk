@@ -24,9 +24,23 @@ tldr:
   - "Tích hợp GitLab CI với ArgoCD & Flux CD thông qua cơ chế tự động cập nhật Git Repository (Image Updater)."
   - "Cơ chế phát hiện sai lệch cấu hình (Drift Detection) và tự động hồi phục trạng thái (Self-Healing)."
   - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phỏng vấn phân tích tình huống thực tế."
+description: "Kết hợp GitLab CI/CD với Kubernetes, Helm và GitOps: Triển khai ứng dụng liên tục thông qua GitLab Agent for Kubernetes và tích hợp đồng bộ với ArgoCD."
+keywords:
+  - gitlab kubernetes gitops
+  - gitlab agent for kubernetes
+  - gitlab argocd integration
+  - gitlab helm gitops
 ---
+
 {% raw %}
-# [BÀI 41] KUBERNETES CD & GITOPS: HELM, GITLAB AGENT FOR KUBERNETES, ARGOCD & FLUX
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật bài học**:
+> - Phân tích ưu nhược điểm kiến trúc giữa Push-based CI/CD truyền thống và Pull-based GitOps hiện đại.
+> - Cài đặt và vận hành GitLab Agent for Kubernetes (KAS) với kết nối gRPC bảo mật không cần mở cổng Inbound.
+> - Tích hợp GitLab CI với ArgoCD & Flux CD thông qua cơ chế tự động cập nhật Git Repository (Image Updater).
+> - Cơ chế phát hiện sai lệch cấu hình (Drift Detection) và tự động hồi phục trạng thái (Self-Healing).
+
+---
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 

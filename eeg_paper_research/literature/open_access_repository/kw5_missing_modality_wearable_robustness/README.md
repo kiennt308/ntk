@@ -1,12 +1,12 @@
 # Cụm Tài Liệu Mở: Độ bền vững khi Khuyết thiếu Cảm biến và Thiết bị Đeo Sinh lý (`kw5_missing_modality_wearable_robustness`)
 
-- **Tổng số bài báo khoa học**: 35 bài báo Open Access
-- **Số bài đã tải File PDF về máy**: **19/35 bài** (Có thể mở đọc toàn văn offline ngay lập tức)
-- **Tỷ lệ bài báo từ 2023 đến 2026**: **80.0%** (28/35 bài)
+- **Tổng số bài báo khoa học**: 37 bài báo Open Access
+- **Số file PDF đã tải về máy**: **22/37 bài** (Có thể đọc offline ngay)
+- **Tỷ lệ bài báo từ 2023 đến 2026**: **81.1%** (30/37 bài)
 
 ---
 
-## Danh mục Toàn bộ 35 Bài Báo Khoa học & Liên kết PDF
+## Danh mục Toàn bộ Bài Báo Khoa học & Liên kết PDF
 
 | ID | Năm | Tiêu đề bài báo | Nguồn / Tạp chí | Trích dẫn | File PDF Cục Bộ / Link Truy Cập |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -26,7 +26,7 @@
 | [`OA_KW5_014`](paper_notes/OA_KW5_014.md) | **2025** | **A recent advances on autism spectrum disorders in diagnosing based on machine learning and deep learning**<br>*Hajir Ammar Hatim, Zaid Abdi Alkareem Al...* | Artificial Intelligence Review | 35 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW5_014.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s10462-025-11302-x.pdf)) |
 | [`OA_KW5_015`](paper_notes/OA_KW5_015.md) | **2024** | **Wearable Solutions Using Physiological Signals for Stress Monitoring on Individuals with Autism Spectrum Disorder (ASD): A Systematic Literature Review**<br>*Sandra Cano, Claudio Cubillos, Rodrigo A...* | Sensors | 35 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/1424-8220/24/24/8137/pdf?version=1734683291)) |
 | [`OA_KW5_016`](paper_notes/OA_KW5_016.md) | **2025** | **Mapping EEG Metrics to Human Affective and Cognitive Models: An Interdisciplinary Scoping Review from a Cognitive Neuroscience Perspective**<br>*Evgenia Gkintoni, Constantinos Halkiopou...* | Biomimetics | 30 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2313-7673/10/11/730/pdf?version=1761989060)) |
-| [`OA_KW5_017`](paper_notes/OA_KW5_017.md) | **2023** | **Emotion recognition and artificial intelligence: A systematic review (2014–2023) and research recommendations**<br>*Smith K. Khare, Victoria Blanes‐Vidal, E...* | Information Fusion | 462 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.1016/j.inffus.2023.102019)) |
+| [`OA_KW5_017`](paper_notes/OA_KW5_017.md) | **2023** | **Emotion recognition and artificial intelligence: A systematic review (2014–2023) and research recommendations**<br>*Smith K. Khare, Victoria Blanes‐Vidal, E...* | Information Fusion | 462 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW5_017.pdf) ([Link gốc](https://doi.org/10.1016/j.inffus.2023.102019)) |
 | [`OA_KW5_018`](paper_notes/OA_KW5_018.md) | **2023** | **Generalizable machine learning for stress monitoring from wearable devices: A systematic literature review**<br>*Gideon Vos, Kelly Trinh, Zóltan Sarnyai,...* | International Journal of Medical Informatics | 160 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW5_018.pdf) ([Link gốc](https://ars.els-cdn.com/content/image/1-s2.0-S1386505623000436-gr001_lrg.jpg)) |
 | [`OA_KW5_019`](paper_notes/OA_KW5_019.md) | **2024** | **Role of machine learning and deep learning techniques in EEG-based BCI emotion recognition system: a review**<br>*Priyadarsini Samal, Mohammad Farukh Hash...* | Artificial Intelligence Review | 147 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW5_019.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s10462-023-10690-2.pdf)) |
 | [`OA_KW5_020`](paper_notes/OA_KW5_020.md) | **2025** | **From Neural Networks to Emotional Networks: A Systematic Review of EEG-Based Emotion Recognition in Cognitive Neuroscience and Real-World Applications**<br>*Evgenia Gkintoni, Anthimos Aroutzidis, H...* | Brain Sciences | 144 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2076-3425/15/3/220/pdf?version=1740057185)) |
@@ -45,3 +45,5 @@
 | [`OA_KW5_033`](paper_notes/OA_KW5_033.md) | **2021** | **Trends in Heart-Rate Variability Signal Analysis**<br>*Syem Ishaque, Naimul Khan, Sridhar Krish...* | Frontiers in Digital Health | 160 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW5_033.pdf) ([Link gốc](https://www.frontiersin.org/articles/10.3389/fdgth.2021.639444/pdf)) |
 | [`OA_KW5_034`](paper_notes/OA_KW5_034.md) | **2020** | **Advances in Multimodal Emotion Recognition Based on Brain–Computer Interfaces**<br>*Zhipeng He, Zina Li, Fuzhou Yang, Lei Wa...* | Brain Sciences | 153 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2076-3425/10/10/687/pdf)) |
 | [`OA_KW5_035`](paper_notes/OA_KW5_035.md) | **2019** | **Electronic Skin: Recent Progress and Future Prospects for Skin‐Attachable Devices for Health Monitoring, Robotics, and Prosthetics**<br>*Jun Chang Yang, Jaewan Mun, Se Young Kwo...* | Advanced Materials | 1660 | [🌐 Đọc trực tuyến] ([Link gốc](https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/adma.201904765)) |
+| [`OA_KW5_036`](paper_notes/OA_KW5_036.md) | **2024** | **Exploring contactless techniques in multimodal emotion recognition: insights into diverse applications, challenges, solutions, and prospects**<br>*Umair Ali Khan, Qianru Xu, Yang Liu, Alt...* | Multimedia Systems | 56 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW5_036.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s00530-024-01302-2.pdf)) |
+| [`OA_KW5_037`](paper_notes/OA_KW5_037.md) | **2025** | **Integrating artificial intelligence with nanodiagnostics for early detection and precision management of neurodegenerative diseases**<br>*Youssef M. Hassan, Ahmed Wanas, Ayat A. ...* | Journal of Nanobiotechnology | 34 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW5_037.pdf) ([Link gốc](https://jnanobiotechnology.biomedcentral.com/counter/pdf/10.1186/s12951-025-03719-x)) |

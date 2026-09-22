@@ -1,8 +1,8 @@
 # Cụm Tài Liệu Mở: Học Đa Nhiệm Vụ trong Tính toán Cảm xúc và Tín hiệu Sinh lý (`kw2_multitask_learning_affect`)
 
-- **Tổng số bài báo khoa học**: 40 bài báo Open Access
-- **Số file PDF đã tải về máy**: **37/40 bài** (Có thể đọc offline ngay)
-- **Tỷ lệ bài báo từ 2023 đến 2026**: **100.0%** (40/40 bài)
+- **Tổng số bài báo khoa học**: 43 bài báo Open Access
+- **Số file PDF đã tải về máy**: **38/43 bài** (Có thể đọc offline ngay)
+- **Tỷ lệ bài báo từ 2023 đến 2026**: **100.0%** (43/43 bài)
 
 ---
 
@@ -50,3 +50,6 @@
 | [`OA_KW2_038`](paper_notes/OA_KW2_038.md) | **2023** | **Electrocardiogram Monitoring Wearable Devices and Artificial-Intelligence-Enabled Diagnostic Capabilities: A Review**<br>*Luca Neri, Matt T. Oberdier, Kirsten C. ...* | Sensors | 132 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.3390/s23104805)) |
 | [`OA_KW2_039`](paper_notes/OA_KW2_039.md) | **2023** | **State-of-the-Art of Stress Prediction from Heart Rate Variability Using Artificial Intelligence**<br>*Yeaminul Haque, Rahat Shahriar Zawad, Ch...* | Cognitive Computation | 107 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW2_039.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s12559-023-10200-0.pdf)) |
 | [`OA_KW2_040`](paper_notes/OA_KW2_040.md) | **2023** | **Automatic stress detection in car drivers based on non-invasive physiological signals using machine learning techniques**<br>*Ali I. Siam, Samah A. Gamel, Fatma M. Ta...* | Neural Computing and Applications | 103 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW2_040.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s00521-023-08428-w.pdf)) |
+| [`OA_KW2_041`](paper_notes/OA_KW2_041.md) | **2023** | **Multimodal Human–Robot Interaction for Human‐Centric Smart Manufacturing: A Survey**<br>*Tian Wang, Pai Zheng, Shufei Li, Lihui W...* | Advanced Intelligent Systems | 187 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.1002/aisy.202300359)) |
+| [`OA_KW2_042`](paper_notes/OA_KW2_042.md) | **2023** | **Improving the study of brain-behavior relationships by revisiting basic assumptions**<br>*Christiana Westlin, Jordan E. Theriault,...* | Trends in Cognitive Sciences | 170 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.1016/j.tics.2022.12.015)) |
+| [`OA_KW2_043`](paper_notes/OA_KW2_043.md) | **2023** | **Deep learning and machine learning in psychiatry: a survey of current progress in depression detection, diagnosis and treatment**<br>*Matthew Squires, Xiaohui Tao, Soman Elan...* | Brain Informatics | 157 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW2_043.pdf) ([Link gốc](https://braininformatics.springeropen.com/counter/pdf/10.1186/s40708-023-00188-6)) |

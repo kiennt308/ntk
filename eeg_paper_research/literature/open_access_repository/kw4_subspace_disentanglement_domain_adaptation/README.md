@@ -1,8 +1,8 @@
 # Cụm Tài Liệu Mở: Tách Không gian con Dùng chung - Riêng biệt và Thích ứng Miền (`kw4_subspace_disentanglement_domain_adaptation`)
 
-- **Tổng số bài báo khoa học**: 40 bài báo Open Access
-- **Số file PDF đã tải về máy**: **28/40 bài** (Có thể đọc offline ngay)
-- **Tỷ lệ bài báo từ 2023 đến 2026**: **82.5%** (33/40 bài)
+- **Tổng số bài báo khoa học**: 47 bài báo Open Access
+- **Số file PDF đã tải về máy**: **28/47 bài** (Có thể đọc offline ngay)
+- **Tỷ lệ bài báo từ 2023 đến 2026**: **85.1%** (40/47 bài)
 
 ---
 
@@ -50,3 +50,10 @@
 | [`OA_KW4_038`](paper_notes/OA_KW4_038.md) | **2023** | **A Spiking Neural Network With Adaptive Graph Convolution and LSTM for EEG-Based Brain-Computer Interfaces**<br>*Peiliang Gong, Pengpai Wang, Yueying Zho...* | IEEE Transactions on Neural Systems and Rehabilitation Engineering | 105 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW4_038.pdf) ([Link gốc](https://ieeexplore.ieee.org/ielx7/7333/4359219/10049464.pdf)) |
 | [`OA_KW4_039`](paper_notes/OA_KW4_039.md) | **2025** | **Transformers in EEG Analysis: A Review of Architectures and Applications in Motor Imagery, Seizure, and Emotion Classification**<br>*Elnaz Vafaei, Mohammad Hosseini* | Sensors | 104 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW4_039.pdf) ([Link gốc](https://www.mdpi.com/1424-8220/25/5/1293/pdf?version=1740100056)) |
 | [`OA_KW4_040`](paper_notes/OA_KW4_040.md) | **2023** | **Multi-view domain-adaptive representation learning for EEG-based emotion recognition**<br>*Chao Li, Ning Bian, Ziping Zhao, Haishua...* | Information Fusion | 89 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW4_040.pdf) ([Link gốc](https://opus.bibliothek.uni-augsburg.de/opus4/files/109640/109640.pdf)) |
+| [`OA_KW4_041`](paper_notes/OA_KW4_041.md) | **2023** | **EEG-Based BCIs on Motor Imagery Paradigm Using Wearable Technologies: A Systematic Review**<br>*Aurora Saibene, Mirko Caglioni, Silvia C...* | Sensors | 82 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/1424-8220/23/5/2798/pdf?version=1678335159)) |
+| [`OA_KW4_042`](paper_notes/OA_KW4_042.md) | **2023** | **Cognitive workload estimation using physiological measures: a review**<br>*Debashis Das Chakladar, Partha Pratim Ro...* | Cognitive Neurodynamics | 76 | [🌐 Đọc trực tuyến] ([Link gốc](https://pmc.ncbi.nlm.nih.gov/articles/PMC11297869/pdf/11571_2023_Article_10051.pdf)) |
+| [`OA_KW4_043`](paper_notes/OA_KW4_043.md) | **2024** | **Workplace Well-Being in Industry 5.0: A Worker-Centered Systematic Review**<br>*Francesca Giada Antonaci, Elena Carlotta...* | Sensors | 73 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/1424-8220/24/17/5473/pdf?version=1724419879)) |
+| [`OA_KW4_044`](paper_notes/OA_KW4_044.md) | **2023** | **TS-GAN: Time-series GAN for Sensor-based Health Data Augmentation**<br>*Zhenyu Yang, Yantao Li, Gang Zhou* | ACM Transactions on Computing for Healthcare | 70 | [🌐 Đọc trực tuyến] ([Link gốc](https://dl.acm.org/doi/pdf/10.1145/3583593)) |
+| [`OA_KW4_045`](paper_notes/OA_KW4_045.md) | **2023** | **Neural Applications Using Immersive Virtual Reality: A Review on EEG Studies**<br>*Jin Woo Choi, Haram Kwon, Jae-Hoon Choi,...* | IEEE Transactions on Neural Systems and Rehabilitation Engineering | 69 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/7333/4359219/10064320.pdf)) |
+| [`OA_KW4_046`](paper_notes/OA_KW4_046.md) | **2024** | **Thermally Conductive and UV-EMI Shielding Electronic Textiles for Unrestricted and Multifaceted Health Monitoring**<br>*Yidong Peng, Jiancheng Dong, Jiayan Long...* | Nano-Micro Letters | 68 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.1007/s40820-024-01429-x)) |
+| [`OA_KW4_047`](paper_notes/OA_KW4_047.md) | **2023** | **Detection of Driver Cognitive Distraction Using Machine Learning Methods**<br>*Apurva Misra, Siby Samuel, Shi Cao, Khat...* | IEEE Access | 66 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/6287639/6514899/10044659.pdf)) |

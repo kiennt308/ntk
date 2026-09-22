@@ -1,8 +1,8 @@
 # Cụm Tài Liệu Mở: Mạng Nơ-ron Đồ thị và Liên kết Não bộ cho Nhận diện Cảm xúc (`kw7_graph_neural_networks_eeg_connectivity`)
 
-- **Tổng số bài báo khoa học**: 40 bài báo Open Access
-- **Số file PDF đã tải về máy**: **18/40 bài** (Có thể đọc offline ngay)
-- **Tỷ lệ bài báo từ 2023 đến 2026**: **100.0%** (40/40 bài)
+- **Tổng số bài báo khoa học**: 50 bài báo Open Access
+- **Số file PDF đã tải về máy**: **22/50 bài** (Có thể đọc offline ngay)
+- **Tỷ lệ bài báo từ 2023 đến 2026**: **100.0%** (50/50 bài)
 
 ---
 
@@ -50,3 +50,13 @@
 | [`OA_KW7_038`](paper_notes/OA_KW7_038.md) | **2024** | **GC-STCL: A Granger Causality-Based Spatial–Temporal Contrastive Learning Framework for EEG Emotion Recognition**<br>*Lei Wang, Siming Wang, Bo Jin, Xiaopeng ...* | Entropy | 6 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.3390/e26070540)) |
 | [`OA_KW7_039`](paper_notes/OA_KW7_039.md) | **2023** | **LSTM-enhanced multi-view dynamical emotion graph representation for EEG signal recognition**<br>*Guixun Xu, Wenhui Guo, Yanjiang Wang* | Journal of Neural Engineering | 6 | [🌐 Đọc trực tuyến] ([Link gốc](https://iopscience.iop.org/article/10.1088/1741-2552/ace07d/pdf)) |
 | [`OA_KW7_040`](paper_notes/OA_KW7_040.md) | **2026** | **MSGM: a multi-scale spatiotemporal graph Mamba for EEG emotion recognition**<br>*Hanwen Liu, Yifeng Gong, Zuwei Yan, Zehe...* | Frontiers in Neuroscience | 5 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW7_040.pdf) ([Link gốc](https://public-pages-files-2025.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2026.1665145/pdf)) |
+| [`OA_KW7_041`](paper_notes/OA_KW7_041.md) | **2024** | **A novel methodology for emotion recognition through 62-lead EEG signals: multilevel heterogeneous recurrence analysis**<br>*Yujie Wang, Cheng‐Bang Chen, Toshihiro I...* | Frontiers in Physiology | 5 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.3389/fphys.2024.1425582)) |
+| [`OA_KW7_042`](paper_notes/OA_KW7_042.md) | **2024** | **Mind to Music: An EEG Signal‐Driven Real‐Time Emotional Music Generation System**<br>*Shuang Ran, Wei Zhong, Lin Ma, Dan-Ting ...* | International Journal of Intelligent Systems | 5 | [🌐 Đọc trực tuyến] ([Link gốc](https://onlinelibrary.wiley.com/doi/pdfdirect/10.1155/int/9618884)) |
+| [`OA_KW7_043`](paper_notes/OA_KW7_043.md) | **2023** | **Possibilistic distribution distance metric: a robust domain adaptation learning method**<br>*Jianwen Tao, Yufang Dan, Di Zhou* | Frontiers in Neuroscience | 5 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW7_043.pdf) ([Link gốc](https://www.frontiersin.org/articles/10.3389/fnins.2023.1247082/pdf?isPublishedV2=False)) |
+| [`OA_KW7_044`](paper_notes/OA_KW7_044.md) | **2025** | **CNN-BiLSTM and DC-IGN fusion model and piecewise exponential attenuation optimization: an innovative approach to improve EEG emotion recognition performance**<br>*Shaohua Zhang, Feng Yan, Ruzhen Chen, So...* | Frontiers in Computational Neuroscience | 4 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW7_044.pdf) ([Link gốc](https://www.frontiersin.org/journals/computational-neuroscience/articles/10.3389/fncom.2025.1589247/pdf)) |
+| [`OA_KW7_045`](paper_notes/OA_KW7_045.md) | **2024** | **EmT: A Novel Transformer for Generalized Cross-subject EEG Emotion Recognition**<br>*Yi Ding, Chengxuan Tong, Shuailei Zhang,...* | arXiv (Cornell University) | 4 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW7_045.pdf) ([Link gốc](https://arxiv.org/pdf/2406.18345)) |
+| [`OA_KW7_046`](paper_notes/OA_KW7_046.md) | **2023** | **Emotion recognition and artificial intelligence: A systematic review (2014–2023) and research recommendations**<br>*Smith K. Khare, Victoria Blanes‐Vidal, E...* | Information Fusion | 462 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW7_046.pdf) ([Link gốc](https://doi.org/10.1016/j.inffus.2023.102019)) |
+| [`OA_KW7_047`](paper_notes/OA_KW7_047.md) | **2024** | **Leveraging AI in E-Learning: Personalized Learning and Adaptive Assessment through Cognitive Neuropsychology—A Systematic Analysis**<br>*Constantinos Halkiopoulos, Evgenia Gkint...* | Electronics | 313 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2079-9292/13/18/3762/pdf?version=1726988994)) |
+| [`OA_KW7_048`](paper_notes/OA_KW7_048.md) | **2025** | **Challenging Cognitive Load Theory: The Role of Educational Neuroscience and Artificial Intelligence in Redefining Learning Efficacy**<br>*Evgenia Gkintoni, Hera Antonopoulou, And...* | Brain Sciences | 284 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2076-3425/15/2/203/pdf?version=1739623250)) |
+| [`OA_KW7_049`](paper_notes/OA_KW7_049.md) | **2023** | **Exploring the Frontiers of Neuroimaging: A Review of Recent Advances in Understanding Brain Functioning and Disorders**<br>*Chiahui Yen, Chia-Li Lin, Ming‐Chang Chi...* | Life | 279 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2075-1729/13/7/1472/pdf?version=1688025321)) |
+| [`OA_KW7_050`](paper_notes/OA_KW7_050.md) | **2024** | **Integrating artificial intelligence to assess emotions in learning environments: a systematic literature review**<br>*Angel Olider Rojas Vistorte, Ángel Deron...* | Frontiers in Psychology | 271 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.3389/fpsyg.2024.1387089)) |

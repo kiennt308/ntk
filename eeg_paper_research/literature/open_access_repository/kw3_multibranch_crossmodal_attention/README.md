@@ -1,8 +1,8 @@
 # Cụm Tài Liệu Mở: Kiến trúc Đa nhánh và Cơ chế Chú ý Chéo Đa phương thức (`kw3_multibranch_crossmodal_attention`)
 
-- **Tổng số bài báo khoa học**: 36 bài báo Open Access
-- **Số file PDF đã tải về máy**: **21/36 bài** (Có thể đọc offline ngay)
-- **Tỷ lệ bài báo từ 2023 đến 2026**: **88.9%** (32/36 bài)
+- **Tổng số bài báo khoa học**: 46 bài báo Open Access
+- **Số file PDF đã tải về máy**: **22/46 bài** (Có thể đọc offline ngay)
+- **Tỷ lệ bài báo từ 2023 đến 2026**: **91.3%** (42/46 bài)
 
 ---
 
@@ -46,3 +46,13 @@
 | [`OA_KW3_034`](paper_notes/OA_KW3_034.md) | **2019** | **MPED: A Multi-Modal Physiological Emotion Database for Discrete Emotion Recognition**<br>*Tengfei Song, Wenming Zheng, Lu Cheng, Y...* | IEEE Access | 340 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/6287639/8600701/08606087.pdf)) |
 | [`OA_KW3_035`](paper_notes/OA_KW3_035.md) | **2019** | **Current Directions in the Auricular Vagus Nerve Stimulation I – A Physiological Perspective**<br>*Eugenijus Kaniušas, Stefan Kampusch, Mar...* | Frontiers in Neuroscience | 330 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW3_035.pdf) ([Link gốc](https://www.frontiersin.org/articles/10.3389/fnins.2019.00854/pdf)) |
 | [`OA_KW3_036`](paper_notes/OA_KW3_036.md) | **2024** | **CTNet: a convolutional transformer network for EEG-based motor imagery classification**<br>*Wei Zhao, Xiaolu Jiang, Baocan Zhang, Sh...* | Scientific Reports | 172 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW3_036.pdf) ([Link gốc](https://www.nature.com/articles/s41598-024-71118-7.pdf)) |
+| [`OA_KW3_037`](paper_notes/OA_KW3_037.md) | **2023** | **Recent advancements in multimodal human–robot interaction**<br>*Hang Su, Wen Qi, Jiahao Chen, Chenguang ...* | Frontiers in Neurorobotics | 180 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW3_037.pdf) ([Link gốc](https://www.frontiersin.org/articles/10.3389/fnbot.2023.1084000/pdf)) |
+| [`OA_KW3_038`](paper_notes/OA_KW3_038.md) | **2023** | **EEG-Based BCIs on Motor Imagery Paradigm Using Wearable Technologies: A Systematic Review**<br>*Aurora Saibene, Mirko Caglioni, Silvia C...* | Sensors | 82 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/1424-8220/23/5/2798/pdf?version=1678335159)) |
+| [`OA_KW3_039`](paper_notes/OA_KW3_039.md) | **2023** | **Cognitive workload estimation using physiological measures: a review**<br>*Debashis Das Chakladar, Partha Pratim Ro...* | Cognitive Neurodynamics | 76 | [🌐 Đọc trực tuyến] ([Link gốc](https://pmc.ncbi.nlm.nih.gov/articles/PMC11297869/pdf/11571_2023_Article_10051.pdf)) |
+| [`OA_KW3_040`](paper_notes/OA_KW3_040.md) | **2023** | **TS-GAN: Time-series GAN for Sensor-based Health Data Augmentation**<br>*Zhenyu Yang, Yantao Li, Gang Zhou* | ACM Transactions on Computing for Healthcare | 70 | [🌐 Đọc trực tuyến] ([Link gốc](https://dl.acm.org/doi/pdf/10.1145/3583593)) |
+| [`OA_KW3_041`](paper_notes/OA_KW3_041.md) | **2023** | **Neural Applications Using Immersive Virtual Reality: A Review on EEG Studies**<br>*Jin Woo Choi, Haram Kwon, Jae-Hoon Choi,...* | IEEE Transactions on Neural Systems and Rehabilitation Engineering | 69 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/7333/4359219/10064320.pdf)) |
+| [`OA_KW3_042`](paper_notes/OA_KW3_042.md) | **2025** | **Fusing Wearable Biosensors with Artificial Intelligence for Mental Health Monitoring: A Systematic Review**<br>*Ali Kargarandehkordi, Shizhe Li, Kaiying...* | Biosensors | 66 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.3390/bios15040202)) |
+| [`OA_KW3_043`](paper_notes/OA_KW3_043.md) | **2023** | **Detection of Driver Cognitive Distraction Using Machine Learning Methods**<br>*Apurva Misra, Siby Samuel, Shi Cao, Khat...* | IEEE Access | 66 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/6287639/6514899/10044659.pdf)) |
+| [`OA_KW3_044`](paper_notes/OA_KW3_044.md) | **2023** | **Large-scale neural dynamics in a shared low-dimensional state space reflect cognitive and attentional dynamics**<br>*Hayoung Song, Won Mok Shim, Monica D. Ro...* | eLife | 63 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.7554/elife.85487)) |
+| [`OA_KW3_045`](paper_notes/OA_KW3_045.md) | **2023** | **SchizoNET: a robust and accurate Margenau–Hill time-frequency distribution based deep neural network model for schizophrenia detection using EEG signals**<br>*Smith K. Khare, Varun Bajaj, U. Rajendra...* | Physiological Measurement | 59 | [🌐 Đọc trực tuyến] ([Link gốc](https://iopscience.iop.org/article/10.1088/1361-6579/acbc06/pdf)) |
+| [`OA_KW3_046`](paper_notes/OA_KW3_046.md) | **2023** | **Incorporation of seafarer psychological factors into maritime safety assessment**<br>*Shiqi Fan, Eduardo Blanco‐Davis, Stephen...* | Ocean & Coastal Management | 58 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.1016/j.ocecoaman.2023.106515)) |

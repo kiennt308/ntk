@@ -1,8 +1,8 @@
 # Cụm Tài Liệu Mở: Kiến trúc Transformer Đa phương thức và Tương tác Chéo (`kw8_transformers_crossmodal_affective_computing`)
 
-- **Tổng số bài báo khoa học**: 15 bài báo Open Access
-- **Số file PDF đã tải về máy**: **11/15 bài** (Có thể đọc offline ngay)
-- **Tỷ lệ bài báo từ 2023 đến 2026**: **100.0%** (15/15 bài)
+- **Tổng số bài báo khoa học**: 18 bài báo Open Access
+- **Số file PDF đã tải về máy**: **13/18 bài** (Có thể đọc offline ngay)
+- **Tỷ lệ bài báo từ 2023 đến 2026**: **100.0%** (18/18 bài)
 
 ---
 
@@ -25,3 +25,6 @@
 | [`OA_KW8_013`](paper_notes/OA_KW8_013.md) | **2023** | **EEGformer: A transformer–based brain activity classification method using EEG signal**<br>*Zhijiang Wan, Manyu Li, Shichang Liu, Ji...* | Frontiers in Neuroscience | 108 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW8_013.pdf) ([Link gốc](https://www.frontiersin.org/articles/10.3389/fnins.2023.1148855/pdf)) |
 | [`OA_KW8_014`](paper_notes/OA_KW8_014.md) | **2024** | **Enhancing early Parkinson’s disease detection through multimodal deep learning and explainable AI: insights from the PPMI database**<br>*Vincenzo Dentamaro, Donato Impedovo, Luc...* | Scientific Reports | 107 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW8_014.pdf) ([Link gốc](https://www.nature.com/articles/s41598-024-70165-4.pdf)) |
 | [`OA_KW8_015`](paper_notes/OA_KW8_015.md) | **2023** | **D 2 PAM : Epileptic seizures prediction using adversarial deep dual patch attention mechanism**<br>*Arfat Ahmad Khan, Rakesh Kumar Madendran...* | CAAI Transactions on Intelligence Technology | 105 | [🌐 Đọc trực tuyến] ([Link gốc](https://onlinelibrary.wiley.com/doi/pdfdirect/10.1049/cit2.12261)) |
+| [`OA_KW8_016`](paper_notes/OA_KW8_016.md) | **2023** | **Multimodal Human–Robot Interaction for Human‐Centric Smart Manufacturing: A Survey**<br>*Tian Wang, Pai Zheng, Shufei Li, Lihui W...* | Advanced Intelligent Systems | 187 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.1002/aisy.202300359)) |
+| [`OA_KW8_017`](paper_notes/OA_KW8_017.md) | **2023** | **Recent advancements in multimodal human–robot interaction**<br>*Hang Su, Wen Qi, Jiahao Chen, Chenguang ...* | Frontiers in Neurorobotics | 180 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW8_017.pdf) ([Link gốc](https://www.frontiersin.org/articles/10.3389/fnbot.2023.1084000/pdf)) |
+| [`OA_KW8_018`](paper_notes/OA_KW8_018.md) | **2023** | **Deep learning and machine learning in psychiatry: a survey of current progress in depression detection, diagnosis and treatment**<br>*Matthew Squires, Xiaohui Tao, Soman Elan...* | Brain Informatics | 157 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW8_018.pdf) ([Link gốc](https://braininformatics.springeropen.com/counter/pdf/10.1186/s40708-023-00188-6)) |

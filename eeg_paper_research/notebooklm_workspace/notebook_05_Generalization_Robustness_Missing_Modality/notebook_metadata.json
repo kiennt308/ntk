@@ -1,0 +1,519 @@
+{
+  "track_id": "nb_05",
+  "track_title": "Notebook 05: Generalization, Robustness & Missing/Noisy Modalities",
+  "topic_focus": "Khả năng khái quát hóa và độ bền vững: Cross-subject, Cross-dataset, LOSO, Xử lý thiếu phương thức (Incomplete/Missing Modality Imputation), Tín hiệu nhiễu cảm biến, Domain Adaptation, Domain Generalization.",
+  "total_papers": 35,
+  "created_at": "2026-09-22T05:53:16.322093",
+  "papers": [
+    {
+      "stt": 1,
+      "year": "2026",
+      "first_author": "Weng",
+      "authors": "Huqin Weng; Jiayang Huang; Yimin Wen; Jie Du; Chi-Man Vong; Chuangquan Chen",
+      "title": "Masked Generative-Contrastive Representation Learning for Cross-Dataset EEG-Based Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2607.04139v2",
+      "pdf_filename": "2026_Weng_Masked_Generative-Contrastive_Representation_Learn.pdf",
+      "relevance_score": 28,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "cross-dataset generalization",
+        "cross-subject",
+        "cross-dataset"
+      ]
+    },
+    {
+      "stt": 2,
+      "year": "2026",
+      "first_author": "Imtiaz",
+      "authors": "Md Niaz Imtiaz; Naimul Khan",
+      "title": "An Enhanced Source-Free Unsupervised Domain Adaptation Framework for Cross-Dataset EEG Emotion Recognition via Predictive Coding and Test-Time Training",
+      "url": "https://doi.org/10.48550/arXiv.2606.28202v1",
+      "pdf_filename": "2026_Imtiaz_An_Enhanced_Source-Free_Unsupervised_Domain_Adapta.pdf",
+      "relevance_score": 24,
+      "matched_keywords": [
+        "cross-dataset",
+        "subject variability",
+        "unsupervised domain adaptation",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 3,
+      "year": "2026",
+      "first_author": "Soundariya",
+      "authors": "R. S. Soundariya; P. Thangaraj",
+      "title": "Modeling multiscale neural dynamics for EEG-based emotion recognition using an attentive wavelet–transformer framework",
+      "url": "https://doi.org/10.3389/fncom.2026.1775449",
+      "pdf_filename": "2026_Soundariya_Modeling_multiscale_neural_dynamics_for_EEG-based.pdf",
+      "relevance_score": 22,
+      "matched_keywords": [
+        "loso",
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 4,
+      "year": "2026",
+      "first_author": "Zhu",
+      "authors": "Hongyu Zhu; Lin Chen; Yuming Fu; Mounim A. El-Yacoubi; Mingsheng Shang",
+      "title": "Physiological Prior-Driven Label Enhancement for Cross-Subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2607.15566v1",
+      "pdf_filename": "2026_Zhu_Physiological_Prior-Driven_Label_Enhancement_for_C.pdf",
+      "relevance_score": 22,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "cross-subject",
+        "subject variability"
+      ]
+    },
+    {
+      "stt": 5,
+      "year": "2026",
+      "first_author": "Zhou",
+      "authors": "Zheng Zhou; Isabella McEvoy; Camilo E. Valderrama",
+      "title": "Local-Global Feature Fusion for Subject-Independent EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2601.08094v1",
+      "pdf_filename": "2026_Zhou_Local-Global_Feature_Fusion_for_Subject-Independen.pdf",
+      "relevance_score": 21,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "leave-one-subject-out",
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 6,
+      "year": "2026",
+      "first_author": "Zhou",
+      "authors": "Xin Zhou; Xiang Zhang; Hao Deng; Lijun Yin",
+      "title": "PRISM: Prioritized Channel Importance with Semi-supervised Domain Adaptation for Cross-Subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2607.00358v1",
+      "pdf_filename": "2026_Zhou_PRISM_Prioritized_Channel_Importance_with_Semi-sup.pdf",
+      "relevance_score": 21,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 7,
+      "year": "2024",
+      "first_author": "Wang",
+      "authors": "Yihe Wang; Taida Li; Yujun Yan; Wenzhan Song; Xiang Zhang",
+      "title": "What Causes Performance Degradation in Cross-Subject EEG Classification?",
+      "url": "https://doi.org/10.48550/arXiv.2410.03057v3",
+      "pdf_filename": "2024_Wang_What_Causes_Performance_Degradation_in_Cross-Subje.pdf",
+      "relevance_score": 21,
+      "matched_keywords": [
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 8,
+      "year": "2025",
+      "first_author": "Liu",
+      "authors": "Haiqi Liu; C. L. Philip Chen; Tong Zhang",
+      "title": "FACE: Few-shot Adapter with Cross-view Fusion for Cross-subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2503.18998v1",
+      "pdf_filename": "2025_Liu_FACE_Few-shot_Adapter_with_Cross-view_Fusion_for_C.pdf",
+      "relevance_score": 20,
+      "matched_keywords": [
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 9,
+      "year": "2026",
+      "first_author": "Li",
+      "authors": "Zhengping Li; Xiaofeng Wu; Yuwen Hao; Lijun Wang; Xiaoxue Li; Hao Duo",
+      "title": "Cross-subject generalization for EEG emotion recognition: a review of methods, challenges, and future trends",
+      "url": "https://doi.org/10.3389/fncom.2026.1865513",
+      "pdf_filename": "2026_Li_Cross-subject_generalization_for_EEG_emotion_recog.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 10,
+      "year": "2025",
+      "first_author": "Wang",
+      "authors": "Qiang Wang; Liying Yang; Jiayun Song; Yifan Bai; Jingtao Du",
+      "title": "HEDN: A Hard-Easy Dual Network with Source Reliability Assessment for Cross-Subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2511.06782v3",
+      "pdf_filename": "2025_Wang_HEDN_A_Hard-Easy_Dual_Network_with_Source_Reliabil.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "cross-subject",
+        "cross-dataset",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 11,
+      "year": "2025",
+      "first_author": "Milyani",
+      "authors": "Ahmad H. Milyani; Eyad Talal Attar",
+      "title": "Deep learning for inner speech recognition: a pilot comparative study of EEGNet and a spectro-temporal Transformer on bimodal EEG-fMRI data",
+      "url": "https://doi.org/10.3389/fnhum.2025.1668935",
+      "pdf_filename": "2025_Milyani_Deep_learning_for_inner_speech_recognition_a_pilot.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "loso"
+      ]
+    },
+    {
+      "stt": 12,
+      "year": "2025",
+      "first_author": "Li",
+      "authors": "Yueyang Li; Shengyu Gong; Weiming Zeng; Nizhuan Wang; Wai Ting Siok",
+      "title": "FreqDGT: Frequency-Adaptive Dynamic Graph Networks with Transformer for Cross-subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2506.22807v3",
+      "pdf_filename": "2025_Li_FreqDGT_Frequency-Adaptive_Dynamic_Graph_Networks.pdf",
+      "relevance_score": 17,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 13,
+      "year": "2026",
+      "first_author": "Wu",
+      "authors": "Weiwei Wu; Yueyang Li; Yuhu Shi; Weiming Zeng; Lang Qin; Yang Yang; Ke Zhou; Zhiguo Zhang; Wai Ting Siok; Nizhuan Wang",
+      "title": "Region-aware Spatiotemporal Modeling with Collaborative Domain Generalization for Cross-Subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2601.15615v1",
+      "pdf_filename": "2026_Wu_Region-aware_Spatiotemporal_Modeling_with_Collabor.pdf",
+      "relevance_score": 16,
+      "matched_keywords": [
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 14,
+      "year": "2026",
+      "first_author": "Meng",
+      "authors": "Renwei Meng",
+      "title": "Group Resonance Network: Learnable Prototypes and Multi-Subject Resonance for EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2603.11119v2",
+      "pdf_filename": "2026_Meng_Group_Resonance_Network_Learnable_Prototypes_and_M.pdf",
+      "relevance_score": 15,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 15,
+      "year": "2026",
+      "first_author": "Xie",
+      "authors": "Xiang Xie",
+      "title": "MGMCL: Multi-Granularity Manifold Contrastive Learning With Neural ODEs for Cross-Subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2608.08440v1",
+      "pdf_filename": "2026_Xie_MGMCL_Multi-Granularity_Manifold_Contrastive_Learn.pdf",
+      "relevance_score": 15,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 16,
+      "year": "2026",
+      "first_author": "Wang",
+      "authors": "Yinghao Wang; Lintao Xu; Shujian Yu; Enzo Tartaglione; Van-Tam Nguyen",
+      "title": "HFMCA: Orthonormal Feature Learning for EEG-based Brain Decoding",
+      "url": "https://doi.org/10.48550/arXiv.2602.04681v1",
+      "pdf_filename": "2026_Wang_HFMCA_Orthonormal_Feature_Learning_for_EEG-based_B.pdf",
+      "relevance_score": 15,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "leave-one-subject-out",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 17,
+      "year": "2023",
+      "first_author": "Ye",
+      "authors": "Weishan Ye; Zhiguo Zhang; Fei Teng; Min Zhang; Jianhong Wang; Dong Ni; Fali Li; Peng Xu; Zhen Liang",
+      "title": "Semi-Supervised Dual-Stream Self-Attentive Adversarial Graph Contrastive Learning for Cross-Subject EEG-based Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2308.11635v2",
+      "pdf_filename": "2023_Ye_Semi-Supervised_Dual-Stream_Self-Attentive_Adversa.pdf",
+      "relevance_score": 15,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 18,
+      "year": "2021",
+      "first_author": "Shen",
+      "authors": "Xinke Shen; Xianggen Liu; Xin Hu; Dan Zhang; Sen Song",
+      "title": "Contrastive Learning of Subject-Invariant EEG Representations for Cross-Subject Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2109.09559v2",
+      "pdf_filename": "2021_Shen_Contrastive_Learning_of_Subject-Invariant_EEG_Repr.pdf",
+      "relevance_score": 15,
+      "matched_keywords": [
+        "cross-subject",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 19,
+      "year": "2021",
+      "first_author": "Li",
+      "authors": "Jingcong Li; Shuqi Li; Jiahui Pan; Fei Wang",
+      "title": "Cross-Subject EEG Emotion Recognition With Self-Organized Graph Neural Network",
+      "url": "https://doi.org/10.3389/fnins.2021.611653",
+      "pdf_filename": "2021_Li_Cross-Subject_EEG_Emotion_Recognition_With_Self-Or.pdf",
+      "relevance_score": 15,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 20,
+      "year": "2026",
+      "first_author": "Dan",
+      "authors": "Yufang Dan; Li Zhu; Di Zhou",
+      "title": "Prototypical graph based deep label propagation with semantic augmentation for cross-subject and cross-session EEG emotion recognition",
+      "url": "https://doi.org/10.3389/fnins.2026.1846592",
+      "pdf_filename": "2026_Dan_Prototypical_graph_based_deep_label_propagation_wi.pdf",
+      "relevance_score": 14,
+      "matched_keywords": [
+        "cross-subject",
+        "unsupervised domain adaptation"
+      ]
+    },
+    {
+      "stt": 21,
+      "year": "2025",
+      "first_author": "Zhang",
+      "authors": "Qingzhu Zhang; Jiani Zhong; Zongsheng Li; Xinke Shen; Quanying Liu",
+      "title": "Multi-dataset Joint Pre-training of Emotional EEG Enables Generalizable Affective Computing",
+      "url": "https://doi.org/10.48550/arXiv.2510.22197v1",
+      "pdf_filename": "2025_Zhang_Multi-dataset_Joint_Pre-training_of_Emotional_EEG.pdf",
+      "relevance_score": 14,
+      "matched_keywords": [
+        "cross-dataset",
+        "subject variability",
+        "inter-subject variability"
+      ]
+    },
+    {
+      "stt": 22,
+      "year": "2026",
+      "first_author": "Tang",
+      "authors": "Jiahao Tang; Youjun Li; Yangxuan Zheng; Xiangting Fan; Siyuan Lu; Nuo Zhang; Zi-Gang Huang",
+      "title": "HADUA: Hierarchical Attention and Dynamic Uniform Alignment for Robust Cross-Subject Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2601.21488v1",
+      "pdf_filename": "2026_Tang_HADUA_Hierarchical_Attention_and_Dynamic_Uniform_A.pdf",
+      "relevance_score": 13,
+      "matched_keywords": [
+        "cross-subject",
+        "distribution shift"
+      ]
+    },
+    {
+      "stt": 23,
+      "year": "2026",
+      "first_author": "Cao",
+      "authors": "Yingyu Cao; Shuoyu Bai; Zhenxi Zhao; Yongzheng He; Moxiao Fu; Xuecheng Liu; Liangfei Niu",
+      "title": "FRFNet: a fatigue-robust EEG–EMG fusion network for hand movement intention recognition",
+      "url": "https://doi.org/10.3389/fnhum.2026.1885665",
+      "pdf_filename": "2026_Cao_FRFNet_a_fatigue-robust_EEG–EMG_fusion_network_for.pdf",
+      "relevance_score": 13,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "robust multimodal"
+      ]
+    },
+    {
+      "stt": 24,
+      "year": "2026",
+      "first_author": "Neto",
+      "authors": "Osmar Pinto Neto",
+      "title": "Architecture-data matching for EEG-EMG decoding: compact deep models match classical spectral decoders on the WAY-EEG-GAL grasp-and-lift dataset",
+      "url": "https://doi.org/10.3389/fnins.2026.1874302",
+      "pdf_filename": "2026_Neto_Architecture-data_matching_for_EEG-EMG_decoding_co.pdf",
+      "relevance_score": 13,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "loso"
+      ]
+    },
+    {
+      "stt": 25,
+      "year": "2025",
+      "first_author": "Tang",
+      "authors": "Jiahao Tang; Youjun Li; Xiangting Fan; Yangxuan Zheng; Siyuan Lu; Xueping Li; Peng Fang; Chenxi Li; Zi-Gang Huang",
+      "title": "SDC-Net: A Domain Adaptation Framework with Semantic-Dynamic Consistency for Cross-Subject EEG Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2507.17524v2",
+      "pdf_filename": "2025_Tang_SDC-Net_A_Domain_Adaptation_Framework_with_Semanti.pdf",
+      "relevance_score": 13,
+      "matched_keywords": [
+        "cross-subject",
+        "unsupervised domain adaptation"
+      ]
+    },
+    {
+      "stt": 26,
+      "year": "2026",
+      "first_author": "Li",
+      "authors": "Jingjing Li; Xinqi Liu; Xia Wu; Ya Wang; Xin Huang",
+      "title": "DSP-MCF: dual stream pre-training and multi-view consistency fine-tuning for cross-subject EEG emotion recognition",
+      "url": "https://doi.org/10.3389/fnhum.2026.1723907",
+      "pdf_filename": "2026_Li_DSP-MCF_dual_stream_pre-training_and_multi-view_co.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "cross-subject",
+        "incomplete data"
+      ]
+    },
+    {
+      "stt": 27,
+      "year": "2026",
+      "first_author": "Qing",
+      "authors": "Jiaxin Qing; Lexin Li",
+      "title": "Dive into Waves: Morlet Spectral Transformer for Cross-Subject Emotion Decoding from EEG",
+      "url": "https://doi.org/10.48550/arXiv.2606.00884v1",
+      "pdf_filename": "2026_Qing_Dive_into_Waves_Morlet_Spectral_Transformer_for_Cr.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "cross-subject",
+        "subject variability"
+      ]
+    },
+    {
+      "stt": 28,
+      "year": "2023",
+      "first_author": "Li",
+      "authors": "Jingcong Li; Weijian Pan; Haiyun Huang; Jiahui Pan; Fei Wang",
+      "title": "STGATE: Spatial-temporal graph attention network with a transformer encoder for EEG-based emotion recognition",
+      "url": "https://doi.org/10.3389/fnhum.2023.1169949",
+      "pdf_filename": "2023_Li_STGATE_Spatial-temporal_graph_attention_network_wi.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 29,
+      "year": "2023",
+      "first_author": "Zhou",
+      "authors": "Rushuang Zhou; Weishan Ye; Zhiguo Zhang; Yanyang Luo; Li Zhang; Linling Li; Gan Huang; Yining Dong; Yuan-Ting Zhang; Zhen Liang",
+      "title": "EEGMatch: Learning with Incomplete Labels for Semi-Supervised EEG-based Cross-Subject Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2304.06496v2",
+      "pdf_filename": "2023_Zhou_EEGMatch_Learning_with_Incomplete_Labels_for_Semi-.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 30,
+      "year": "2023",
+      "first_author": "Sidharth",
+      "authors": "Sidharth Sidharth; Ashish Abraham Samuel; Ranjana H; Jerrin Thomas Panachakel; Sana Parveen K",
+      "title": "Emotion Detection from EEG using Transfer Learning",
+      "url": "https://doi.org/10.48550/arXiv.2306.05680v1",
+      "pdf_filename": "2023_Sidharth_Emotion_Detection_from_EEG_using_Transfer_Learning.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "leave-one-subject-out",
+        "loso"
+      ]
+    },
+    {
+      "stt": 31,
+      "year": "2021",
+      "first_author": "Song",
+      "authors": "Zhenjie Song",
+      "title": "Facial Expression Emotion Recognition Model Integrating Philosophy and Machine Learning Theory",
+      "url": "https://doi.org/10.3389/fpsyg.2021.759485",
+      "pdf_filename": "2021_Song_Facial_Expression_Emotion_Recognition_Model_Integr.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "loso"
+      ]
+    },
+    {
+      "stt": 32,
+      "year": "2019",
+      "first_author": "Keelawat",
+      "authors": "Panayu Keelawat; Nattapong Thammasan; Masayuki Numao; Boonserm Kijsirikul",
+      "title": "Spatiotemporal Emotion Recognition using Deep CNN Based on EEG during Music Listening",
+      "url": "https://doi.org/10.48550/arXiv.1910.09719v1",
+      "pdf_filename": "2019_Keelawat_Spatiotemporal_Emotion_Recognition_using_Deep_CNN.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "leave-one-subject-out"
+      ]
+    },
+    {
+      "stt": 33,
+      "year": "2023",
+      "first_author": "Lu",
+      "authors": "Wei Lu; Haiyan Liu; Hua Ma; Tien-Ping Tan; Lingnan Xia",
+      "title": "Hybrid transfer learning strategy for cross-subject EEG emotion recognition",
+      "url": "https://doi.org/10.3389/fnhum.2023.1280241",
+      "pdf_filename": "2023_Lu_Hybrid_transfer_learning_strategy_for_cross-subjec.pdf",
+      "relevance_score": 10,
+      "matched_keywords": [
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 34,
+      "year": "2026",
+      "first_author": "Darankoum",
+      "authors": "Davy Darankoum; Chloé Habermacher; Julien Volle; Sergei Grudinin",
+      "title": "SpecMoE: Spectral Mixture-of-Experts Foundation Model for Cross-Species EEG Decoding",
+      "url": "https://doi.org/10.48550/arXiv.2603.16739v2",
+      "pdf_filename": "2026_Darankoum_SpecMoE_Spectral_Mixture-of-Experts_Foundation_Mod.pdf",
+      "relevance_score": 9,
+      "matched_keywords": [
+        "cross-subject generalization",
+        "cross-subject"
+      ]
+    },
+    {
+      "stt": 35,
+      "year": "2025",
+      "first_author": "Liu",
+      "authors": "Yici Liu; Qi Wei Oung; Hoi Leong Lee",
+      "title": "SSAS: Cross-subject EEG-based Emotion Recognition through Source Selection with Adversarial Strategy",
+      "url": "https://doi.org/10.48550/arXiv.2512.13458v2",
+      "pdf_filename": "2025_Liu_SSAS_Cross-subject_EEG-based_Emotion_Recognition_t.pdf",
+      "relevance_score": 9,
+      "matched_keywords": [
+        "cross-subject"
+      ]
+    }
+  ]
+}

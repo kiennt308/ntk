@@ -8,6 +8,6 @@ qc/
 series/
 #eeg_paper_research/
 eeg_paper_research/downloaded_papers/
-eeg_paper_research/notebooklm_workspace/
+eeg_paper_research/notebooklm_workspace/**/pdfs/
 *.pyc
 __pycache__/

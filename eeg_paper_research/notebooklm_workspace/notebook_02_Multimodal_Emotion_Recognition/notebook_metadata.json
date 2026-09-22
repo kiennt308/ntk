@@ -1,0 +1,489 @@
+{
+  "track_id": "nb_02",
+  "track_title": "Notebook 02: Multimodal Emotion Recognition & Benchmark Datasets",
+  "topic_focus": "Nghiên cứu kết hợp đa phương thức (EEG + ECG, EEG + EDA/GSR, EEG + EMG, Peripheral) và các bộ benchmark datasets kinh điển (DEAP, AMIGOS, DREAMER, MAHNOB-HCI, CASE, K-EmoCon, ASCERTAIN).",
+  "total_papers": 35,
+  "created_at": "2026-09-22T05:53:07.936430",
+  "papers": [
+    {
+      "stt": 1,
+      "year": "2026",
+      "first_author": "Sáiz-Manzanares",
+      "authors": "María Consuelo Sáiz-Manzanares; Raúl Marticorena-Sánchez",
+      "title": "Emotion recognition from multimodal biosignals: supervised and unsupervised machine learning approaches based on EEG and GSR",
+      "url": "https://doi.org/10.3389/fpsyg.2026.1835911",
+      "pdf_filename": "2026_Sáiz-Manzanares_Emotion_recognition_from_multimodal_biosignals_sup.pdf",
+      "relevance_score": 30,
+      "matched_keywords": [
+        "multimodal biosignals",
+        "multimodal physiological",
+        "eeg and gsr"
+      ]
+    },
+    {
+      "stt": 2,
+      "year": "2025",
+      "first_author": "Wang",
+      "authors": "Zhuozheng Wang; Yihan Wang",
+      "title": "Emotion recognition based on multimodal physiological electrical signals",
+      "url": "https://doi.org/10.3389/fnins.2025.1512799",
+      "pdf_filename": "2025_Wang_Emotion_recognition_based_on_multimodal_physiologi.pdf",
+      "relevance_score": 30,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "multimodal physiological",
+        "eeg and ecg",
+        "deap dataset",
+        "dreamer dataset"
+      ]
+    },
+    {
+      "stt": 3,
+      "year": "2025",
+      "first_author": "Ding",
+      "authors": "Shihang Ding; Lin Ma; Haifeng Li",
+      "title": "Multimodal physiological signal emotion recognition based on multi-head cross attention with representation learning",
+      "url": "https://doi.org/10.3389/fpsyt.2025.1713559",
+      "pdf_filename": "2025_Ding_Multimodal_physiological_signal_emotion_recognitio.pdf",
+      "relevance_score": 24,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "multimodal physiological"
+      ]
+    },
+    {
+      "stt": 4,
+      "year": "2023",
+      "first_author": "Lopez",
+      "authors": "Eleonora Lopez; Eleonora Chiarantano; Eleonora Grassucci; Danilo Comminiello",
+      "title": "Hypercomplex Multimodal Emotion Recognition from EEG and Peripheral Physiological Signals",
+      "url": "https://doi.org/10.48550/arXiv.2310.07648v1",
+      "pdf_filename": "2023_Lopez_Hypercomplex_Multimodal_Emotion_Recognition_from_E.pdf",
+      "relevance_score": 24,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "eeg and peripheral",
+        "mahnob-hci"
+      ]
+    },
+    {
+      "stt": 5,
+      "year": "2020",
+      "first_author": "Wu",
+      "authors": "Xun Wu; Wei-Long Zheng; Bao-Liang Lu",
+      "title": "Investigating EEG-Based Functional Connectivity Patterns for Multimodal Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2004.01973v1",
+      "pdf_filename": "2020_Wu_Investigating_EEG-Based_Functional_Connectivity_Pa.pdf",
+      "relevance_score": 24,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 6,
+      "year": "2026",
+      "first_author": "Mirzaee",
+      "authors": "Mahnam Mirzaee; Mahdi Azarnoosh; Hamid Reza Kobravi",
+      "title": "EEG-based emotion recognition using phase-space reconstruction with Poincaré sections: a study on the AMIGOS dataset",
+      "url": "https://doi.org/10.3389/fnhum.2026.1660402",
+      "pdf_filename": "2026_Mirzaee_EEG-based_emotion_recognition_using_phase-space_re.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "deap dataset",
+        "amigos dataset"
+      ]
+    },
+    {
+      "stt": 7,
+      "year": "2026",
+      "first_author": "Li",
+      "authors": "Xue Li; Piqiang Gong; Chuantao Li; Xiaohan Ding; Fuming Chen",
+      "title": "Application of a parametric supermatrix multi-task multimodal deep learning model based on electroencephalogram and peripheral physiological signal fusion in emotion recognition",
+      "url": "https://doi.org/10.3389/fnins.2026.1894285",
+      "pdf_filename": "2026_Li_Application_of_a_parametric_supermatrix_multi-task.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "multimodal physiological",
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 8,
+      "year": "2025",
+      "first_author": "Jiang",
+      "authors": "Wei-Bang Jiang; Xi Fu; Yi Ding; Cuntai Guan",
+      "title": "Towards Robust Multimodal Physiological Foundation Models: Handling Arbitrary Missing Modalities",
+      "url": "https://doi.org/10.48550/arXiv.2504.19596v3",
+      "pdf_filename": "2025_Jiang_Towards_Robust_Multimodal_Physiological_Foundation.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "multimodal physiological"
+      ]
+    },
+    {
+      "stt": 9,
+      "year": "2024",
+      "first_author": "Lopez",
+      "authors": "Eleonora Lopez; Aurelio Uncini; Danilo Comminiello",
+      "title": "Hierarchical Hypercomplex Network for Multimodal Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2409.09194v2",
+      "pdf_filename": "2024_Lopez_Hierarchical_Hypercomplex_Network_for_Multimodal_E.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "mahnob-hci"
+      ]
+    },
+    {
+      "stt": 10,
+      "year": "2024",
+      "first_author": "Du",
+      "authors": "Yiming Du; Penghai Li; Longlong Cheng; Xuanwei Zhang; Mingji Li; Fengzhou Li",
+      "title": "Attention-based 3D convolutional recurrent neural network model for multimodal emotion recognition",
+      "url": "https://doi.org/10.3389/fnins.2023.1330077",
+      "pdf_filename": "2024_Du_Attention-based_3D_convolutional_recurrent_neural.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "mahnob-hci"
+      ]
+    },
+    {
+      "stt": 11,
+      "year": "2023",
+      "first_author": "Döllinger",
+      "authors": "Lillian Döllinger; Lennart Björn Högman; Petri Laukka; Tanja Bänziger; Irena Makower; Håkan Fischer; Stephan Hau",
+      "title": "Trainee psychotherapists’ emotion recognition accuracy improves after training: emotion recognition training as a tool for psychotherapy education",
+      "url": "https://doi.org/10.3389/fpsyg.2023.1188634",
+      "pdf_filename": "2023_Döllinger_Trainee_psychotherapists’_emotion_recognition_accu.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "multimodal emotion recognition"
+      ]
+    },
+    {
+      "stt": 12,
+      "year": "2020",
+      "first_author": "Park",
+      "authors": "Cheul Young Park; Narae Cha; Soowon Kang; Auk Kim; Ahsan Habib Khandoker; Leontios Hadjileontiadis; Alice Oh; Yong Jeong; Uichin Lee",
+      "title": "K-EmoCon, a multimodal sensor dataset for continuous emotion recognition in naturalistic conversations",
+      "url": "https://doi.org/10.48550/arXiv.2005.04120v2",
+      "pdf_filename": "2020_Park_K-EmoCon,_a_multimodal_sensor_dataset_for_continuo.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "k-emocon"
+      ]
+    },
+    {
+      "stt": 13,
+      "year": "2019",
+      "first_author": "Zhao",
+      "authors": "Yuxuan Zhao; Xinyan Cao; Jinlong Lin; Dunshan Yu; Xixin Cao",
+      "title": "Multimodal Affective States Recognition Based on Multiscale CNNs and Biologically Inspired Decision Fusion Model",
+      "url": "https://doi.org/10.48550/arXiv.1911.12918v2",
+      "pdf_filename": "2019_Zhao_Multimodal_Affective_States_Recognition_Based_on_M.pdf",
+      "relevance_score": 18,
+      "matched_keywords": [
+        "multimodal physiological",
+        "amigos dataset"
+      ]
+    },
+    {
+      "stt": 14,
+      "year": "2026",
+      "first_author": "Hua",
+      "authors": "Chengyu Hua; Hui Cao; Zhaolong Li; Zhiqiang Huang",
+      "title": "A dual-branch network with brain region-constrained attention for EEG emotion recognition",
+      "url": "https://doi.org/10.3389/fnins.2026.1810609",
+      "pdf_filename": "2026_Hua_A_dual-branch_network_with_brain_region-constraine.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "dreamer dataset"
+      ]
+    },
+    {
+      "stt": 15,
+      "year": "2026",
+      "first_author": "Wang",
+      "authors": "Zheng Wang; Shuo Wang; Junhong Wang",
+      "title": "UF-AMA: A unified framework for cross-domain emotion recognition via adaptive multimodal alignment",
+      "url": "https://doi.org/10.48550/arXiv.2606.00170v1",
+      "pdf_filename": "2026_Wang_UF-AMA_A_unified_framework_for_cross-domain_emotio.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "multimodal physiological"
+      ]
+    },
+    {
+      "stt": 16,
+      "year": "2026",
+      "first_author": "Ma",
+      "authors": "Zeyu Ma",
+      "title": "Emotion recognition based on the temporal patterns of electroencephalogram signals and electrodermal response signals using the TRANSFORMER network",
+      "url": "https://doi.org/10.3389/fnins.2026.1835552",
+      "pdf_filename": "2026_Ma_Emotion_recognition_based_on_the_temporal_patterns.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal physiological",
+        "eeg and gsr"
+      ]
+    },
+    {
+      "stt": 17,
+      "year": "2026",
+      "first_author": "Khanra",
+      "authors": "Manisha Khanra; Sanjiban Sekhar Roy",
+      "title": "Data-centric review of multimodal emotion recognition: datasets, feature extraction, data fusion and limitations",
+      "url": "https://doi.org/10.3389/frobt.2026.1810478",
+      "pdf_filename": "2026_Khanra_Data-centric_review_of_multimodal_emotion_recognit.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition"
+      ]
+    },
+    {
+      "stt": 18,
+      "year": "2026",
+      "first_author": "Fan",
+      "authors": "Xiaoli Fan; Chaoyi Zhao; Hua Guo; Feng Wu; Xin Zhang",
+      "title": "Virtual reality-induced emotion recognition with deep learning-based multimodal physiological feature fusion",
+      "url": "https://doi.org/10.3389/fpsyg.2026.1759471",
+      "pdf_filename": "2026_Fan_Virtual_reality-induced_emotion_recognition_with_d.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal physiological"
+      ]
+    },
+    {
+      "stt": 19,
+      "year": "2025",
+      "first_author": "Fu",
+      "authors": "Changzeng Fu",
+      "title": "Foundation of Affective Computing and Interaction",
+      "url": "https://doi.org/10.48550/arXiv.2506.15497v1",
+      "pdf_filename": "2025_Fu_Foundation_of_Affective_Computing_and_Interaction.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition"
+      ]
+    },
+    {
+      "stt": 20,
+      "year": "2025",
+      "first_author": "Wang",
+      "authors": "Zaitian Wang; Jian He; Yu Liang; Xiyuan Hu; Tianhao Peng; Kaixin Wang; Jiakai Wang; Chenlong Zhang; Weili Zhang; Shuang Niu; Xiaoyang Xie",
+      "title": "Milmer: a Framework for Multiple Instance Learning based Multimodal Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2502.00547v1",
+      "pdf_filename": "2025_Wang_Milmer_a_Framework_for_Multiple_Instance_Learning.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 21,
+      "year": "2025",
+      "first_author": "Liu",
+      "authors": "Zejun Liu; Yunshan Chen; Chengxi Xie; Yugui Xie; Huan Liu",
+      "title": "LibEMER: A novel benchmark and algorithms library for EEG-based Multimodal Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2509.19330v2",
+      "pdf_filename": "2025_Liu_LibEMER_A_novel_benchmark_and_algorithms_library_f.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition"
+      ]
+    },
+    {
+      "stt": 22,
+      "year": "2025",
+      "first_author": "Huang",
+      "authors": "Xin Huang; Shiyao Zhu; Ziyu Wang; Yaping He; Hao Jin; Zhengkui Liu",
+      "title": "EVA-MED: An Enhanced Valence-Arousal Multimodal Emotion Dataset for Emotion Recognition",
+      "url": "https://doi.org/10.48550/arXiv.2503.16584v1",
+      "pdf_filename": "2025_Huang_EVA-MED_An_Enhanced_Valence-Arousal_Multimodal_Emo.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "multimodal physiological"
+      ]
+    },
+    {
+      "stt": 23,
+      "year": "2025",
+      "first_author": "Zhu",
+      "authors": "Zhibin Zhu; Xuanyi Wang; Yifei Xu; Wanlin Chen; Jing Zheng; Shulin Chen; Hang Chen",
+      "title": "An emotion recognition method based on frequency-domain features of PPG",
+      "url": "https://doi.org/10.3389/fphys.2025.1486763",
+      "pdf_filename": "2025_Zhu_An_emotion_recognition_method_based_on_frequency-d.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 24,
+      "year": "2025",
+      "first_author": "Khan",
+      "authors": "Nazmun N Khan; Taylor Sweet; Chase A Harvey; Calder Knapp; Dean J. Krusienski; David E Thompson",
+      "title": "The Role of Review Process Failures in Affective State Estimation: An Empirical Investigation of DEAP Dataset",
+      "url": "https://doi.org/10.48550/arXiv.2508.02417v1",
+      "pdf_filename": "2025_Khan_The_Role_of_Review_Process_Failures_in_Affective_S.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 25,
+      "year": "2024",
+      "first_author": "Wang",
+      "authors": "Jingyi Wang; Zhiqun Wang; Guiran Liu",
+      "title": "Recording Brain Activity While Listening to Music Using Wearable EEG Devices Combined with Bidirectional Long Short-Term Memory Networks",
+      "url": "https://doi.org/10.48550/arXiv.2408.12124v1",
+      "pdf_filename": "2024_Wang_Recording_Brain_Activity_While_Listening_to_Music.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 26,
+      "year": "2024",
+      "first_author": "Lopez",
+      "authors": "Eleonora Lopez; Aurelio Uncini; Danilo Comminiello",
+      "title": "PHemoNet: A Multimodal Network for Physiological Signals",
+      "url": "https://doi.org/10.48550/arXiv.2410.00010v1",
+      "pdf_filename": "2024_Lopez_PHemoNet_A_Multimodal_Network_for_Physiological_Si.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "mahnob-hci"
+      ]
+    },
+    {
+      "stt": 27,
+      "year": "2023",
+      "first_author": "Huang",
+      "authors": "Zhentao Huang; Yahong Ma; Jianyun Su; Hangyu Shi; Shanshan Jia; Baoxi Yuan; Weisu Li; Jingzhi Geng; Tingting Yang",
+      "title": "CDBA: a novel multi-branch feature fusion model for EEG-based emotion recognition",
+      "url": "https://doi.org/10.3389/fphys.2023.1200656",
+      "pdf_filename": "2023_Huang_CDBA_a_novel_multi-branch_feature_fusion_model_for.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "dreamer dataset"
+      ]
+    },
+    {
+      "stt": 28,
+      "year": "2023",
+      "first_author": "Guo",
+      "authors": "Yunfei Guo; Tao Zhang; Wu Huang",
+      "title": "Emotion recognition based on multi-modal electrophysiology multi-head attention Contrastive Learning",
+      "url": "https://doi.org/10.48550/arXiv.2308.01919v1",
+      "pdf_filename": "2023_Guo_Emotion_recognition_based_on_multi-modal_electroph.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "mahnob-hci"
+      ]
+    },
+    {
+      "stt": 29,
+      "year": "2023",
+      "first_author": "Prodhan",
+      "authors": "Rumman Ahmed Prodhan; Sumya Akter; Tanmoy Sarkar Pias; Md. Akhtaruzzaman Adnan",
+      "title": "Optimal EEG Electrode Set for Emotion Recognition From Brain Signals: An Empirical Quest",
+      "url": "https://doi.org/10.48550/arXiv.2311.17204v1",
+      "pdf_filename": "2023_Prodhan_Optimal_EEG_Electrode_Set_for_Emotion_Recognition.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 30,
+      "year": "2023",
+      "first_author": "Kshirsagar",
+      "authors": "Shruti Kshirsagar; Anurag Pendyala; Tiago H. Falk",
+      "title": "Task-specific speech enhancement and data augmentation for improved multimodal emotion recognition under noisy conditions",
+      "url": "https://doi.org/10.3389/fcomp.2023.1039261",
+      "pdf_filename": "2023_Kshirsagar_Task-specific_speech_enhancement_and_data_augmenta.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition"
+      ]
+    },
+    {
+      "stt": 31,
+      "year": "2022",
+      "first_author": "Fu",
+      "authors": "Zhongzheng Fu; Boning Zhang; Xinrun He; Yixuan Li; Haoyuan Wang; Jian Huang",
+      "title": "Emotion recognition based on multi-modal physiological signals and transfer learning",
+      "url": "https://doi.org/10.3389/fnins.2022.1000716",
+      "pdf_filename": "2022_Fu_Emotion_recognition_based_on_multi-modal_physiolog.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "deap dataset"
+      ]
+    },
+    {
+      "stt": 32,
+      "year": "2021",
+      "first_author": "Li",
+      "authors": "Jing Li; Dongliang Chen; Ning Yu; Ziping Zhao; Zhihan Lv",
+      "title": "Emotion Recognition of Chinese Paintings at the Thirteenth National Exhibition of Fines Arts in China Based on Advanced Affective Computing",
+      "url": "https://doi.org/10.3389/fpsyg.2021.741665",
+      "pdf_filename": "2021_Li_Emotion_Recognition_of_Chinese_Paintings_at_the_Th.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition"
+      ]
+    },
+    {
+      "stt": 33,
+      "year": "2021",
+      "first_author": "Li",
+      "authors": "Ruixin Li; Yan Liang; Xiaojian Liu; Bingbing Wang; Wenxin Huang; Zhaoxin Cai; Yaoguang Ye; Lina Qiu; Jiahui Pan",
+      "title": "MindLink-Eumpy: An Open-Source Python Toolbox for Multimodal Emotion Recognition",
+      "url": "https://doi.org/10.3389/fnhum.2021.621493",
+      "pdf_filename": "2021_Li_MindLink-Eumpy_An_Open-Source_Python_Toolbox_for_M.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "mahnob-hci"
+      ]
+    },
+    {
+      "stt": 34,
+      "year": "2019",
+      "first_author": "Siddharth",
+      "authors": "Siddharth Siddharth; Tzyy-Ping Jung; Terrence J. Sejnowski",
+      "title": "Utilizing Deep Learning Towards Multi-modal Bio-sensing and Vision-based Affective Computing",
+      "url": "https://doi.org/10.48550/arXiv.1905.07039v1",
+      "pdf_filename": "2019_Siddharth_Utilizing_Deep_Learning_Towards_Multi-modal_Bio-se.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "dreamer dataset",
+        "mahnob-hci"
+      ]
+    },
+    {
+      "stt": 35,
+      "year": "2016",
+      "first_author": "Liu",
+      "authors": "Wei Liu; Wei-Long Zheng; Bao-Liang Lu",
+      "title": "Multimodal Emotion Recognition Using Multimodal Deep Learning",
+      "url": "https://doi.org/10.48550/arXiv.1602.08225v1",
+      "pdf_filename": "2016_Liu_Multimodal_Emotion_Recognition_Using_Multimodal_De.pdf",
+      "relevance_score": 12,
+      "matched_keywords": [
+        "multimodal emotion recognition",
+        "deap dataset"
+      ]
+    }
+  ]
+}

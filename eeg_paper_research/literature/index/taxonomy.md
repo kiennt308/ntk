@@ -1,24 +1,24 @@
-# Literature Taxonomy & Classification Dimensions
-
-**Domain**: Multimodal Biosignal Emotion Recognition  
-**Framework**: Multi-Task Multi-Branch Deep Learning  
+# Literature Taxonomy & Classification Dimensions (2023–2026 Modernized)
+## Multi-Task Multi-Branch Deep Learning for Biosignal Emotion Recognition
 
 ---
 
-## 1. Classification Categories (Levels A – L)
+## 1. Classification Categories (Levels A – N)
 
-- **A — Foundational**: Fundamental neural, physiological, and mathematical principles.
-- **B — Dataset / Benchmark**: Canonical corpora, annotation protocols, baseline datasets (e.g., AMIGOS `P0001`).
-- **C — Unimodal Emotion Recognition**: Single-modality modeling (e.g., RGNN `P0002`, NGN-XGBoost `P0010`).
-- **D — Multimodal Emotion Recognition**: Multimodal physiological modeling (e.g., BDAE `P0003`, Entropy-Assisted `P0006`).
-- **E — Multitask Learning**: Joint task optimization & ambiguous label learning (e.g., Partial Label Learning `P0008`).
-- **F — Multi-Branch Architecture**: Modality-specific and hemispheric dedicated streams (e.g., BiHDM `P0005`).
-- **G — Multimodal Fusion**: Early, Intermediate, Late, and Cross-Attention fusion schemes.
-- **H — Generalization / Domain Adaptation**: Cross-subject, cross-session, and cross-dataset transfer (e.g., Stable Patterns `P0004`).
-- **I — Robustness / Missing Modality**: Handling missing biosensors, sensor failure, and noisy artifacts.
-- **J — Efficient / Lightweight Models**: Knowledge distillation, compact CNNs, edge deployment (e.g., KD-DANN `P0007`).
-- **K — Self-Supervised / Contrastive Learning**: Pretext task representation learning on unlabeled physiological data.
-- **L — Review / Survey**: Comprehensive state-of-the-art surveys and methodological analyses (e.g., `P0009`).
+- **A — Foundational**: Fundamental neural, physiological, autonomic (CNS vs. ANS), and mathematical principles.
+- **B — Dataset / Benchmark**: Canonical corpora, annotation protocols, baseline datasets (e.g., DEAP, SEED, DREAMER, AMIGOS, WESAD, K-EmoCon).
+- **C — Unimodal Emotion Recognition**: Single-modality modeling (e.g., Spatial-Temporal EEG, 1D-CNN ECG, CWT-EDA).
+- **D — Multimodal Emotion Recognition**: Multimodal physiological modeling integrating Central (EEG) and Peripheral (ECG, EDA, PPG, Respiration, EMG) signals.
+- **E — Multitask Learning (MTL)**: Joint Valence-Arousal-Dominance optimization, Kendall uncertainty loss balancing, GradNorm gradient conflict resolution.
+- **F — Multi-Branch Architecture**: Dedicated physics-informed encoders preserving modality-specific spatial/temporal properties.
+- **G — Multimodal Fusion**: Early, Intermediate, Late, Bidirectional Cross-Modal QKV Attention, and Bilinear Tensor Fusion.
+- **H — Subspace Disentanglement & Domain Adaptation**: Shared-Private representation decomposition ($Z_{shared}, Z_{private}$), Orthogonality constraints, DANN, MMD, CORAL.
+- **I — Robustness & Missing Modalities**: Handling missing biosensors, sensor dropouts, cross-modal knowledge distillation, and generative imputation.
+- **J — Efficient & Edge BCI Models**: Model compression, INT8/FP16 quantization, latency-constrained edge deployment on wearables/embedded NPUs.
+- **K — Self-Supervised & Foundation Models**: Large-scale pretext task pretraining (Masked Autoencoding, Contrastive Learning) on massive unlabeled biosignals.
+- **L — Graph Neural Networks (GNNs)**: Dynamic brain connectivity, Phase Locking Value (PLV), hemisphere asymmetry topologies.
+- **M — Explainable AI (XAI)**: SHAP, Integrated Gradients, Grad-CAM topographic scalp maps, biological validity verification.
+- **N — Review / Survey**: Comprehensive state-of-the-art PRISMA surveys and methodological benchmarks.
 
 ---
 
@@ -26,9 +26,11 @@
 
 | Tag Dimension | Available Tags | Description / Scope |
 |---|---|---|
-| **Modality** | `[EEG]`, `[ECG]`, `[EDA]`, `[GSR]`, `[EMG]`, `[PPG]`, `[RESP]`, `[MULTIMODAL]` | Specific sensor signals processed |
-| **Architecture** | `[UNIMODAL]`, `[MULTIBRANCH]`, `[MULTISTREAM]`, `[SHARED_ENCODER]`, `[PRIVATE_SHARED]`, `[TRANSFORMER]`, `[CNN]`, `[GNN]`, `[ATTENTION]`, `[EFFICIENT]` | Neural encoder backbone structures |
-| **Fusion** | `[EARLY_FUSION]`, `[INTERMEDIATE_FUSION]`, `[LATE_FUSION]`, `[CROSS_MODAL_ATTENTION]`, `[ADAPTIVE_FUSION]` | Level and mechanism of modality integration |
-| **Learning** | `[SINGLE_TASK]`, `[MULTI_TASK]`, `[MULTI_LABEL]`, `[REGRESSION]`, `[CLASSIFICATION]`, `[PARTIAL_LABEL]` | Training objective and task formulation |
-| **Evaluation** | `[SUBJECT_DEPENDENT]`, `[SUBJECT_INDEPENDENT]`, `[LOSO]`, `[CROSS_SESSION]`, `[CROSS_DATASET]`, `[MISSING_MODALITY]` | Validation protocol rigor |
-| **Dataset** | `[DEAP]`, `[SEED]`, `[SEED_IV]`, `[SEED_V]`, `[AMIGOS]`, `[DREAMER]`, `[MAHNOB_HCI]`, `[WESAD]` | Benchmark corpus evaluated |
+| **Modality** | `[EEG]`, `[ECG]`, `[EDA]`, `[GSR]`, `[EMG]`, `[PPG]`, `[RESP]`, `[EYE]`, `[MULTIMODAL]` | Specific sensor signals processed |
+| **Architecture** | `[MULTIBRANCH]`, `[SHARED_PRIVATE]`, `[DISENTANGLEMENT]`, `[TRANSFORMER]`, `[GNN]`, `[GAT]`, `[DGCNN]`, `[CNN]`, `[TCN]`, `[FOUNDATION_MODEL]` | Neural encoder backbone structures |
+| **Fusion** | `[EARLY_FUSION]`, `[INTERMEDIATE_FUSION]`, `[LATE_FUSION]`, `[CROSS_MODAL_ATTENTION]`, `[BILINEAR_POOLING]` | Level and mechanism of modality integration |
+| **Learning** | `[SINGLE_TASK]`, `[MULTI_TASK]`, `[UNCERTAINTY_WEIGHTING]`, `[GRADNORM]`, `[SELF_SUPERVISED]`, `[MASKED_AUTOENCODING]` | Training objective and task formulation |
+| **Adaptation** | `[DISENTANGLEMENT]`, `[DANN]`, `[ADVERSARIAL_ALIGNMENT]`, `[ORTHOGONALITY]`, `[MMD]` | Domain alignment and invariance mechanisms |
+| **Evaluation** | `[SUBJECT_INDEPENDENT]`, `[LOSO]`, `[CROSS_SESSION]`, `[CROSS_DATASET]`, `[MISSING_MODALITY_STRESS]` | Validation protocol rigor |
+| **Explainability** | `[SHAP]`, `[GRAD_CAM]`, `[TOPOPLOT]`, `[INTEGRATED_GRADIENTS]`, `[NEURO_VALIDATION]` | Interpretable decision visualization |
+| **Dataset** | `[DEAP]`, `[SEED]`, `[SEED_IV]`, `[SEED_V]`, `[AMIGOS]`, `[DREAMER]`, `[MAHNOB_HCI]`, `[WESAD]`, `[K_EMOCON]` | Benchmark corpus evaluated |

@@ -1,0 +1,212 @@
+{
+  "notebook_id": "NB08",
+  "folder_name": "notebook_08_Transformers_Crossmodal_Affective_Computing",
+  "title_en": "Transformer Architectures in Crossmodal Affective Computing",
+  "title_vi": "Kiến trúc Transformer Đa phương thức và Tương tác Chéo",
+  "phd_chapter_mapping": "Chương 2 & Chương 3 (So sánh Đối sánh Transformer & MulT / MISA)",
+  "research_focus": "Multimodal Transformers (MulT), Cross-attention encoders, spatio-temporal self-attention, and long-range dependencies in continuous affective dynamics.",
+  "key_research_questions": [
+    "Kiến trúc Multimodal Transformer giải quyết độ trễ pha (phase shift) giữa các tín hiệu như thế nào?",
+    "Cơ chế Positional Encoding thích ứng với chuỗi thời gian sinh lý phi đều đặn.",
+    "So sánh độ phức tạp tính toán giữa Self-Attention và Cross-Attention trong dung hợp đa tín hiệu."
+  ],
+  "total_papers_indexed": 18,
+  "total_pdfs_available": 13,
+  "pdf_filenames": [
+    "OA_KW8_001.pdf",
+    "OA_KW8_002.pdf",
+    "OA_KW8_003.pdf",
+    "OA_KW8_004.pdf",
+    "OA_KW8_005.pdf",
+    "OA_KW8_006.pdf",
+    "OA_KW8_008.pdf",
+    "OA_KW8_009.pdf",
+    "OA_KW8_010.pdf",
+    "OA_KW8_013.pdf",
+    "OA_KW8_014.pdf",
+    "OA_KW8_017.pdf",
+    "OA_KW8_018.pdf"
+  ],
+  "papers": [
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    }
+  ]
+}

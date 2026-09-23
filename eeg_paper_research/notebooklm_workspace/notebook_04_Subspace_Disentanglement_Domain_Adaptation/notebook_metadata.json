@@ -1,0 +1,517 @@
+{
+  "notebook_id": "NB04",
+  "folder_name": "notebook_04_Subspace_Disentanglement_Domain_Adaptation",
+  "title_en": "Shared-Private Subspace Disentanglement & Domain Adaptation",
+  "title_vi": "Tách Không gian con Dùng chung - Riêng biệt & Thích ứng Miền",
+  "phd_chapter_mapping": "Chương 3 & Chương 5 (Phân tách Biểu diễn & Thử nghiệm Tổng quát hóa LOSO)",
+  "research_focus": "Decomposing representations into subject-invariant emotion content (Z_shared) and subject-specific physiological style (Z_private) with orthogonality constraints.",
+  "key_research_questions": [
+    "Làm thế nào để ràng buộc trực giao (Orthogonality Constraint) giữa Z_shared và Z_private?",
+    "Hiệu quả cải thiện độ chính xác phân loại cảm xúc Cross-Subject (LOSO) đạt được bao nhiêu %?",
+    "Domain Adversarial Neural Networks (DANN) kết hợp với Disentanglement như thế nào?"
+  ],
+  "total_papers_indexed": 47,
+  "total_pdfs_available": 28,
+  "pdf_filenames": [
+    "OA_KW4_001.pdf",
+    "OA_KW4_002.pdf",
+    "OA_KW4_003.pdf",
+    "OA_KW4_004.pdf",
+    "OA_KW4_006.pdf",
+    "OA_KW4_007.pdf",
+    "OA_KW4_008.pdf",
+    "OA_KW4_009.pdf",
+    "OA_KW4_012.pdf",
+    "OA_KW4_013.pdf",
+    "OA_KW4_014.pdf",
+    "OA_KW4_017.pdf",
+    "OA_KW4_018.pdf",
+    "OA_KW4_019.pdf",
+    "OA_KW4_020.pdf",
+    "OA_KW4_021.pdf",
+    "OA_KW4_022.pdf",
+    "OA_KW4_023.pdf",
+    "OA_KW4_024.pdf",
+    "OA_KW4_025.pdf",
+    "OA_KW4_026.pdf",
+    "OA_KW4_027.pdf",
+    "OA_KW4_028.pdf",
+    "OA_KW4_036.pdf",
+    "OA_KW4_037.pdf",
+    "OA_KW4_038.pdf",
+    "OA_KW4_039.pdf",
+    "OA_KW4_040.pdf"
+  ],
+  "papers": [
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    }
+  ]
+}

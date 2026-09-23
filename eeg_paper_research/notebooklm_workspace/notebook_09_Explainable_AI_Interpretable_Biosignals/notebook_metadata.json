@@ -1,0 +1,145 @@
+{
+  "notebook_id": "NB09",
+  "folder_name": "notebook_09_Explainable_AI_Interpretable_Biosignals",
+  "title_en": "Explainable AI (XAI) & Interpretable Biosignal Modeling",
+  "title_vi": "Trí tuệ Nhân tạo Giải thích được (XAI) & Minh bạch Mô hình Cảm xúc",
+  "phd_chapter_mapping": "Chương 5 & Chương 7 (Phân tích Trực quan hóa Bản đồ Não & Ý nghĩa Sinh học)",
+  "research_focus": "SHAP, Integrated Gradients, Grad-CAM topographic scalp maps, and neuroscience validation of learned multi-branch feature representations.",
+  "key_research_questions": [
+    "Cách trực quan hóa trọng số đóng góp của các vùng vỏ não (Frontal, Temporal, Parietal, Occipital) lên bản đồ địa hình não (Topoplot)?",
+    "Làm sao để chứng minh mô hình học được đặc trưng sinh học thực tế thay vì học nhiễu artifact?",
+    "Giải thích sự tương tác giữa nhịp tim (HRV) và điện não (EEG) qua Grad-CAM/SHAP."
+  ],
+  "total_papers_indexed": 12,
+  "total_pdfs_available": 6,
+  "pdf_filenames": [
+    "OA_KW9_001.pdf",
+    "OA_KW9_003.pdf",
+    "OA_KW9_004.pdf",
+    "OA_KW9_007.pdf",
+    "OA_KW9_010.pdf",
+    "OA_KW9_012.pdf"
+  ],
+  "papers": [
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    }
+  ]
+}

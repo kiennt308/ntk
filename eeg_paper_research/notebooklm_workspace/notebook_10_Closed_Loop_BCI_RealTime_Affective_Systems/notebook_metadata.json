@@ -1,0 +1,113 @@
+{
+  "notebook_id": "NB10",
+  "folder_name": "notebook_10_Closed_Loop_BCI_RealTime_Affective_Systems",
+  "title_en": "Closed-Loop BCI, Edge Computing & Real-Time Affective Systems",
+  "title_vi": "Hệ thống BCI Vòng lặp Khép kín, Tính toán Biên Thời gian thực",
+  "phd_chapter_mapping": "Chương 7 (Ứng dụng Thực tiễn Y tế, BCI Thiết bị đeo & Định hướng Tương lai)",
+  "research_focus": "Closed-loop neurofeedback, real-time edge deployment, quantization, model pruning, and clinical interventions for affective disorders.",
+  "key_research_questions": [
+    "Kiến trúc hệ thống vòng lặp khép kín (Closed-loop Affective BCI) từ thu thập, lọc thời gian thực đến điều khiển phản hồi sinh học (Biofeedback)?",
+    "Phương pháp lượng tử hóa (Quantization INT8/FP16) và nén mô hình để chạy trên Raspberry Pi / NVIDIA Jetson / Mobile NPU.",
+    "Tiêu chuẩn an toàn và bảo mật dữ liệu y sinh cá nhân (Federated Learning & Privacy)."
+  ],
+  "total_papers_indexed": 9,
+  "total_pdfs_available": 4,
+  "pdf_filenames": [
+    "OA_KW1_005.pdf",
+    "OA_KW1_006.pdf",
+    "OA_KW1_007.pdf",
+    "OA_KW1_009.pdf"
+  ],
+  "papers": [
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    },
+    {
+      "id": "",
+      "year": "",
+      "title": "",
+      "authors": "",
+      "venue": "",
+      "citations": "",
+      "doi": "",
+      "pdf_url": ""
+    }
+  ]
+}

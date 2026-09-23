@@ -22,353 +22,357 @@ When using any prompt below:
 
 ## 📑 Table of Contents (26 Discrete Task Prompts)
 
-- [PROMPT 1 — Paper Identity](#prompt-1--paper-identity)
-- [PROMPT 2 — Dataset Specification](#prompt-2--dataset-specification)
-- [PROMPT 3 — Preprocessing Protocol](#prompt-3--preprocessing-protocol)
-- [PROMPT 4 — Data Split & Partitioning](#prompt-4--data-split--partitioning)
-- [PROMPT 5 — Model Architecture](#prompt-5--model-architecture)
-- [PROMPT 6 — Multimodal Fusion Mechanism](#prompt-6--multimodal-fusion-mechanism)
-- [PROMPT 7 — Multi-Task Learning Formulation](#prompt-7--multi-task-learning-formulation)
-- [PROMPT 8 — Multi-Branch Structure](#prompt-8--multi-branch-structure)
-- [PROMPT 9 — Baseline Comparisons](#prompt-9--baseline-comparisons)
-- [PROMPT 10 — Experimental Results](#prompt-10--experimental-results)
-- [PROMPT 11 — Ablation Experiments](#prompt-11--ablation-experiments)
-- [PROMPT 12 — Generalization Capabilities](#prompt-12--generalization-capabilities)
-- [PROMPT 13 — Robustness & Missing Modalities](#prompt-13--robustness--missing-modalities)
-- [PROMPT 14 — Computational Cost & Efficiency](#prompt-14--computational-cost--efficiency)
-- [PROMPT 15 — Stated & Observed Limitations](#prompt-15--stated--observed-limitations)
-- [PROMPT 16 — Reproducibility Assessment](#prompt-16--reproducibility-assessment)
-- [PROMPT 17 — Data Leakage Audit](#prompt-17--data-leakage-audit)
+- [PROMPT 1 — Paper Identity & Scope](#prompt-1--paper-identity--scope)
+- [PROMPT 2 — Dataset & Affective Ground-Truth](#prompt-2--dataset--affective-ground-truth)
+- [PROMPT 3 — Preprocessing & Signal Physiology](#prompt-3--preprocessing--signal-physiology)
+- [PROMPT 4 — Data Splitting Protocol & Partitioning](#prompt-4--data-splitting-protocol--partitioning)
+- [PROMPT 5 — Model Architecture & Topology](#prompt-5--model-architecture--topology)
+- [PROMPT 6 — Multimodal Fusion & Cross-Modal Dynamics](#prompt-6--multimodal-fusion--cross-modal-dynamics)
+- [PROMPT 7 — Multi-Task Learning & Objectives](#prompt-7--multi-task-learning--objectives)
+- [PROMPT 8 — Multi-Branch Topology & Justification](#prompt-8--multi-branch-topology--justification)
+- [PROMPT 9 — Benchmark Baselines & Comparative Rigor](#prompt-9--benchmark-baselines--comparative-rigor)
+- [PROMPT 10 — Experimental Results & Statistical Rigor](#prompt-10--experimental-results--statistical-rigor)
+- [PROMPT 11 — Ablation Study Audit](#prompt-11--ablation-study-audit)
+- [PROMPT 12 — Generalization Across Domains & Subjects](#prompt-12--generalization-across-domains--subjects)
+- [PROMPT 13 — Robustness, Missing Modalities & Noise](#prompt-13--robustness-missing-modalities--noise)
+- [PROMPT 14 — Computational Complexity & Edge Feasibility](#prompt-14--computational-complexity--edge-feasibility)
+- [PROMPT 15 — Methodological Limitations Audit](#prompt-15--methodological-limitations-audit)
+- [PROMPT 16 — Reproducibility Audit](#prompt-16--reproducibility-audit)
+- [PROMPT 17 — Comprehensive Data Leakage Audit](#prompt-17--comprehensive-data-leakage-audit)
 - [PROMPT 18 — Scientific Evidence Table](#prompt-18--scientific-evidence-table)
-- [PROMPT 19 — Standardized 18-Point Paper Summary](#prompt-19--standardized-18-point-paper-summary)
-- [PROMPT 20 — Research Relevance to PhD Thesis](#prompt-20--research-relevance-to-phd-thesis)
+- [PROMPT 19 — Executive Synthesis Summary (18-Point)](#prompt-19--executive-synthesis-summary-18-point)
+- [PROMPT 20 — Research Relevance Matrix](#prompt-20--research-relevance-matrix)
 - [PROMPT 21 — Research Gap Extraction & Formulation](#prompt-21--research-gap-extraction--formulation)
 - [PROMPT 22 — Novelty & Prior Art Collision Check (P4)](#prompt-22--novelty--prior-art-collision-check-p4)
 - [PROMPT 23 — Research Directions & Architectural Taxonomy (P5)](#prompt-23--research-directions--architectural-taxonomy-p5)
-- [PROMPT 24 — Research Questions & Hypotheses Formulation (P6)](#prompt-24--research-questions--hypotheses-formulation-p6)
+- [PROMPT 24 — Research Questions & Testable Hypotheses Formulation (P6)](#prompt-24--research-questions--testable-hypotheses-formulation-p6)
 - [PROMPT 25 — Experimental Verification & Protocol Design (P7)](#prompt-25--experimental-verification--protocol-design-p7)
 - [PROMPT 26 — Research Decision Map Synthesis (P8)](#prompt-26--research-decision-map-synthesis-p8)
 - [APPENDIX — All-in-One Master Deep Extraction Prompt](#appendix--all-in-one-master-deep-extraction-prompt)
 
 ---
 
-### PROMPT 1 — Paper Identity
+### PROMPT 1 — Paper Identity & Scope
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+You are a senior scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
 
 Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources in this notebook. Do not invent missing information. For each item, provide source locations (section/page) and categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 1 — PAPER IDENTITY:
+Perform TASK 1 — PAPER IDENTITY & SCOPE:
 Extract:
 1. Exact Title
-2. Authors and Affiliations
+2. Authors and Research Affiliations
 3. Publication Year
-4. Venue / Journal / Conference
+4. Venue / Journal / Conference (Tier/Impact Factor if reported)
 5. DOI and Official URL
 6. Core Research Problem addressed
-7. Main Objective of the study
+7. Main Objective of the proposed methodology
 8. Primary Claimed Scientific Contributions
 ```
 
 ---
 
-### PROMPT 2 — Dataset Specification
+### PROMPT 2 — Dataset & Affective Ground-Truth
 
 ```markdown
 You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not invent missing information. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 2 — DATASET SPECIFICATION:
+Perform TASK 2 — DATASET & AFFECTIVE GROUND-TRUTH:
 Extract:
-1. Dataset Name (e.g., DEAP, SEED, SEED-IV, SEED-V, DREAMER, AMIGOS, MAHNOB-HCI, WESAD, or Custom)
-2. Number of Subjects and Demographics (age, gender distribution if reported)
-3. Modalities recorded (EEG, ECG, EDA/GSR, PPG, EMG, Respiration, Eye-tracking, etc.)
-4. Number of Channels/Sensors for each modality and sensor placement montage (e.g., 10-20 international system)
-5. Sampling Frequency (Hz) for each recorded signal stream
-6. Emotion Elicitation Method (video clips, music videos, acoustic stimuli, standardized recall)
-7. Emotional Labels and Label Space (Valence, Arousal, Dominance / Discrete categories)
-8. Number of Classes and Rating Scale (e.g., continuous 1–9 SAM scale, binary thresholding)
-9. Trial Duration (seconds)
-10. Segmentation and Windowing: Window Length (seconds/samples) and Overlap / Step Size
+1. Dataset Name (e.g., DEAP, SEED, SEED-IV, DREAMER, AMIGOS, WESAD, or Custom)
+2. Subject Cohort Details: Total subjects (N), demographics (age, gender, handedness, clinical/health status)
+3. Affective Ground-Truth Model:
+   - Dimensional space (Valence, Arousal, Dominance, Liking) vs Categorical discrete emotions (Ekman 6, Plutchik 8) vs Compound states (Stress, Cognitive Load)
+   - Rating scale & Granularity (e.g., continuous 1–9 SAM scale, binary/ternary thresholding)
+   - Rating methodology (Subjective self-assessment vs External expert raters vs Consensus)
+   - Label reliability metrics (Cohen's Kappa κ, Krippendorff's α, ICC) if reported
+4. Recorded Physiological Modalities:
+   - Central Nervous System (CNS): Scalp EEG (channel count, 10–20 montage, reference electrode)
+   - Autonomic Nervous System (ANS / Peripheral): ECG (leads), EDA/GSR, PPG, Respiration, Skin Temperature, EMG, EOG
+5. Sampling Frequency (Hz) for each recorded modality
+6. Stimulus Elicitation Paradigm (audio-visual film clips, music videos, IAPS images, VR, cognitive stressors), duration, and baseline recording
+7. Trial & Windowing Structure: Total trials per subject, trial length, window length (seconds/samples), step size / overlap (%)
 ```
 
 ---
 
-### PROMPT 3 — Preprocessing Protocol
+### PROMPT 3 — Preprocessing & Signal Physiology
 
 ```markdown
 You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 3 — PREPROCESSING PROTOCOL:
+Perform TASK 3 — PREPROCESSING & SIGNAL PHYSIOLOGY:
 Extract:
-1. Bandpass Filtering (cutoff frequencies, filter types, orders for each modality)
-2. Notch Filtering (50 Hz / 60 Hz powerline interference removal)
-3. Artifact Removal methods (ICA, EOG/EMG regression, thresholding, wavelet denoising, CAR/REST reference transformation)
-4. Normalization and Scaling (Z-score, Min-Max, baseline subtraction, per-subject vs. global)
-5. Segmentation and Windowing parameters
-6. Data Augmentation techniques applied (jittering, masking, GANs, mixup, crop)
-7. Handcrafted Feature Extraction (e.g., DE, PSD, CWT, HRV time/frequency metrics, EDA tonic/phasic CDA)
-8. Dimensionality Reduction (PCA, t-SNE, feature selection algorithms)
-9. CRITICAL AUDIT: State explicitly whether normalization, filtering, and feature extraction were performed BEFORE or AFTER the train/test splitting.
+1. Filtering & Denoising: Bandpass filter cutoffs (Hz), notch filters (50/60 Hz mains)
+2. Physiological Artifact Removal:
+   - Ocular (EOG / blink) and Myogenic (EMG / muscle) removal methods (ICA, FastICA, EEMD, Wavelet Denoising, BSS)
+   - Cardiac baseline wander and motion artifact removal for ECG/EDA
+   - Neurobiological verification: Did the authors verify that cleaned signals represent true neural dynamics rather than residual artifact leakage?
+3. Normalization & Scaling: Z-score, Min-Max, Baseline relative ratio. (Crucial: Was normalization computed within-subject or globally across the dataset?)
+4. Physiological Feature Extraction:
+   - EEG: Power Spectral Density (PSD), Differential Entropy (DE), Wavelet Energy (CWT/DWT), Asymmetry indices (FAA, DASM, RASM, DCAU), Phase Locking Value (PLV) across frequency bands (δ, θ, α, β, γ)
+   - ECG/PPG: Heart Rate Variability (HRV time-domain: SDNN, RMSSD, pNN50; frequency-domain: LF, HF, LF/HF ratio)
+   - EDA: Tonic SCL vs Phasic SCR, peak amplitude, rise time
+5. Data Augmentation: Jittering, cropping, Gaussian noise injection, Mixup, GAN-based synthetic signal generation
 ```
 
 ---
 
-### PROMPT 4 — Data Split & Partitioning
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not assume a safe split. If unclear, explicitly state [UNKNOWN].
-
-Perform TASK 4 — DATA SPLIT & PARTITIONING:
-Determine and explain:
-1. Is the evaluation Subject-Dependent (within-subject) or Subject-Independent (cross-subject)?
-2. Exact Splitting Strategy: Random split, Subject-wise K-Fold, Leave-One-Subject-Out (LOSO), Cross-Session, or Cross-Dataset?
-3. Exact Ratio/Fold Partitioning: Training %, Validation %, and Testing %
-4. Construction Details: Explain exactly how train/validation/test sets were assembled.
-5. Window Overlap Leakage Check: Could overlapping sliding windows from the same trial or subject appear simultaneously in both training and testing folds?
-```
-
----
-
-### PROMPT 5 — Model Architecture
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Explain what each component does according to the paper.
-
-Perform TASK 5 — MODEL ARCHITECTURE:
-Extract and trace the full computational flow:
-Input → Preprocessing → Feature Representation → Backbone Encoder → Branch Structure → Shared Representation → Private Representation → Fusion Layer → Task-Specific Heads → Output.
-
-Identify and detail:
-1. Deep Learning Architectures used (CNN 1D/2D, RNN/LSTM/GRU, Transformer, GNN/GAT/DGCNN, Spiking Neural Networks, Conformer)
-2. Latent dimensions, hidden layer configurations, activation functions, and dropout rates
-3. Shared Representation vs. Modality-Private Representation mechanisms (if any)
-4. Alignment, self-supervised, or contrastive learning modules embedded in the architecture.
-```
-
----
-
-### PROMPT 6 — Multimodal Fusion Mechanism
+### PROMPT 4 — Data Splitting Protocol & Partitioning
 
 ```markdown
 You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 6 — MULTIMODAL FUSION:
-Classify the fusion mechanism into one of the following:
-1. Early Fusion (Data/Feature level concatenation)
-2. Intermediate / Feature-level Fusion
-3. Late / Decision-level Fusion
-4. Cross-Modal Attention (e.g., Query-Key-Value interactions across modalities)
-5. Multimodal Transformer (e.g., MulT, cross-attention encoders)
-6. Adaptive / Bilinear / Tensor Fusion
-7. Other (specify)
+Perform TASK 4 — DATA SPLITTING PROTOCOL & PARTITIONING:
+Determine:
+1. Partitioning Strategy:
+   - Subject-Dependent (Intra-Subject / Subject-Specific)
+   - Subject-Independent (Cross-Subject / Inter-Subject)
+   - Leave-One-Subject-Out (LOSO) Cross-Validation
+   - Cross-Session (Subject-Specific over different recording days)
+   - Cross-Dataset / Cross-Corpus Validation
+2. Train / Validation / Test Construction:
+   - Sample-level random split vs Trial-level split vs Subject-level split
+   - Exact ratio or K-fold scheme
+3. Anti-Leakage Verification:
+   - Do overlapping windows from the same continuous trial appear across both training and test sets?
+   - Do segments from the same subject appear in both training and test folds during cross-subject claims?
+   - If ambiguous or unstated, explicitly output [UNKNOWN].
+```
 
+---
+
+### PROMPT 5 — Model Architecture & Topology
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 5 — MODEL ARCHITECTURE & TOPOLOGY:
+Extract and trace the full computational graph:
+$$\text{Input} \longrightarrow \text{Preprocessing} \longrightarrow \text{Feature Encoders} \longrightarrow \text{Branch Topology} \longrightarrow \text{Latent Fusion} \longrightarrow \text{Task Heads} \longrightarrow \text{Outputs}$$
+Identify:
+1. Spatial Encoders: Graph Convolutional Networks (GCN), Dynamic GCN, Graph Attention (GAT), Topographic 2D/3D CNNs
+2. Temporal Encoders: Dilated Temporal Convolutional Networks (TCN), LSTM, Bi-LSTM, GRU, 1D-CNN
+3. Spatiotemporal/Spectral: Continuous Wavelet Transform (CWT) + CNN, Vision Transformers (ViT)
+4. Self-Supervised / Foundation Models: Masked Autoencoders (MAE), Contrastive Learning (SimCLR, MoCo)
+5. Representation Topography: Modality-shared representations vs Modality-private representations vs Task-private representations
+```
+
+---
+
+### PROMPT 6 — Multimodal Fusion & Cross-Modal Dynamics
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 6 — MULTIMODAL FUSION & CROSS-MODAL DYNAMICS:
+Classify the fusion mechanism:
+1. Early / Data-level Fusion (Raw feature concatenation)
+2. Intermediate / Feature-level Fusion (Joint latent bottleneck representation)
+3. Late / Decision-level Fusion (Weighted voting, ensemble averaging, meta-classifier)
+4. Directional Cross-Modal Attention (Q_A × K_B × V_B, Cross-Transformers)
+5. Tensor Fusion / Bilinear Pooling
+6. Dynamic / Gated Adaptive Fusion (Modality gating networks)
 Explain:
-- Exactly WHERE fusion occurs in the computational pipeline
-- What latent representations are fused
-- How modalities interact mathematically
-- Whether dedicated modality-specific encoders exist prior to fusion
-- Whether the model dynamically learns modality importance weights (adaptive gating).
-- If the paper only concatenates raw features, state so explicitly.
+- Exact mathematical formulation of fusion operators
+- Modality interaction dynamics: Does CNS (EEG) guide or calibrate ANS (ECG/EDA) features (or vice versa)?
+- Modality dominance handling: Does the model prevent dominant modalities (e.g., EEG) from suppressing subtle physiological signals (e.g., EDA/ECG)?
 ```
 
 ---
 
-### PROMPT 7 — Multi-Task Learning Formulation
+### PROMPT 7 — Multi-Task Learning & Objectives
 
 ```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not invent loss weighting values.
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 7 — MULTI-TASK LEARNING FORMULATION:
+Perform TASK 7 — MULTI-TASK LEARNING & OBJECTIVES:
 Determine:
-1. Is the model Single-Task or Multi-Task?
-2. What are the specific co-optimized tasks (e.g., Valence classification, Arousal regression, Dominance prediction, Subject identification, Signal reconstruction)?
-3. Which layers share representations across tasks, and which layers/heads are task-specific?
-4. What individual loss functions are used for each task (e.g., Cross-Entropy, MSE, CCC, Triplet Loss)?
-5. Write out the total conceptual multi-task loss objective:
-   Example: L_total = λ1 * L_task1 + λ2 * L_task2 + ...
-6. Are task weighting coefficients (λ) fixed constants or dynamically learned (e.g., Kendall homoscedastic uncertainty weighting, GradNorm, Dynamic Weight Average)?
+1. Task Configuration:
+   - Single-Task (STL) vs Multi-Task (MTL)
+   - Target tasks: Simultaneous Valence + Arousal, Quadrant classification (HVHA, HVLA, LVHA, LVLA), Subject identification (Adversarial Decoupling), Domain classification, Signal reconstruction
+2. Sharing Mechanism: Hard parameter sharing vs Soft parameter sharing vs Cross-stitch / Sluice networks
+3. Total Loss Function Formulation:
+   $$\mathcal{L}_{\text{total}} = \sum_{t=1}^{T} w_t \mathcal{L}_t + \alpha \mathcal{L}_{\text{reg}} + \beta \mathcal{L}_{\text{disentangle}}$$
+4. Task Balancing Strategy:
+   - Fixed static weights (w_t = const)
+   - Homoscedastic Aleatoric Uncertainty Weighting (Kendall et al.)
+   - Gradient Normalization (GradNorm), Dynamic Weight Averaging (DWA), MGDA
+   - Negative Transfer handling: Did the authors address inter-task competition or gradient conflict?
 ```
 
 ---
 
-### PROMPT 8 — Multi-Branch Structure
+### PROMPT 8 — Multi-Branch Topology & Justification
 
 ```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 8 — MULTI-BRANCH STRUCTURE:
-Determine:
-1. Total number of independent parallel branches in the network
-2. Input signal assigned to each branch (e.g., Branch 1: Scalp EEG, Branch 2: ECG/HRV, Branch 3: EDA)
-3. Specialized encoder architecture of each branch (e.g., Spatial-Temporal GCN for EEG vs. Dilated 1D-TCN for cardiac dynamics)
-4. Shared layers vs. Private branch-specific layers
-5. Convergence and fusion junction point
-6. Physics-Informed Justification: Explain WHY the authors chose a multi-branch design according to the paper. If no explicit reason is given, state: "The paper does not explicitly justify the multi-branch design."
-```
-
----
-
-### PROMPT 9 — Baseline Comparisons
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
-
-Perform TASK 9 — BASELINES COMPARISON MATRIX:
-Create a comprehensive comparative table:
-| Baseline Model | Modality | Architecture Family | Task Formulation | Evaluation Protocol | Reported Performance | Source / Reference |
-| -------------- | -------- | ------------------- | ---------------- | ------------------- | -------------------- | ------------------ |
-
-Identify whether the comparative baselines include:
-- Unimodal vs. Multimodal baselines
-- Traditional Machine Learning (SVM, Random Forest, XGBoost) vs. Deep Learning models
-- Standard SOTA architectures (EEGNet, DGCNN, BiHDM, MulT, Conformer)
-- Multi-Task vs. Single-Task configurations.
-```
-
----
-
-### PROMPT 10 — Experimental Results
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Preserve the exact formulation: METHOD → DATASET → PROTOCOL → METRIC → RESULT.
-
-Perform TASK 10 — EXPERIMENTAL RESULTS EXTRACTION:
-Extract exact quantitative results reported in the paper:
-1. For Classification Tasks:
-   - Accuracy (%) and Balanced Accuracy (%)
-   - Macro-F1, Weighted-F1, Precision, Recall, ROC-AUC
-2. For Continuous Regression Tasks:
-   - Mean Absolute Error (MAE), Root Mean Squared Error (RMSE)
-   - Coefficient of Determination (R²), Pearson Correlation Coefficient (r), Concordance Correlation Coefficient (CCC)
-3. Statistical Rigor:
-   - Mean ± Standard Deviation (Std) across subjects/runs
-   - 95% Confidence Intervals (CI)
-   - Number of experimental repetitions / seeds
-   - Statistical significance tests and reported p-values (e.g., paired t-test, Wilcoxon signed-rank test with Bonferroni correction).
-```
-
----
-
-### PROMPT 11 — Ablation Experiments
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not claim a component is necessary unless ablation evidence supports that conclusion.
-
-Perform TASK 11 — ABLATION STUDIES:
-Identify all ablation configurations reported in the paper.
-For every ablation experiment, structure the output as follows:
-- Component Removed / Modified:
-- Baseline / Variant Name:
-- Ablated Model Metric:
-- Full Model Metric:
-- Absolute Difference (Δ Performance):
-- Author's Interpretation:
-- Source Location (Table/Figure/Page):
-```
-
----
-
-### PROMPT 12 — Generalization Capabilities
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not treat random train/test splitting as cross-subject generalization.
-
-Perform TASK 12 — GENERALIZATION EVALUATION:
-Check and extract evidence for:
-1. Cross-Subject / Subject-Independent Generalization (Leave-One-Subject-Out / LOSO performance)
-2. Cross-Session Generalization (evaluation across different days/sessions for the same subject)
-3. Cross-Dataset Generalization (models trained on Dataset A and tested on unseen Dataset B)
-4. Domain Adaptation / Alignment Techniques used (DANN, Gradient Reversal Layer, MMD, Coral Loss, Adversarial Alignment)
-5. Generalization Degradation: Report the performance drop (Δ) when moving from Subject-Dependent to Subject-Independent protocols.
-```
-
----
-
-### PROMPT 13 — Robustness & Missing Modalities
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. If absent, explicitly write: "Not evaluated".
-
-Perform TASK 13 — ROBUSTNESS & MISSING MODALITIES:
-Check whether the paper evaluates:
-1. Missing Modality Scenarios (e.g., performance degradation when EEG is dropped and only wearable ECG/EDA is available)
-2. Modality Dropout / Noise Injection during training
-3. Sensor Artifacts & Signal Corruption (motion artifacts, loose electrode impedance noise)
-4. Class Imbalance Handling
-5. Cross-Modal Knowledge Distillation or Latent Inpainting for missing sensor imputation.
-```
-
----
-
-### PROMPT 14 — Computational Cost & Efficiency
-
-```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. If absent, explicitly write: "Not reported".
-
-Perform TASK 14 — COMPUTATIONAL COST & EFFICIENCY:
+Perform TASK 8 — MULTI-BRANCH TOPOLOGY & JUSTIFICATION:
 Extract:
-1. Parameter Count (Total trainable parameters / Millions of weights)
-2. Computational Complexity (FLOPs / MACs)
-3. Model Storage Footprint (Size in MB)
-4. GPU/CPU Memory Consumption (VRAM during training and inference)
-5. Training Time (hours/epochs)
-6. Inference Latency (milliseconds per window/sample)
-7. Hardware Environment (GPU model, CPU, Embedded/Edge platform like Jetson or Raspberry Pi).
+1. Number of dedicated parallel branches
+2. Input signal / sensor group assigned to each branch
+3. Heterogeneous vs Homogeneous encoder design across branches
+4. Shared vs Private Subspaces:
+   - Do dedicated branches extract modality-private features while a central branch extracts cross-modal shared features?
+   - Orthogonality / Difference constraints (L_diff = ||S^T P||_F^2) implemented between branches
+5. Architectural Justification:
+   - What explicit theoretical or physiological justification is provided for using multiple branches?
+   - If no explicit reason is given, state: "The paper does not provide an explicit theoretical or neurobiological justification for the multi-branch design."
 ```
 
 ---
 
-### PROMPT 15 — Stated & Observed Limitations
+### PROMPT 9 — Benchmark Baselines & Comparative Rigor
 
 ```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 15 — RESEARCH LIMITATIONS:
-Categorize into three distinct groups:
-Group A — Limitations explicitly acknowledged by the authors in the paper text.
-Group B — Methodological limitations directly observable from the experimental design (e.g., small sample size, absence of LOSO evaluation, lack of statistical testing).
-Group C — Potential validity concerns requiring further experimental verification (clearly marked as speculative).
+Perform TASK 9 — BENCHMARK BASELINES & COMPARATIVE RIGOR:
+Extract and format all baseline comparisons into a table:
+| Baseline Model | Modality | Architecture Category | Task Configuration | Reported Metric | Source Location |
+|---|---|---|---|---|---|
+
+Identify whether baselines represent:
+- Unimodal vs Multimodal baselines
+- Classical Machine Learning (SVM, Random Forest, XGBoost) vs Deep Learning
+- Published State-of-the-Art (SOTA) vs Re-implemented baselines vs Naive ablation baselines
 ```
 
 ---
 
-### PROMPT 16 — Reproducibility Assessment
+### PROMPT 10 — Experimental Results & Statistical Rigor
 
 ```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 10 — EXPERIMENTAL RESULTS & STATISTICAL RIGOR:
+Extract exact quantitative performance metrics:
+1. Classification Metrics: Accuracy (%), Balanced Accuracy (%), Precision, Recall, Macro-F1, Weighted-F1, Cohen's Kappa (κ), ROC-AUC
+2. Regression Metrics: Mean Absolute Error (MAE), Root Mean Square Error (RMSE), Pearson's r, Concordance Correlation Coefficient (CCC), R²
+3. Statistical Dispersion & Rigor:
+   - Mean ± Standard Deviation over folds/subjects
+   - 95% Confidence Intervals (CI)
+   - Number of independent runs / random seeds
+   - Statistical hypothesis tests: Paired t-test, Wilcoxon Signed-Rank test, ANOVA, Holm-Bonferroni correction (p-values)
+```
+
+---
+
+### PROMPT 11 — Ablation Study Audit
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 11 — ABLATION STUDY AUDIT:
+Extract all ablation experiments:
+For every ablated component:
+- Component Removed / Replaced:
+- Baseline Configuration:
+- Ablation Result vs Full Model Result: Exact performance delta (ΔAcc, ΔF1)
+- Isolated Contribution: Does the ablation isolate the specific module or introduce confounding hyperparameter shifts?
+- Source Location (Table/Figure):
+```
+
+---
+
+### PROMPT 12 — Generalization Across Domains & Subjects
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 12 — GENERALIZATION ACROSS DOMAINS & SUBJECTS:
+Evaluate:
+1. Evaluated Generalization Paradigm:
+   - Intra-Subject (Same subject, different trials)
+   - Cross-Subject (Unseen subjects, LOSO)
+   - Cross-Session (Unseen recording sessions across different days/weeks)
+   - Cross-Dataset / Cross-Corpus (e.g., DEAP → SEED/DREAMER)
+2. Domain Adaptation Techniques:
+   - Maximum Mean Discrepancy (MMD), Domain-Adversarial Neural Networks (DANN), Wasserstein Distance, Optimal Transport, AdaBN
+3. Degradation Severity: Quantification of performance drop from Subject-Dependent to Subject-Independent mode.
+```
+
+---
+
+### PROMPT 13 — Robustness, Missing Modalities & Noise
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 13 — ROBUSTNESS, MISSING MODALITIES & NOISE:
+Audit:
+1. Sensor Dropout & Missing Modalities:
+   - Does the model support inference when 1 or more modalities are completely missing (e.g., EEG disconnected, EDA unreadable)?
+   - Imputation vs Zero-padding vs Knowledge Distillation (Teacher-Student) vs Joint Multimodal Autoencoding
+2. Signal Quality & Noise Sensitivity:
+   - Resistance to motion artifacts, electrode impedance spikes, electrode displacement
+3. Class Imbalance Resilience:
+   - Handling of skewed emotional distributions (e.g., dominant Neutral/Calm classes)
+```
+
+---
+
+### PROMPT 14 — Computational Complexity & Edge Feasibility
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 14 — COMPUTATIONAL COMPLEXITY & EDGE FEASIBILITY:
+Extract efficiency and deployment metrics:
+1. Model Footprint: Total learnable parameters (M), Memory size (MB/GB)
+2. Compute Complexity: Floating Point Operations (FLOPs / GFLOPs / MACs)
+3. Execution Latency: Training time per epoch, Inference latency per time-window (ms)
+4. Hardware & Runtime Environment: GPU/CPU specs, Embedded/Edge platform compatibility (e.g., Jetson, Coral, Raspberry Pi)
+If not reported, state: "[UNKNOWN] — Computational cost and inference latency not reported."
+```
+
+---
+
+### PROMPT 15 — Methodological Limitations Audit
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 15 — METHODOLOGICAL LIMITATIONS AUDIT:
+Categorize all limitations into three formal academic levels:
+- Tier A — Explicit Author-Disclosed Limitations: Weaknesses openly stated in the Discussion/Conclusion.
+- Tier B — Implicit Methodological Flaws: Observable technical weaknesses (e.g., small cohort N<15, lack of LOSO, uncorrected multiple comparisons).
+- Tier C — Potential Critical Concerns: Theoretical risks requiring experimental verification (e.g., vulnerability to modality collapse, unverified physiological grounding).
+```
+
+---
+
+### PROMPT 16 — Reproducibility Audit
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
 Perform TASK 16 — REPRODUCIBILITY AUDIT:
+Classify overall reproducibility score: HIGH / MEDIUM / LOW / UNKNOWN
 Evaluate:
-1. Source Code Availability (GitHub/Zenodo URL provided? Open source vs. proprietary)
-2. Dataset Accessibility (Publicly available benchmarks vs. private closed cohorts)
-3. Detailed Preprocessing Instructions (Exact filter cutoff frequencies, windowing parameters specified?)
-4. Hyperparameter Transparency (Learning rate, batch size, optimizer, weight decay, epochs reported?)
-5. Random Seed and Initialization details
-6. Software Library Versions (PyTorch, TensorFlow, MNE, Scikit-learn).
-
-Assign an overall Reproducibility Rating: HIGH / MEDIUM / LOW / UNKNOWN, and justify with evidence.
+1. Public Source Code URL (GitHub/GitLab/Zenodo) and working status
+2. Open Dataset Availability & Preprocessed benchmark access
+3. Exact Hyperparameters disclosed (Learning rate, batch size, optimizer, dropout rates, weight decays)
+4. Random seed control and software library versions (PyTorch, TensorFlow, MNE-Python, TorchEEG)
 ```
 
 ---
 
-### PROMPT 17 — Data Leakage Audit
+### PROMPT 17 — Comprehensive Data Leakage Audit
 
 ```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Perform a rigorous, evidence-grounded audit. Do NOT accuse the paper of leakage without concrete textual evidence.
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Perform TASK 17 — DATA LEAKAGE AUDIT:
-Audit the paper across 8 dimensions and present as a table:
-| Leakage Dimension | Evidence in Paper | Risk Level (High/Med/Low/None) | Confidence ([EXPLICIT]/[INFERRED]) |
-| ----------------- | ----------------- | ------------------------------ | ---------------------------------- |
-| 1. Subject Leakage (Same subject in train & test) | ... | ... | ... |
-| 2. Trial Leakage (Same trial segments mixed) | ... | ... | ... |
-| 3. Windowing Leakage (Overlapping windows shuffled prior to split) | ... | ... | ... |
-| 4. Normalization Leakage (Global Z-score fit before split) | ... | ... | ... |
-| 5. Temporal Filtering Leakage (LDS smoothing across split boundaries) | ... | ... | ... |
-| 6. Augmentation Leakage (Synthetic samples created from test set) | ... | ... | ... |
-| 7. Hyperparameter Tuning Leakage (Tuned on test set) | ... | ... | ... |
-| 8. Montage / Sensor Configuration Shift | ... | ... | ... |
+Perform TASK 17 — COMPREHENSIVE DATA LEAKAGE AUDIT:
+Perform a forensic audit for potential academic data leakage:
+1. Subject Leakage: Did windows/samples from the same subject exist in both training and test partitions?
+2. Temporal / Windowing Leakage: Did overlapping windows from the same continuous trial bleed across splits?
+3. Preprocessing & Scaling Leakage: Was Z-score / Min-Max normalization computed globally before splitting rather than fitted solely on training folds?
+4. Feature Selection / Dimensionality Reduction Leakage: Was PCA / ICA / CSP fitted on the entire dataset prior to cross-validation?
+5. Hyperparameter Tuning Leakage: Were hyperparameters optimized directly on the test set without a held-out validation set?
+State the final verdict: [CLEAN] / [POTENTIAL LEAKAGE] / [CONFIRMED LEAKAGE] / [INDETERMINABLE] with specific citations.
 ```
 
 ---
@@ -379,75 +383,64 @@ Audit the paper across 8 dimensions and present as a table:
 You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
 
 Perform TASK 18 — SCIENTIFIC EVIDENCE TABLE:
-Produce a comprehensive claims-and-evidence table:
-| Claim Made by Authors | Experimental Evidence | Source Location (Section/Table/Figure/Page) | Evidence Type ([EXPLICIT]/[SUPPORTED]/[INFERRED]) |
-| --------------------- | --------------------- | ------------------------------------------- | -------------------------------------------------- |
+Synthesize all core claims into a markdown table:
+| Claimed Hypothesis / Contribution | Supporting Empirical Evidence | Source Location | Epistemic Status ([EXPLICIT] / [SUPPORTED] / [INFERRED]) |
+|---|---|---|---|
 
-Focus specifically on claims regarding:
-- Multimodal biosignal synergy
-- Multi-task learning advantage
-- Multi-branch architectural superiority
-- Cross-modal attention mechanisms
-- Generalization and robustness.
+Focus on claims related to:
+- Multimodal biosignal interaction (CNS vs ANS)
+- Multi-task affective optimization
+- Multi-branch encoder representations
+- Subspace disentanglement
+- Generalization and robustness
 ```
 
 ---
 
-### PROMPT 19 — Standardized 18-Point Paper Summary
+### PROMPT 19 — Executive Synthesis Summary (18-Point)
 
 ```markdown
-You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not provide a research proposal; synthesize the paper objectively.
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
 
-Perform TASK 19 — STANDARDIZED 18-POINT SUMMARY:
-Summarize the paper following EXACTLY this 18-point numbered structure:
-1. Research Problem:
-2. Dataset Evaluated:
-3. Modalities Used:
-4. Preprocessing Protocol:
-5. Feature Representation:
-6. Model Architecture:
-7. Multimodal Fusion Mechanism:
-8. Multi-Task Formulation:
-9. Evaluation Protocol:
-10. Comparative Baselines:
-11. Main Quantitative Results:
-12. Ablation Study Findings:
-13. Generalization Performance:
-14. Robustness & Missing Modalities:
-15. Computational Cost:
-16. Stated & Observed Limitations:
-17. Reproducibility Assessment:
-18. Scientific Evidence Quality:
+Perform TASK 19 — EXECUTIVE SYNTHESIS SUMMARY:
+Produce a standardized 18-point executive summary strictly using the following structure:
+1. Research Problem & Objective
+2. Benchmark Dataset & Cohort Size
+3. Physiological Modalities (CNS & ANS)
+4. Affective Ground-Truth Model
+5. Preprocessing & Artifact Cleaning
+6. Feature Representation & Transforms
+7. Encoder Architecture
+8. Multimodal Fusion Mechanism
+9. Multi-Task Learning Strategy
+10. Multi-Branch Structure
+11. Evaluation Protocol & Split
+12. Benchmark Baselines
+13. Quantitative Main Results
+14. Ablation Findings
+15. Generalization & LOSO Performance
+16. Missing Modality & Robustness
+17. Computational Efficiency & Latency
+18. Key Limitations & Reproducibility
 ```
 
 ---
 
-### PROMPT 20 — Research Relevance to PhD Thesis
+### PROMPT 20 — Research Relevance Matrix
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research topic: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
 
-Analyze the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
-
-Perform TASK 20 — RESEARCH RELEVANCE SCORING:
-Classify and justify the relevance of this paper across 7 core dissertation dimensions:
-
-1. Multimodal Biosignals (EEG + Autonomic ECG/EDA): [HIGH / MEDIUM / LOW]
-   - Justification: ...
-2. Multi-Task Learning (Joint Valence-Arousal-Dominance): [HIGH / MEDIUM / LOW]
-   - Justification: ...
-3. Multi-Branch Architecture (Physics-informed dedicated encoders): [HIGH / MEDIUM / LOW]
-   - Justification: ...
-4. Multimodal Fusion (Cross-Modal Attention QKV): [HIGH / MEDIUM / LOW]
-   - Justification: ...
-5. Cross-Subject Generalization (LOSO / Disentangled representations): [HIGH / MEDIUM / LOW]
-   - Justification: ...
-6. Missing Modality Robustness (Wearable sensor dropouts): [HIGH / MEDIUM / LOW]
-   - Justification: ...
-7. Computational Efficiency & Edge BCI Feasibility: [HIGH / MEDIUM / LOW]
-   - Justification: ...
-
-Conclude with 3 concrete takeaways or technical ideas from this paper that can directly strengthen the PhD dissertation chapters.
+Perform TASK 20 — RESEARCH RELEVANCE MATRIX:
+Rate and justify relevance to the PhD Dissertation ("Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals") along 8 core dimensions using HIGH / MEDIUM / LOW:
+1. Multimodal Biosignals (CNS + ANS Synergy): [HIGH/MEDIUM/LOW] — Justification:
+2. Multi-Task Learning (Affective Joint Objectives): [HIGH/MEDIUM/LOW] — Justification:
+3. Multi-Branch Deep Architectures: [HIGH/MEDIUM/LOW] — Justification:
+4. Directional Cross-Modal Attention Fusion: [HIGH/MEDIUM/LOW] — Justification:
+5. Shared-Private Subspace Disentanglement: [HIGH/MEDIUM/LOW] — Justification:
+6. Cross-Subject LOSO Generalization: [HIGH/MEDIUM/LOW] — Justification:
+7. Missing Modality Robustness: [HIGH/MEDIUM/LOW] — Justification:
+8. Physiological / Explainable AI (XAI) Grounding: [HIGH/MEDIUM/LOW] — Justification:
 ```
 
 ---
@@ -455,28 +448,22 @@ Conclude with 3 concrete takeaways or technical ideas from this paper that can d
 ### PROMPT 21 — Research Gap Extraction & Formulation
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
-
-Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not invent missing information. For each item, provide concrete textual evidence and label findings as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
 
 Perform TASK 21 — RESEARCH GAP EXTRACTION & FORMULATION:
-Extract and formulate the scientific and technical gaps revealed by this paper across 3 critical areas:
-
-1. EXPLICIT OPEN QUESTIONS & AUTHOR-STATED GAPS:
-   - What unresolved theoretical, experimental, or engineering challenges do the authors explicitly acknowledge as future work?
-   - What scenarios did the authors fail to address or declare out-of-scope?
-
-2. METHODOLOGICAL & THEORETICAL GAPS (Cross-checked against SOTA):
-   Evaluate whether the paper leaves any of the following foundational gaps unaddressed:
-   - Modality Asymmetry & Dominance: Did the model use naive concatenation causing high-dimensional EEG to suppress subtle autonomic ECG/EDA signals?
-   - Subspace Disentanglement: Did the architecture fail to isolate subject-specific artifacts/style from shared emotion content?
-   - Multi-Task Objective Interference: Did the model use fixed, manual loss weights leading to gradient conflict between Valence and Arousal?
-   - Evaluation & Generalization Rigor: Did the study evaluate only subject-dependent protocols without strict Leave-One-Subject-Out (LOSO) cross-subject or cross-dataset validation?
-   - Sensor Dropout & Real-World Robustness: Did the paper assume all sensor channels are continuously available, ignoring missing modality scenarios in wearable settings?
-   - Neurobiological Grounding & Explainability: Did the model act as a black box without providing topographic scalp activation or physiological interpretability (XAI)?
-
-3. GROUNDED CONTRIBUTION OPPORTUNITY FOR THE PHD DISSERTATION:
-   - Formulate a precise, publication-ready research gap statement summarizing how our proposed MMB-EmotionNet architecture (Physics-informed Multi-Branch + Shared-Private Disentanglement + Directional Cross-Attention + Homoscedastic Uncertainty MTL) directly overcomes the weaknesses of this paper.
+Extract and formulate the scientific and technical gaps revealed by this paper:
+1. Explicit Future Work & Open Questions:
+   Extract what the authors explicitly stated as unresolved challenges, future directions, or unaddressed questions.
+2. Theoretical & Methodological Gaps:
+   Identify specific technical weaknesses or omissions in the paper's approach:
+   - Modality Rate Asymmetry / Modality Collapse: Did one modality dominate during gradient updates?
+   - Subspace Disentanglement: Did the paper mix sensor-private noise/artifacts with shared emotional semantics?
+   - Multi-Task Objective Interference: Did the paper use naive/fixed loss weighting causing negative transfer?
+   - Anti-Leakage & Generalization: Did the paper fail to evaluate strict Leave-One-Subject-Out (LOSO) protocols?
+   - Missing Modality Robustness: Did the paper assume all sensor channels are always available without evaluating dropout?
+   - Biological / XAI Grounding: Did the paper lack neurobiological grounding and topographic explainability?
+3. Ph.D. Dissertation Contribution Opportunity:
+   Synthesize how our proposed Multi-Task Multi-Branch Architecture (MMB-EmotionNet) directly addresses the gaps exposed by this paper.
 ```
 
 ---
@@ -484,24 +471,17 @@ Extract and formulate the scientific and technical gaps revealed by this paper a
 ### PROMPT 22 — Novelty & Prior Art Collision Check (P4)
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
-
-Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" (and any related work cited in this notebook). Do not assume novelty without textual evidence. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+You are a senior doctoral thesis reviewer specializing in Affective Computing and Multimodal Biosignals. Analyze the provided sources in this notebook regarding "[INSERT PAPER TITLE OR PAPER ID]".
 
 Perform TASK 22 — NOVELTY & PRIOR ART COLLISION CHECK:
-Investigate whether the core ideas of our PhD dissertation have already been executed by this paper or prior art:
-
-1. COMBINATORIAL COLLISION ANALYSIS:
-   Has this paper implemented the EXACT combination of:
-   - Multimodal Trinity (Central EEG + Autonomic ECG + Sympathetic EDA)? [YES / PARTIAL / NO]
-   - Physics-Informed Dedicated Multi-Branch Encoders (Spatial GCN for EEG, Dilated 1D-TCN for ECG, CWT for EDA)? [YES / PARTIAL / NO]
-   - Explicit Shared-Private Subspace Disentanglement (Orthogonality loss separating subject identity from shared emotion manifold)? [YES / PARTIAL / NO]
-   - Directional Cross-Modal Attention ($Q_{EEG}, K_{Bio}, V_{Bio}$)? [YES / PARTIAL / NO]
-   - Dynamically Balanced Multi-Task Loss (Homoscedastic uncertainty weighting / GradNorm)? [YES / PARTIAL / NO]
-
-2. SIMILARITY & BOUNDARY DELINEATION:
-   - What is the exact degree of architectural overlap between this paper and our proposed MMB-EmotionNet framework?
-   - Where does this paper stop, and what specific novel territory remains exclusively open for our dissertation?
+Perform a rigorous novelty collision check against our proposed PhD framework:
+1. Has this paper (or any cited work in this notebook) implemented the EXACT combination of:
+   - Multimodal Biosignals (Scalp EEG + Autonomic ECG/EDA/PPG)?
+   - Dedicated Physics-Informed Multi-Branch Encoders (GCN for EEG + Dilated TCN for ECG + CWT for EDA)?
+   - Explicit Shared-Private Subspace Disentanglement (L_sim + L_diff)?
+   - Directional Cross-Modal Attention (Q_EEG, K_Bio, V_Bio)?
+   - Dynamically Balanced Multi-Task Loss (Homoscedastic Aleatoric Uncertainty Weighting)?
+2. If similar architectures exist, identify the precise technical boundaries, differences, and limitations of prior art compared to our proposed MMB-EmotionNet framework. Categorize evidence strictly as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 ```
 
 ---
@@ -509,51 +489,33 @@ Investigate whether the core ideas of our PhD dissertation have already been exe
 ### PROMPT 23 — Research Directions & Architectural Taxonomy (P5)
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
-
-Analyze the target paper: "[INSERT PAPER TITLE OR PAPER ID]" across the broad literature base in this notebook.
+You are a senior doctoral thesis reviewer. Analyze the provided sources in this notebook regarding "[INSERT PAPER TITLE OR PAPER ID]".
 
 Perform TASK 23 — RESEARCH DIRECTIONS & ARCHITECTURAL TAXONOMY:
-Map out and categorize the feasible technical avenues and paradigms represented in this work:
-
-1. BRANCHING PARADIGMS:
-   - Classify: Unimodal vs. Homogeneous Multichannel CNN vs. Heterogeneous Physics-Informed Encoders (GNN + TCN + CWT).
-   - What are the strengths and trade-offs of this paper's branching approach?
-
-2. FUSION & MODALITY INTERACTION PARADIGMS:
-   - Classify: Early Concatenation vs. Intermediate Feature Fusion vs. Late Decision Fusion vs. Bidirectional Cross-Modal QKV Attention vs. Multimodal Transformer (MulT).
-
-3. MULTI-TASK & OPTIMIZATION PARADIGMS:
-   - Classify: Single-task independent models vs. Hard parameter sharing vs. Soft parameter sharing vs. Uncertainty-weighted dynamic loss vs. Adversarial subject decoupling.
-
-4. REPRESENTATION ALIGNMENT & GENERALIZATION:
-   - Classify: Monolithic latent space vs. Domain Adversarial Alignment (DANN) vs. Maximum Mean Discrepancy (MMD) vs. Explicit Orthogonal Subspace Disentanglement.
+Map out and categorize the feasible technical avenues revealed across the literature:
+1. Branching Paradigms: Unimodal vs Homogeneous CNN vs Physics-informed Spatial GCN + Dilated TCN + CWT.
+2. Fusion & Cross-Modal Interaction: Early Concatenation vs Late Voting vs Cross-Attention QKV vs Multimodal Transformers.
+3. Multi-Task Optimization: Single-task independent models vs Hard parameter sharing vs Uncertainty-weighted dynamic loss vs Adversarial subject decoupling.
+4. Generalization & Adaptation: Standard empirical training vs Domain Adversarial Neural Networks (DANN) vs Maximum Mean Discrepancy (MMD) vs Orthogonal Disentanglement.
 ```
 
 ---
 
-### PROMPT 24 — Research Questions & Hypotheses Formulation (P6)
+### PROMPT 24 — Research Questions & Testable Hypotheses Formulation (P6)
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
-
-Analyze the methodology and empirical gaps of the paper: "[INSERT PAPER TITLE OR PAPER ID]".
+You are a senior doctoral thesis reviewer. Analyze the provided sources in this notebook regarding "[INSERT PAPER TITLE OR PAPER ID]".
 
 Perform TASK 24 — RESEARCH QUESTIONS & TESTABLE HYPOTHESES FORMULATION:
-Translate the weaknesses and open directions of this paper into formal, testable PhD research questions and falsifiable hypotheses:
-
-1. FORMULATION OF FORMAL RESEARCH QUESTIONS (RQs):
-   - Formulate applicable RQs among $RQ_1$–$RQ_6$ directly motivated by this paper:
-     * $RQ_1$ (Physics-Informed Multi-Branch vs. Monolithic/Early Concatenation)
-     * $RQ_2$ (Directional Cross-Modal Attention vs. Flat Concatenation)
-     * $RQ_3$ (Shared-Private Disentanglement vs. Entangled Latent Representation)
-     * $RQ_4$ (Homoscedastic Uncertainty MTL vs. Fixed Loss Weighting)
-     * $RQ_5$ (Subject-Independent LOSO Generalization vs. Subject-Dependent Splits)
-     * $RQ_6$ (Missing-Modality Knowledge Distillation vs. Standard Sensor Dependency)
-
-2. FORMAL STATISTICAL HYPOTHESES ($H_0$ and $H_1$):
-   - State the Null Hypothesis ($H_0$) and Alternative Hypothesis ($H_1$) corresponding to the chosen RQ.
-   - Define the quantitative metric and statistical threshold for rejecting $H_0$ (e.g., Wilcoxon signed-rank test, $p < 0.05$, Cohen's $d > 0.5$).
+Translate the identified research gaps and directions into formal, falsifiable scientific propositions:
+1. Formulate 6 core Research Questions (RQ1 to RQ6):
+   - RQ1: Physics-informed multi-branch representation vs Homogeneous encoders.
+   - RQ2: Directional cross-modal attention synergy (Q_EEG ↔ K,V_Bio).
+   - RQ3: Shared-private orthogonal subspace disentanglement for sensor noise isolation.
+   - RQ4: Homoscedastic uncertainty multi-task loss balancing vs Static weighting.
+   - RQ5: Subject-independent Leave-One-Subject-Out (LOSO) cross-subject generalization.
+   - RQ6: Graceful performance degradation under sensor dropouts (Missing modality robustness).
+2. State the corresponding Null (H0) and Alternative (H1) Hypotheses with formal statistical rejection criteria (α = 0.05).
 ```
 
 ---
@@ -561,27 +523,14 @@ Translate the weaknesses and open directions of this paper into formal, testable
 ### PROMPT 25 — Experimental Verification & Protocol Design (P7)
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
-
-Analyze the experimental design of the paper: "[INSERT PAPER TITLE OR PAPER ID]".
+You are a senior doctoral thesis reviewer. Analyze the provided sources in this notebook regarding "[INSERT PAPER TITLE OR PAPER ID]".
 
 Perform TASK 25 — EXPERIMENTAL VERIFICATION & PROTOCOL DESIGN:
-Design an end-to-end, rigorous experimental protocol to empirically validate our proposed hypotheses against the benchmarks in this paper:
-
-1. BENCHMARK DATASET & ANTI-LEAKAGE SELECTION:
-   - Target Datasets: DEAP, SEED, DREAMER, AMIGOS, or WESAD.
-   - Exact Splitting Protocol: Strict Leave-One-Subject-Out (LOSO) cross-subject cross-validation.
-   - Anti-Leakage Rules: Preprocessing and Z-score normalization strictly fit on training folds only; trial-level windowing without temporal shuffling.
-
-2. CONTROLLED ABLATION SUITE DESIGN:
-   - Specify the ablation configurations required to isolate individual mechanisms (e.g., Unimodal EEG, Unimodal ECG/EDA, Early Fusion, Without Disentanglement, Without Cross-Attention, Without Uncertainty Loss).
-
-3. MISSING MODALITY & STRESS-TESTING PROTOCOL:
-   - Progressive sensor dropout evaluation (Drop 25%, 50%, 75%, 100% of peripheral or EEG channels) comparing baseline vs Teacher-Student Knowledge Distillation.
-
-4. STATISTICAL VALIDATION PROTOCOL:
-   - Metric definitions: Balanced Accuracy, Macro-F1, Pearson $r$, Concordance Correlation Coefficient (CCC).
-   - Statistical Tests: 1000-iteration Bootstrap 95% BCa Confidence Intervals, Wilcoxon Paired Signed-Rank Test with Holm-Bonferroni correction ($\alpha = 0.05$).
+Define the complete, reproducible experimental blueprint to validate the hypotheses:
+1. Benchmark Datasets & Anti-Leakage Protocol: Selection of canonical datasets (DEAP, SEED, DREAMER, AMIGOS, WESAD) with strict Subject-wise LOSO splitting and pre-split isolated scaling.
+2. Controlled 10-Configuration Ablation Suite (EXP-ABL-01 through EXP-ABL-10) isolating every individual module (unimodal branches, cross-attention, disentanglement losses L_sim/L_diff, MTL weighting schemes).
+3. Missing Modality Stress-Testing Suite: Progressive sensor dropout (25%, 50%, 75%, 100% missing peripheral/EEG streams) comparing baseline models vs Teacher-Student Knowledge Distillation.
+4. Statistical Rigor & Significance Testing: Wilcoxon Paired Signed-Rank Test, Holm-Bonferroni correction (α = 0.05), 95% Bootstrap BCa Confidence Intervals, and Cohen's d effect sizes.
 ```
 
 ---
@@ -589,71 +538,53 @@ Design an end-to-end, rigorous experimental protocol to empirically validate our
 ### PROMPT 26 — Research Decision Map Synthesis (P8)
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
-
-Analyze the paper: "[INSERT PAPER TITLE OR PAPER ID]" and synthesize findings into an executive Research Decision Map complying with Rule 23 of `AGENTS.md`.
+You are a senior doctoral thesis reviewer. Analyze the provided sources in this notebook regarding "[INSERT PAPER TITLE OR PAPER ID]".
 
 Perform TASK 26 — RESEARCH DECISION MAP SYNTHESIS:
-Synthesize an executive decision matrix structured exactly as follows:
-
-1. EVIDENCE BASE:
-   - What concrete empirical results from this paper justify our architectural choices (Multi-Branch, Disentanglement, Cross-Attention, MTL)?
-
-2. TECHNICAL ALTERNATIVES:
-   - What competing baseline algorithms or fusion mechanisms exist as valid alternatives?
-
-3. METHODOLOGICAL TRADE-OFFS:
-   - Model complexity vs. Classification accuracy.
-   - Parameter count vs. Real-time edge latency.
-   - Training stability of Disentanglement vs. Standard cross-entropy.
-
-4. SCIENTIFIC & EXPERIMENTAL RISKS:
-   - What potential failure modes (e.g., negative transfer, gradient explosion, sensor artifact dominance) must be mitigated?
-
-5. CONCRETE EXPERIMENTAL ACTION PLAN:
-   - What is the immediate next experimental step for the PhD dissertation based on this analysis?
+Synthesize all findings into an executive Research Decision Map according to Rule 23 of AGENTS.md:
+1. Evidence Base: Summarize direct empirical evidence supporting the proposed design.
+2. Technical Alternatives: List competing design choices evaluated in the literature.
+3. Methodological Trade-offs: Detail trade-offs between model complexity, parameter footprint, and classification accuracy.
+4. Experimental & Scientific Risks: Identify potential failure modes (e.g., negative transfer, sensor noise dominance, montage shift).
+5. Concrete Action Plan: Provide the immediate experimental milestones for the PhD dissertation.
 ```
 
 ---
 
-## ⚡ APPENDIX — All-in-One Master Deep Extraction Prompt
+## 🚀 APPENDIX — All-in-One Master Deep Extraction Prompt
 
-*(Use this prompt if you want NotebookLM to extract all 26 dimensions in a single comprehensive pass)*
+> **Usage Note**: When you want to perform a complete, end-to-end deep analysis of a paper in a single NotebookLM query, copy and paste this master prompt.
 
 ```markdown
-You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+You are a senior scientific literature analysis assistant and doctoral research auditor specializing in Affective Computing, Biomedical Signal Processing (EEG, ECG, EDA, PPG), and Multimodal Deep Learning.
 
-Analyze the paper: "[INSERT PAPER TITLE OR PAPER ID]" using ONLY the uploaded sources. Do not hallucinate. Label all findings as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN], and adhere to the evaluation chain: METHOD → DATASET → PROTOCOL → METRIC → RESULT.
+Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources in this notebook. Do NOT invent missing information. For every answer, distinguish [EXPLICIT], [SUPPORTED], [INFERRED], and [UNKNOWN]. Always preserve: METHOD → DATASET → PROTOCOL → METRIC → RESULT.
 
-Generate a comprehensive academic extraction report following this structured template:
-
-# SCIENTIFIC ANALYSIS REPORT: [INSERT PAPER TITLE OR PAPER ID]
-
-## 1. IDENTITY & RESEARCH PROBLEM (Tasks 1 & 2)
-- Title, Authors, Year, Venue, DOI.
-- Core research problem, claimed scientific contributions, and dataset specification.
-
-## 2. PREPROCESSING & DATA LEAKAGE AUDIT (Tasks 3, 4, 17)
-- Preprocessing protocol, filter parameters, and feature representations.
-- Data partitioning (Subject-Dependent vs LOSO) and 8-Dimensional Anti-Leakage Audit.
-
-## 3. ARCHITECTURE, MULTI-BRANCH & FUSION (Tasks 5, 6, 7, 8)
-- End-to-end tensor flow, dedicated multi-branch structure, and physics-informed justification.
-- Multimodal fusion mechanism (Cross-Modal QKV Attention) and Multi-Task loss formulation.
-
-## 4. EXPERIMENTAL RESULTS, ABLATION & EFFICIENCY (Tasks 9, 10, 11, 12, 13, 14)
-- Comparative Baselines Matrix and exact quantitative metrics (Mean ± Std, p-values, CI).
-- Ablation study findings (Component removed, Full vs Ablated, Δ difference).
-- Generalization (LOSO), Robustness (Missing Modalities), and Computational Cost (Params, Latency).
-
-## 5. RESEARCH GAPS, NOVELTY & LIMITATIONS (Tasks 15, 16, 18, 21, 22)
-- Explicit author-stated future directions and methodological gaps.
-- Novelty Collision Check (Has Multi-Task + Multi-Branch + Multimodal been done?).
-- Scientific Evidence Table and Reproducibility rating (HIGH/MED/LOW).
-
-## 6. PHD DISSERTATION ROADMAP & DECISION MAP (Tasks 19, 20, 23, 24, 25, 26)
-- 18-point standardized summary and 7-dimensional relevance scoring.
-- Translation into Formal Research Questions ($RQ_1$–$RQ_6$) and Hypotheses ($H_1$–$H_6$).
-- Experimental validation blueprint (LOSO, 10 Ablation configurations, Wilcoxon + Holm-Bonferroni).
-- Executive Research Decision Map (Evidence, Alternatives, Trade-offs, Risks, and Action Plan).
+Provide a comprehensive, highly rigorous doctoral-level scientific audit covering all 26 dimensions:
+1. Paper Identity (Title, Authors, Year, Venue, DOI, Problem, Claimed Contributions)
+2. Dataset & Affective Ground-Truth (Name, Cohort N, Demographics, Ground-truth Affective Model, Rating Granularity & Reliability, CNS/ANS Modalities, Channels, Fs, Elicitation Paradigm, Trials/Windows)
+3. Preprocessing & Signal Physiology (Filters, Physiological Artifact Removal ICA/EEMD, Normalization, EEG Bands/Asymmetry, HRV/EDA Features, Augmentation)
+4. Data Splitting Protocol (Subject-dependent vs LOSO Independent, Partitioning Ratios, Anti-Leakage Verification)
+5. Model Architecture & Topology (Full End-to-End Pipeline, Spatial/Temporal/Spectral Encoders, Subspace Topography)
+6. Multimodal Fusion & Dynamics (Fusion Category, Exact Mathematical Operators, Cross-Modal Interaction & Dominance Control)
+7. Multi-Task Learning (Task Setup, Loss Equations, Static vs Uncertainty Dynamic Weighting, Negative Transfer Handling)
+8. Multi-Branch Structure (Branch Count, Dedicated Inputs, Shared-Private Disentanglement, Explicit Justification)
+9. Benchmark Baselines (Table of Baselines, Architecture Types, SOTA vs Naive)
+10. Quantitative Results (Exact Acc, F1, MAE/RMSE, Standard Deviations, Statistical Hypothesis Tests p-values)
+11. Ablation Audit (Module Removed, ΔAcc/ΔF1, Isolated Contribution)
+12. Generalization Capabilities (Cross-Subject LOSO, Cross-Session, Domain Adaptation)
+13. Robustness & Sensor Dropout (Missing Modality Handling, Noise Sensitivity, Class Imbalance)
+14. Computational Complexity (Parameters M, FLOPs, Latency ms, Hardware Specs)
+15. Limitations Audit (Tier A Author-disclosed, Tier B Observable Flaws, Tier C Critical Concerns)
+16. Reproducibility Assessment (Code URL, Benchmark Availability, Hyperparameters, Seed/Libraries)
+17. Data Leakage Audit (Subject, Window, Scaling, Feature Selection, Hyperparameter Tuning Leakage Verdict)
+18. Scientific Evidence Table (Markdown Table of Claims vs Evidence vs Source Location vs Epistemic Tag)
+19. Standardized 18-Point Paper Summary
+20. Research Relevance Matrix (Rating 8 Dimensions: High/Medium/Low with Justifications)
+21. Research Gap Extraction (Explicit Open Questions, Theoretical Gaps, PhD Contribution Opportunity)
+22. Novelty & Prior Art Collision Check (Check against MMB-EmotionNet framework)
+23. Research Directions & Architectural Taxonomy (Branching, Fusion, MTL, Adaptation Paradigms)
+24. Research Questions & Hypotheses Formulation (RQ1–RQ6, Null H0 & Alternative H1 Hypotheses)
+25. Experimental Verification Protocol (Datasets, 10-Configuration Ablation Suite, Missing Modality Stress-Testing, Statistical Rigor)
+26. Research Decision Map (Evidence Base, Alternatives, Trade-offs, Risks, Immediate Action Plan)
 ```

@@ -1,247 +1,491 @@
-# 📑 BỘ PROMPT GOOGLE NOTEBOOKLM PHÂN TÍCH CHUYÊN SÂU TỪNG BÀI BÁO (PER-PAPER ANALYSIS SUITE)
-## ĐỀ TÀI TIẾN SĨ: KIẾN TRÚC HỌC ĐA NHIỆM VỤ ĐA NHÁNH CHO NHẬN DIỆN CẢM XÚC TỪ TÍN HIỆU Y SINH
-*(Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals)*
+# 📑 NotebookLM Individual Task Prompts per Paper (English Suite)
+## Doctoral Research: Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals
 
-Tài liệu này cung cấp hệ thống prompt chuẩn mực được thiết kế riêng cho **Google NotebookLM**, cho phép nghiên cứu sinh bóc tách và phân tích toàn diện **từng bài báo khoa học đơn lẻ** theo 20 tiêu chí khoa học nghiêm ngặt quy định trong [`NotebookLM.md`](../NotebookLM.md).
-
----
-
-## 🎯 1. NGUYÊN TẮC BẮT BUỘC KHI TRÍCH XUẤT (EVIDENTIARY RULES)
-
-Khi gửi prompt vào NotebookLM, hệ thống AI bắt buộc phải tuân thủ 4 nhãn bằng chứng:
-- **`[EXPLICIT]`**: Tác giả nêu trực tiếp trong bài báo (kèm số trang / mục / bảng).
-- **`[SUPPORTED]`**: Được hỗ trợ mạnh mẽ bởi kết quả thực nghiệm báo cáo.
-- **`[INFERRED]`**: Suy luận logic hợp lý nhưng không ghi trực diện.
-- **`[UNKNOWN]`**: Không thể xác định từ tài liệu (Tuyệt đối không tự suy đoán hoặc bịa đặt).
-
-> [!IMPORTANT]
-> **Quy Tắc Chuỗi Giá Trị Bắt Buộc:**
-> Tuyệt đối không viết: *"Bài báo chứng minh phương pháp X là tốt nhất."*  
-> Bắt buộc phải viết theo chuỗi:  
-> $$\text{METHOD} \longrightarrow \text{DATASET} \longrightarrow \text{PROTOCOL} \longrightarrow \text{METRIC} \longrightarrow \text{RESULT}$$  
-> *(Ví dụ: "Tác giả đề xuất mô hình MMB-EmotionNet trên tập dữ liệu DEAP theo giao thức Leave-One-Subject-Out (LOSO) đạt độ chính xác Valence 85.2% và F1-score 84.6%").*
+This document provides dedicated, task-by-task **English Prompts** for **Google NotebookLM** to analyze any individual research paper based on the 20 rigorous tasks defined in [`NotebookLM.md`](../NotebookLM.md).
 
 ---
 
-## 🚀 2. BỘ PROMPTS CHUYÊN DỤNG PHÂN TÍCH TỪNG BÀI BÁO (5 GÓI THEMATIC BUNDLES)
+## 🎯 Global Instructions & Evidentiary Rules (Applied to All Prompts)
 
-Khi phân tích một bài báo cụ thể trong NotebookLM, bạn hãy thay thế `[TÊN BÀI BÁO HOẶC MÃ BÀI BÁO]` bằng tiêu đề hoặc mã bài báo tương ứng (Ví dụ: `OA_KW1_001` hoặc `LGGNet`).
+When using any prompt below:
+1. Replace `[INSERT PAPER TITLE OR PAPER ID]` with the target paper title or citation ID (e.g., `OA_KW1_001` or `LGGNet`).
+2. NotebookLM must evaluate **ONLY** the sources uploaded in the notebook.
+3. NotebookLM must label every piece of extracted information with:
+   - **`[EXPLICIT]`**: Directly stated in the paper text (with section/table/page citation).
+   - **`[SUPPORTED]`**: Strongly supported by reported experimental figures or tables.
+   - **`[INFERRED]`**: Reasonable interpretation but not explicitly stated.
+   - **`[UNKNOWN]`**: Cannot be determined from the source text (never hallucinate or guess).
+4. Strict evaluation chain rule:
+   $$\text{METHOD} \longrightarrow \text{DATASET} \longrightarrow \text{PROTOCOL} \longrightarrow \text{METRIC} \longrightarrow \text{RESULT}$$
 
 ---
 
-### 📦 GÓI 1: ĐỊNH DANH, DỮ LIỆU & TIỀN XỬ LÝ (Identity, Dataset & Preprocessing)
-*(Bao gồm Task 1, Task 2, Task 3)*
+## 📑 Table of Contents (20 Discrete Task Prompts)
+
+- [PROMPT 1 — Paper Identity](#prompt-1--paper-identity)
+- [PROMPT 2 — Dataset Specification](#prompt-2--dataset-specification)
+- [PROMPT 3 — Preprocessing Protocol](#prompt-3--preprocessing-protocol)
+- [PROMPT 4 — Data Split & Partitioning](#prompt-4--data-split--partitioning)
+- [PROMPT 5 — Model Architecture](#prompt-5--model-architecture)
+- [PROMPT 6 — Multimodal Fusion Mechanism](#prompt-6--multimodal-fusion-mechanism)
+- [PROMPT 7 — Multi-Task Learning Formulation](#prompt-7--multi-task-learning-formulation)
+- [PROMPT 8 — Multi-Branch Structure](#prompt-8--multi-branch-structure)
+- [PROMPT 9 — Baseline Comparisons](#prompt-9--baseline-comparisons)
+- [PROMPT 10 — Experimental Results](#prompt-10--experimental-results)
+- [PROMPT 11 — Ablation Experiments](#prompt-11--ablation-experiments)
+- [PROMPT 12 — Generalization Capabilities](#prompt-12--generalization-capabilities)
+- [PROMPT 13 — Robustness & Missing Modalities](#prompt-13--robustness--missing-modalities)
+- [PROMPT 14 — Computational Cost & Efficiency](#prompt-14--computational-cost--efficiency)
+- [PROMPT 15 — Stated & Observed Limitations](#prompt-15--stated--observed-limitations)
+- [PROMPT 16 — Reproducibility Assessment](#prompt-16--reproducibility-assessment)
+- [PROMPT 17 — Data Leakage Audit](#prompt-17--data-leakage-audit)
+- [PROMPT 18 — Scientific Evidence Table](#prompt-18--scientific-evidence-table)
+- [PROMPT 19 — Standardized 18-Point Paper Summary](#prompt-19--standardized-18-point-paper-summary)
+- [PROMPT 20 — Research Relevance to PhD Thesis](#prompt-20--research-relevance-to-phd-thesis)
+- [APPENDIX — All-in-One Master Deep Extraction Prompt](#appendix--all-in-one-master-deep-extraction-prompt)
+
+---
+
+### PROMPT 1 — Paper Identity
 
 ```markdown
-Bạn là trợ lý phân tích tài liệu khoa học cho đề tài Tiến sĩ: "Kiến trúc học đa nhiệm vụ đa nhánh cho nhận diện cảm xúc từ tín hiệu y sinh đa phương thức".
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
 
-Hãy phân tích bài báo sau: [TÊN BÀI BÁO HOẶC MÃ BÀI BÁO]. 
-Chỉ sử dụng thông tin có trong tài liệu nguồn. Phân định rõ [EXPLICIT], [SUPPORTED], [INFERRED], [UNKNOWN].
+Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources in this notebook. Do not invent missing information. For each item, provide source locations (section/page) and categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Trích xuất chi tiết 3 nội dung sau:
-
-1. ĐỊNH DANH BÀI BÁO (Paper Identity):
-   - Tiêu đề chính xác (Title)
-   - Danh sách tác giả & Năm xuất bản
-   - Tạp chí / Hội thảo (Venue) & DOI
-   - Vấn đề nghiên cứu cốt lõi (Research Problem)
-   - Mục tiêu chính & Đóng góp khoa học tự tuyên bố (Claimed Contributions)
-
-2. ĐẶC TẢ BỘ DỮ LIỆU (Dataset Specification):
-   - Tên bộ dữ liệu (DEAP, SEED, DREAMER, AMIGOS, hoặc Custom)
-   - Số lượng đối tượng tham gia & Nhân khẩu học (Tuổi, giới tính)
-   - Các phương thức tín hiệu thu thập (EEG, ECG, EDA/GSR, PPG, EMG, Respiration, Eye-tracking)
-   - Số lượng kênh đo và tần số lấy mẫu (Sampling Rate) của từng tín hiệu
-   - Phương pháp kích thích cảm xúc (Audio-visual, Video clips, Âm nhạc)
-   - Không gian nhãn (Valence, Arousal, Dominance / Rời rạc) & Thang đo (1-9, 1-5)
-   - Thời lượng mỗi trial, Độ dài cửa sổ trượt (Window length) và Độ gối (Overlap)
-
-3. QUY TRÌNH TIỀN XỬ LÝ (Preprocessing Protocol):
-   - Phương pháp lọc dải tần (Bandpass filtering), Lọc notch 50/60 Hz
-   - Kỹ thuật khử nhiễu (ICA, EOG/EMG artifact removal, Baseline correction, CAR/REST)
-   - Kỹ thuật chuẩn hóa (Z-score, Min-Max, Per-subject vs Global)
-   - Trích xuất đặc trưng (DE, PSD, CWT, HRV, Tonic/Phasic EDA)
-   - QUAN TRỌNG: Xác định việc tiền xử lý/chuẩn hóa được thực hiện TRƯỚC hay SAU khi chia tập Train/Test?
+Perform TASK 1 — PAPER IDENTITY:
+Extract:
+1. Exact Title
+2. Authors and Affiliations
+3. Publication Year
+4. Venue / Journal / Conference
+5. DOI and Official URL
+6. Core Research Problem addressed
+7. Main Objective of the study
+8. Primary Claimed Scientific Contributions
 ```
 
 ---
 
-### 📦 GÓI 2: KIẾN TRÚC MÔ HÌNH, DUNG HỢP ĐA PHƯƠNG THỨC & HỌC ĐA NHIỆM (Architecture, Fusion & MTL)
-*(Bao gồm Task 5, Task 6, Task 7, Task 8)*
+### PROMPT 2 — Dataset Specification
 
 ```markdown
-Hãy phân tích sâu về Kiến trúc Kỹ thuật của bài báo: [TÊN BÀI BÁO HOẶC MÃ BÀI BÁO].
-Chỉ căn cứ vào bài báo, không tự suy diễn cấu trúc không được mô tả.
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not invent missing information. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Trích xuất 4 thành phần sau:
-
-1. KIẾN TRÚC MẠNG TỔNG THỂ (End-to-End Architecture):
-   - Sơ đồ dòng chảy dữ liệu: Input → Preprocessing → Feature Encoder → Shared/Private Latent Space → Fusion → Task Heads → Output
-   - Các khối mạng học sâu được sử dụng (CNN 1D/2D, GCN/GAT, Transformer, BiLSTM, TCN, Conformer)
-   - Kích thước chiều ẩn (Hidden dimensions) và cơ chế kích hoạt (Activation functions)
-
-2. CẤU TRÚC ĐA NHÁNH (Multi-Branch Design):
-   - Số lượng nhánh mạng nơ-ron độc lập
-   - Đầu vào và bộ mã hóa của từng nhánh (Ví dụ: Nhánh EEG xử lý thế nào, nhánh ECG/EDA xử lý thế nào?)
-   - Lý do tác giả thiết kế đa nhánh (Có dựa trên đặc thù vật lý tín hiệu hay không?)
-
-3. CƠ CHẾ DUNG HỢP ĐA PHƯƠNG THỨC (Multimodal Fusion Mechanism):
-   - Phân loại: Early Fusion, Intermediate Fusion, Late Fusion, hay Cross-Modal Attention?
-   - Vị trí thực hiện dung hợp và các vector biểu diễn tham gia dung hợp
-   - Có cơ chế Cross-Attention Query-Key-Value giữa EEG và tín hiệu sinh lý ngoại vi không?
-   - Mô hình có học trọng số thích nghi (Modality Importance Weights) cho từng cảm biến không?
-
-4. HỌC ĐA NHIỆM VỤ (Multi-Task Learning Formulation):
-   - Mô hình là Single-Task hay Multi-Task?
-   - Các nhiệm vụ đồng thời là gì (Ví dụ: Dự đoán đồng thời Valence và Arousal, hoặc Cảm xúc + Subject ID)?
-   - Các tầng nào chia sẻ tham số (Shared layers) và tầng nào riêng biệt (Task-specific heads)?
-   - Công thức hàm mất mát tổng quát (L_total = λ1 L_task1 + λ2 L_task2 + ...)?
-   - Trọng số nhiệm vụ λ là cố định (Fixed) hay tự học động (Learned / Kendall Uncertainty / GradNorm)?
+Perform TASK 2 — DATASET SPECIFICATION:
+Extract:
+1. Dataset Name (e.g., DEAP, SEED, SEED-IV, SEED-V, DREAMER, AMIGOS, MAHNOB-HCI, WESAD, or Custom)
+2. Number of Subjects and Demographics (age, gender distribution if reported)
+3. Modalities recorded (EEG, ECG, EDA/GSR, PPG, EMG, Respiration, Eye-tracking, etc.)
+4. Number of Channels/Sensors for each modality and sensor placement montage (e.g., 10-20 international system)
+5. Sampling Frequency (Hz) for each recorded signal stream
+6. Emotion Elicitation Method (video clips, music videos, acoustic stimuli, standardized recall)
+7. Emotional Labels and Label Space (Valence, Arousal, Dominance / Discrete categories)
+8. Number of Classes and Rating Scale (e.g., continuous 1–9 SAM scale, binary thresholding)
+9. Trial Duration (seconds)
+10. Segmentation and Windowing: Window Length (seconds/samples) and Overlap / Step Size
 ```
 
 ---
 
-### 📦 GÓI 3: KIỂM TOÁN RÒ RỈ DỮ LIỆU & GIAO THỨC CHIA TẬP (Data Leakage Audit & Validation Protocol)
-*(Bao gồm Task 4, Task 17)*
+### PROMPT 3 — Preprocessing Protocol
 
 ```markdown
-Hãy thực hiện KIỂM TOÁN RÒ RỈ DỮ LIỆU NGHIÊM NGẶT (Data Leakage Audit) đối với bài báo: [TÊN BÀI BÁO HOẶC MÃ BÀI BÁO].
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Phân tích chi tiết 2 nội dung:
-
-1. GIAO THỨC CHIA TẬP DỮ LIỆU (Data Partitioning):
-   - Đánh giá phụ thuộc đối tượng (Subject-Dependent) hay độc lập đối tượng (Subject-Independent)?
-   - Giao thức cụ thể: Random K-Fold, Subject-wise K-Fold, Leave-One-Subject-Out (LOSO), hay Cross-Session?
-   - Tỷ lệ phân chia Train / Validation / Test chính xác là bao nhiêu?
-   - Các cửa sổ trượt (Sliding windows) của cùng một đối tượng/trial có thể xuất hiện đồng thời ở cả tập Train và Test không?
-
-2. BẢNG KIỂM TOÁN 8 CHIỀU RÒ RỈ DỮ LIỆU (8-Dimensional Leakage Matrix):
-   Lập bảng đánh giá với các cột: [Loại Rò Rỉ | Bằng Chứng Trong Bài | Mức Độ Rủi Ro (Cao/TB/Thấp/Không) | Độ Tin Cậy [EXPLICIT/INFERRED]]
-   - Subject Leakage (Rò rỉ danh tính đối tượng)
-   - Trial Leakage (Rò rỉ giữa các thử nghiệm cùng kích thích)
-   - Windowing Leakage (Rò rỉ do xáo trộn sliding windows trước khi chia tập)
-   - Normalization Leakage (Rò rỉ chuẩn hóa Z-score/Min-Max toàn cục trước khi split)
-   - Feature Extraction Leakage (Rò rỉ lọc thời gian LDS/Moving Average qua ranh giới train/test)
-   - Augmentation Leakage (Rò rỉ dữ liệu tăng cường sinh ra từ tập test)
-   - Hyperparameter Leakage (Tinh chỉnh tham số trực tiếp trên tập test)
-   - Cross-Dataset / Montage Shift (Trộn lẫn cấu hình điện cực không chuẩn hóa)
+Perform TASK 3 — PREPROCESSING PROTOCOL:
+Extract:
+1. Bandpass Filtering (cutoff frequencies, filter types, orders for each modality)
+2. Notch Filtering (50 Hz / 60 Hz powerline interference removal)
+3. Artifact Removal methods (ICA, EOG/EMG regression, thresholding, wavelet denoising, CAR/REST reference transformation)
+4. Normalization and Scaling (Z-score, Min-Max, baseline subtraction, per-subject vs. global)
+5. Segmentation and Windowing parameters
+6. Data Augmentation techniques applied (jittering, masking, GANs, mixup, crop)
+7. Handcrafted Feature Extraction (e.g., DE, PSD, CWT, HRV time/frequency metrics, EDA tonic/phasic CDA)
+8. Dimensionality Reduction (PCA, t-SNE, feature selection algorithms)
+9. CRITICAL AUDIT: State explicitly whether normalization, filtering, and feature extraction were performed BEFORE or AFTER the train/test splitting.
 ```
 
 ---
 
-### 📦 GÓI 4: KẾT QUẢ THỰC NGHIỆM, ABLATION, TỔNG QUÁT HÓA & TÍNH TOÁN BIÊN
-*(Bao gồm Task 9, Task 10, Task 11, Task 12, Task 13, Task 14)*
+### PROMPT 4 — Data Split & Partitioning
 
 ```markdown
-Hãy trích xuất KẾT QUẢ THỰC NGHIỆM ĐỊNH LƯỢNG & ĐỘ BỀN VỮNG của bài báo: [TÊN BÀI BÁO HOẶC MÃ BÀI BÁO].
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not assume a safe split. If unclear, explicitly state [UNKNOWN].
 
-Trích xuất 6 nội dung:
-
-1. MA TRẬN ĐỐI SÁNH BASELINES:
-   Lập bảng so sánh các mô hình đối sánh trong bài: [Tên Baseline | Phương thức (Unimodal/Multimodal) | Kiến trúc | Giao thức Đánh giá | Kết quả so sánh]
-
-2. KẾT QUẢ CHÍNH XÁC ĐÃ CÔNG BỐ (Exact Reported Metrics):
-   - Độ chính xác (Accuracy, Balanced Accuracy)
-   - Macro-F1 / Weighted-F1, Precision, Recall, ROC-AUC
-   - MAE, RMSE, Pearson correlation r (nếu là hồi quy liên tục)
-   - Giá trị trung bình ± độ lệch chuẩn (Mean ± Std), Khoảng tin cậy, Kiểm định ý nghĩa thống kê (p-value, Wilcoxon, ANOVA, t-test)
-
-3. THỰC NGHIỆM TRIỆT TIÊU (Ablation Study):
-   - Thành phần bị loại bỏ/thay đổi:
-   - Kết quả mô hình đầy đủ (Full Model) vs Kết quả mô hình bị cắt giảm (Ablated):
-   - Mức độ chênh lệch (Δ Performance):
-   - Ý nghĩa thực nghiệm chứng minh vai trò của thành phần đó.
-
-4. KHẢ NĂNG TỔNG QUÁT HÓA (Generalization):
-   - Kết quả đánh giá Cross-Subject (LOSO), Cross-Session, hoặc Cross-Dataset (nếu có).
-
-5. ĐỘ BỀN VỮNG & KHUYẾT THIẾU CẢM BIẾN (Robustness & Missing Modalities):
-   - Bài báo có thử nghiệm khi mất 1 hoặc nhiều cảm biến (Missing Modality) không?
-   - Bài báo có kiểm tra độ bền vững trước nhiễu (Noise / Motion artifacts) không? Nếu không, ghi rõ "Not evaluated".
-
-6. CHI PHÍ TÍNH TOÁN & KHẢ THI TRÊN THIẾT BI ĐEO (Computational Cost & Edge Feasibility):
-   - Số lượng tham số (Parameter count), FLOPs, Kích thước file mô hình (Model Size MB)
-   - Thời gian huấn luyện (Training time) và Độ trễ suy luận (Inference Latency ms)
-   - Phần cứng thực nghiệm (GPU/CPU/Embedded Device). Nếu không báo cáo, ghi rõ "Not reported".
+Perform TASK 4 — DATA SPLIT & PARTITIONING:
+Determine and explain:
+1. Is the evaluation Subject-Dependent (within-subject) or Subject-Independent (cross-subject)?
+2. Exact Splitting Strategy: Random split, Subject-wise K-Fold, Leave-One-Subject-Out (LOSO), Cross-Session, or Cross-Dataset?
+3. Exact Ratio/Fold Partitioning: Training %, Validation %, and Testing %
+4. Construction Details: Explain exactly how train/validation/test sets were assembled.
+5. Window Overlap Leakage Check: Could overlapping sliding windows from the same trial or subject appear simultaneously in both training and testing folds?
 ```
 
 ---
 
-### 📦 GÓI 5: TỔNG HỢP 18 ĐIỂM, BẢNG BẰNG CHỨNG KHOA HỌC & ÁNH XẠ ĐỀ TÀI TIẾN SĨ
-*(Bao gồm Task 15, Task 16, Task 18, Task 19, Task 20)*
+### PROMPT 5 — Model Architecture
 
 ```markdown
-Hãy thực hiện TỔNG HỢP TOÀN DIỆN & ĐÁNH GIÁ ĐÓNG GÓP CHO LUẬN ÁN TIẾN SĨ từ bài báo: [TÊN BÀI BÁO HOẶC MÃ BÀI BÁO].
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Explain what each component does according to the paper.
 
-Trích xuất 4 nội dung:
+Perform TASK 5 — MODEL ARCHITECTURE:
+Extract and trace the full computational flow:
+Input → Preprocessing → Feature Representation → Backbone Encoder → Branch Structure → Shared Representation → Private Representation → Fusion Layer → Task-Specific Heads → Output.
 
-1. BẢNG BẰNG CHỨNG KHOA HỌC (Scientific Evidence Table):
-   Lập bảng gồm các cột: [Tuyên Bố Khoa Học (Claim) | Bằng Chứng Cụ Thể Trong Bài | Vị Trí Nguồn (Mục/Bảng/Hình/Trang) | Loại Bằng Chứng [EXPLICIT / SUPPORTED / INFERRED]]
-
-2. HẠN CHẾ & KHẢ NĂNG TÁI LẬP (Limitations & Reproducibility):
-   - Hạn chế do chính tác giả thừa nhận (Stated Limitations)
-   - Hạn chế quan sát thấy từ phương pháp luận (Observed Methodological Limitations)
-   - Đánh giá khả năng tái lập (Reproducibility: HIGH / MEDIUM / LOW / UNKNOWN) dựa trên: Mã nguồn công khai, Dữ liệu mở, Siêu tham số chi tiết.
-
-3. TỔNG KẾT 18 ĐIỂM CHUẨN MỰC (18-Point Paper Synthesis):
-   Tóm tắt bài báo theo đúng 18 mục:
-   1. Vấn đề | 2. Dữ liệu | 3. Phương thức | 4. Tiền xử lý | 5. Biểu diễn đặc trưng | 6. Kiến trúc | 7. Cơ chế dung hợp | 8. Học đa nhiệm | 9. Giao thức đánh giá | 10. Baselines | 11. Kết quả chính | 12. Ablation | 13. Tổng quát hóa | 14. Bền vững khuyết thiếu | 15. Chi phí tính toán | 16. Hạn chế | 17. Khả năng tái lập | 18. Chất lượng bằng chứng.
-
-4. ĐÁNH GIÁ MỨC ĐỘ LIÊN QUAN ĐẾN ĐỀ TÀI TIẾN SĨ (Relevance to PhD Thesis):
-   Chấm điểm (HIGH / MEDIUM / LOW) kèm giải thích ngắn gọn cho 7 chiều:
-   - Multimodal Biosignals (EEG + ECG/EDA): [HIGH/MEDIUM/LOW] - Lý do: ...
-   - Multi-Task Learning (Valence + Arousal + Dominance): [HIGH/MEDIUM/LOW] - Lý do: ...
-   - Multi-Branch Architecture (Physics-informed encoders): [HIGH/MEDIUM/LOW] - Lý do: ...
-   - Multimodal Fusion (Cross-Modal QKV Attention): [HIGH/MEDIUM/LOW] - Lý do: ...
-   - Cross-Subject Generalization (LOSO / Disentanglement): [HIGH/MEDIUM/LOW] - Lý do: ...
-   - Missing Modality Robustness: [HIGH/MEDIUM/LOW] - Lý do: ...
-   - Edge / Wearable Efficiency: [HIGH/MEDIUM/LOW] - Lý do: ...
+Identify and detail:
+1. Deep Learning Architectures used (CNN 1D/2D, RNN/LSTM/GRU, Transformer, GNN/GAT/DGCNN, Spiking Neural Networks, Conformer)
+2. Latent dimensions, hidden layer configurations, activation functions, and dropout rates
+3. Shared Representation vs. Modality-Private Representation mechanisms (if any)
+4. Alignment, self-supervised, or contrastive learning modules embedded in the architecture.
 ```
 
 ---
 
-## ⚡ 3. PROMPT TỔNG LỰC 1-CLICK (ALL-IN-ONE MASTER DEEP EXTRACTION PROMPT)
-
-Nếu bạn muốn NotebookLM bóc tách toàn diện **tất cả 20 tiêu chí trong một lần gửi duy nhất**, hãy sử dụng prompt dưới đây:
+### PROMPT 6 — Multimodal Fusion Mechanism
 
 ```markdown
-Bạn là trợ lý phân tích tài liệu khoa học cho đề tài Tiến sĩ: "Kiến trúc học đa nhiệm vụ đa nhánh cho nhận diện cảm xúc từ tín hiệu y sinh đa phương thức".
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
 
-Hãy phân tích toàn diện bài báo: [TÊN BÀI BÁO HOẶC MÃ BÀI BÁO] dựa trên các nguồn tài liệu trong notebook này.
-Tuân thủ nghiêm ngặt nguyên tắc: Chỉ dựa trên tài liệu nguồn, không bịa đặt, phân định rõ [EXPLICIT], [SUPPORTED], [INFERRED], [UNKNOWN], và luôn tuân thủ chuỗi METHOD → DATASET → PROTOCOL → METRIC → RESULT.
+Perform TASK 6 — MULTIMODAL FUSION:
+Classify the fusion mechanism into one of the following:
+1. Early Fusion (Data/Feature level concatenation)
+2. Intermediate / Feature-level Fusion
+3. Late / Decision-level Fusion
+4. Cross-Modal Attention (e.g., Query-Key-Value interactions across modalities)
+5. Multimodal Transformer (e.g., MulT, cross-attention encoders)
+6. Adaptive / Bilinear / Tensor Fusion
+7. Other (specify)
 
-Hãy xuất báo cáo phân tích theo đúng cấu trúc chuẩn sau:
+Explain:
+- Exactly WHERE fusion occurs in the computational pipeline
+- What latent representations are fused
+- How modalities interact mathematically
+- Whether dedicated modality-specific encoders exist prior to fusion
+- Whether the model dynamically learns modality importance weights (adaptive gating).
+- If the paper only concatenates raw features, state so explicitly.
+```
 
-# BÁO CÁO PHÂN TÍCH CHUYÊN SÂU BÀI BÁO KHOA HỌC: [TÊN BÀI BÁO]
+---
 
-## 1. THÔNG TIN ĐỊNH DANH & BỐI CẢNH
-- Tiêu đề, Tác giả, Năm, Tạp chí/Hội thảo, DOI.
-- Vấn đề nghiên cứu & Đóng góp khoa học cốt lõi.
+### PROMPT 7 — Multi-Task Learning Formulation
 
-## 2. BỘ DỮ LIỆU & QUY TRÌNH TIỀN XỬ LÝ
-- Bộ dữ liệu, Số đối tượng, Các kênh tín hiệu (EEG, ECG, EDA, PPG,...), Tần số lấy mẫu.
-- Kích thích, Thang đo nhãn (Valence/Arousal/Dominance), Cửa sổ trượt (Window/Overlap).
-- Phương pháp lọc, Khử nhiễu, Chuẩn hóa đặc trưng.
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not invent loss weighting values.
 
-## 3. KIẾN TRÚC MÔ HÌNH & CƠ CHẾ KỸ THUẬT
-- Luồng kiến trúc: Input → Encoders → Shared/Private Latent Space → Fusion → Task Heads → Output.
-- Cấu trúc Đa nhánh (Multi-Branch): Thiết kế từng nhánh theo đặc tính vật lý tín hiệu.
-- Cơ chế Dung hợp (Multimodal Fusion): Early / Late / Cross-Modal QKV Attention / Bilinear.
-- Học Đa Nhiệm Vụ (Multi-Task Learning): Các nhiệm vụ liên hợp, Hàm mất mát & Cân bằng trọng số (Kendall/GradNorm).
+Perform TASK 7 — MULTI-TASK LEARNING FORMULATION:
+Determine:
+1. Is the model Single-Task or Multi-Task?
+2. What are the specific co-optimized tasks (e.g., Valence classification, Arousal regression, Dominance prediction, Subject identification, Signal reconstruction)?
+3. Which layers share representations across tasks, and which layers/heads are task-specific?
+4. What individual loss functions are used for each task (e.g., Cross-Entropy, MSE, CCC, Triplet Loss)?
+5. Write out the total conceptual multi-task loss objective:
+   Example: L_total = λ1 * L_task1 + λ2 * L_task2 + ...
+6. Are task weighting coefficients (λ) fixed constants or dynamically learned (e.g., Kendall homoscedastic uncertainty weighting, GradNorm, Dynamic Weight Average)?
+```
 
-## 4. KIỂM TOÁN GIAO THỨC & RÒ RỈ DỮ LIỆU (ANTI-LEAKAGE AUDIT)
-- Giao thức chia tập: Subject-Dependent vs LOSO (Subject-Independent).
-- Bảng kiểm toán rò rỉ: Rò rỉ cửa sổ trượt, Rò rỉ đối tượng, Rò rỉ chuẩn hóa toàn cục.
+---
 
-## 5. KẾT QUẢ THỰC NGHIỆM & MA TRẬN ĐỐI SÁNH
-- Bảng so sánh với các Baselines.
-- Kết quả định lượng chi tiết: Accuracy, F1-score, MAE, RMSE, Mean ± Std, p-value.
-- Phân tích thực nghiệm triệt tiêu (Ablation Study): Vai trò của từng khối mạng.
-- Đánh giá Tổng quát hóa (LOSO) & Độ bền vững khi khuyết thiếu cảm biến (Missing Modalities).
-- Chi phí tính toán: Parameters, FLOPs, Độ trễ suy luận (Inference Latency), Phần cứng.
+### PROMPT 8 — Multi-Branch Structure
 
-## 6. ĐÁNH GIÁ ĐÓNG GÓP & ÁNH XẠ VÀO LUẬN ÁN TIẾN SĨ
-- Hạn chế của bài báo (Tác giả thừa nhận vs Phương pháp luận quan sát được).
-- Khả năng tái lập (Reproducibility: High/Medium/Low).
-- Bảng chấm điểm mức độ liên quan 7 chiều đến đề tài Tiến sĩ (Multimodal, MTL, Multi-Branch, Fusion, Disentanglement, Robustness, Efficiency).
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+
+Perform TASK 8 — MULTI-BRANCH STRUCTURE:
+Determine:
+1. Total number of independent parallel branches in the network
+2. Input signal assigned to each branch (e.g., Branch 1: Scalp EEG, Branch 2: ECG/HRV, Branch 3: EDA)
+3. Specialized encoder architecture of each branch (e.g., Spatial-Temporal GCN for EEG vs. Dilated 1D-TCN for cardiac dynamics)
+4. Shared layers vs. Private branch-specific layers
+5. Convergence and fusion junction point
+6. Physics-Informed Justification: Explain WHY the authors chose a multi-branch design according to the paper. If no explicit reason is given, state: "The paper does not explicitly justify the multi-branch design."
+```
+
+---
+
+### PROMPT 9 — Baseline Comparisons
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+
+Perform TASK 9 — BASELINES COMPARISON MATRIX:
+Create a comprehensive comparative table:
+| Baseline Model | Modality | Architecture Family | Task Formulation | Evaluation Protocol | Reported Performance | Source / Reference |
+| -------------- | -------- | ------------------- | ---------------- | ------------------- | -------------------- | ------------------ |
+
+Identify whether the comparative baselines include:
+- Unimodal vs. Multimodal baselines
+- Traditional Machine Learning (SVM, Random Forest, XGBoost) vs. Deep Learning models
+- Standard SOTA architectures (EEGNet, DGCNN, BiHDM, MulT, Conformer)
+- Multi-Task vs. Single-Task configurations.
+```
+
+---
+
+### PROMPT 10 — Experimental Results
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Preserve the exact formulation: METHOD → DATASET → PROTOCOL → METRIC → RESULT.
+
+Perform TASK 10 — EXPERIMENTAL RESULTS EXTRACTION:
+Extract exact quantitative results reported in the paper:
+1. For Classification Tasks:
+   - Accuracy (%) and Balanced Accuracy (%)
+   - Macro-F1, Weighted-F1, Precision, Recall, ROC-AUC
+2. For Continuous Regression Tasks:
+   - Mean Absolute Error (MAE), Root Mean Squared Error (RMSE)
+   - Coefficient of Determination (R²), Pearson Correlation Coefficient (r), Concordance Correlation Coefficient (CCC)
+3. Statistical Rigor:
+   - Mean ± Standard Deviation (Std) across subjects/runs
+   - 95% Confidence Intervals (CI)
+   - Number of experimental repetitions / seeds
+   - Statistical significance tests and reported p-values (e.g., paired t-test, Wilcoxon signed-rank test with Bonferroni correction).
+```
+
+---
+
+### PROMPT 11 — Ablation Experiments
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not claim a component is necessary unless ablation evidence supports that conclusion.
+
+Perform TASK 11 — ABLATION STUDIES:
+Identify all ablation configurations reported in the paper.
+For every ablation experiment, structure the output as follows:
+- Component Removed / Modified:
+- Baseline / Variant Name:
+- Ablated Model Metric:
+- Full Model Metric:
+- Absolute Difference (Δ Performance):
+- Author's Interpretation:
+- Source Location (Table/Figure/Page):
+```
+
+---
+
+### PROMPT 12 — Generalization Capabilities
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not treat random train/test splitting as cross-subject generalization.
+
+Perform TASK 12 — GENERALIZATION EVALUATION:
+Check and extract evidence for:
+1. Cross-Subject / Subject-Independent Generalization (Leave-One-Subject-Out / LOSO performance)
+2. Cross-Session Generalization (evaluation across different days/sessions for the same subject)
+3. Cross-Dataset Generalization (models trained on Dataset A and tested on unseen Dataset B)
+4. Domain Adaptation / Alignment Techniques used (DANN, Gradient Reversal Layer, MMD, Coral Loss, Adversarial Alignment)
+5. Generalization Degradation: Report the performance drop (Δ) when moving from Subject-Dependent to Subject-Independent protocols.
+```
+
+---
+
+### PROMPT 13 — Robustness & Missing Modalities
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. If absent, explicitly write: "Not evaluated".
+
+Perform TASK 13 — ROBUSTNESS & MISSING MODALITIES:
+Check whether the paper evaluates:
+1. Missing Modality Scenarios (e.g., performance degradation when EEG is dropped and only wearable ECG/EDA is available)
+2. Modality Dropout / Noise Injection during training
+3. Sensor Artifacts & Signal Corruption (motion artifacts, loose electrode impedance noise)
+4. Class Imbalance Handling
+5. Cross-Modal Knowledge Distillation or Latent Inpainting for missing sensor imputation.
+```
+
+---
+
+### PROMPT 14 — Computational Cost & Efficiency
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. If absent, explicitly write: "Not reported".
+
+Perform TASK 14 — COMPUTATIONAL COST & EFFICIENCY:
+Extract:
+1. Parameter Count (Total trainable parameters / Millions of weights)
+2. Computational Complexity (FLOPs / MACs)
+3. Model Storage Footprint (Size in MB)
+4. GPU/CPU Memory Consumption (VRAM during training and inference)
+5. Training Time (hours/epochs)
+6. Inference Latency (milliseconds per window/sample)
+7. Hardware Environment (GPU model, CPU, Embedded/Edge platform like Jetson or Raspberry Pi).
+```
+
+---
+
+### PROMPT 15 — Stated & Observed Limitations
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+
+Perform TASK 15 — RESEARCH LIMITATIONS:
+Categorize into three distinct groups:
+Group A — Limitations explicitly acknowledged by the authors in the paper text.
+Group B — Methodological limitations directly observable from the experimental design (e.g., small sample size, absence of LOSO evaluation, lack of statistical testing).
+Group C — Potential validity concerns requiring further experimental verification (clearly marked as speculative).
+```
+
+---
+
+### PROMPT 16 — Reproducibility Assessment
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+
+Perform TASK 16 — REPRODUCIBILITY AUDIT:
+Evaluate:
+1. Source Code Availability (GitHub/Zenodo URL provided? Open source vs. proprietary)
+2. Dataset Accessibility (Publicly available benchmarks vs. private closed cohorts)
+3. Detailed Preprocessing Instructions (Exact filter cutoff frequencies, windowing parameters specified?)
+4. Hyperparameter Transparency (Learning rate, batch size, optimizer, weight decay, epochs reported?)
+5. Random Seed and Initialization details
+6. Software Library Versions (PyTorch, TensorFlow, MNE, Scikit-learn).
+
+Assign an overall Reproducibility Rating: HIGH / MEDIUM / LOW / UNKNOWN, and justify with evidence.
+```
+
+---
+
+### PROMPT 17 — Data Leakage Audit
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Perform a rigorous, evidence-grounded audit. Do NOT accuse the paper of leakage without concrete textual evidence.
+
+Perform TASK 17 — DATA LEAKAGE AUDIT:
+Audit the paper across 8 dimensions and present as a table:
+| Leakage Dimension | Evidence in Paper | Risk Level (High/Med/Low/None) | Confidence ([EXPLICIT]/[INFERRED]) |
+| ----------------- | ----------------- | ------------------------------ | ---------------------------------- |
+| 1. Subject Leakage (Same subject in train & test) | ... | ... | ... |
+| 2. Trial Leakage (Same trial segments mixed) | ... | ... | ... |
+| 3. Windowing Leakage (Overlapping windows shuffled prior to split) | ... | ... | ... |
+| 4. Normalization Leakage (Global Z-score fit before split) | ... | ... | ... |
+| 5. Temporal Filtering Leakage (LDS smoothing across split boundaries) | ... | ... | ... |
+| 6. Augmentation Leakage (Synthetic samples created from test set) | ... | ... | ... |
+| 7. Hyperparameter Tuning Leakage (Tuned on test set) | ... | ... | ... |
+| 8. Montage / Sensor Configuration Shift | ... | ... | ... |
+```
+
+---
+
+### PROMPT 18 — Scientific Evidence Table
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+
+Perform TASK 18 — SCIENTIFIC EVIDENCE TABLE:
+Produce a comprehensive claims-and-evidence table:
+| Claim Made by Authors | Experimental Evidence | Source Location (Section/Table/Figure/Page) | Evidence Type ([EXPLICIT]/[SUPPORTED]/[INFERRED]) |
+| --------------------- | --------------------- | ------------------------------------------- | -------------------------------------------------- |
+
+Focus specifically on claims regarding:
+- Multimodal biosignal synergy
+- Multi-task learning advantage
+- Multi-branch architectural superiority
+- Cross-modal attention mechanisms
+- Generalization and robustness.
+```
+
+---
+
+### PROMPT 19 — Standardized 18-Point Paper Summary
+
+```markdown
+You are a scientific literature analysis assistant. Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not provide a research proposal; synthesize the paper objectively.
+
+Perform TASK 19 — STANDARDIZED 18-POINT SUMMARY:
+Summarize the paper following EXACTLY this 18-point numbered structure:
+1. Research Problem:
+2. Dataset Evaluated:
+3. Modalities Used:
+4. Preprocessing Protocol:
+5. Feature Representation:
+6. Model Architecture:
+7. Multimodal Fusion Mechanism:
+8. Multi-Task Formulation:
+9. Evaluation Protocol:
+10. Comparative Baselines:
+11. Main Quantitative Results:
+12. Ablation Study Findings:
+13. Generalization Performance:
+14. Robustness & Missing Modalities:
+15. Computational Cost:
+16. Stated & Observed Limitations:
+17. Reproducibility Assessment:
+18. Scientific Evidence Quality:
+```
+
+---
+
+### PROMPT 20 — Research Relevance to PhD Thesis
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research topic: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources.
+
+Perform TASK 20 — RESEARCH RELEVANCE SCORING:
+Classify and justify the relevance of this paper across 7 core dissertation dimensions:
+
+1. Multimodal Biosignals (EEG + Autonomic ECG/EDA): [HIGH / MEDIUM / LOW]
+   - Justification: ...
+2. Multi-Task Learning (Joint Valence-Arousal-Dominance): [HIGH / MEDIUM / LOW]
+   - Justification: ...
+3. Multi-Branch Architecture (Physics-informed dedicated encoders): [HIGH / MEDIUM / LOW]
+   - Justification: ...
+4. Multimodal Fusion (Cross-Modal Attention QKV): [HIGH / MEDIUM / LOW]
+   - Justification: ...
+5. Cross-Subject Generalization (LOSO / Disentangled representations): [HIGH / MEDIUM / LOW]
+   - Network / Method Justification: ...
+6. Missing Modality Robustness (Wearable sensor dropouts): [HIGH / MEDIUM / LOW]
+   - Justification: ...
+7. Computational Efficiency & Edge BCI Feasibility: [HIGH / MEDIUM / LOW]
+   - Justification: ...
+
+Conclude with 3 concrete takeaways or technical ideas from this paper that can directly strengthen the PhD dissertation chapters.
+```
+
+---
+
+## ⚡ APPENDIX — All-in-One Master Deep Extraction Prompt
+
+*(Use this prompt if you want NotebookLM to extract all 20 dimensions in a single comprehensive pass)*
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze the paper: "[INSERT PAPER TITLE OR PAPER ID]" using ONLY the uploaded sources. Do not hallucinate. Label all findings as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN], and adhere to the evaluation chain: METHOD → DATASET → PROTOCOL → METRIC → RESULT.
+
+Generate a comprehensive academic extraction report following this structured template:
+
+# SCIENTIFIC ANALYSIS REPORT: [INSERT PAPER TITLE OR PAPER ID]
+
+## 1. IDENTITY & RESEARCH PROBLEM
+- Title, Authors, Year, Venue, DOI.
+- Core research problem and claimed scientific contributions.
+
+## 2. DATASET & PREPROCESSING PROTOCOL
+- Dataset, Subjects, Modalities (EEG, ECG, EDA, etc.), Channels, Sampling Rates.
+- Stimuli, Emotion Labels (Valence/Arousal/Dominance), Window length and overlap.
+- Filtering, Artifact removal, Normalization (performed before or after split?).
+
+## 3. ARCHITECTURE, MULTI-BRANCH & FUSION
+- Full computational flow (Input → Encoders → Fusion → Task Heads → Output).
+- Multi-Branch structure and physics-informed justification.
+- Fusion mechanism (Early, Late, Cross-Modal QKV Attention, Adaptive).
+- Multi-Task formulation (Shared vs Private layers, Loss formulation, Dynamic weighting).
+
+## 4. EVALUATION PROTOCOL & DATA LEAKAGE AUDIT
+- Data partitioning: Subject-Dependent vs. Subject-Independent (LOSO).
+- 8-Dimensional Data Leakage Audit Table (Subject, Window, Normalization, etc.).
+
+## 5. EXPERIMENTAL RESULTS & ABLATION
+- Comparative Baselines Matrix.
+- Exact quantitative metrics (Mean ± Std, p-values, CI).
+- Ablation study findings (Component removed, Full vs Ablated, Δ difference).
+- Generalization (LOSO), Robustness (Missing Modalities), and Computational Cost (Params, Latency).
+
+## 6. SCIENTIFIC EVIDENCE, LIMITATIONS & PHD THESIS MAPPING
+- Limitations (Author-stated vs Methodological).
+- Reproducibility rating (HIGH/MED/LOW) with justification.
+- 7-Dimensional PhD Relevance Scoring (Multimodal, MTL, Multi-Branch, Fusion, Disentanglement, Robustness, Efficiency).
 ```

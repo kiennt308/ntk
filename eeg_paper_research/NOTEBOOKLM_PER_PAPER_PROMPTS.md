@@ -1,7 +1,7 @@
 # 📑 NotebookLM Individual Task Prompts per Paper (English Suite)
 ## Doctoral Research: Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals
 
-This document provides dedicated, task-by-task **English Prompts** for **Google NotebookLM** to analyze any individual research paper based on the 20 rigorous tasks defined in [`NotebookLM.md`](NotebookLM.md).
+This document provides dedicated, task-by-task **English Prompts** for **Google NotebookLM** to analyze any individual research paper based on the 21 rigorous tasks defined in [`NotebookLM.md`](NotebookLM.md).
 
 ---
 
@@ -20,7 +20,7 @@ When using any prompt below:
 
 ---
 
-## 📑 Table of Contents (20 Discrete Task Prompts)
+## 📑 Table of Contents (21 Discrete Task Prompts)
 
 - [PROMPT 1 — Paper Identity](#prompt-1--paper-identity)
 - [PROMPT 2 — Dataset Specification](#prompt-2--dataset-specification)
@@ -42,6 +42,7 @@ When using any prompt below:
 - [PROMPT 18 — Scientific Evidence Table](#prompt-18--scientific-evidence-table)
 - [PROMPT 19 — Standardized 18-Point Paper Summary](#prompt-19--standardized-18-point-paper-summary)
 - [PROMPT 20 — Research Relevance to PhD Thesis](#prompt-20--research-relevance-to-phd-thesis)
+- [PROMPT 21 — Research Gap Extraction & Formulation](#prompt-21--research-gap-extraction--formulation)
 - [APPENDIX — All-in-One Master Deep Extraction Prompt](#appendix--all-in-one-master-deep-extraction-prompt)
 
 ---
@@ -446,9 +447,38 @@ Conclude with 3 concrete takeaways or technical ideas from this paper that can d
 
 ---
 
+### PROMPT 21 — Research Gap Extraction & Formulation
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" using the provided sources. Do not invent missing information. For each item, provide concrete textual evidence and label findings as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 21 — RESEARCH GAP EXTRACTION & FORMULATION:
+Extract and formulate the scientific and technical gaps revealed by this paper across 3 critical areas:
+
+1. EXPLICIT OPEN QUESTIONS & AUTHOR-STATED GAPS:
+   - What unresolved theoretical, experimental, or engineering challenges do the authors explicitly acknowledge as future work?
+   - What scenarios did the authors fail to address or declare out-of-scope?
+
+2. METHODOLOGICAL & THEORETICAL GAPS (Cross-checked against SOTA):
+   Evaluate whether the paper leaves any of the following foundational gaps unaddressed:
+   - Modality Asymmetry & Dominance: Did the model use naive concatenation causing high-dimensional EEG to suppress subtle autonomic ECG/EDA signals?
+   - Subspace Disentanglement: Did the architecture fail to isolate subject-specific artifacts/style from shared emotion content?
+   - Multi-Task Objective Interference: Did the model use fixed, manual loss weights leading to gradient conflict between Valence and Arousal?
+   - Evaluation & Generalization Rigor: Did the study evaluate only subject-dependent protocols without strict Leave-One-Subject-Out (LOSO) cross-subject or cross-dataset validation?
+   - Sensor Dropout & Real-World Robustness: Did the paper assume all sensor channels are continuously available, ignoring missing modality scenarios in wearable settings?
+   - Neurobiological Grounding & Explainability: Did the model act as a black box without providing topographic scalp activation or physiological interpretability (XAI)?
+
+3. GROUNDED CONTRIBUTION OPPORTUNITY FOR THE PHD DISSERTATION:
+   - Formulate a precise, publication-ready research gap statement summarizing how our proposed MMB-EmotionNet architecture (Physics-informed Multi-Branch + Shared-Private Disentanglement + Directional Cross-Attention + Homoscedastic Uncertainty MTL) directly overcomes the weaknesses of this paper.
+```
+
+---
+
 ## ⚡ APPENDIX — All-in-One Master Deep Extraction Prompt
 
-*(Use this prompt if you want NotebookLM to extract all 20 dimensions in a single comprehensive pass)*
+*(Use this prompt if you want NotebookLM to extract all 21 dimensions in a single comprehensive pass)*
 
 ```markdown
 You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
@@ -484,8 +514,9 @@ Generate a comprehensive academic extraction report following this structured te
 - Ablation study findings (Component removed, Full vs Ablated, Δ difference).
 - Generalization (LOSO), Robustness (Missing Modalities), and Computational Cost (Params, Latency).
 
-## 6. SCIENTIFIC EVIDENCE, LIMITATIONS & PHD THESIS MAPPING
-- Limitations (Author-stated vs Methodological).
-- Reproducibility rating (HIGH/MED/LOW) with justification.
-- 7-Dimensional PhD Relevance Scoring (Multimodal, MTL, Multi-Branch, Fusion, Disentanglement, Robustness, Efficiency).
+## 6. RESEARCH GAPS & PHD THESIS MAPPING
+- Explicit future work acknowledged by authors.
+- Methodological gaps (Modality dominance, Lack of disentanglement, Fixed MTL loss, Leakage risk).
+- Limitations (Author-stated vs Methodological) & Reproducibility rating (HIGH/MED/LOW).
+- Grounded contribution statement: How our MMB-EmotionNet directly resolves the gaps exposed by this paper.
 ```

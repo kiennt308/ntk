@@ -474,6 +474,27 @@ Do not produce an overall ranking of papers.
 
 ---
 
+# TASK 21 — RESEARCH GAP EXTRACTION & FORMULATION
+
+Extract and formulate the scientific and technical gaps revealed by this paper:
+
+1. **Explicit Future Work & Open Questions**:
+   Extract what the authors explicitly stated as unresolved challenges, future directions, or unaddressed questions.
+
+2. **Theoretical & Methodological Gaps**:
+   Identify specific technical weaknesses or omissions in the paper's approach:
+   - Modality Rate Asymmetry / Modality Collapse: Did the paper suffer from one modality dominating?
+   - Subspace Disentanglement: Did the paper mix sensor-private artifacts with shared emotional semantics?
+   - Multi-Task Objective Interference: Did the paper use naive/fixed loss weighting causing negative transfer?
+   - Anti-Leakage & Generalization: Did the paper fail to evaluate strict Leave-One-Subject-Out (LOSO) cross-subject protocols?
+   - Missing Modality Robustness: Did the paper assume all sensor channels are always available without evaluating dropout?
+   - Biological / XAI Interpretability: Did the paper lack neurobiological grounding and topographic explainability?
+
+3. **Ph.D. Dissertation Contribution Opportunity**:
+   Synthesize how our proposed Multi-Task Multi-Branch Architecture (MMB-EmotionNet) directly addresses the gaps exposed by this paper.
+
+---
+
 # FINAL RULE
 
 Never write:
@@ -489,3 +510,4 @@ Always preserve:
 METHOD → DATASET → PROTOCOL → METRIC → RESULT
 
 because results without evaluation protocol are not directly comparable.
+

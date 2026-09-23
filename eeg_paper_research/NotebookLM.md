@@ -495,6 +495,64 @@ Extract and formulate the scientific and technical gaps revealed by this paper:
 
 ---
 
+# TASK 22 — NOVELTY & PRIOR ART COLLISION CHECK (Has Multi-Task + Multi-Branch + Multimodal Been Done?)
+
+Perform a rigorous novelty collision check:
+1. Has this paper (or any cited work in this notebook) implemented the EXACT combination of:
+   - Multimodal Biosignals (Scalp EEG + Autonomic ECG/EDA/PPG)?
+   - Dedicated Physics-Informed Multi-Branch Encoders?
+   - Explicit Shared-Private Subspace Disentanglement?
+   - Directional Cross-Modal Attention ($Q_{EEG}, K_{Bio}, V_{Bio}$)?
+   - Dynamically Balanced Multi-Task Loss (Homoscedastic Aleatoric Uncertainty Weighting / GradNorm)?
+2. If similar architectures exist, identify the precise technical boundaries, differences, and limitations of prior art compared to our proposed MMB-EmotionNet framework.
+
+---
+
+# TASK 23 — RESEARCH DIRECTIONS & ARCHITECTURAL TAXONOMY (What Avenues Exist?)
+
+Map out and categorize the feasible technical avenues revealed across the literature:
+1. **Branching Paradigms**: Unimodal vs Homogeneous CNN vs Physics-informed Spatial GCN + Dilated TCN + CWT.
+2. **Fusion & Cross-Modal Interaction**: Early Concatenation vs Late Voting vs Cross-Attention QKV vs Multimodal Transformers.
+3. **Multi-Task Optimization**: Single-task independent models vs Hard parameter sharing vs Uncertainty-weighted dynamic loss vs Adversarial subject decoupling.
+4. **Generalization & Adaptation**: Standard empirical training vs Domain Adversarial Neural Networks (DANN) vs Maximum Mean Discrepancy (MMD) vs Orthogonal Disentanglement.
+
+---
+
+# TASK 24 — RESEARCH QUESTIONS & TESTABLE HYPOTHESES FORMULATION (Which Direction Converts to RQs & Hypotheses?)
+
+Translate the identified research gaps and directions into formal, falsifiable scientific propositions:
+1. Formulate 6 core Research Questions ($RQ_1$ to $RQ_6$) addressing:
+   - Physics-informed multi-branch representation ($RQ_1$).
+   - Directional cross-modal attention synergy ($RQ_2$).
+   - Shared-private orthogonal subspace disentanglement ($RQ_3$).
+   - Homoscedastic uncertainty multi-task loss balancing ($RQ_4$).
+   - Subject-independent Leave-One-Subject-Out (LOSO) generalization ($RQ_5$).
+   - Graceful performance degradation under sensor dropouts ($RQ_6$).
+2. State the corresponding Null ($H_0$) and Alternative ($H_1$) hypotheses with formal statistical rejection criteria.
+
+---
+
+# TASK 25 — EXPERIMENTAL VERIFICATION & PROTOCOL DESIGN (How Can We Prove It Experimentally?)
+
+Define the complete, reproducible experimental blueprint to validate the hypotheses:
+1. **Benchmark Datasets & Anti-Leakage Protocol**: Selection of canonical datasets (DEAP, SEED, DREAMER, AMIGOS, WESAD) with strict Subject-wise LOSO splitting and independent pre-split feature scaling.
+2. **Controlled 10-Configuration Ablation Suite** (EXP-ABL-01 through EXP-ABL-10) isolating every individual module (unimodal branches, cross-attention, disentanglement losses $\mathcal{L}_{sim}/\mathcal{L}_{diff}$, MTL weighting schemes).
+3. **Missing Modality Stress-Testing Suite**: Progressive sensor dropout (25%, 50%, 75%, 100% missing peripheral/EEG streams) comparing baseline models vs Teacher-Student Knowledge Distillation.
+4. **Statistical Rigor & Significance Testing**: Wilcoxon Paired Signed-Rank Test, Holm-Bonferroni correction ($\alpha = 0.05$), 95% Bootstrap BCa Confidence Intervals, and Cohen's $d$ effect sizes.
+
+---
+
+# TASK 26 — RESEARCH DECISION MAP SYNTHESIS (Consolidated Decision Matrix)
+
+Synthesize all findings into an executive Research Decision Map according to Rule 23 of `AGENTS.md`:
+1. **Evidence Base**: Summarize direct empirical evidence supporting the proposed design.
+2. **Technical Alternatives**: List competing design choices evaluated in the literature.
+3. **Methodological Trade-offs**: Detail trade-offs between model complexity, parameter footprint, and classification accuracy.
+4. **Experimental & Scientific Risks**: Identify potential failure modes (e.g., negative transfer, sensor noise dominance, montage shift).
+5. **Concrete Action Plan**: Provide the immediate experimental milestone for the PhD dissertation.
+
+---
+
 # FINAL RULE
 
 Never write:
@@ -510,4 +568,5 @@ Always preserve:
 METHOD → DATASET → PROTOCOL → METRIC → RESULT
 
 because results without evaluation protocol are not directly comparable.
+
 

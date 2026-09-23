@@ -1,7 +1,7 @@
 # 📑 NotebookLM Individual Task Prompts per Paper (English Suite)
 ## Doctoral Research: Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals
 
-This document provides dedicated, task-by-task **English Prompts** for **Google NotebookLM** to analyze any individual research paper based on the 21 rigorous tasks defined in [`NotebookLM.md`](NotebookLM.md).
+This document provides dedicated, task-by-task **English Prompts** for **Google NotebookLM** to analyze any individual research paper based on the 26 rigorous tasks defined in [`NotebookLM.md`](NotebookLM.md).
 
 ---
 
@@ -20,7 +20,7 @@ When using any prompt below:
 
 ---
 
-## 📑 Table of Contents (21 Discrete Task Prompts)
+## 📑 Table of Contents (26 Discrete Task Prompts)
 
 - [PROMPT 1 — Paper Identity](#prompt-1--paper-identity)
 - [PROMPT 2 — Dataset Specification](#prompt-2--dataset-specification)
@@ -43,6 +43,11 @@ When using any prompt below:
 - [PROMPT 19 — Standardized 18-Point Paper Summary](#prompt-19--standardized-18-point-paper-summary)
 - [PROMPT 20 — Research Relevance to PhD Thesis](#prompt-20--research-relevance-to-phd-thesis)
 - [PROMPT 21 — Research Gap Extraction & Formulation](#prompt-21--research-gap-extraction--formulation)
+- [PROMPT 22 — Novelty & Prior Art Collision Check (P4)](#prompt-22--novelty--prior-art-collision-check-p4)
+- [PROMPT 23 — Research Directions & Architectural Taxonomy (P5)](#prompt-23--research-directions--architectural-taxonomy-p5)
+- [PROMPT 24 — Research Questions & Hypotheses Formulation (P6)](#prompt-24--research-questions--hypotheses-formulation-p6)
+- [PROMPT 25 — Experimental Verification & Protocol Design (P7)](#prompt-25--experimental-verification--protocol-design-p7)
+- [PROMPT 26 — Research Decision Map Synthesis (P8)](#prompt-26--research-decision-map-synthesis-p8)
 - [APPENDIX — All-in-One Master Deep Extraction Prompt](#appendix--all-in-one-master-deep-extraction-prompt)
 
 ---
@@ -476,9 +481,144 @@ Extract and formulate the scientific and technical gaps revealed by this paper a
 
 ---
 
+### PROMPT 22 — Novelty & Prior Art Collision Check (P4)
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze ONLY the target paper: "[INSERT PAPER TITLE OR PAPER ID]" (and any related work cited in this notebook). Do not assume novelty without textual evidence. Categorize evidence as [EXPLICIT], [SUPPORTED], [INFERRED], or [UNKNOWN].
+
+Perform TASK 22 — NOVELTY & PRIOR ART COLLISION CHECK:
+Investigate whether the core ideas of our PhD dissertation have already been executed by this paper or prior art:
+
+1. COMBINATORIAL COLLISION ANALYSIS:
+   Has this paper implemented the EXACT combination of:
+   - Multimodal Trinity (Central EEG + Autonomic ECG + Sympathetic EDA)? [YES / PARTIAL / NO]
+   - Physics-Informed Dedicated Multi-Branch Encoders (Spatial GCN for EEG, Dilated 1D-TCN for ECG, CWT for EDA)? [YES / PARTIAL / NO]
+   - Explicit Shared-Private Subspace Disentanglement (Orthogonality loss separating subject identity from shared emotion manifold)? [YES / PARTIAL / NO]
+   - Directional Cross-Modal Attention ($Q_{EEG}, K_{Bio}, V_{Bio}$)? [YES / PARTIAL / NO]
+   - Dynamically Balanced Multi-Task Loss (Homoscedastic uncertainty weighting / GradNorm)? [YES / PARTIAL / NO]
+
+2. SIMILARITY & BOUNDARY DELINEATION:
+   - What is the exact degree of architectural overlap between this paper and our proposed MMB-EmotionNet framework?
+   - Where does this paper stop, and what specific novel territory remains exclusively open for our dissertation?
+```
+
+---
+
+### PROMPT 23 — Research Directions & Architectural Taxonomy (P5)
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze the target paper: "[INSERT PAPER TITLE OR PAPER ID]" across the broad literature base in this notebook.
+
+Perform TASK 23 — RESEARCH DIRECTIONS & ARCHITECTURAL TAXONOMY:
+Map out and categorize the feasible technical avenues and paradigms represented in this work:
+
+1. BRANCHING PARADIGMS:
+   - Classify: Unimodal vs. Homogeneous Multichannel CNN vs. Heterogeneous Physics-Informed Encoders (GNN + TCN + CWT).
+   - What are the strengths and trade-offs of this paper's branching approach?
+
+2. FUSION & MODALITY INTERACTION PARADIGMS:
+   - Classify: Early Concatenation vs. Intermediate Feature Fusion vs. Late Decision Fusion vs. Bidirectional Cross-Modal QKV Attention vs. Multimodal Transformer (MulT).
+
+3. MULTI-TASK & OPTIMIZATION PARADIGMS:
+   - Classify: Single-task independent models vs. Hard parameter sharing vs. Soft parameter sharing vs. Uncertainty-weighted dynamic loss vs. Adversarial subject decoupling.
+
+4. REPRESENTATION ALIGNMENT & GENERALIZATION:
+   - Classify: Monolithic latent space vs. Domain Adversarial Alignment (DANN) vs. Maximum Mean Discrepancy (MMD) vs. Explicit Orthogonal Subspace Disentanglement.
+```
+
+---
+
+### PROMPT 24 — Research Questions & Hypotheses Formulation (P6)
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze the methodology and empirical gaps of the paper: "[INSERT PAPER TITLE OR PAPER ID]".
+
+Perform TASK 24 — RESEARCH QUESTIONS & TESTABLE HYPOTHESES FORMULATION:
+Translate the weaknesses and open directions of this paper into formal, testable PhD research questions and falsifiable hypotheses:
+
+1. FORMULATION OF FORMAL RESEARCH QUESTIONS (RQs):
+   - Formulate applicable RQs among $RQ_1$–$RQ_6$ directly motivated by this paper:
+     * $RQ_1$ (Physics-Informed Multi-Branch vs. Monolithic/Early Concatenation)
+     * $RQ_2$ (Directional Cross-Modal Attention vs. Flat Concatenation)
+     * $RQ_3$ (Shared-Private Disentanglement vs. Entangled Latent Representation)
+     * $RQ_4$ (Homoscedastic Uncertainty MTL vs. Fixed Loss Weighting)
+     * $RQ_5$ (Subject-Independent LOSO Generalization vs. Subject-Dependent Splits)
+     * $RQ_6$ (Missing-Modality Knowledge Distillation vs. Standard Sensor Dependency)
+
+2. FORMAL STATISTICAL HYPOTHESES ($H_0$ and $H_1$):
+   - State the Null Hypothesis ($H_0$) and Alternative Hypothesis ($H_1$) corresponding to the chosen RQ.
+   - Define the quantitative metric and statistical threshold for rejecting $H_0$ (e.g., Wilcoxon signed-rank test, $p < 0.05$, Cohen's $d > 0.5$).
+```
+
+---
+
+### PROMPT 25 — Experimental Verification & Protocol Design (P7)
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze the experimental design of the paper: "[INSERT PAPER TITLE OR PAPER ID]".
+
+Perform TASK 25 — EXPERIMENTAL VERIFICATION & PROTOCOL DESIGN:
+Design an end-to-end, rigorous experimental protocol to empirically validate our proposed hypotheses against the benchmarks in this paper:
+
+1. BENCHMARK DATASET & ANTI-LEAKAGE SELECTION:
+   - Target Datasets: DEAP, SEED, DREAMER, AMIGOS, or WESAD.
+   - Exact Splitting Protocol: Strict Leave-One-Subject-Out (LOSO) cross-subject cross-validation.
+   - Anti-Leakage Rules: Preprocessing and Z-score normalization strictly fit on training folds only; trial-level windowing without temporal shuffling.
+
+2. CONTROLLED ABLATION SUITE DESIGN:
+   - Specify the ablation configurations required to isolate individual mechanisms (e.g., Unimodal EEG, Unimodal ECG/EDA, Early Fusion, Without Disentanglement, Without Cross-Attention, Without Uncertainty Loss).
+
+3. MISSING MODALITY & STRESS-TESTING PROTOCOL:
+   - Progressive sensor dropout evaluation (Drop 25%, 50%, 75%, 100% of peripheral or EEG channels) comparing baseline vs Teacher-Student Knowledge Distillation.
+
+4. STATISTICAL VALIDATION PROTOCOL:
+   - Metric definitions: Balanced Accuracy, Macro-F1, Pearson $r$, Concordance Correlation Coefficient (CCC).
+   - Statistical Tests: 1000-iteration Bootstrap 95% BCa Confidence Intervals, Wilcoxon Paired Signed-Rank Test with Holm-Bonferroni correction ($\alpha = 0.05$).
+```
+
+---
+
+### PROMPT 26 — Research Decision Map Synthesis (P8)
+
+```markdown
+You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
+
+Analyze the paper: "[INSERT PAPER TITLE OR PAPER ID]" and synthesize findings into an executive Research Decision Map complying with Rule 23 of `AGENTS.md`.
+
+Perform TASK 26 — RESEARCH DECISION MAP SYNTHESIS:
+Synthesize an executive decision matrix structured exactly as follows:
+
+1. EVIDENCE BASE:
+   - What concrete empirical results from this paper justify our architectural choices (Multi-Branch, Disentanglement, Cross-Attention, MTL)?
+
+2. TECHNICAL ALTERNATIVES:
+   - What competing baseline algorithms or fusion mechanisms exist as valid alternatives?
+
+3. METHODOLOGICAL TRADE-OFFS:
+   - Model complexity vs. Classification accuracy.
+   - Parameter count vs. Real-time edge latency.
+   - Training stability of Disentanglement vs. Standard cross-entropy.
+
+4. SCIENTIFIC & EXPERIMENTAL RISKS:
+   - What potential failure modes (e.g., negative transfer, gradient explosion, sensor artifact dominance) must be mitigated?
+
+5. CONCRETE EXPERIMENTAL ACTION PLAN:
+   - What is the immediate next experimental step for the PhD dissertation based on this analysis?
+```
+
+---
+
 ## ⚡ APPENDIX — All-in-One Master Deep Extraction Prompt
 
-*(Use this prompt if you want NotebookLM to extract all 21 dimensions in a single comprehensive pass)*
+*(Use this prompt if you want NotebookLM to extract all 26 dimensions in a single comprehensive pass)*
 
 ```markdown
 You are a scientific literature analysis assistant for the PhD research project: "Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals".
@@ -489,34 +629,31 @@ Generate a comprehensive academic extraction report following this structured te
 
 # SCIENTIFIC ANALYSIS REPORT: [INSERT PAPER TITLE OR PAPER ID]
 
-## 1. IDENTITY & RESEARCH PROBLEM
+## 1. IDENTITY & RESEARCH PROBLEM (Tasks 1 & 2)
 - Title, Authors, Year, Venue, DOI.
-- Core research problem and claimed scientific contributions.
+- Core research problem, claimed scientific contributions, and dataset specification.
 
-## 2. DATASET & PREPROCESSING PROTOCOL
-- Dataset, Subjects, Modalities (EEG, ECG, EDA, etc.), Channels, Sampling Rates.
-- Stimuli, Emotion Labels (Valence/Arousal/Dominance), Window length and overlap.
-- Filtering, Artifact removal, Normalization (performed before or after split?).
+## 2. PREPROCESSING & DATA LEAKAGE AUDIT (Tasks 3, 4, 17)
+- Preprocessing protocol, filter parameters, and feature representations.
+- Data partitioning (Subject-Dependent vs LOSO) and 8-Dimensional Anti-Leakage Audit.
 
-## 3. ARCHITECTURE, MULTI-BRANCH & FUSION
-- Full computational flow (Input → Encoders → Fusion → Task Heads → Output).
-- Multi-Branch structure and physics-informed justification.
-- Fusion mechanism (Early, Late, Cross-Modal QKV Attention, Adaptive).
-- Multi-Task formulation (Shared vs Private layers, Loss formulation, Dynamic weighting).
+## 3. ARCHITECTURE, MULTI-BRANCH & FUSION (Tasks 5, 6, 7, 8)
+- End-to-end tensor flow, dedicated multi-branch structure, and physics-informed justification.
+- Multimodal fusion mechanism (Cross-Modal QKV Attention) and Multi-Task loss formulation.
 
-## 4. EVALUATION PROTOCOL & DATA LEAKAGE AUDIT
-- Data partitioning: Subject-Dependent vs. Subject-Independent (LOSO).
-- 8-Dimensional Data Leakage Audit Table (Subject, Window, Normalization, etc.).
-
-## 5. EXPERIMENTAL RESULTS & ABLATION
-- Comparative Baselines Matrix.
-- Exact quantitative metrics (Mean ± Std, p-values, CI).
+## 4. EXPERIMENTAL RESULTS, ABLATION & EFFICIENCY (Tasks 9, 10, 11, 12, 13, 14)
+- Comparative Baselines Matrix and exact quantitative metrics (Mean ± Std, p-values, CI).
 - Ablation study findings (Component removed, Full vs Ablated, Δ difference).
 - Generalization (LOSO), Robustness (Missing Modalities), and Computational Cost (Params, Latency).
 
-## 6. RESEARCH GAPS & PHD THESIS MAPPING
-- Explicit future work acknowledged by authors.
-- Methodological gaps (Modality dominance, Lack of disentanglement, Fixed MTL loss, Leakage risk).
-- Limitations (Author-stated vs Methodological) & Reproducibility rating (HIGH/MED/LOW).
-- Grounded contribution statement: How our MMB-EmotionNet directly resolves the gaps exposed by this paper.
+## 5. RESEARCH GAPS, NOVELTY & LIMITATIONS (Tasks 15, 16, 18, 21, 22)
+- Explicit author-stated future directions and methodological gaps.
+- Novelty Collision Check (Has Multi-Task + Multi-Branch + Multimodal been done?).
+- Scientific Evidence Table and Reproducibility rating (HIGH/MED/LOW).
+
+## 6. PHD DISSERTATION ROADMAP & DECISION MAP (Tasks 19, 20, 23, 24, 25, 26)
+- 18-point standardized summary and 7-dimensional relevance scoring.
+- Translation into Formal Research Questions ($RQ_1$–$RQ_6$) and Hypotheses ($H_1$–$H_6$).
+- Experimental validation blueprint (LOSO, 10 Ablation configurations, Wilcoxon + Holm-Bonferroni).
+- Executive Research Decision Map (Evidence, Alternatives, Trade-offs, Risks, and Action Plan).
 ```

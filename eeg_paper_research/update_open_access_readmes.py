@@ -3,11 +3,11 @@ import csv
 
 BASE_DIR = r"d:\ntk\eeg_paper_research\literature\open_access_repository"
 KEYWORDS = [
-    ("kw1_multimodal_eeg_biosignals", "Tín hiệu EEG và Sinh lý Đa phương thức cho Nhận diện Cảm xúc"),
-    ("kw2_multitask_learning_affect", "Học Đa Nhiệm Vụ trong Tính toán Cảm xúc và Tín hiệu Sinh lý"),
-    ("kw3_multibranch_crossmodal_attention", "Kiến trúc Đa nhánh và Cơ chế Chú ý Chéo Đa phương thức"),
-    ("kw4_subspace_disentanglement_domain_adaptation", "Tách Không gian con Dùng chung - Riêng biệt và Thích ứng Miền"),
-    ("kw5_missing_modality_wearable_robustness", "Độ bền vững khi Khuyết thiếu Cảm biến và Thiết bị Đeo Sinh lý")
+    ("kw01_multimodal_eeg_biosignals", "Tín hiệu EEG và Sinh lý Đa phương thức cho Nhận diện Cảm xúc"),
+    ("kw02_multitask_learning_affect", "Học Đa Nhiệm Vụ trong Tính toán Cảm xúc và Tín hiệu Sinh lý"),
+    ("kw03_multibranch_crossmodal_attention", "Kiến trúc Đa nhánh và Cơ chế Chú ý Chéo Đa phương thức"),
+    ("kw04_subspace_disentanglement_domain_adaptation", "Tách Không gian con Dùng chung - Riêng biệt và Thích ứng Miền"),
+    ("kw05_missing_modality_wearable_robustness", "Độ bền vững khi Khuyết thiếu Cảm biến và Thiết bị Đeo Sinh lý")
 ]
 
 def update_readmes():

@@ -6,7 +6,7 @@ import time
 
 KEYWORDS = [
     {
-        "id": "kw1_multimodal_eeg_biosignals",
+        "id": "kw01_multimodal_eeg_biosignals",
         "name": "Multimodal EEG and Peripheral Biosignals for Emotion Recognition",
         "vietnamese_name": "Tín hiệu EEG và Sinh lý Đa phương thức cho Nhận diện Cảm xúc",
         "search_queries": [
@@ -16,7 +16,7 @@ KEYWORDS = [
         ]
     },
     {
-        "id": "kw2_multitask_learning_affect",
+        "id": "kw02_multitask_learning_affect",
         "name": "Multi-Task Learning for Affective Computing and Biosignals",
         "vietnamese_name": "Học Đa Nhiệm Vụ trong Tính toán Cảm xúc và Tín hiệu Sinh lý",
         "search_queries": [
@@ -26,7 +26,7 @@ KEYWORDS = [
         ]
     },
     {
-        "id": "kw3_multibranch_crossmodal_attention",
+        "id": "kw03_multibranch_crossmodal_attention",
         "name": "Multi-Branch Architectures and Cross-Modal Attention Fusion",
         "vietnamese_name": "Kiến trúc Đa nhánh và Cơ chế Chú ý Chéo Đa phương thức",
         "search_queries": [
@@ -36,7 +36,7 @@ KEYWORDS = [
         ]
     },
     {
-        "id": "kw4_subspace_disentanglement_domain_adaptation",
+        "id": "kw04_subspace_disentanglement_domain_adaptation",
         "name": "Shared-Private Subspace Disentanglement and Domain Adaptation",
         "vietnamese_name": "Tách Không gian con Dùng chung - Riêng biệt và Thích ứng Miền",
         "search_queries": [
@@ -46,7 +46,7 @@ KEYWORDS = [
         ]
     },
     {
-        "id": "kw5_missing_modality_wearable_robustness",
+        "id": "kw05_missing_modality_wearable_robustness",
         "name": "Missing-Modality Robustness and Wearable Affective Biosensors",
         "vietnamese_name": "Độ bền vững khi Khuyết thiếu Cảm biến và Thiết bị Đeo Sinh lý",
         "search_queries": [

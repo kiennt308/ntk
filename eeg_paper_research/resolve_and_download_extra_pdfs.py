@@ -16,11 +16,11 @@ except Exception:
 
 BASE_DIR = r"d:\ntk\eeg_paper_research\literature\open_access_repository"
 KEYWORDS = [
-    "kw1_multimodal_eeg_biosignals",
-    "kw2_multitask_learning_affect",
-    "kw3_multibranch_crossmodal_attention",
-    "kw4_subspace_disentanglement_domain_adaptation",
-    "kw5_missing_modality_wearable_robustness"
+    "kw01_multimodal_eeg_biosignals",
+    "kw02_multitask_learning_affect",
+    "kw03_multibranch_crossmodal_attention",
+    "kw04_subspace_disentanglement_domain_adaptation",
+    "kw05_missing_modality_wearable_robustness"
 ]
 
 HEADERS = {

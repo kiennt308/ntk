@@ -10,7 +10,7 @@ RESEARCH_DIR = r"d:\ntk\eeg_paper_research\research"
 NOTEBOOKS = [
     {
         "id": "notebook_01_Multimodal_EEG_Biosignals",
-        "kw_id": "kw1_multimodal_eeg_biosignals",
+        "kw_id": "kw01_multimodal_eeg_biosignals",
         "title": "Notebook 01: Multimodal EEG & Peripheral Biosignals (EEG, ECG, EDA, PPG, Respiration)",
         "vn_title": "Nền tảng Tín hiệu Não (EEG) và Tín hiệu Sinh lý Tự chủ (ECG, EDA)",
         "target_chapter": "Chương 2 & Chương 4 (Tổng quan Sinh học Thần kinh & Giao thức Dữ liệu)",
@@ -18,7 +18,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_02_Multi_Task_Learning_Affect",
-        "kw_id": "kw2_multitask_learning_affect",
+        "kw_id": "kw02_multitask_learning_affect",
         "title": "Notebook 02: Multi-Task Learning & Homoscedastic Uncertainty Balancing",
         "vn_title": "Học Đa Nhiệm Vụ & Cân bằng Mất mát theo Độ bất định Đồng phương sai",
         "target_chapter": "Chương 3 & Chương 6 (Kiến trúc Đề xuất MMB-EmotionNet & Kiểm định Đa nhiệm vụ)",
@@ -26,7 +26,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_03_Multi_Branch_Cross_Modal_Attention",
-        "kw_id": "kw3_multibranch_crossmodal_attention",
+        "kw_id": "kw03_multibranch_crossmodal_attention",
         "title": "Notebook 03: Multi-Branch Encoders & Directional Cross-Modal Attention",
         "vn_title": "Bộ mã hóa Đa nhánh theo Vật lý Tín hiệu & Cơ chế Chú ý Chéo QKV",
         "target_chapter": "Chương 3 & Chương 5 (Tầng mã hóa chuyên biệt & Thực nghiệm Triệt tiêu Attention)",
@@ -34,7 +34,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_04_Subspace_Disentanglement_Domain_Adaptation",
-        "kw_id": "kw4_subspace_disentanglement_domain_adaptation",
+        "kw_id": "kw04_subspace_disentanglement_domain_adaptation",
         "title": "Notebook 04: Shared-Private Subspace Disentanglement & Cross-Subject Generalization",
         "vn_title": "Tách Không gian con Dùng chung - Riêng biệt & Thích ứng Miền LOSO",
         "target_chapter": "Chương 3 & Chương 5 (Phân tách Biểu diễn & Thử nghiệm Tổng quát hóa LOSO)",
@@ -42,7 +42,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_05_Missing_Modality_Wearable_Robustness",
-        "kw_id": "kw5_missing_modality_wearable_robustness",
+        "kw_id": "kw05_missing_modality_wearable_robustness",
         "title": "Notebook 05: Missing-Modality Inpainting, Wearable Montage Decay & Noise Robustness",
         "vn_title": "Độ bền vững khi Khuyết thiếu Cảm biến, Suy thoái Kênh đo & Nhiễu Thực tế",
         "target_chapter": "Chương 5 (Thực nghiệm Bền vững, Rớt cảm biến & Đo kiểm Độ trễ Biên)",
@@ -50,7 +50,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_06_Foundation_Models_Self_Supervised_Biosignals",
-        "kw_id": "kw6_foundation_models_self_supervised_biosignals",
+        "kw_id": "kw06_foundation_models_self_supervised_biosignals",
         "title": "Notebook 06: Foundation Models & Self-Supervised Learning for Biosignals",
         "vn_title": "Mô hình Nền tảng (Foundation Models) & Học Tự Giám Sát (MAE / Contrastive)",
         "target_chapter": "Chương 2 & Chương 7 (Xu hướng Công nghệ Mới 2023–2026 & Hướng Phát triển)",
@@ -58,7 +58,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_07_Graph_Neural_Networks_Brain_Connectivity",
-        "kw_id": "kw7_graph_neural_networks_eeg_connectivity",
+        "kw_id": "kw07_graph_neural_networks_eeg_connectivity",
         "title": "Notebook 07: Dynamic Graph Neural Networks & Functional Brain Connectivity",
         "vn_title": "Mạng Nơ-ron Đồ thị Động (DGCNN, RGNN) & Liên kết Chức năng Vỏ não",
         "target_chapter": "Chương 2, 4 & 5 (Các Mô hình Đối sánh SOTA Đồ thị)",
@@ -66,7 +66,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_08_Transformers_Crossmodal_Affective_Computing",
-        "kw_id": "kw8_transformers_crossmodal_affective_computing",
+        "kw_id": "kw08_transformers_crossmodal_affective_computing",
         "title": "Notebook 08: Multimodal Transformers & Hierarchical Cross-Attention Networks",
         "vn_title": "Kiến trúc Multimodal Transformer & Chú ý Đa tầng trong Cảm xúc",
         "target_chapter": "Chương 2 & Chương 3 (So sánh Đối sánh Transformer & MulT / MISA)",
@@ -74,7 +74,7 @@ NOTEBOOKS = [
     },
     {
         "id": "notebook_09_Explainable_AI_Interpretable_Biosignals",
-        "kw_id": "kw9_explainable_ai_interpretable_biosignals",
+        "kw_id": "kw09_explainable_ai_interpretable_biosignals",
         "title": "Notebook 09: Explainable AI (XAI) & Neurophysiological Model Interpretability",
         "vn_title": "Trí tuệ Nhân tạo Giải thích được (XAI), SHAP, Grad-CAM & Minh bạch Quyết định",
         "target_chapter": "Chương 5 & Chương 7 (Phân tích Trực quan hóa Bản đồ Não & Ý nghĩa Sinh học)",

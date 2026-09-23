@@ -12,15 +12,15 @@ eeg_paper_research/literature/
 │
 ├── open_access_repository/          ⭐ [KHO TRỌNG TÂM] 375 bài báo OA & 240 file PDF phân theo 10 Cụm Từ Khóa
 │   ├── README.md                    -> Bảng chỉ mục liên kết toàn bộ 10 cụm chủ đề
-│   ├── kw1_multimodal_eeg_biosignals/
-│   ├── kw2_multitask_learning_affect/
-│   ├── kw3_multibranch_crossmodal_attention/
-│   ├── kw4_subspace_disentanglement_domain_adaptation/
-│   ├── kw5_missing_modality_wearable_robustness/
-│   ├── kw6_foundation_models_self_supervised_biosignals/
-│   ├── kw7_graph_neural_networks_eeg_connectivity/
-│   ├── kw8_transformers_crossmodal_affective_computing/
-│   ├── kw9_explainable_ai_interpretable_biosignals/
+│   ├── kw01_multimodal_eeg_biosignals/
+│   ├── kw02_multitask_learning_affect/
+│   ├── kw03_multibranch_crossmodal_attention/
+│   ├── kw04_subspace_disentanglement_domain_adaptation/
+│   ├── kw05_missing_modality_wearable_robustness/
+│   ├── kw06_foundation_models_self_supervised_biosignals/
+│   ├── kw07_graph_neural_networks_eeg_connectivity/
+│   ├── kw08_transformers_crossmodal_affective_computing/
+│   ├── kw09_explainable_ai_interpretable_biosignals/
 │   └── kw10_closed_loop_bci_realtime_affective_systems/
 │
 ├── 01_verified/                     📄 30 bài báo PDF trọng tâm giai đoạn 1 (Core Papers)

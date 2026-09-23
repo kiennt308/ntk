@@ -1,0 +1,24 @@
+# Cụm Tài Liệu Mở: Trí tuệ Nhân tạo Giải thích được (XAI) & Minh bạch Mô hình Cảm xúc (`kw09_explainable_ai_interpretable_biosignals`)
+
+- **Tổng số bài báo khoa học**: 12 bài báo Open Access
+- **Số file PDF đã tải về máy**: **6/12 bài** (Có thể đọc offline ngay)
+- **Tỷ lệ bài báo từ 2023 đến 2026**: **100.0%** (12/12 bài)
+
+---
+
+## Danh mục Toàn bộ Bài Báo Khoa học & Liên kết PDF
+
+| ID | Năm | Tiêu đề bài báo | Nguồn / Tạp chí | Trích dẫn | File PDF Cục Bộ / Link Truy Cập |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| [`OA_KW9_001`](paper_notes/OA_KW9_001.md) | **2023** | **Artificial Intelligence and Sensor Innovations: Enhancing Livestock Welfare with a Human-Centric Approach**<br>*Suresh Neethirajan* | Human-Centric Intelligent Systems | 134 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW9_001.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s44230-023-00050-2.pdf)) |
+| [`OA_KW9_002`](paper_notes/OA_KW9_002.md) | **2025** | **Artificial Intelligence and Neuroscience: Transformative Synergies in Brain Research and Clinical Applications**<br>*Răzvan Onciul, Cătălina-Ioana Tătaru, Ad...* | Journal of Clinical Medicine | 108 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2077-0383/14/2/550/pdf?version=1737025777)) |
+| [`OA_KW9_003`](paper_notes/OA_KW9_003.md) | **2024** | **Enhancing early Parkinson’s disease detection through multimodal deep learning and explainable AI: insights from the PPMI database**<br>*Vincenzo Dentamaro, Donato Impedovo, Luc...* | Scientific Reports | 107 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW9_003.pdf) ([Link gốc](https://www.nature.com/articles/s41598-024-70165-4.pdf)) |
+| [`OA_KW9_004`](paper_notes/OA_KW9_004.md) | **2023** | **State-of-the-Art of Stress Prediction from Heart Rate Variability Using Artificial Intelligence**<br>*Yeaminul Haque, Rahat Shahriar Zawad, Ch...* | Cognitive Computation | 107 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW9_004.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s12559-023-10200-0.pdf)) |
+| [`OA_KW9_005`](paper_notes/OA_KW9_005.md) | **2024** | **Causal Inference Meets Deep Learning: A Comprehensive Survey**<br>*Licheng Jiao, Yuhan Wang, Xu Liu, Lingli...* | Research | 103 | [🌐 Đọc trực tuyến] ([Link gốc](https://doi.org/10.34133/research.0467)) |
+| [`OA_KW9_006`](paper_notes/OA_KW9_006.md) | **2023** | **MedMetaverse: Medical Care of Chronic Disease Patients and Managing Data Using Artificial Intelligence, Blockchain, and Wearable Devices State-of-the-Art Methodology**<br>*Dileep Kumar Murala, Sandeep Kumar Panda...* | IEEE Access | 100 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/6287639/6514899/10348578.pdf)) |
+| [`OA_KW9_007`](paper_notes/OA_KW9_007.md) | **2023** | **Machine learning with multimodal neuroimaging data to classify stages of Alzheimer’s disease: a systematic review and meta-analysis**<br>*Modupe Odusami, Rytis Maskeliūnas, Rober...* | Cognitive Neurodynamics | 83 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW9_007.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s11571-023-09993-5.pdf)) |
+| [`OA_KW9_008`](paper_notes/OA_KW9_008.md) | **2025** | **Advances in Neuroimaging and Deep Learning for Emotion Detection: A Systematic Review of Cognitive Neuroscience and Algorithmic Innovations**<br>*Constantinos Halkiopoulos, Evgenia Gkint...* | Diagnostics | 74 | [🌐 Đọc trực tuyến] ([Link gốc](https://www.mdpi.com/2075-4418/15/4/456/pdf?version=1739439273)) |
+| [`OA_KW9_009`](paper_notes/OA_KW9_009.md) | **2023** | **Application of Artificial Intelligence Techniques for Brain–Computer Interface in Mental Fatigue Detection: A Systematic Review (2011–2022)**<br>*Hamwira Yaacob, Farhad Hossain, Sharuniz...* | IEEE Access | 65 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/6287639/6514899/10185973.pdf)) |
+| [`OA_KW9_010`](paper_notes/OA_KW9_010.md) | **2024** | **SHAP value-based ERP analysis (SHERPA): Increasing the sensitivity of EEG signals with explainable AI methods**<br>*Sophia Sylvester, Merle Sagehorn, Thomas...* | Behavior Research Methods | 60 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW9_010.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.3758/s13428-023-02335-7.pdf)) |
+| [`OA_KW9_011`](paper_notes/OA_KW9_011.md) | **2023** | **AI-Based Epileptic Seizure Detection and Prediction in Internet of Healthcare Things: A Systematic Review**<br>*Sobhana Jahan, Farhana Nowsheen, Mahathi...* | IEEE Access | 60 | [🌐 Đọc trực tuyến] ([Link gốc](https://ieeexplore.ieee.org/ielx7/6287639/6514899/10056936.pdf)) |
+| [`OA_KW9_012`](paper_notes/OA_KW9_012.md) | **2023** | **ADHD/CD-NET: automated EEG-based characterization of ADHD and CD using explainable deep neural network technique**<br>*Hui Wen Loh, Chui Ping Ooi, Shu Lih Oh, ...* | Cognitive Neurodynamics | 37 | [📄 **Đọc PDF cục bộ**](pdfs/OA_KW9_012.pdf) ([Link gốc](https://link.springer.com/content/pdf/10.1007/s11571-023-10028-2.pdf)) |

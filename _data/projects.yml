@@ -34,9 +34,7 @@
 
   # Liên kết dự án trực tuyến
   links:
-    ai_studio: "https://ai.studio/apps/2cc019e8-7eb1-4885-aa96-1e52c3b74279"
     youtube_demo: "https://youtu.be/qoewefmP4W0"
-    social_share: "https://www.facebook.com/share/v/1KWfigEMz4/"
     certificate: "/assets/pdf/Certificate.pdf"
 
   # Bộ thẻ công nghệ (Tech Stack Badges)

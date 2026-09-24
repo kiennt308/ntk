@@ -572,11 +572,11 @@ contact_page:
 projects_page:
   title: "Featured Projects & Achievements | Kien Nguyen"
   badge: "SHOWCASE & AWARDS"
-  heading: "Dự Án & Thành Tích Nổi Bật"
-  subtitle: "Tổng hợp các dự án kỹ thuật thực chiến, sản phẩm ứng dụng AI/Cloud đã hoàn thành và đạt giải thưởng trong các cuộc thi công nghệ uy tín."
-  all_filter_label: "Tất cả dự án"
-  award_filter_label: "Đạt giải thưởng (Awards)"
-  empty_message: "Chưa có dự án nào được cập nhật."
+  heading: "Featured Projects & Achievements"
+  subtitle: "A curated showcase of battle-tested engineering solutions, AI/Cloud applications, and competitive honors awarded in premier technology challenges."
+  all_filter_label: "All Projects"
+  award_filter_label: "Award Winners"
+  empty_message: "No projects published yet."
 
 # ==============================================================================
 # 📂 11. NỘI DUNG TRANG CHUYÊN MỤC / CATEGORIES (TOPIC HUBS)

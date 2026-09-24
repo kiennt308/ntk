@@ -10,36 +10,36 @@ permalink: /projects.html
 <div class="container container--wide" style="margin-top: 1rem;">
   
   <!-- Page Header -->
-  <div style="text-align: center; max-width: 820px; margin: 0 auto 3rem auto;">
+  <div class="project-page-header" style="text-align: center; max-width: 820px; margin: 0 auto 2.5rem auto;">
     <span class="badge badge--amber" style="margin-bottom: 0.75rem; font-size: 0.825rem; padding: 0.35rem 0.9rem;">
       {% include icon.html name="award" size=15 %}
       <span style="margin-left: 0.35rem;">{{ page_cfg.badge | default: "SHOWCASE & AWARDS" }}</span>
     </span>
-    <h1 style="font-size: 2.75rem; font-weight: 800; margin-top: 0; margin-bottom: 0.85rem; letter-spacing: -0.03em;">
+    <h1>
       {{ page_cfg.heading | default: "Featured Projects & Achievements" }}
     </h1>
-    <p style="font-size: 1.15rem; color: var(--text-secondary); line-height: 1.6; margin: 0 auto;">
+    <p>
       {{ page_cfg.subtitle | default: "A curated showcase of battle-tested engineering solutions, AI/Cloud applications, and competitive honors awarded in premier technology challenges." }}
     </p>
   </div>
 
   <!-- Category & Status Filter Tabs -->
-  <div class="filter-wrapper no-print" style="margin-bottom: 2.75rem; display: flex; justify-content: center;">
+  <div class="filter-wrapper no-print" style="margin-bottom: 2.5rem; display: flex; justify-content: center;">
     <div class="filter-bar" style="gap: 0.65rem; flex-wrap: wrap; justify-content: center;">
       <button class="filter-btn project-filter-btn active" data-filter="all" style="display: inline-flex; align-items: center; gap: 0.45rem;">
         {% include icon.html name="book" size=15 %}
-        <span>{{ page_cfg.all_filter_label | default: "Tất cả dự án" }}</span>
+        <span>{{ page_cfg.all_filter_label | default: "All Projects" }}</span>
         <span style="opacity: 0.75; font-size: 0.75rem; margin-left: 0.15rem;">({{ projects | size | default: 0 }})</span>
       </button>
 
       <button class="filter-btn project-filter-btn" data-filter="award" style="display: inline-flex; align-items: center; gap: 0.45rem;">
         {% include icon.html name="award" size=15 %}
-        <span>{{ page_cfg.award_filter_label | default: "Đạt giải thưởng" }}</span>
+        <span>{{ page_cfg.award_filter_label | default: "Award Winners" }}</span>
       </button>
 
       <button class="filter-btn project-filter-btn" data-filter="business-utility" style="display: inline-flex; align-items: center; gap: 0.45rem;">
         {% include icon.html name="zap" size=15 %}
-        <span>Tiện ích Doanh nghiệp</span>
+        <span>Business Utility</span>
       </button>
     </div>
   </div>
@@ -124,26 +124,10 @@ permalink: /projects.html
                   </a>
                 {% endif %}
 
-                {% if project.links.ai_studio %}
-                  <a href="{{ project.links.ai_studio }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%;">
-                    {% include icon.html name="gemini" size=16 %}
-                    <span>Trải nghiệm trên Google AI Studio</span>
-                    {% include icon.html name="external-link" size=13 %}
-                  </a>
-                {% endif %}
-
                 {% if project.award.certificate_pdf %}
                   <a href="{{ project.award.certificate_pdf | relative_url }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%;">
                     {% include icon.html name="file-text" size=16 %}
                     <span>Xem Giấy Chứng Nhận (PDF)</span>
-                    {% include icon.html name="external-link" size=13 %}
-                  </a>
-                {% endif %}
-
-                {% if project.links.social_share %}
-                  <a href="{{ project.links.social_share }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%;">
-                    {% include icon.html name="share" size=16 %}
-                    <span>Bài Đăng Cuộc Thi (#AIRiserVietnam)</span>
                     {% include icon.html name="external-link" size=13 %}
                   </a>
                 {% endif %}
@@ -228,8 +212,8 @@ permalink: /projects.html
 
                   <!-- 2.1 Customer Experience -->
                   {% if project.solution.customer_experience %}
-                    <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1rem;">
-                      <h4 style="margin: 0 0 0.75rem 0; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.45rem;">
+                    <div class="project-box-padded" style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1rem;">
+                      <h4 style="margin: 0 0 0.75rem 0; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
                         <span class="badge badge--cyan" style="font-size: 0.7rem;">Phân Hệ Khách Hàng</span>
                         <span>{{ project.solution.customer_experience.title }}</span>
                       </h4>
@@ -249,8 +233,8 @@ permalink: /projects.html
 
                   <!-- 2.2 POS Experience -->
                   {% if project.solution.pos_experience %}
-                    <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
-                      <h4 style="margin: 0 0 0.75rem 0; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.45rem;">
+                    <div class="project-box-padded" style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+                      <h4 style="margin: 0 0 0.75rem 0; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
                         <span class="badge badge--amber" style="font-size: 0.7rem;">Phân Hệ Thu Ngân</span>
                         <span>{{ project.solution.pos_experience.title }}</span>
                       </h4>
@@ -301,7 +285,7 @@ permalink: /projects.html
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.85rem;">
                     {% for gt in project.google_tech %}
-                      <div style="background: var(--bg-subtle); border-left: 3px solid #4285f4; border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 1.15rem 1.35rem;">
+                      <div class="project-box-padded" style="background: var(--bg-subtle); border-left: 3px solid #4285f4; border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 1.15rem 1.35rem;">
                         <div style="font-weight: 700; color: var(--text-primary); font-size: 0.98rem; margin-bottom: 0.2rem;">
                           {{ gt.name }}
                         </div>
@@ -330,7 +314,7 @@ permalink: /projects.html
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.85rem;">
                     {% for rm in project.roadmap %}
-                      <div style="display: flex; gap: 0.85rem; align-items: flex-start; padding: 0.85rem 1rem; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                      <div class="project-roadmap-card" style="display: flex; gap: 0.85rem; align-items: flex-start; padding: 0.85rem 1rem; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
                         <span class="badge badge--primary" style="font-size: 0.72rem; white-space: nowrap; flex-shrink: 0; margin-top: 0.15rem;">
                           {{ rm.badge | default: "Phase" }}
                         </span>

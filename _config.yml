@@ -85,6 +85,8 @@ header:
   nav_menu:                       # Danh sách các menu trên Header
     - title: "Home"
       url: "/"
+    - title: "Projects"
+      url: "/projects.html"
     - title: "Blog"
       url: "/blog.html"
     - title: "Topics"
@@ -565,7 +567,19 @@ contact_page:
       is_external: false
 
 # ==============================================================================
-# 📂 10. NỘI DUNG TRANG CHUYÊN MỤC / CATEGORIES (TOPIC HUBS)
+# 🏆 10. NỘI DUNG TRANG DỰ ÁN & THÀNH TÍCH (PROJECTS & ACHIEVEMENTS PAGE)
+# ==============================================================================
+projects_page:
+  title: "Featured Projects & Achievements | Kien Nguyen"
+  badge: "SHOWCASE & AWARDS"
+  heading: "Dự Án & Thành Tích Nổi Bật"
+  subtitle: "Tổng hợp các dự án kỹ thuật thực chiến, sản phẩm ứng dụng AI/Cloud đã hoàn thành và đạt giải thưởng trong các cuộc thi công nghệ uy tín."
+  all_filter_label: "Tất cả dự án"
+  award_filter_label: "Đạt giải thưởng (Awards)"
+  empty_message: "Chưa có dự án nào được cập nhật."
+
+# ==============================================================================
+# 📂 11. NỘI DUNG TRANG CHUYÊN MỤC / CATEGORIES (TOPIC HUBS)
 # ==============================================================================
 categories_page:
   title: "Topic Hubs & Categorized Roadmaps"

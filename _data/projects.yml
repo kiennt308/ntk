@@ -1,0 +1,144 @@
+# ==============================================================================
+# 🚀 DANH SÁCH DỰ ÁN & THÀNH TÍCH CÔNG NGHỆ (PROJECTS & ACHIEVEMENTS)
+# ==============================================================================
+# File này chứa cơ sở dữ liệu các dự án đã hoàn thành, sản phẩm công nghệ và giải thưởng.
+# Để thêm dự án mới trong tương lai, bạn chỉ cần sao chép một khối cấu trúc dưới đây
+# và điền các thông tin tương ứng. Trang /projects.html sẽ tự động hiển thị dự án mới!
+# ==============================================================================
+
+- id: "smart-pager"
+  title: "Smart Pager – Thẻ Rung Kỹ Thuật Số (Digital Pager)"
+  subtitle: "Nền tảng chuyển đổi số thẻ rung F&B qua QR Code & Zalo Mini App, tích hợp Google Gemini AI và Google Cloud Run"
+  featured: true
+  status: "Completed & Award-Winning"
+  status_badge: "Production Ready"
+  status_class: "badge--emerald"
+  category: "business-utility"
+  category_name: "Tiện ích Doanh nghiệp (Business Utility)"
+  year: "2026"
+  period: "Tháng 08/2026 – Tháng 10/2026"
+  
+  # Thông tin giải thưởng & chứng nhận
+  award:
+    achieved: true
+    badge: "GCP AI Builder · Top 500"
+    badge_class: "badge--amber"
+    title: "Top 500 & Giấy Chứng Nhận Hoàn Thành (Certificate of Completion)"
+    competition: "#AIRiserVietnam 2026 (#BuildwithGoogleAI)"
+    organizer: "Google for Developers & Google Cloud Platform (GCP)"
+    issued_date: "Tháng 10/2026"
+    recipient: "Kien Nguyen Trung (Nguyễn Trung Kiên)"
+    certificate_pdf: "/assets/pdf/Certificate.pdf"
+    certificate_image: "/assets/imgs/certs/certificate-airiser-2026.png"
+    quote: "Thanks for bringing your amazing ideas to #AIRiserVietnam! Your creativity and hard work made the whole event a success. Keep riding that wave and never stop building!"
+
+  # Liên kết dự án trực tuyến
+  links:
+    ai_studio: "https://ai.studio/apps/2cc019e8-7eb1-4885-aa96-1e52c3b74279"
+    youtube_demo: "https://youtu.be/qoewefmP4W0"
+    social_share: "https://www.facebook.com/share/v/1KWfigEMz4/"
+    certificate: "/assets/pdf/Certificate.pdf"
+
+  # Bộ thẻ công nghệ (Tech Stack Badges)
+  technologies:
+    - name: "Google Gemini 3.7 Flash"
+      class: "badge--purple"
+    - name: "Google Cloud Run"
+      class: "badge--cyan"
+    - name: "Zalo Mini App SDK"
+      class: "badge--primary"
+    - name: "Bidirectional WebSocket"
+      class: "badge--amber"
+    - name: "Web Audio API Synthesizer"
+      class: "badge--emerald"
+    - name: "Docker & Containerization"
+      class: "badge--docker"
+
+  # Thống kê & Chỉ số thực nghiệm (Key Metrics)
+  metrics:
+    - value: "< 2s"
+      label: "Zero-Friction Onboarding"
+      desc: "100% người dùng Zalo quét mã nhận ngay thẻ số điện tử không cần cài app"
+    - value: "< 50ms"
+      label: "Độ trễ tín hiệu gọi khách"
+      desc: "Đồng bộ WebSocket tức thì 2 chiều giữa quầy Barista và thiết bị khách"
+    - value: "88%"
+      label: "Cải thiện cảm nhận chờ"
+      desc: "Khách cảm thấy thời gian chờ trôi nhanh hơn nhờ đếm ngược & Gemini Storytelling"
+    - value: "0 VNĐ"
+      label: "Chi phí mua sắm thiết bị"
+      desc: "Tận dụng 100% smartphone sẵn có, tiết kiệm hàng triệu đồng mua máy rung vật lý"
+
+  # Vấn đề thực tế (The Problem)
+  problem:
+    summary: "Trong mô hình F&B tự phục vụ (Self-service Coffee Shop & Fast Food), các quán cà phê và nhà hàng hiện đang phụ thuộc hoàn toàn vào thiết bị thẻ rung vật lý (Hardware Pagers) để gọi khách lấy món. Mô hình này tồn tại 3 nút thắt nghiêm trọng:"
+    points:
+      - title: "Chi phí đầu tư & hao mòn cao"
+        desc: "Một bộ 16–20 thẻ rung có giá 3.000.000đ – 7.000.000đ/chi nhánh. Thẻ thường xuyên bị rơi vỡ, chai pin hoặc khách vô tình mang về gây thất thoát chi phí lớn."
+      - title: "Giới hạn vật lý & mất sóng RF"
+        desc: "Sóng RF truyền thống chỉ phủ sóng trong bán kính hẹp (< 100m) và dễ bị chặn bởi tường bê tông, tầng lầu hoặc khi khách ra ngoài/đi vệ sinh, dẫn đến việc không nhận được tín hiệu và đồ uống bị nguội."
+      - title: "Thiết bị 'chết' & mất cơ hội tương tác"
+        desc: "Thẻ nhựa không thể thu thập dữ liệu khách hàng, không thể truyền tải thông điệp marketing, không dự đoán được thời gian chờ và không thể xoa dịu tâm lý khách hàng khi quán quá tải vào giờ cao điểm."
+
+  # Giải pháp & Tính năng ứng dụng (The Solution)
+  solution:
+    summary: "Smart Pager thay thế 100% thẻ rung vật lý bằng giải pháp Thẻ Rung Kỹ Thuật Số (Digital Pager) trực tiếp trên điện thoại thông qua Zalo Mini App / Web App hiện đại, bao gồm 2 phân hệ trải nghiệm đồng bộ:"
+    customer_experience:
+      title: "Trải nghiệm dành cho Khách hàng (Customer Web/Mini App)"
+      features:
+        - title: "Nhận thẻ tức thì qua QR Code"
+          desc: "Quét mã QR in trên hóa đơn hoặc dán tại bàn để nhận thẻ số điện tử trong vòng 2 giây mà không cần tải hay cài đặt thêm bất kỳ ứng dụng nào."
+        - title: "Đồng hồ đếm ngược trực quan"
+          desc: "Màn hình cập nhật trạng thái hàng chờ và hiển thị thời gian chờ dự kiến theo thời gian thực (Real-time Queue Countdown)."
+        - title: "Báo động nhận món đa giác quan (Tri-Factor Alert)"
+          desc: "Khi món sẵn sàng, hệ thống đồng thời kích hoạt: Rung Haptic đa nhịp (Zalo SDK) + Chuông âm thanh tần số kép (Web Audio API Synthesizer) + Màn hình đỏ nhấp nháy toàn diện để khách nhận biết ngay lập tức."
+        - title: "Nút xác nhận chủ động 'Tôi Đã Nhận Được'"
+          desc: "Cho phép khách hàng một chạm tắt chuông và xác nhận đã lấy đồ uống, cập nhật ngay trạng thái đơn hàng trên hệ thống quầy bar."
+    pos_experience:
+      title: "Giao diện Quản trị Quầy Barista & Thu ngân (POS Dashboard)"
+      features:
+        - title: "Tạo vé order siêu tốc trong 2 giây"
+          desc: "Giao diện quản lý hàng chờ trực quan, tối ưu cho thao tác chạm nhanh của thu ngân vào giờ cao điểm."
+        - title: "Gọi khách & Gọi lại 1 chạm độ trễ dưới 50ms"
+          desc: "Tín hiệu gọi khách truyền tải tức thì qua kiến trúc WebSocket Full-stack 2 chiều (Bidirectional Real-time Engine)."
+        - title: "Dual-Screen Simulation (Kiểm thử & Đào tạo)"
+          desc: "Tích hợp sẵn chế độ mô phỏng song song màn hình khách và màn hình thu ngân, giúp chủ quán dễ dàng đào tạo nhân viên mới mà không cần thiết bị phụ."
+
+  # Điểm độc đáo & Đột phá kỹ thuật (Key Innovations)
+  innovations:
+    - title: "Chi phí triển khai bằng 0 VNĐ"
+      desc: "Không cần đầu tư thiết bị phần cứng cồng kềnh, chuyển đổi 100% sang màn hình điện thoại sẵn có của khách hàng."
+    - title: "Không giới hạn phạm vi & số lượng thẻ"
+      desc: "Hoạt động qua Internet (4G/WiFi), khách ngồi bất kỳ tầng lầu nào hay đứng ngoài quán vẫn nhận thông báo ngay lập tức; không bị nghẽn số lượng thẻ giờ cao điểm."
+    - title: "Trợ lý Ảo AI Gemini Concierge"
+      desc: "Google Gemini AI tự động phân tích độ dài hàng chờ (Queue Capacity) để dự đoán chính xác thời gian nhận món, đồng thời kể các mẩu chuyện thú vị (Coffee Trivia/Storytelling) giúp giải tỏa tâm lý chờ đợi của khách."
+    - title: "Cơ chế Auto-Voucher bù đắp (Service Recovery)"
+      desc: "Nếu thời gian chờ thực tế vượt quá ngưỡng thiết lập của quán, hệ thống tự động phát hành mã ưu đãi độc quyền cho lần mua sau, biến trải nghiệm chờ đợi tiêu cực thành sự hài lòng và lòng trung thành."
+
+  # Tích hợp công nghệ Google (Google Tech Stack)
+  google_tech:
+    - name: "Google Gemini API (gemini-3.7-flash via @google/genai SDK)"
+      role: "Tầng AI Backend Server-side & Xử lý ngữ cảnh thông minh"
+      points:
+        - "Phân tích thời gian thực tải lượng hàng chờ (Queue Capacity) để đưa ra dự đoán thời gian nhận món chính xác theo từng phút."
+        - "Tự động sinh nội dung tương tác cá nhân hóa (Friendly Greeting, Storytelling, Coffee Trivia) theo ngữ cảnh thời gian và độ dài hàng chờ nhằm gia tăng trải nghiệm người dùng."
+    - name: "Google Cloud Platform & Google Cloud Run"
+      role: "Hạ tầng Container Auto-scaling & Quản trị WebSocket Concurrency"
+      points:
+        - "Ứng dụng được đóng gói containerized và triển khai trên nền tảng Google Cloud Run, tự động co giãn theo tải lượng (Auto-scaling)."
+        - "Đảm bảo duy trì kết nối WebSocket ổn định với độ trễ cực thấp (< 50ms) cho hàng nghìn khách hàng đồng thời mà không bị ngắt quãng kết nối."
+
+  # Lộ trình phát triển trong tương lai (Roadmap)
+  roadmap:
+    - phase: "Giai đoạn 1 (Hiện tại – 3 tháng tới)"
+      badge: "In Progress"
+      title: "Zalo Mini App chính thức & Zalo ZNS"
+      desc: "Hoàn thiện phiên bản Zalo Mini App chính thức, tích hợp thông báo đẩy đa kênh qua Zalo ZNS (Zalo Notification Service) để gửi thông báo rung/chuông ngay cả khi khách tắt màn hình điện thoại."
+    - phase: "Giai đoạn 2 (3 – 6 tháng)"
+      badge: "Upcoming"
+      title: "Cổng thanh toán & Loyalty trực tiếp"
+      desc: "Tích hợp cổng thanh toán trực tiếp (VietQR / ZaloPay) cho phép khách hàng gọi thêm món, nạp thẻ thành viên hoặc thanh toán trả trước ngay trên giao diện thẻ rung kỹ thuật số."
+    - phase: "Giai đoạn 3 (6 – 12 tháng)"
+      badge: "Expansion"
+      title: "Mở rộng hệ sinh thái POS F&B toàn quốc"
+      desc: "Xây dựng API và Webhook mở để tích hợp liền mạch với các phần mềm POS phổ biến nhất thị trường F&B Việt Nam (iPOS, KiotViet, CukCuk, Pos365), từ đó mở rộng nhanh chóng ra hàng nghìn chuỗi quán cà phê và trà sữa."

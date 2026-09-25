@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "pdf-to-markdown": {
+      "command": "python",
+      "args": [
+        "d:\\ntk\\.agents\\mcp_servers\\pdf_to_markdown\\server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}

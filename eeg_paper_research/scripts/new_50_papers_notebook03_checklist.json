@@ -1,0 +1,952 @@
+[
+  {
+    "title": "Exploring Diffusion Transformers for Cross-Modal Augmentation in Multimodal Brain State Decoding",
+    "norm_title": "exploringdiffusiontransformersforcrossmodalaugmentationinmultimodalbrainstatedecoding",
+    "authors": "Ziwei Wang; Xingyi He; Hongbin Wang; Tianwang Jia",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2609.11341v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2609.11341v1.pdf",
+      "https://export.arxiv.org/pdf/2609.11341v1.pdf"
+    ],
+    "abstract": "Multimodal brain state decoding has largely focused on fusing paired modalities for prediction, but has rarely explored how their correspondence can be further exploited to enrich training data and improve multimodal representation learning. To address this gap, we propose CoMA-DiT, a bidirectional cross-modal Diffusion Transformer for latent augmentation that treats paired modalities as sources of mutual generative supervision rather than merely as inputs to be fused. CoMA-DiT conditions velocity prediction on the paired modality through cross-modal attention and adaptively injects the resulting variation via a reliability-gated residual mechanism. Experiments on multimodal auditory attention decoding and emotion recognition showed that CoMA-DiT consistently outperformed 20 representative baselines, achieving absolute gains of 4.28% and 6.70% in accuracy and macro-F1 over the no-augmentation baseline, respectively. Extensive ablation, sensitivity, visualization, and interpretability analyses further demonstrated its robustness, generalizability, and ability to capture functionally relevant cross-modal interactions. These findings support a broader view of multimodal learning: Paired modalities can serve not only as inputs for fusion but also as supervision sources that augment one another.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_051",
+    "file_name": "OA_KW3_051.pdf",
+    "md5_hash": "718198b8f100908468593bbcab6570ba",
+    "file_size_kb": 1152.8623046875
+  },
+  {
+    "title": "I Understand How You Feel: Enhancing Deeper Emotional Support Through Multilingual Emotional Validation in Dialogue System",
+    "norm_title": "iunderstandhowyoufeelenhancingdeeperemotionalsupportthroughmultilingualemotionalvalidationindialoguesystem",
+    "authors": "Zi Haur Pang; Yahui Fu; Koji Inoue; Tatsuya Kawahara",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2606.11875v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2606.11875v1.pdf",
+      "https://export.arxiv.org/pdf/2606.11875v1.pdf"
+    ],
+    "abstract": "Emotional validation - explicitly acknowledging that a user's feelings make sense - has proven therapeutic value but has received little computational attention. Emotional validation in dialogue systems can be decomposed into (i) validating response identification, (ii) validation timing detection, and (iii) validating response generation. To support research on all three subtasks, we release M-EDESConv, a 120k English-Japanese multilingual corpus created through hybrid manual and automatic annotation, and M-TESC, a multilingual spoken-dialogue test set. For timing detection, we propose MEGUMI, a Multilingual Emotion-aware Gated Unit for Mutual Integration, that fuses frozen XLM-RoBERTa semantics with language-specific emotion encoders via cross-modal attention and gated fusion. MEGUMI shows superior performance on both the M-EDESConv and M-TESC datasets, both objectively and subjectively. Finally, our EmoValidBench benchmarks of GPT-4.1 Nano and Llama-3.1 8B indicate that current LLMs generate contextually similar and diverse validating responses, but emotional understanding remains a major area for improvement. Project page: https://github.com/zihaurpang/Multilingual-Emotional-Validation",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_052",
+    "file_name": "OA_KW3_052.pdf",
+    "md5_hash": "c8ba14eb124bcb88a6a3e3b440a5b6cc",
+    "file_size_kb": 822.2900390625
+  },
+  {
+    "title": "I'm Fine, But My Voice Isn't: Cross-Modal Affective Dissonance Detection for Reflective Journaling",
+    "norm_title": "imfinebutmyvoiceisntcrossmodalaffectivedissonancedetectionforreflectivejournaling",
+    "authors": "Sumin Lee",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2604.27517v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.27517v1.pdf",
+      "https://export.arxiv.org/pdf/2604.27517v1.pdf"
+    ],
+    "abstract": "Digital journaling creates an authenticity gap: users consciously translate raw emotions into text, often sanitizing narratives even in private writing. We formalize this as Cross-Modal Affective Dissonance Detection (CADD), a directional three-way classification distinguishing Masking (positive text, negative acoustics), Coping (negative text, positive acoustics), and Congruent utterances, grounded in Gross's process model of emotion regulation. We present three further contributions: (i) CADD-Journal, a 1,800-sample TTS dataset with a shared-sentence-pool design that provably isolates acoustic signal from textual content; (ii) DACM, a dual-encoder model with asymmetric cross-modal attention that re-solves a gradient degeneracy in pooled fusion, achieving macro-F1 0.711 - with a four-step ablation demonstrating that asymmetric attention is the dominant driver (+ 0.242) while the DIM is effective only on cross-modal features (+0.033); and (iii) a domain gap quantification: zero-shot evaluation across three naturalistic corpora reveals a substantial gap between TTS-trained models and real speech, and we identify two concrete requirements for future in-the-wild corpus construction. ReflectJournal, a proof-of-concept iOS application, operationalizes the framework and provides a deployment platform for naturalistic data collection.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_053",
+    "file_name": "OA_KW3_053.pdf",
+    "md5_hash": "16473d070aa737a9becc8eb4f7b6616d",
+    "file_size_kb": 1384.03515625
+  },
+  {
+    "title": "Distance-aware Soft Prompt Guidance for Multimodal Valence-Arousal Estimation",
+    "norm_title": "distanceawaresoftpromptguidanceformultimodalvalencearousalestimation",
+    "authors": "Byeongjin Jung; Chanyeong Park; Sejoon Lim",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.13415v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.13415v2.pdf",
+      "https://export.arxiv.org/pdf/2603.13415v2.pdf"
+    ],
+    "abstract": "Valence-arousal (VA) estimation is crucial for capturing the nuanced nature of human emotions in naturalistic environments. While pre-trained vision-language models such as CLIP have demonstrated remarkable semantic alignment capabilities, their application to continuous regression tasks is often limited by the discrete nature of text prompts. In this paper, we propose a novel multimodal framework for VA estimation that introduces Distance-aware Soft Prompt Guidance to bridge the gap between semantic representations and continuous affective dimensions. Specifically, we partition the VA space into multiple discrete regions, each associated with distinct textual descriptions. Rather than relying on hard categorization, we employ a Gaussian kernel to compute soft labels based on the Euclidean distance between the ground-truth coordinates and the region centers, allowing the model to learn fine-grained emotional transitions. For multimodal integration, our architecture utilizes a CLIP image encoder and an Audio Spectrogram Transformer to extract robust visual and acoustic features. These features are temporally modeled using Gated Recurrent Units and integrated through a hierarchical fusion scheme that sequentially combines cross-modal attention for alignment and gated fusion for adaptive refinement. Experimental results on the Aff-Wild2 dataset show that the proposed semantic-guided approach outperforms the official baseline and demonstrates robust performance on in-the-wild data.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_054",
+    "file_name": "OA_KW3_054.pdf",
+    "md5_hash": "7705d3ef7e6d603f53564cdc02015216",
+    "file_size_kb": 1820.96484375
+  },
+  {
+    "title": "Acoustic and Semantic Modeling of Emotion in Spoken Language",
+    "norm_title": "acousticandsemanticmodelingofemotioninspokenlanguage",
+    "authors": "Soumya Dutta",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.09212v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.09212v1.pdf",
+      "https://export.arxiv.org/pdf/2603.09212v1.pdf"
+    ],
+    "abstract": "Emotions play a central role in human communication, shaping trust, engagement, and social interaction. As artificial intelligence systems powered by large language models become increasingly integrated into everyday life, enabling them to reliably understand and generate human emotions remains an important challenge. While emotional expression is inherently multimodal, this thesis focuses on emotions conveyed through spoken language and investigates how acoustic and semantic information can be jointly modeled to advance both emotion understanding and emotion synthesis from speech. The first part of the thesis studies emotion-aware representation learning through pre-training. We propose strategies that incorporate acoustic and semantic supervision to learn representations that better capture affective cues in speech. A speech-driven supervised pre-training framework is also introduced to enable large-scale emotion-aware text modeling without requiring manually annotated text corpora. The second part addresses emotion recognition in conversational settings. Hierarchical architectures combining cross-modal attention and mixture-of-experts fusion are developed to integrate acoustic and semantic information across conversational turns. Finally, the thesis introduces a textless and non-parallel speech-to-speech framework for emotion style transfer that enables controllable emotional transformations while preserving speaker identity and linguistic content. The results demonstrate improved emotion transfer and show that style-transferred speech can be used for data augmentation to improve emotion recognition.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_055",
+    "file_name": "OA_KW3_055.pdf",
+    "md5_hash": "505d9190bc5c94d887a4bcdb5fa83a70",
+    "file_size_kb": 12746.1142578125
+  },
+  {
+    "title": "CLCR: Cross-Level Semantic Collaborative Representation for Multimodal Learning",
+    "norm_title": "clcrcrosslevelsemanticcollaborativerepresentationformultimodallearning",
+    "authors": "Chunlei Meng; Guanhong Huang; Rong Fu; Runmin Jian",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2602.19605v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2602.19605v1.pdf",
+      "https://export.arxiv.org/pdf/2602.19605v1.pdf"
+    ],
+    "abstract": "Multimodal learning aims to capture both shared and private information from multiple modalities. However, existing methods that project all modalities into a single latent space for fusion often overlook the asynchronous, multi-level semantic structure of multimodal data. This oversight induces semantic misalignment and error propagation, thereby degrading representation quality. To address this issue, we propose Cross-Level Co-Representation (CLCR), which explicitly organizes each modality's features into a three-level semantic hierarchy and specifies level-wise constraints for cross-modal interactions. First, a semantic hierarchy encoder aligns shallow, mid, and deep features across modalities, establishing a common basis for interaction. And then, at each level, an Intra-Level Co-Exchange Domain (IntraCED) factorizes features into shared and private subspaces and restricts cross-modal attention to the shared subspace via a learnable token budget. This design ensures that only shared semantics are exchanged and prevents leakage from private channels. To integrate information across levels, the Inter-Level Co-Aggregation Domain (InterCAD) synchronizes semantic scales using learned anchors, selectively fuses the shared representations, and gates private cues to form a compact task representation. We further introduce regularization terms to enforce separation of shared and private features and to minimize cross-level interference. Experiments on six benchmarks spanning emotion recognition, event localization, sentiment analysis, and action recognition show that CLCR achieves strong performance and generalizes well across tasks.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_056",
+    "file_name": "OA_KW3_056.pdf",
+    "md5_hash": "a3e7b6418c1d0e8d3bd93c87fef4c468",
+    "file_size_kb": 3444.1943359375
+  },
+  {
+    "title": "ES4R: Speech Encoding Based on Prepositive Affective Modeling for Empathetic Response Generation",
+    "norm_title": "es4rspeechencodingbasedonprepositiveaffectivemodelingforempatheticresponsegeneration",
+    "authors": "Zhuoyue Gao; Xiaohui Wang; Xiaocui Yang; Wen Zhang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2601.16225v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.16225v1.pdf",
+      "https://export.arxiv.org/pdf/2601.16225v1.pdf"
+    ],
+    "abstract": "Empathetic speech dialogue requires not only understanding linguistic content but also perceiving rich paralinguistic information such as prosody, tone, and emotional intensity for affective understandings. Existing speech-to-speech large language models either rely on ASR transcription or use encoders to extract latent representations, often weakening affective information and contextual coherence in multi-turn dialogues. To address this, we propose \\textbf{ES4R}, a framework for speech-based empathetic response generation. Our core innovation lies in explicitly modeling structured affective context before speech encoding, rather than relying on implicit learning by the encoder or explicit emotion supervision. Specifically, we introduce a dual-level attention mechanism to capture turn-level affective states and dialogue-level affective dynamics. The resulting affective representations are then integrated with textual semantics through speech-guided cross-modal attention to generate empathetic responses. For speech output, we employ energy-based strategy selection and style fusion to achieve empathetic speech synthesis. ES4R consistently outperforms strong baselines in both automatic and human evaluations and remains robust across different LLM backbones.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_057",
+    "file_name": "OA_KW3_057.pdf",
+    "md5_hash": "642becbd228360169c9293e72c596a5d",
+    "file_size_kb": 1393.521484375
+  },
+  {
+    "title": "Multimodal Sentiment Analysis based on Multi-channel and Symmetric Mutual Promotion Feature Fusion",
+    "norm_title": "multimodalsentimentanalysisbasedonmultichannelandsymmetricmutualpromotionfeaturefusion",
+    "authors": "Wangyuan Zhu; Jun Yu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2601.02415v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.02415v1.pdf",
+      "https://export.arxiv.org/pdf/2601.02415v1.pdf"
+    ],
+    "abstract": "Multimodal sentiment analysis is a key technology in the fields of human-computer interaction and affective computing. Accurately recognizing human emotional states is crucial for facilitating smooth communication between humans and machines. Despite some progress in multimodal sentiment analysis research, numerous challenges remain. The first challenge is the limited and insufficiently rich features extracted from single modality data. Secondly, most studies focus only on the consistency of inter-modal feature information, neglecting the differences between features, resulting in inadequate feature information fusion. In this paper, we first extract multi-channel features to obtain more comprehensive feature information. We employ dual-channel features in both the visual and auditory modalities to enhance intra-modal feature representation. Secondly, we propose a symmetric mutual promotion (SMP) inter-modal feature fusion method. This method combines symmetric cross-modal attention mechanisms and self-attention mechanisms, where the cross-modal attention mechanism captures useful information from other modalities, and the self-attention mechanism models contextual information. This approach promotes the exchange of useful information between modalities, thereby strengthening inter-modal interactions. Furthermore, we integrate intra-modal features and inter-modal fused features, fully leveraging the complementarity of inter-modal feature information while considering feature information differences. Experiments conducted on two benchmark datasets demonstrate the effectiveness and superiority of our proposed method.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_058",
+    "file_name": "OA_KW3_058.pdf",
+    "md5_hash": "0638510487a5e1531bc8e87f7fbf46ce",
+    "file_size_kb": 835.5400390625
+  },
+  {
+    "title": "GL-LFGNN:A Global-Local Dual-branch Causal Graph Neural Network Based on Liang-Kleeman Information Flow for EEG Emotion Recognition",
+    "norm_title": "gllfgnnagloballocaldualbranchcausalgraphneuralnetworkbasedonliangkleemaninformationflowforeegemotionrecognition",
+    "authors": "Ziyi Wang; Dongyang Kuang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2605.25061v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2605.25061v1.pdf",
+      "https://export.arxiv.org/pdf/2605.25061v1.pdf"
+    ],
+    "abstract": "EEG-based emotion recognition holds significant promise for objective diagnosis of mood disorders. Graph neural networks (GNNs) have emerged as the dominant paradigm for modeling inter-channel dependencies in EEG, yet existing approaches rely on symmetric adjacency matrices derived from spatial proximity or functional correlations that fundamentally capture statistical associations rather than directed causal influences, which conflicts with the inherently asymmetric, causally-driven nature of neural information flow. To bridge this gap, we propose GL-LFGNN, a Global-Local Dual-branch Causal Graph Neural Network grounded in Liang-Kleeman information flow theory. Unlike Granger causality that merely assesses temporal precedence, our approach rigorously quantifies causal strength from a dynamical systems perspective, yielding neurophysiologically interpretable directed graphs. A dual-branch architecture further integrates whole-brain connectivity with region-specific processing aligned to established functional neuroanatomy. On the MEEG dataset, GL-LFGNN achieves 86.17% (Arousal) and 86.71% (Valence) accuracy with only 37K parameters -- approximately 10% of the current state-of-the-art -- demonstrating that principled causal modeling can simultaneously enhance interpretability, generalization, and computational efficiency. Code will be released.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_059",
+    "file_name": "OA_KW3_059.pdf",
+    "md5_hash": "dfab87ba0e46196b2a29d8965fb9c3e7",
+    "file_size_kb": 2423.458984375
+  },
+  {
+    "title": "C$^2$MOE: Consistency and Complementarity-guided Mixture of Experts for Incomplete Multimodal Emotion Learning",
+    "norm_title": "c2moeconsistencyandcomplementarityguidedmixtureofexpertsforincompletemultimodalemotionlearning",
+    "authors": "Yuntao Shou; Tao Meng; Wei Ai; Keqin Li",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2608.04013v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.04013v1.pdf",
+      "https://export.arxiv.org/pdf/2608.04013v1.pdf"
+    ],
+    "abstract": "Recent advances in Multimodal Emotion Recognition in Conversations (MERC) highlight its reliance on complete multimodal inputs. However, real-world data often suffer from missing modalities due to transmission errors or user behavior, severely degrading model performance. Existing methods enhance robustness via cross-modal consistency learning but largely ignore modality complementarity, leading to biased reconstructions. To address this limitation, we propose C$2$MOE, a novel Consistency and Complementarity-guided Mixture of Experts framework for incomplete multimodal emotion learning. Our approach unifies representation learning and missing modality imputation within a principled information-theoretic framework. Specifically, multimodal knowledge is factorized into consistency and complementarity components via interaction-aware experts. Consistency is captured by maximizing cross-modal predictability, while complementarity is preserved by maximizing conditional entropy between modalities. Building upon this decomposition, C$2$MOE introduces a dual-branch prediction mechanism for robust imputation under missing modalities. The consistency branch aligns imputed features with the joint distribution by minimizing uncertainty, and the complementarity branch exploits modality-unique cues via entropy maximization. Finally, C$2$MOE employs a learnable reweighting module that dynamically assigns importance scores to each expert's output, yielding a robust and adaptive fusion for imputation. Extensive experiments on multiple MERC benchmarks demonstrate that C$2$MOE consistently surpasses state-of-the-art methods across various missing-modality settings, validating its robustness and generalization.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_060",
+    "file_name": "OA_KW3_060.pdf",
+    "md5_hash": "5de3ab9186ea93018c07334bb2ddaa66",
+    "file_size_kb": 1442.3701171875
+  },
+  {
+    "title": "Foundation Model Guided Dual-Branch Co-Adaptation for Source-Free EEG Decoding",
+    "norm_title": "foundationmodelguideddualbranchcoadaptationforsourcefreeeegdecoding",
+    "authors": "Peiliang Gong; Han Zhang; Zhen Jiang; Chenyu Liu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2605.00857v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2605.00857v1.pdf",
+      "https://export.arxiv.org/pdf/2605.00857v1.pdf"
+    ],
+    "abstract": "Source-free domain adaptation (SFDA) provides a practical solution to cross-subject EEG decoding by adapting source-pretrained models to unlabeled target domains without accessing source data. However, existing SFDA methods rely solely on the limited internal knowledge of source-pretrained models, leading to inferior cross-domain generalization and unreliable pseudo-labels. Although EEG Foundation Models (FMs) pretrained on large-scale data exhibit strong generalizability, their potential in SFDA remains largely unexplored. To this end, we propose FUSED, a Foundation-guided Source-free EEG Decoding framework that integrates a large-scale FM with a compact Specialist Model (SM) via dual-branch co-adaptation. Specifically, we introduce a Co-adaptation mechanism equipping both branches with linear and prototype views, enabling cross-branch pseudo-label generation. Additionally, we design a Consensus Filtering Mechanism that exploits the FM's inherent stability to identify high-quality samples, along with a Two-Stage Pseudo-Label Refinement scheme to suppress error accumulation through cross-branch arbitration. Finally, we calibrate the FM's decision boundaries via mutual information maximization with the SM, followed by knowledge distillation from FM to SM, forming a principled calibrate-then-distill pipeline. To our knowledge, FUSED is the first work to leverage EEG FMs within the SFDA framework for cross-subject EEG decoding. Extensive experiments across three EEG paradigms, including motor imagery, emotion recognition, and SSVEP, demonstrate consistent state-of-the-art performance, validating the effectiveness of foundation-guided synergy for robust and privacy-preserving EEG decoding.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_061",
+    "file_name": "OA_KW3_061.pdf",
+    "md5_hash": "163d7e2c2c93040bee1e1b2b32e89651",
+    "file_size_kb": 3739.6025390625
+  },
+  {
+    "title": "Disentangled Dual-Branch Graph Learning for Conversational Emotion Recognition",
+    "norm_title": "disentangleddualbranchgraphlearningforconversationalemotionrecognition",
+    "authors": "Chengling Guo; Yuntao Shou; Tao Meng; Wei Ai",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2604.14204v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.14204v1.pdf",
+      "https://export.arxiv.org/pdf/2604.14204v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition in conversations aims to infer utterance-level emotions by jointly modeling textual, acoustic, and visual cues within context. Despite recent progress, key challenges remain, including redundant cross-modal information, imperfect semantic alignment, and insufficient modeling of high-order speaker interactions. To address these issues, we propose a framework that combines dual-space feature disentanglement with dual-branch graph learning. A shared encoder and modality-specific encoders are used to separate modality-invariant and modality-specific representations. The invariant features are modeled by a Fourier graph neural network to capture global consistency and complementary patterns, with a frequency-domain contrastive objective to enhance discriminability. In parallel, a speaker-aware hypergraph is constructed over modality-specific features to model high-order interactions, along with a speaker-consistency constraint to maintain coherent semantics. Finally, the two branches are fused for utterance-level emotion prediction. Experiments on IEMOCAP and MELD demonstrate that the proposed method achieves superior performance over strong baselines, validating its effectiveness.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_062",
+    "file_name": "OA_KW3_062.pdf",
+    "md5_hash": "0a08bdab3e87f9a1075ae8fc44fdb01b",
+    "file_size_kb": 436.8408203125
+  },
+  {
+    "title": "Dual-branch Graph Domain Adaptation for Cross-scenario Multi-modal Emotion Recognition",
+    "norm_title": "dualbranchgraphdomainadaptationforcrossscenariomultimodalemotionrecognition",
+    "authors": "Yuntao Shou; Jun Zhou; Tao Meng; Wei Ai",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.26840v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.26840v1.pdf",
+      "https://export.arxiv.org/pdf/2603.26840v1.pdf"
+    ],
+    "abstract": "Multimodal Emotion Recognition in Conversations (MERC) aims to predict speakers' emotional states in multi-turn dialogues through text, audio, and visual cues. In real-world settings, conversation scenarios differ significantly in speakers, topics, styles, and noise levels. Existing MERC methods generally neglect these cross-scenario variations, limiting their ability to transfer models trained on a source domain to unseen target domains. To address this issue, we propose a Dual-branch Graph Domain Adaptation framework (DGDA) for multimodal emotion recognition under cross-scenario conditions. We first construct an emotion interaction graph to characterize complex emotional dependencies among utterances. A dual-branch encoder, consisting of a hypergraph neural network (HGNN) and a path neural network (PathNN), is then designed to explicitly model multivariate relationships and implicitly capture global dependencies. To enable out-of-domain generalization, a domain adversarial discriminator is introduced to learn invariant representations across domains. Furthermore, a regularization loss is incorporated to suppress the negative influence of noisy labels. To the best of our knowledge, DGDA is the first MERC framework that jointly addresses domain shift and label noise. Theoretical analysis provides tighter generalization bounds, and extensive experiments on IEMOCAP and MELD demonstrate that DGDA consistently outperforms strong baselines and better adapts to cross-scenario conversations. Our code is available at https://github.com/Xudmm1239439/DGDA-Net.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_063",
+    "file_name": "OA_KW3_063.pdf",
+    "md5_hash": "78f1787c484f8e2426038932bfb1af9a",
+    "file_size_kb": 10057.7373046875
+  },
+  {
+    "title": "Solution to the 10th ABAW Expression Recognition Challenge: A Robust Multimodal Framework with Safe Cross-Attention and Modality Dropout",
+    "norm_title": "solutiontothe10thabawexpressionrecognitionchallengearobustmultimodalframeworkwithsafecrossattentionandmodalitydropout",
+    "authors": "Jun Yu; Naixiang Zheng; Guoyuan Wang; Yunxiang Zhang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.08034v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.08034v1.pdf",
+      "https://export.arxiv.org/pdf/2603.08034v1.pdf"
+    ],
+    "abstract": "Emotion recognition in real-world environments is hindered by partial occlusions, missing modalities, and severe class imbalance. To address these issues, particularly for the Affective Behavior Analysis in-the-wild (ABAW) Expression challenge, we propose a multimodal framework that dynamically fuses visual and audio representations. Our approach uses a dual-branch Transformer architecture featuring a safe cross-attention mechanism and a modality dropout strategy. This design allows the network to rely on audio-based predictions when visual cues are absent. To mitigate the long-tail distribution of the Aff-Wild2 dataset, we apply focal loss optimization, combined with a sliding-window soft voting strategy to capture dynamic emotional transitions and reduce frame-level classification jitter. Experiments demonstrate that our framework effectively handles missing modalities and complex spatiotemporal dependencies, achieving an accuracy of 60.79% and an F1-score of 0.5029 on the Aff-Wild2 validation set.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_064",
+    "file_name": "OA_KW3_064.pdf",
+    "md5_hash": "3d93ee671bc93c8330d0a6c2f4b3fafd",
+    "file_size_kb": 411.7568359375
+  },
+  {
+    "title": "Local-Global Feature Fusion for Subject-Independent EEG Emotion Recognition",
+    "norm_title": "localglobalfeaturefusionforsubjectindependenteegemotionrecognition",
+    "authors": "Zheng Zhou; Isabella McEvoy; Camilo E. Valderrama",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2601.08094v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.08094v1.pdf",
+      "https://export.arxiv.org/pdf/2601.08094v1.pdf"
+    ],
+    "abstract": "Subject-independent EEG emotion recognition is challenged by pronounced inter-subject variability and the difficulty of learning robust representations from short, noisy recordings. To address this, we propose a fusion framework that integrates (i) local, channel-wise descriptors and (ii) global, trial-level descriptors, improving cross-subject generalization on the SEED-VII dataset. Local representations are formed per channel by concatenating differential entropy with graph-theoretic features, while global representations summarize time-domain, spectral, and complexity characteristics at the trial level. These representations are fused in a dual-branch transformer with attention-based fusion and domain-adversarial regularization, with samples filtered by an intensity threshold. Experiments under a leave-one-subject-out protocol demonstrate that the proposed method consistently outperforms single-view and classical baselines, achieving approximately 40% mean accuracy in 7-class subject-independent emotion recognition. The code has been released at https://github.com/Danielz-z/LGF-EEG-Emotion.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_065",
+    "file_name": "OA_KW3_065.pdf",
+    "md5_hash": "02725c71ace0a6a3cc69d260cc02e491",
+    "file_size_kb": 642.359375
+  },
+  {
+    "title": "ECHO: A Locally-Deployable Agentic Health Assistant with Temporal Memory, Safety Guardrails, and Speech Assessment",
+    "norm_title": "echoalocallydeployableagentichealthassistantwithtemporalmemorysafetyguardrailsandspeechassessment",
+    "authors": "Abdulkadir Külçe; Alihan Esen; Çağla Fikir; Berke Kurt",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2608.06110v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.06110v2.pdf",
+      "https://export.arxiv.org/pdf/2608.06110v2.pdf"
+    ],
+    "abstract": "This paper presents ECHO (Enhanced Care &amp; Health Observer), a locally-deployable conversational health assistant for long-term chronic care management. ECHO integrates three complementary software modules developed under shared supervision as a unified system. The core module is an agentic chatbot built on a ReAct loop orchestrated via LangGraph, equipped with 17 clinical tools and a temporal knowledge graph for persistent cross-session memory; it achieves a 94.9% tool-execution pass rate across a 59-scenario benchmark with GPT-5 Mini. A two-stage hybrid safety layer intercepts all incoming queries: a rule-based layer handles explicit crisis signals and jailbreak attempts in under 1ms, while a signed graph neural network (GNN) with APPNP-style propagation classifies boundary cases by clinical intent, achieving 88.8% accuracy and 90.6% unsafe recall on a 2,537-query annotated Turkish health dataset while outperforming zero-shot LLM baselines including Llama 3.3 70B. A multimodal speech assessment module combining Whisper acoustic encoding and BERT text encoding with cross-attention fusion estimates emotion, depression, and pain, reaching a mean macro F1 of 0.652. The full system is implemented as a web application that can run entirely on consumer hardware, with no patient data transmitted to external services, supporting compliance with GDPR and KVKK.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_066",
+    "file_name": "OA_KW3_066.pdf",
+    "md5_hash": "732ab739be2e0ba4ff09fe4611643b20",
+    "file_size_kb": 238.669921875
+  },
+  {
+    "title": "Multimodal Group Emotion Recognition In-the-Wild Towards a Privacy-Safe Non-Individual Approach",
+    "norm_title": "multimodalgroupemotionrecognitioninthewildtowardsaprivacysafenonindividualapproach",
+    "authors": "Anderson Augusma",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2606.07585v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2606.07585v1.pdf",
+      "https://export.arxiv.org/pdf/2606.07585v1.pdf"
+    ],
+    "abstract": "This thesis addresses group emotion recognition (GER) in-the-wild with a focus on privacy preservation. Unlike traditional emotion recognition methods that rely on individual-level cues such as face, gaze, or voice analysis, this work uses collective audio-video signals to infer emotions at the group level, reducing risks of individual monitoring and surveillance. Two complementary frameworks are proposed. The first is a cross-attention multimodal architecture for audio-video fusion, combined with Frames Attention Pooling (FAP) for temporal aggregation. It is supported by synthetic data augmentation and validated through ablation studies, demonstrating robustness in real-world GER conditions. The second framework, Variational Encoder Multi-Decoder (VE-MD), learns a shared latent space for emotion classification and structural representation prediction, including body and face cues. Two decoding strategies, DETR-based and heatmap-based, are explored to analyze the role of structural representations in group and individual settings. The thesis makes three main contributions: it clarifies the role of multimodality and structural cues in group-level affective computing; introduces two architectures for privacy-preserving multimodal GER; and shows that competitive performance can be achieved without using individual features as input data.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_067",
+    "file_name": "OA_KW3_067.pdf",
+    "md5_hash": "7b5fb6a75754dcd6fca2032c6c5eebdf",
+    "file_size_kb": 8659.72265625
+  },
+  {
+    "title": "PFM-VEPAR: Prompting Foundation Models for RGB-Event Camera based Pedestrian Attribute Recognition",
+    "norm_title": "pfmveparpromptingfoundationmodelsforrgbeventcamerabasedpedestrianattributerecognition",
+    "authors": "Minghe Xu; Rouying Wu; ChiaWei Chu; Xiao Wang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.19565v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.19565v1.pdf",
+      "https://export.arxiv.org/pdf/2603.19565v1.pdf"
+    ],
+    "abstract": "Event-based pedestrian attribute recognition (PAR) leverages motion cues to enhance RGB cameras in low-light and motion-blur scenarios, enabling more accurate inference of attributes like age and emotion. However, existing two-stream multimodal fusion methods introduce significant computational overhead and neglect the valuable guidance from contextual samples. To address these limitations, this paper proposes an Event Prompter. Discarding the computationally expensive auxiliary backbone, this module directly applies extremely lightweight and efficient Discrete Cosine Transform (DCT) and Inverse DCT (IDCT) operations to the event data. This design extracts frequency-domain event features at a minimal computational cost, thereby effectively augmenting the RGB branch. Furthermore, an external memory bank designed to provide rich prior knowledge, combined with modern Hopfield networks, enables associative memory-augmented representation learning. This mechanism effectively mines and leverages global relational knowledge across different samples. Finally, a cross-attention mechanism fuses the RGB and event modalities, followed by feed-forward networks for attribute prediction. Extensive experiments on multiple benchmark datasets fully validate the effectiveness of the proposed RGB-Event PAR framework. The source code of this paper will be released on https://github.com/Event-AHU/OpenPAR",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_068",
+    "file_name": "OA_KW3_068.pdf",
+    "md5_hash": "23fa6c2d8d20e88a084a5cd2e9a98043",
+    "file_size_kb": 3085.6689453125
+  },
+  {
+    "title": "Anchoring Emotions in Text: Robust Multimodal Fusion for Mimicry Intensity Estimation",
+    "norm_title": "anchoringemotionsintextrobustmultimodalfusionformimicryintensityestimation",
+    "authors": "Lingsi Zhu; Yuefeng Zou; Yunxiang Zhang; Naixiang Zheng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.14976v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.14976v1.pdf",
+      "https://export.arxiv.org/pdf/2603.14976v1.pdf"
+    ],
+    "abstract": "Estimating Emotional Mimicry Intensity (EMI) in naturalistic environments is a critical yet challenging task in affective computing. The primary difficulty lies in effectively modeling the complex, nonlinear temporal dynamics across highly heterogeneous modalities, especially when physical signals are corrupted or missing. To tackle this, we propose TAEMI (Text-Anchored Emotional Mimicry Intensity estimation), a novel multimodal framework designed for the 10th ABAW Competition. Motivated by the observation that continuous visual and acoustic signals are highly susceptible to transient environmental noise, we break the traditional symmetric fusion paradigm. Instead, we leverage textual transcript--which inherently encode a stable, time-independent semantic prior--as central anchors. Specifically, we introduce a Text-Anchored Dual Cross-Attention mechanism that utilizes these robust textual queries to actively filter out frame-level redundancies and align the noisy physical streams. Furthermore, to prevent catastrophic performance degradation caused by inevitably missing data in unconstrained real-world scenarios, we integrate Learnable Missing-Modality Tokens and a Modality Dropout strategy during training. Extensive experiments on the Hume-Vidmimic2 dataset demonstrate that TAEMI effectively captures fine-grained emotional variations and maintains robust predictive resilience under imperfect conditions. Our framework achieves a state-of-the-art mean Pearson correlation coefficient across six continuous emotional dimensions, significantly outperforming existing baseline methods.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_069",
+    "file_name": "OA_KW3_069.pdf",
+    "md5_hash": "b0a06af96d7391bb647672f0faa9705f",
+    "file_size_kb": 640.0615234375
+  },
+  {
+    "title": "Multimodal Emotion Recognition via Bi-directional Cross-Attention and Temporal Modeling",
+    "norm_title": "multimodalemotionrecognitionviabidirectionalcrossattentionandtemporalmodeling",
+    "authors": "Junhyeong Byeon; Jeongyeol Kim; Sejoon Lim",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.11971v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.11971v2.pdf",
+      "https://export.arxiv.org/pdf/2603.11971v2.pdf"
+    ],
+    "abstract": "Expression recognition in in-the-wild video data remains challenging due to substantial variations in facial appearance, background conditions, audio noise, and the inherently dynamic nature of human affect. Relying on a single modality, such as facial expressions or speech, is often insufficient for capturing these complex emotional cues. To address this limitation, we propose a multimodal emotion recognition framework for the Expression (EXPR) task in the 10th Affective Behavior Analysis in-the-wild (ABAW) Challenge. Our framework builds on large-scale pre-trained models for visual and audio representation learning and integrates them in a unified multimodal architecture. To better capture temporal patterns in facial expression sequences, we incorporate temporal visual modeling over video windows. We further introduce a bi-directional cross-attention fusion module that enables visual and audio features to interact in a symmetric manner, facilitating cross-modal contextualization and complementary emotion understanding. In addition, we employ a text-guided contrastive objective to encourage semantically meaningful visual representations through alignment with emotion-related text prompts. Experimental results on the ABAW 10th EXPR benchmark demonstrate the effectiveness of the proposed framework, achieving a Macro F1 score of 0.32 compared to the baseline score of 0.25, and highlight the benefit of combining temporal visual modeling, audio representation learning, and cross-modal fusion for robust emotion recognition in unconstrained real-world environments.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_070",
+    "file_name": "OA_KW3_070.pdf",
+    "md5_hash": "3ea3c2530841241b0f74ec434d3cbfa9",
+    "file_size_kb": 420.8271484375
+  },
+  {
+    "title": "Physics-based phenomenological characterization of cross-modal bias in multimodal models",
+    "norm_title": "physicsbasedphenomenologicalcharacterizationofcrossmodalbiasinmultimodalmodels",
+    "authors": "Hyeongmo Kim; Sohyun Kang; Yerin Choi; Seungyeon Ji",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2602.20624v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2602.20624v1.pdf",
+      "https://export.arxiv.org/pdf/2602.20624v1.pdf"
+    ],
+    "abstract": "The term 'algorithmic fairness' is used to evaluate whether AI models operate fairly in both comparative (where fairness is understood as formal equality, such as \"treat like cases as like\") and non-comparative (where unfairness arises from the model's inaccuracy, arbitrariness, or inscrutability) contexts. Recent advances in multimodal large language models (MLLMs) are breaking new ground in multimodal understanding, reasoning, and generation; however, we argue that inconspicuous distortions arising from complex multimodal interaction dynamics can lead to systematic bias. The purpose of this position paper is twofold: first, it is intended to acquaint AI researchers with phenomenological explainable approaches that rely on the physical entities that the machine experiences during training/inference, as opposed to the traditional cognitivist symbolic account or metaphysical approaches; second, it is to state that this phenomenological doctrine will be practically useful for tackling algorithmic fairness issues in MLLMs. We develop a surrogate physics-based model that describes transformer dynamics (i.e., semantic network structure and self-/cross-attention) to analyze the dynamics of cross-modal bias in MLLM, which are not fully captured by conventional embedding- or representation-level analyses. We support this position through multi-input diagnostic experiments: 1) perturbation-based analyses of emotion classification using Qwen2.5-Omni and Gemma 3n, and 2) dynamical analysis of Lorenz chaotic time-series prediction through the physical surrogate. Across two architecturally distinct MLLMs, we show that multimodal inputs can reinforce modality dominance rather than mitigate it, as revealed by structured error-attractor patterns under systematic label perturbation, complemented by dynamical analysis.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_071",
+    "file_name": "OA_KW3_071.pdf",
+    "md5_hash": "a131d998f9beebd35aa7b75825e1ec32",
+    "file_size_kb": 3392.302734375
+  },
+  {
+    "title": "RAFM-SER++: A Lightweight Multimodal Emotion Recognition Framework for Real-Time Behavioral Monitoring in Surveillance Systems",
+    "norm_title": "rafmseralightweightmultimodalemotionrecognitionframeworkforrealtimebehavioralmonitoringinsurveillancesystems",
+    "authors": "Ngo Truong Dinh; Tung-Lam Bui; Chi-Trung Duong; Vien Nguyen Thi",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2609.07409v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2609.07409v1.pdf",
+      "https://export.arxiv.org/pdf/2609.07409v1.pdf"
+    ],
+    "abstract": "Recent multimodal Speech Emotion Recognition (SER) systems achieve high accuracy through interaction-heavy cross-modal transformers, but their computational cost limits deployment in latency-sensitive and resource-constrained surveillance systems. To address this challenge, we propose RAFM_SER++, a lightweight multimodal SER framework featuring an asymmetric Residual Attention Fusion Mechanism (RAFM). Rather than relying on computationally expensive bidirectional interactions, RAFM injects affective speech cues into semantic text representations through a one-directional residual attention pathway. Combined with a BYOL-inspired cross-modal alignment objective and attention-guided pooling, the proposed framework improves multimodal representation learning while maintaining low computational overhead.   Experiments on the IEMOCAP and ESD benchmarks demonstrate that RAFM_SER++ consistently outperforms the HuBERT-Base baseline and achieves a superior accuracy-efficiency trade-off compared with the state-of-the-art MemoCMT. Specifically, RAFM_SER++ reduces trainable parameters by more than 60%, achieves faster inference (79.60 it/s), and attains BACC scores of 81.10% on IEMOCAP and 95.39% on ESD. These results indicate that lightweight asymmetric multimodal fusion is an effective alternative to interaction-heavy cross-modal transformers for real-time surveillance applications.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_072",
+    "file_name": "OA_KW3_072.pdf",
+    "md5_hash": "d347b110656013961b300639f79f7642",
+    "file_size_kb": 5501.3212890625
+  },
+  {
+    "title": "Crab: Multi Layer Contrastive Supervision to Improve Speech Emotion Recognition Under Both Acted and Natural Speech Condition",
+    "norm_title": "crabmultilayercontrastivesupervisiontoimprovespeechemotionrecognitionunderbothactedandnaturalspeechcondition",
+    "authors": "Lucas H. Ueda; João G. T. Lima; Paula D. P. Costa",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.23673v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.23673v1.pdf",
+      "https://export.arxiv.org/pdf/2603.23673v1.pdf"
+    ],
+    "abstract": "Speech Emotion Recognition (SER) in real-world scenarios remains challenging due to severe class imbalance and the prevalence of spontaneous, natural speech. While recent approaches leverage self-supervised learning (SSL) representations and multimodal fusion of speech and text, most existing methods apply supervision only at the final classification layer, limiting the discriminative power of intermediate representations. In this work, we propose Crab (Contrastive Representation and Multimodal Aligned Bottleneck), a bimodal Cross-Modal Transformer architecture that integrates speech representations from WavLM and textual representations from RoBERTa, together with a novel \\textit{Multi Layer Contrastive Supervision} (MLCS) strategy. MLCS injects multi-positive contrastive learning signals at multiple layers of the network, encouraging emotionally discriminative representations throughout the model without introducing additional parameters at inference time. To further address data imbalance, we adopt weighted cross-entropy during training. We evaluate the proposed approach on three benchmark datasets covering different degrees of emotional naturalness: IEMOCAP, MELD, and MSP-Podcast 2.0. Experimental results demonstrate that Crab consistently outperforms strong unimodal and multimodal baselines across all datasets, with particularly large gains under naturalistic and highly imbalanced conditions. These findings highlight the effectiveness of \\textit{Multi Layer Contrastive Supervision} as a general and robust strategy for SER. Official implementation can be found in https://github.com/AI-Unicamp/Crab.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_073",
+    "file_name": "OA_KW3_073.pdf",
+    "md5_hash": "15410652816be28292e058b24d5bfbf7",
+    "file_size_kb": 2724.6240234375
+  },
+  {
+    "title": "Cross-Modal Emotion Understanding: A Transformer-GAT Approach for Dialogue Emotion Recognition",
+    "norm_title": "crossmodalemotionunderstandingatransformergatapproachfordialogueemotionrecognition",
+    "authors": "Jiaqi Qiao; Yifan Lyu; Xiujuan Xu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2609.29556v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2609.29556v1.pdf",
+      "https://export.arxiv.org/pdf/2609.29556v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition is a key research area in affective computing, with applications in sentiment analysis, intelligent customer service, and human-computer interaction. However, existing methods often rely on single-modal features or simple multimodal fusion, failing to capture the synergy between global and local contexts, which limits model performance and emotion understanding. To address this challenge, we propose Transformer-GAT, a hybrid framework that combines Transformer and the Graph Attention Network to enable cross-modal emotion understanding. The Transformer is used to capture global semantic information, while the Graph Attention Network is employed to model fine-grained relationships between modalities, thereby enhancing the representation of emotional features. Experiments on the IEMOCAP and MELD datasets show that our model achieves weighted F1 scores of 72.45% and 77.37%, outperforming state-of-the-art methods. These results demonstrate that Transformer-GAT effectively integrates multimodal features, balances global and local contexts, and provides deeper emotional insights, offering new directions for multimodal emotion computing.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_074",
+    "file_name": "OA_KW3_074.pdf",
+    "md5_hash": "034065ad1ddb8992cdca5e6b07f42dc4",
+    "file_size_kb": 1222.7021484375
+  },
+  {
+    "title": "SHAP-Weighted Cross-Modal Expert Fusion for Emotion and Sentiment Recognition: Evidence and Limits",
+    "norm_title": "shapweightedcrossmodalexpertfusionforemotionandsentimentrecognitionevidenceandlimits",
+    "authors": "Adis Alihodzic; Selma Skopljakovic Hubljar",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2607.08573v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2607.08573v1.pdf",
+      "https://export.arxiv.org/pdf/2607.08573v1.pdf"
+    ],
+    "abstract": "Multimodal emotion and sentiment recognition is commonly addressed by early fusion, which concatenates modalities before classification, or late fusion, which combines independently trained unimodal predictors. Early fusion can be accurate but monolithic, while late fusion is modular but may lose cross-modal interactions. This paper revisits XAI-guided adaptive fusion (\\xgaf), a tree-based mixture of unimodal and cross-modal experts whose sample-level weights are derived from TreeSHAP attribution magnitudes. We focus on the effect of SHAP attribution reduction when experts have unequal feature dimensionalities. In this setting, mean-abs and median-abs reductions can suppress high-dimensional cross-modal experts, whereas sum-abs reduction preserves total attribution mass. On MELD 7-class emotion recognition, sum-abs \\xgaf{} nearly matches early fusion across three face-sequence aggregators; the Transformer variant reaches 0.5983 \\wf{}, compared with 0.6018 for early fusion and 0.4598 for probability-average late fusion. McNemar testing shows no significant difference between sum-abs \\xgaf{} and early fusion on MELD ($p=1.000$), while \\xgaf{} remains significantly better than late fusion ($p&lt;0.0001$). On CMU-MOSEI 3-class sentiment recognition, sum-abs \\xgaf{} reaches 0.6519 \\wf{}, slightly exceeding early fusion (0.6485) and late fusion (0.5696). Ablation studies show that the main gain comes from adding cross-modal experts, especially the trimodal expert, rather than from complex per-sample routing. Diagnostics further show that mean-abs and median-abs weights are nearly uniform, while sum-abs weights concentrate on the trimodal expert. Thus, the main contribution is a transparent empirical analysis of how SHAP reduction, expert dimensionality, and cross-modal expert design affect modular multimodal fusion.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_075",
+    "file_name": "OA_KW3_075.pdf",
+    "md5_hash": "a4809f84556aa00616228cf554677a14",
+    "file_size_kb": 700.986328125
+  },
+  {
+    "title": "Data-Driven Decoding of Russell's Circumplex Model of Affect",
+    "norm_title": "datadrivendecodingofrussellscircumplexmodelofaffect",
+    "authors": "Amdjed Belaref; Samir Sadok; Zineb Noumir; Renaud Seguier",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2606.16843v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2606.16843v1.pdf",
+      "https://export.arxiv.org/pdf/2606.16843v1.pdf"
+    ],
+    "abstract": "Affective computing increasingly relies on deep learning to represent emotions, yet latent spaces often remain opaque, high-dimensional black boxes. This paper investigates whether Transformers' embeddings recover the geometric regularities of Russell's circumplex model. We unify two complementary experiments testing the hypothesis that, after training models on text and speech, their resulting latent spaces encode a topology consistent with valence-arousal and reproduce human-like neighborhood relations. Specifically, we evaluate deep representations extracted from Transformer-based text (RoBERTa) and speech (wav2vec 2.0) encoders, along with a multimodal Transformer fusion architecture, across naturalistic datasets like MSP-Podcast and controlled LLM-generated stimuli. Our analysis reveals that multimodal fusion of text and audio yields perfect topological alignment with Russell's primary emotion ordering. Furthermore, in a zero-shot setting using generic text embeddings, projected fine-grained emotion terms fall close to their established human-mapped coordinates. Our contribution is a novel, data-driven framework for validating emotion models, demonstrating that Russell's circumplex structure is intrinsically encoded in the embeddings of these modalities rather than being solely an artifact of human labeling, thereby bridging the gap between psychological theory and representation learning.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_076",
+    "file_name": "OA_KW3_076.pdf",
+    "md5_hash": "ee14e74c53f42821dfdc4f73e49cde6a",
+    "file_size_kb": 3297.1328125
+  },
+  {
+    "title": "Modeling Induced Pleasure through Cognitive Appraisal Prediction via Multimodal Fusion",
+    "norm_title": "modelinginducedpleasurethroughcognitiveappraisalpredictionviamultimodalfusion",
+    "authors": "Nastaran Dab; Raziyeh Zall; Mohammadreza Kangavari",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2604.23753v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.23753v1.pdf",
+      "https://export.arxiv.org/pdf/2604.23753v1.pdf"
+    ],
+    "abstract": "Multimodal affective computing analyzes user-generated social media content to predict emotional states. However, a critical gap remains in understanding how visual content shapes cognitive interpretations and elicits specific affective experiences such as pleasure. This study introduces a novel computational model to infer video-induced pleasure via cognitive appraisal variables. The proposed model addresses four challenges: (1) noisy and inconsistent human labels, (2) the semantic gap between \"positive emotions\" and \"pleasure,\" (3) the scarcity of pleasure-specific datasets, and (4) the limited interpretability of existing black-box fusion methods. Our approach integrates data-driven and cognitive theory-driven methods, using cognitive appraisal theory and a fuzzy model within an innovative framework. The model employs transformer-based architectures and attention mechanisms for fine-grained multimodal feature extraction and interpretable fusion to capture both inter- and intra-modal dynamics associated with pleasure. This enables the prediction of underlying appraisal variables, thereby bridging the semantic gap and enhancing model explainability beyond conventional statistical associations. Experimental results validate the efficacy of the proposed method in detecting video-induced pleasure, achieving a peak accuracy of 0.6624 in predicting pleasure levels. These findings highlight promising implications for affective content recommendation, intelligent media creation, and advancing our understanding of how digital media influences human emotions.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_077",
+    "file_name": "OA_KW3_077.pdf",
+    "md5_hash": "6886d34e1e97d5a73287d9baa3a7cb2a",
+    "file_size_kb": 810.34375
+  },
+  {
+    "title": "Variational Encoder--Multi-Decoder (VE-MD) for Privacy-by-functional-design (Group) Emotion Recognition",
+    "norm_title": "variationalencodermultidecodervemdforprivacybyfunctionaldesigngroupemotionrecognition",
+    "authors": "Anderson Augusma; Dominique Vaufreydaz; Fédérique Letué",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2604.02397v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.02397v1.pdf",
+      "https://export.arxiv.org/pdf/2604.02397v1.pdf"
+    ],
+    "abstract": "Group Emotion Recognition (GER) aims to infer collective affect in social environments such as classrooms, crowds, and public events. Many existing approaches rely on explicit individual-level processing, including cropped faces, person tracking, or per-person feature extraction, which makes the analysis pipeline person-centric and raises privacy concerns in deployment scenarios where only group-level understanding is needed. This research proposes VE-MD, a Variational Encoder-Multi-Decoder framework for group emotion recognition under a privacy-aware functional design. Rather than providing formal anonymization or cryptographic privacy guarantees, VE-MD is designed to avoid explicit individual monitoring by constraining the model to predict only aggregate group-level affect, without identity recognition or per-person emotion outputs. VE-MD learns a shared latent representation jointly optimized for emotion classification and internal prediction of body and facial structural representations. Two structural decoding strategies are investigated: a transformer-based PersonQuery decoder and a dense Heatmap decoder that naturally accommodates variable group sizes. Experiments on six in-the-wild datasets, including two GER and four Individual Emotion Recognition (IER) benchmarks, show that structural supervision consistently improves representation learning. More importantly, the results reveal a clear distinction between GER and IER: optimizing the latent space alone is often insufficient for GER because it tends to attenuate interaction-related cues, whereas preserving explicit structural outputs improves collective affect inference. In contrast, projected structural representations seem to act as an effective denoising bottleneck for IER. VE-MD achieves state-of-the-art performance on GAF-3.0 (up to 90.06%) and VGAF (82.25% with multimodal fusion with audio). These results show that preserving interaction-related structural information is particularly beneficial for group-level affect modeling without relying on prior individual feature extraction. On IER datasets using multimodal fusion with audio modality, VE-MD outperforms SOTA on SamSemo (77.9%, adding text modality) while achieving competitive performances on MER-MULTI (63.8%), DFEW (70.7%) and EngageNet (69.0).",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_078",
+    "file_name": "OA_KW3_078.pdf",
+    "md5_hash": "b834c92b40787deac3540b04e06f8682",
+    "file_size_kb": 5469.6025390625
+  },
+  {
+    "title": "Relational graph-driven differential denoising and diffusion attention fusion for multimodal conversation emotion recognition",
+    "norm_title": "relationalgraphdrivendifferentialdenoisinganddiffusionattentionfusionformultimodalconversationemotionrecognition",
+    "authors": "Ying Liu; Yuntao Shou; Wei Ai; Tao Meng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.1016/j.neucom.2026.133306",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.25752v1.pdf",
+      "https://export.arxiv.org/pdf/2603.25752v1.pdf"
+    ],
+    "abstract": "In real-world scenarios, audio and video signals are often subject to environmental noise and limited acquisition conditions, resulting in extracted features containing excessive noise. Furthermore, there is an imbalance in data quality and information carrying capacity between different modalities. These two issues together lead to information distortion and weight bias during the fusion phase, impairing overall recognition performance. Most existing methods neglect the impact of noisy modalities and rely on implicit weighting to model modality importance, thereby failing to explicitly account for the predominant contribution of the textual modality in emotion understanding. To address these issues, we propose a relation-aware denoising and diffusion attention fusion model for MCER. Specifically, we first design a differential Transformer that explicitly computes the differences between two attention maps, thereby enhancing temporally consistent information while suppressing time-irrelevant noise, which leads to effective denoising in both audio and video modalities. Second, we construct modality-specific and cross-modality relation subgraphs to capture speaker-dependent emotional dependencies, enabling fine-grained modeling of intra- and inter-modal relationships. Finally, we introduce a text-guided cross-modal diffusion mechanism that leverages self-attention to model intra-modal dependencies and adaptively diffuses audiovisual information into the textual stream, ensuring more robust and semantically aligned multimodal fusion.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_079",
+    "file_name": "OA_KW3_079.pdf",
+    "md5_hash": "5f18edb705888d49abb8be3f9d195a92",
+    "file_size_kb": 5195.56640625
+  },
+  {
+    "title": "Team RAS in 10th ABAW Competition: Multimodal Valence and Arousal Estimation Approach",
+    "norm_title": "teamrasin10thabawcompetitionmultimodalvalenceandarousalestimationapproach",
+    "authors": "Elena Ryumina; Maxim Markitantov; Alexandr Axyonov; Dmitry Ryumin",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.13056v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.13056v1.pdf",
+      "https://export.arxiv.org/pdf/2603.13056v1.pdf"
+    ],
+    "abstract": "Continuous emotion recognition in terms of valence and arousal under in-the-wild (ITW) conditions remains a challenging problem due to large variations in appearance, head pose, illumination, occlusions, and subject-specific patterns of affective expression. We present a multimodal method for valence-arousal estimation ITW. Our method combines three complementary modalities: face, behavior, and audio. The face modality relies on GRADA-based frame-level embeddings and Transformer-based temporal regression. We use Qwen3-VL-4B-Instruct to extract behavior-relevant information from video segments, while Mamba is used to model temporal dynamics across segments. The audio modality relies on WavLM-Large with attention-statistics pooling and includes a cross-modal filtering stage to reduce the influence of unreliable or non-speech segments. To fuse modalities, we explore two fusion strategies: a Directed Cross-Modal Mixture-of-Experts Fusion Strategy that learns interactions between modalities with adaptive weighting, and a Reliability-Aware Audio-Visual Fusion Strategy that combines visual features at the frame-level while using audio as complementary context. The results are reported on the Aff-Wild2 dataset following the 10th Affective Behavior Analysis in-the-Wild (ABAW) challenge protocol. Experiments demonstrate that the proposed multimodal fusion strategy achieves a Concordance Correlation Coefficient (CCC) of 0.658 on the Aff-Wild2 development set.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_080",
+    "file_name": "OA_KW3_080.pdf",
+    "md5_hash": "0ae5795b6185f94676d283af6c449bbd",
+    "file_size_kb": 409.5029296875
+  },
+  {
+    "title": "Team LEYA in 10th ABAW Competition: Multimodal Ambivalence/Hesitancy Recognition Approach",
+    "norm_title": "teamleyain10thabawcompetitionmultimodalambivalencehesitancyrecognitionapproach",
+    "authors": "Elena Ryumina; Alexandr Axyonov; Dmitry Sysoev; Timur Abdulkadirov",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2603.12848v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.12848v1.pdf",
+      "https://export.arxiv.org/pdf/2603.12848v1.pdf"
+    ],
+    "abstract": "Ambivalence/hesitancy recognition in unconstrained videos is a challenging problem due to the subtle, multimodal, and context-dependent nature of this behavioral state. In this paper, a multimodal approach for video-level ambivalence/hesitancy recognition is presented for the 10th ABAW Competition. The proposed approach integrates four complementary modalities: scene, face, audio, and text. Scene dynamics are captured with a VideoMAE-based model, facial information is encoded through emotional frame-level embeddings aggregated by statistical pooling, acoustic representations are extracted with EmotionWav2Vec2.0 and processed by a Mamba-based temporal encoder, and linguistic cues are modeled using fine-tuned transformer-based text models. The resulting unimodal embeddings are further combined using multimodal fusion models, including prototype-augmented variants. Experiments on the BAH corpus demonstrate clear gains of multimodal fusion over all unimodal baselines. The best unimodal configuration achieved an average MF1 of 70.02%, whereas the best multimodal fusion model reached 83.25%. The highest final test performance, 71.43%, was obtained by an ensemble of five prototype-augmented fusion models. The obtained results highlight the importance of complementary multimodal cues and robust fusion strategies for ambivalence/hesitancy recognition.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_081",
+    "file_name": "OA_KW3_081.pdf",
+    "md5_hash": "b5991bafb318d90e480ff1377b9b8b62",
+    "file_size_kb": 1716.4140625
+  },
+  {
+    "title": "A Baseline Multimodal Approach to Emotion Recognition in Conversations",
+    "norm_title": "abaselinemultimodalapproachtoemotionrecognitioninconversations",
+    "authors": "Víctor Yeste; Rodrigo Rivas-Arévalo",
+    "year": 2026,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2602.00914v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2602.00914v1.pdf",
+      "https://export.arxiv.org/pdf/2602.00914v1.pdf"
+    ],
+    "abstract": "We present a lightweight multimodal baseline for emotion recognition in conversations using the SemEval-2024 Task 3 dataset built from the sitcom Friends. The goal of this report is not to propose a novel state-of-the-art method, but to document an accessible reference implementation that combines (i) a transformer-based text classifier and (ii) a self-supervised speech representation model, with a simple late-fusion ensemble. We report the baseline setup and empirical results obtained under a limited training protocol, highlighting when multimodal fusion improves over unimodal models. This preprint is provided for transparency and to support future, more rigorous comparisons.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_082",
+    "file_name": "OA_KW3_082.pdf",
+    "md5_hash": "d5811a6d3e34d8160fa9646be1b7a7af",
+    "file_size_kb": 404.2265625
+  },
+  {
+    "title": "A Cloud-Based Cross-Modal Transformer for Emotion Recognition and Adaptive Human-Computer Interaction",
+    "norm_title": "acloudbasedcrossmodaltransformerforemotionrecognitionandadaptivehumancomputerinteraction",
+    "authors": "Ziwen Zhong; Zhitao Shu; Yue Zhao",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2601.14259v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.14259v1.pdf",
+      "https://export.arxiv.org/pdf/2601.14259v1.pdf"
+    ],
+    "abstract": "Emotion recognition is a fundamental component of next-generation human-computer interaction (HCI), enabling machines to perceive, understand, and respond to users' affective states. However, existing systems often rely on single-modality analysis such as facial expressions, speech tone, or textual sentiment, resulting in limited robustness and poor generalization in real-world environments. To address these challenges, this study proposes a Cloud-Based Cross-Modal Transformer (CMT) framework for multimodal emotion recognition and adaptive human-computer interaction. The proposed model integrates visual, auditory, and textual signals using pretrained encoders (Vision Transformer, Wav2Vec2, and BERT) and employs a cross-modal attention mechanism to capture complex interdependencies among heterogeneous features. By leveraging cloud computing infrastructure with distributed training on Kubernetes and TensorFlow Serving, the system enables scalable, low-latency emotion recognition for large-scale user interactions. Experiments conducted on benchmark datasets including IEMOCAP, MELD, and AffectNet demonstrate that the CMT achieves state-of-the-art performance, improving the F1-score by 3.0 percent and reducing cross-entropy loss by 12.9 percent compared to strong multimodal baselines. Additionally, cloud deployment evaluations show an average response latency of 128 ms, representing a 35 percent reduction compared with conventional transformer-based fusion systems. These results confirm that the proposed framework enables efficient, real-time emotion recognition and adaptive feedback in applications such as intelligent customer service, virtual tutoring systems, and affective computing interfaces, marking an important step toward cloud-native affective computing and emotionally intelligent interactive systems.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_083",
+    "file_name": "OA_KW3_083.pdf",
+    "md5_hash": "538817b68faf7452409e3d891074a9ea",
+    "file_size_kb": 485.6484375
+  },
+  {
+    "title": "Edu-EmotionNet: Cross-Modality Attention Alignment with Temporal Feedback Loops",
+    "norm_title": "eduemotionnetcrossmodalityattentionalignmentwithtemporalfeedbackloops",
+    "authors": "S M Rafiuddin",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2510.08802v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2510.08802v1.pdf",
+      "https://export.arxiv.org/pdf/2510.08802v1.pdf"
+    ],
+    "abstract": "Understanding learner emotions in online education is critical for improving engagement and personalized instruction. While prior work in emotion recognition has explored multimodal fusion and temporal modeling, existing methods often rely on static fusion strategies and assume that modality inputs are consistently reliable, which is rarely the case in real-world learning environments. We introduce Edu-EmotionNet, a novel framework that jointly models temporal emotion evolution and modality reliability for robust affect recognition. Our model incorporates three key components: a Cross-Modality Attention Alignment (CMAA) module for dynamic cross-modal context sharing, a Modality Importance Estimator (MIE) that assigns confidence-based weights to each modality at every time step, and a Temporal Feedback Loop (TFL) that leverages previous predictions to enforce temporal consistency. Evaluated on educational subsets of IEMOCAP and MOSEI, re-annotated for confusion, curiosity, boredom, and frustration, Edu-EmotionNet achieves state-of-the-art performance and demonstrates strong robustness to missing or noisy modalities. Visualizations confirm its ability to capture emotional transitions and adaptively prioritize reliable signals, making it well suited for deployment in real-time learning systems",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_084",
+    "file_name": "OA_KW3_084.pdf",
+    "md5_hash": "457bfc1bad676a119b883e3e9a8d2a64",
+    "file_size_kb": 581.3466796875
+  },
+  {
+    "title": "MODA: MOdular Duplex Attention for Multimodal Perception, Cognition, and Emotion Understanding",
+    "norm_title": "modamodularduplexattentionformultimodalperceptioncognitionandemotionunderstanding",
+    "authors": "Zhicheng Zhang; Wuyou Xia; Chenxi Zhao; Zhou Yan",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2507.04635v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.04635v1.pdf",
+      "https://export.arxiv.org/pdf/2507.04635v1.pdf"
+    ],
+    "abstract": "Multimodal large language models (MLLMs) recently showed strong capacity in integrating data among multiple modalities, empowered by a generalizable attention architecture. Advanced methods predominantly focus on language-centric tuning while less exploring multimodal tokens mixed through attention, posing challenges in high-level tasks that require fine-grained cognition and emotion understanding. In this work, we identify the attention deficit disorder problem in multimodal learning, caused by inconsistent cross-modal attention and layer-by-layer decayed attention activation. To address this, we propose a novel attention mechanism, termed MOdular Duplex Attention (MODA), simultaneously conducting the inner-modal refinement and inter-modal interaction. MODA employs a correct-after-align strategy to effectively decouple modality alignment from cross-layer token mixing. In the alignment phase, tokens are mapped to duplex modality spaces based on the basis vectors, enabling the interaction between visual and language modality. Further, the correctness of attention scores is ensured through adaptive masked attention, which enhances the model's flexibility by allowing customizable masking patterns for different modalities. Extensive experiments on 21 benchmark datasets verify the effectiveness of MODA in perception, cognition, and emotion tasks. Source code and demo are available in https://zzcheng.top/MODA.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_085",
+    "file_name": "OA_KW3_085.pdf",
+    "md5_hash": "0c5e1b9346630349bab323784515fa0a",
+    "file_size_kb": 5889.703125
+  },
+  {
+    "title": "Beyond classical and contemporary models: a transformative AI framework for student dropout prediction in distance learning using RAG, Prompt engineering, and Cross-modal fusion",
+    "norm_title": "beyondclassicalandcontemporarymodelsatransformativeaiframeworkforstudentdropoutpredictionindistancelearningusingragpromptengineeringandcrossmodalfusion",
+    "authors": "Miloud Mihoubi; Meriem Zerkouk; Belkacem Chikhaoui",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.21125/edulearn.2025.0815",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.05285v2.pdf",
+      "https://export.arxiv.org/pdf/2507.05285v2.pdf"
+    ],
+    "abstract": "Student dropout in distance learning remains a critical challenge, with profound societal and economic consequences. While classical machine learning models leverage structured socio-demographic and behavioral data, they often fail to capture the nuanced emotional and contextual factors embedded in unstructured student interactions. This paper introduces a transformative AI framework that redefines dropout prediction through three synergistic innovations: Retrieval-Augmented Generation (RAG) for domain-specific sentiment analysis, prompt engineering to decode academic stressors,and cross-modal attention fusion to dynamically align textual, behavioral, and socio-demographic insights. By grounding sentiment analysis in a curated knowledge base of pedagogical content, our RAG-enhanced BERT model interprets student comments with unprecedented contextual relevance, while optimized prompts isolate indicators of academic distress (e.g., \"isolation,\" \"workload anxiety\"). A cross-modal attention layer then fuses these insights with temporal engagement patterns, creating holistic risk pro-files. Evaluated on a longitudinal dataset of 4 423 students, the framework achieves 89% accuracy and an F1-score of 0.88, outperforming conventional models by 7% and reducing false negatives by 21%. Beyond prediction, the system generates interpretable interventions by retrieving contextually aligned strategies (e.g., mentorship programs for isolated learners). This work bridges the gap between predictive analytics and actionable pedagogy, offering a scalable solution to mitigate dropout risks in global education systems",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_086",
+    "file_name": "OA_KW3_086.pdf",
+    "md5_hash": "3d8e12b0fa976ea4cd9de10577155ee3",
+    "file_size_kb": 2145.6943359375
+  },
+  {
+    "title": "Improving Speech Emotion Recognition Through Cross Modal Attention Alignment and Balanced Stacking Model",
+    "norm_title": "improvingspeechemotionrecognitionthroughcrossmodalattentionalignmentandbalancedstackingmodel",
+    "authors": "Lucas Ueda; João Lima; Leonardo Marques; Paula Costa",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2505.20007v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2505.20007v2.pdf",
+      "https://export.arxiv.org/pdf/2505.20007v2.pdf"
+    ],
+    "abstract": "Emotion plays a fundamental role in human interaction, and therefore systems capable of identifying emotions in speech are crucial in the context of human-computer interaction. Speech emotion recognition (SER) is a challenging problem, particularly in natural speech and when the available data is imbalanced across emotions. This paper presents our proposed system in the context of the 2025 Speech Emotion Recognition in Naturalistic Conditions Challenge. Our proposed architecture leverages cross-modality, utilizing cross-modal attention to fuse representations from different modalities. To address class imbalance, we employed two training designs: (i) weighted crossentropy loss (WCE); and (ii) WCE with an additional neutralexpressive soft margin loss and balancing. We trained a total of 12 multimodal models, which were ensembled using a balanced stacking model. Our proposed system achieves a MacroF1 score of 0.4094 and an accuracy of 0.4128 on 8-class speech emotion recognition.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_087",
+    "file_name": "OA_KW3_087.pdf",
+    "md5_hash": "bbd45bf20d5bcf0dcc37360ae502694a",
+    "file_size_kb": 303.107421875
+  },
+  {
+    "title": "TACFN: Transformer-based Adaptive Cross-modal Fusion Network for Multimodal Emotion Recognition",
+    "norm_title": "tacfntransformerbasedadaptivecrossmodalfusionnetworkformultimodalemotionrecognition",
+    "authors": "Feng Liu; Ziwang Fu; Yunlong Wang; Qijian Zheng",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2505.06536v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2505.06536v1.pdf",
+      "https://export.arxiv.org/pdf/2505.06536v1.pdf"
+    ],
+    "abstract": "The fusion technique is the key to the multimodal emotion recognition task. Recently, cross-modal attention-based fusion methods have demonstrated high performance and strong robustness. However, cross-modal attention suffers from redundant features and does not capture complementary features well. We find that it is not necessary to use the entire information of one modality to reinforce the other during cross-modal interaction, and the features that can reinforce a modality may contain only a part of it. To this end, we design an innovative Transformer-based Adaptive Cross-modal Fusion Network (TACFN). Specifically, for the redundant features, we make one modality perform intra-modal feature selection through a self-attention mechanism, so that the selected features can adaptively and efficiently interact with another modality. To better capture the complementary information between the modalities, we obtain the fused weight vector by splicing and use the weight vector to achieve feature reinforcement of the modalities. We apply TCAFN to the RAVDESS and IEMOCAP datasets. For fair comparison, we use the same unimodal representations to validate the effectiveness of the proposed fusion method. The experimental results show that TACFN brings a significant performance improvement compared to other methods and reaches the state-of-the-art. All code and models could be accessed from https://github.com/shuzihuaiyu/TACFN.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_088",
+    "file_name": "OA_KW3_088.pdf",
+    "md5_hash": "e350e5e9cd46752a8f2342e113670fc7",
+    "file_size_kb": 1070.0361328125
+  },
+  {
+    "title": "Disentangle Identity, Cooperate Emotion: Correlation-Aware Emotional Talking Portrait Generation",
+    "norm_title": "disentangleidentitycooperateemotioncorrelationawareemotionaltalkingportraitgeneration",
+    "authors": "Weipeng Tan; Chuming Lin; Chengming Xu; FeiFan Xu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2504.18087v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2504.18087v2.pdf",
+      "https://export.arxiv.org/pdf/2504.18087v2.pdf"
+    ],
+    "abstract": "Recent advances in Talking Head Generation (THG) have achieved impressive lip synchronization and visual quality through diffusion models; yet existing methods struggle to generate emotionally expressive portraits while preserving speaker identity. We identify three critical limitations in current emotional talking head generation: insufficient utilization of audio's inherent emotional cues, identity leakage in emotion representations, and isolated learning of emotion correlations. To address these challenges, we propose a novel framework dubbed as DICE-Talk, following the idea of disentangling identity with emotion, and then cooperating emotions with similar characteristics. First, we develop a disentangled emotion embedder that jointly models audio-visual emotional cues through cross-modal attention, representing emotions as identity-agnostic Gaussian distributions. Second, we introduce a correlation-enhanced emotion conditioning module with learnable Emotion Banks that explicitly capture inter-emotion relationships through vector quantization and attention-based feature aggregation. Third, we design an emotion discrimination objective that enforces affective consistency during the diffusion process through latent-space classification. Extensive experiments on MEAD and HDTF datasets demonstrate our method's superiority, outperforming state-of-the-art approaches in emotion accuracy while maintaining competitive lip-sync performance. Qualitative results and user studies further confirm our method's ability to generate identity-preserving portraits with rich, correlated emotional expressions that naturally adapt to unseen identities.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_089",
+    "file_name": "OA_KW3_089.pdf",
+    "md5_hash": "19130e60817f889da7263ca62595c709",
+    "file_size_kb": 7777.42578125
+  },
+  {
+    "title": "MAVEN: Multi-modal Attention for Valence-Arousal Emotion Network",
+    "norm_title": "mavenmultimodalattentionforvalencearousalemotionnetwork",
+    "authors": "Vrushank Ahire; Kunal Shah; Mudasir Nazir Khan; Nikhil Pakhale",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2503.12623v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2503.12623v2.pdf",
+      "https://export.arxiv.org/pdf/2503.12623v2.pdf"
+    ],
+    "abstract": "Dynamic emotion recognition in the wild remains challenging due to the transient nature of emotional expressions and temporal misalignment of multi-modal cues. Traditional approaches predict valence and arousal and often overlook the inherent correlation between these two dimensions. The proposed Multi-modal Attention for Valence-Arousal Emotion Network (MAVEN) integrates visual, audio, and textual modalities through a bi-directional cross-modal attention mechanism. MAVEN uses modality-specific encoders to extract features from synchronized video frames, audio segments, and transcripts, predicting emotions in polar coordinates following Russell's circumplex model. The evaluation of the Aff-Wild2 dataset using MAVEN achieved a concordance correlation coefficient (CCC) of 0.3061, surpassing the ResNet-50 baseline model with a CCC of 0.22. The multistage architecture captures the subtle and transient nature of emotional expressions in conversational videos and improves emotion recognition in real-world situations. The code is available at: https://github.com/Vrushank-Ahire/MAVEN_8th_ABAW",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_090",
+    "file_name": "OA_KW3_090.pdf",
+    "md5_hash": "29293b3ad689efdf45710c7a36826a86",
+    "file_size_kb": 3502.69921875
+  },
+  {
+    "title": "Early Detection of Mental Health Issues Using Social Media Posts",
+    "norm_title": "earlydetectionofmentalhealthissuesusingsocialmediaposts",
+    "authors": "Qasim Bin Saeed; Ijaz Ahmed",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2503.07653v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2503.07653v1.pdf",
+      "https://export.arxiv.org/pdf/2503.07653v1.pdf"
+    ],
+    "abstract": "The increasing prevalence of mental health disorders, such as depression, anxiety, and bipolar disorder, calls for immediate need in developing tools for early detection and intervention. Social media platforms, like Reddit, represent a rich source of user-generated content, reflecting emotional and behavioral patterns. In this work, we propose a multi-modal deep learning framework that integrates linguistic and temporal features for early detection of mental health crises. Our approach is based on the method that utilizes a BiLSTM network both for text and temporal feature analysis, modeling sequential dependencies in a different manner, capturing contextual patterns quite well. This work includes a cross-modal attention approach that allows fusion of such outputs into context-aware classification of mental health conditions. The model was then trained and evaluated on a dataset of labeled Reddit posts preprocessed using text preprocessing, scaling of temporal features, and encoding of labels. Experimental results indicate that the proposed architecture performs better compared to traditional models with a validation accuracy of 74.55% and F1-Score of 0.7376. This study presents the importance of multi-modal learning for mental health detection and provides a baseline for further improvements by using more advanced attention mechanisms and other data modalities.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_091",
+    "file_name": "OA_KW3_091.pdf",
+    "md5_hash": "c435b88464417c3ebec1ed17156c8756",
+    "file_size_kb": 820.6025390625
+  },
+  {
+    "title": "Qieemo: Speech Is All You Need in the Emotion Recognition in Conversations",
+    "norm_title": "qieemospeechisallyouneedintheemotionrecognitioninconversations",
+    "authors": "Jinming Chen; Jingyi Fang; Yuanzhong Zheng; Yaoxuan Wang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2503.22687v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2503.22687v1.pdf",
+      "https://export.arxiv.org/pdf/2503.22687v1.pdf"
+    ],
+    "abstract": "Emotion recognition plays a pivotal role in intelligent human-machine interaction systems. Multimodal approaches benefit from the fusion of diverse modalities, thereby improving the recognition accuracy. However, the lack of high-quality multimodal data and the challenge of achieving optimal alignment between different modalities significantly limit the potential for improvement in multimodal approaches. In this paper, the proposed Qieemo framework effectively utilizes the pretrained automatic speech recognition (ASR) model backbone which contains naturally frame aligned textual and emotional features, to achieve precise emotion classification solely based on the audio modality. Furthermore, we design the multimodal fusion (MMF) module and cross-modal attention (CMA) module in order to fuse the phonetic posteriorgram (PPG) and emotional features extracted by the ASR encoder for improving recognition accuracy. The experimental results on the IEMOCAP dataset demonstrate that Qieemo outperforms the benchmark unimodal, multimodal, and self-supervised models with absolute improvements of 3.0%, 1.2%, and 1.9% respectively.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_092",
+    "file_name": "OA_KW3_092.pdf",
+    "md5_hash": "797a8edf6539779caf5fbc0117002594",
+    "file_size_kb": 1526.2431640625
+  },
+  {
+    "title": "Dynamic Multimodal Sentiment Analysis: Leveraging Cross-Modal Attention for Enabled Classification",
+    "norm_title": "dynamicmultimodalsentimentanalysisleveragingcrossmodalattentionforenabledclassification",
+    "authors": "Hui Lee; Singh Suniljit; Yong Siang Ong",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2501.08085v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2501.08085v1.pdf",
+      "https://export.arxiv.org/pdf/2501.08085v1.pdf"
+    ],
+    "abstract": "This paper explores the development of a multimodal sentiment analysis model that integrates text, audio, and visual data to enhance sentiment classification. The goal is to improve emotion detection by capturing the complex interactions between these modalities, thereby enabling more accurate and nuanced sentiment interpretation. The study evaluates three feature fusion strategies -- late stage fusion, early stage fusion, and multi-headed attention -- within a transformer-based architecture. Experiments were conducted using the CMU-MOSEI dataset, which includes synchronized text, audio, and visual inputs labeled with sentiment scores. Results show that early stage fusion significantly outperforms late stage fusion, achieving an accuracy of 71.87\\%, while the multi-headed attention approach offers marginal improvement, reaching 72.39\\%. The findings suggest that integrating modalities early in the process enhances sentiment classification, while attention mechanisms may have limited impact within the current framework. Future work will focus on refining feature fusion techniques, incorporating temporal data, and exploring dynamic feature weighting to further improve model performance.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_093",
+    "file_name": "OA_KW3_093.pdf",
+    "md5_hash": "c591559db722d53ecf8a1e51b5c98cee",
+    "file_size_kb": 200.2724609375
+  },
+  {
+    "title": "Leveraging Foundational Models and Simple Fusion for Multi-modal Physiological Signal Analysis",
+    "norm_title": "leveragingfoundationalmodelsandsimplefusionformultimodalphysiologicalsignalanalysis",
+    "authors": "Youssef Ghallab; Omar Iraqy; Mohamed Kandil; Mohamed Ashraf",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2512.15250v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2512.15250v1.pdf",
+      "https://export.arxiv.org/pdf/2512.15250v1.pdf"
+    ],
+    "abstract": "Physiological signals such as electrocardiograms (ECG) and electroencephalograms (EEG) provide complementary insights into human health and cognition, yet multi-modal integration is challenging due to limited multi-modal labeled data, and modality-specific differences . In this work, we adapt the CBraMod encoder for large-scale self-supervised ECG pretraining, introducing a dual-masking strategy to capture intra- and inter-lead dependencies. To overcome the above challenges, we utilize a pre-trained CBraMod encoder for EEG and pre-train a symmetric ECG encoder, equipping each modality with a rich foundational representation. These representations are then fused via simple embedding concatenation, allowing the classification head to learn cross-modal interactions, together enabling effective downstream learning despite limited multi-modal supervision. Evaluated on emotion recognition, our approach achieves near state-of-the-art performance, demonstrating that carefully designed physiological encoders, even with straightforward fusion, substantially improve downstream performance. These results highlight the potential of foundation-model approaches to harness the holistic nature of physiological signals, enabling scalable, label-efficient, and generalizable solutions for healthcare and affective computing.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_094",
+    "file_name": "OA_KW3_094.pdf",
+    "md5_hash": "1c9f43479b222a32d5bfe055f94fbdc8",
+    "file_size_kb": 347.2001953125
+  },
+  {
+    "title": "Cross-Modal Consistency-Guided Active Learning for Affective BCI Systems",
+    "norm_title": "crossmodalconsistencyguidedactivelearningforaffectivebcisystems",
+    "authors": "Hyo-Jeong Jang; Hye-Bin Shin; Kang Yin",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2511.15138v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2511.15138v1.pdf",
+      "https://export.arxiv.org/pdf/2511.15138v1.pdf"
+    ],
+    "abstract": "Deep learning models perform best with abundant, high-quality labels, yet such conditions are rarely achievable in EEG-based emotion recognition. Electroencephalogram (EEG) signals are easily corrupted by artifacts and individual variability, while emotional labels often stem from subjective and inconsistent reports-making robust affective decoding particularly difficult. We propose an uncertainty-aware active learning framework that enhances robustness to label noise by jointly leveraging model uncertainty and cross-modal consistency. Instead of relying solely on EEG-based uncertainty estimates, the method evaluates cross-modal alignment to determine whether uncertainty originates from cognitive ambiguity or sensor noise. A representation alignment module embeds EEG and face features into a shared latent space, enforcing semantic coherence between modalities. Residual discrepancies are treated as noise-induced inconsistencies, and these samples are selectively queried for oracle feedback during active learning. This feedback-driven process guides the network toward reliable, informative samples and reduces the impact of noisy labels. Experiments on the ASCERTAIN dataset examine the efficiency and robustness of ours, highlighting its potential as a data-efficient and noise-tolerant approach for EEG-based affective decoding in brain-computer interface systems.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_095",
+    "file_name": "OA_KW3_095.pdf",
+    "md5_hash": "bda93e5faa438f2f6216a9720006eccb",
+    "file_size_kb": 985.3359375
+  },
+  {
+    "title": "NeuroGaze-Distill: Brain-informed Distillation and Depression-Inspired Geometric Priors for Robust Facial Emotion Recognition",
+    "norm_title": "neurogazedistillbraininformeddistillationanddepressioninspiredgeometricpriorsforrobustfacialemotionrecognition",
+    "authors": "Zilin Li; Weiwei Xu; Xuanqi Zhao; Yiran Zhu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2509.11916v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.11916v2.pdf",
+      "https://export.arxiv.org/pdf/2509.11916v2.pdf"
+    ],
+    "abstract": "Facial emotion recognition (FER) models trained only on pixels often fail to generalize across datasets because facial appearance is an indirect and biased proxy for underlying affect. We present NeuroGaze-Distill, a cross-modal distillation framework that transfers brain-informed priors into an image-only FER student via static Valence/Arousal (V/A) prototypes and a depression-inspired geometric prior (D-Geo). A teacher trained on EEG topographic maps from DREAMER (with MAHNOB-HCI as unlabeled support) produces a consolidated 5x5 V/A prototype grid that is frozen and reused; no EEG-face pairing and no non-visual signals at deployment are required. The student (ResNet-18/50) is trained on FERPlus with conventional CE/KD and two lightweight regularizers: (i) Proto-KD (cosine) aligns student features to the static prototypes; (ii) D-Geo softly shapes the embedding geometry in line with affective findings often reported in depression research (e.g., anhedonia-like contraction in high-valence regions). We evaluate both within-domain (FERPlus validation) and cross-dataset protocols (AffectNet-mini; optional CK+), reporting standard 8-way scores alongside present-only Macro-F1 and balanced accuracy to fairly handle label-set mismatch. Ablations attribute consistent gains to prototypes and D-Geo, and favor 5x5 over denser grids for stability. The method is simple, deployable, and improves robustness without architectural complexity.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_096",
+    "file_name": "OA_KW3_096.pdf",
+    "md5_hash": "9dbef8372da085288c4f069cbec09bf8",
+    "file_size_kb": 5464.5078125
+  },
+  {
+    "title": "Wearable Music2Emotion : Assessing Emotions Induced by AI-Generated Music through Portable EEG-fNIRS Fusion",
+    "norm_title": "wearablemusic2emotionassessingemotionsinducedbyaigeneratedmusicthroughportableeegfnirsfusion",
+    "authors": "Sha Zhao; Song Yi; Yangxuan Zhou; Jiadong Pan",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2508.04723v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.04723v1.pdf",
+      "https://export.arxiv.org/pdf/2508.04723v1.pdf"
+    ],
+    "abstract": "Emotions critically influence mental health, driving interest in music-based affective computing via neurophysiological signals with Brain-computer Interface techniques. While prior studies leverage music's accessibility for emotion induction, three key limitations persist: \\textbf{(1) Stimulus Constraints}: Music stimuli are confined to small corpora due to copyright and curation costs, with selection biases from heuristic emotion-music mappings that ignore individual affective profiles. \\textbf{(2) Modality Specificity}: Overreliance on unimodal neural data (e.g., EEG) ignores complementary insights from cross-modal signal fusion.\\textbf{ (3) Portability Limitation}: Cumbersome setups (e.g., 64+ channel gel-based EEG caps) hinder real-world applicability due to procedural complexity and portability barriers. To address these limitations, we propose MEEtBrain, a portable and multimodal framework for emotion analysis (valence/arousal), integrating AI-generated music stimuli with synchronized EEG-fNIRS acquisition via a wireless headband. By MEEtBrain, the music stimuli can be automatically generated by AI on a large scale, eliminating subjective selection biases while ensuring music diversity. We use our developed portable device that is designed in a lightweight headband-style and uses dry electrodes, to simultaneously collect EEG and fNIRS recordings. A 14-hour dataset from 20 participants was collected in the first recruitment to validate the framework's efficacy, with AI-generated music eliciting target emotions (valence/arousal). We are actively expanding our multimodal dataset (44 participants in the latest dataset) and make it publicly available to promote further research and practical applications. \\textbf{The dataset is available at https://zju-bmi-lab.github.io/ZBra.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_097",
+    "file_name": "OA_KW3_097.pdf",
+    "md5_hash": "3414e89e46969beadc9ebb6361c113e0",
+    "file_size_kb": 2886.71484375
+  },
+  {
+    "title": "Uncertainty-Aware Cross-Modal Knowledge Distillation with Prototype Learning for Multimodal Brain-Computer Interfaces",
+    "norm_title": "uncertaintyawarecrossmodalknowledgedistillationwithprototypelearningformultimodalbraincomputerinterfaces",
+    "authors": "Hyo-Jeong Jang; Hye-Bin Shin; Seong-Whan Lee",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2507.13092v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.13092v2.pdf",
+      "https://export.arxiv.org/pdf/2507.13092v2.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG) is a fundamental modality for cognitive state monitoring in brain-computer interfaces (BCIs). However, it is highly susceptible to intrinsic signal errors and human-induced labeling errors, which lead to label noise and ultimately degrade model performance. To enhance EEG learning, multimodal knowledge distillation (KD) has been explored to transfer knowledge from visual models with rich representations to EEG-based models. Nevertheless, KD faces two key challenges: modality gap and soft label misalignment. The former arises from the heterogeneous nature of EEG and visual feature spaces, while the latter stems from label inconsistencies that create discrepancies between ground truth labels and distillation targets. This paper addresses semantic uncertainty caused by ambiguous features and weakly defined labels. We propose a novel cross-modal knowledge distillation framework that mitigates both modality and label inconsistencies. It aligns feature semantics through a prototype-based similarity module and introduces a task-specific distillation head to resolve label-induced inconsistency in supervision. Experimental results demonstrate that our approach improves EEG-based emotion regression and classification performance, outperforming both unimodal and multimodal baselines on a public multimodal dataset. These findings highlight the potential of our framework for BCI applications.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_098",
+    "file_name": "OA_KW3_098.pdf",
+    "md5_hash": "70eaf2d61f1d16ff66cd3e7645398b1f",
+    "file_size_kb": 745.8251953125
+  },
+  {
+    "title": "MMME: A Spontaneous Multi-Modal Micro-Expression Dataset Enabling Visual-Physiological Fusion",
+    "norm_title": "mmmeaspontaneousmultimodalmicroexpressiondatasetenablingvisualphysiologicalfusion",
+    "authors": "Chuang Ma; Yu Pei; Jianhang Zhang; Shaokai Zhao",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2506.09834v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2506.09834v2.pdf",
+      "https://export.arxiv.org/pdf/2506.09834v2.pdf"
+    ],
+    "abstract": "Micro-expressions (MEs) are subtle, fleeting nonverbal cues that reveal an individual's genuine emotional state. Their analysis has attracted considerable interest due to its promising applications in fields such as healthcare, criminal investigation, and human-computer interaction. However, existing ME research is limited to single visual modality, overlooking the rich emotional information conveyed by other physiological modalities, resulting in ME recognition and spotting performance far below practical application needs. Therefore, exploring the cross-modal association mechanism between ME visual features and physiological signals (PS), and developing a multimodal fusion framework, represents a pivotal step toward advancing ME analysis. This study introduces a novel ME dataset, MMME, which, for the first time, enables synchronized collection of facial action signals (MEs), central nervous system signals (EEG), and peripheral PS (PPG, RSP, SKT, EDA, and ECG). By overcoming the constraints of existing ME corpora, MMME comprises 634 MEs, 2,841 macro-expressions (MaEs), and 2,890 trials of synchronized multimodal PS, establishing a robust foundation for investigating ME neural mechanisms and conducting multimodal fusion-based analyses. Extensive experiments validate the dataset's reliability and provide benchmarks for ME analysis, demonstrating that integrating MEs with PS significantly enhances recognition and spotting performance. To the best of our knowledge, MMME is the most comprehensive ME dataset to date in terms of modality diversity. It provides critical data support for exploring the neural mechanisms of MEs and uncovering the visual-physiological synergistic effects, driving a paradigm shift in ME research from single-modality visual analysis to multimodal fusion. The dataset will be publicly available upon acceptance of this paper.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_099",
+    "file_name": "OA_KW3_099.pdf",
+    "md5_hash": "31a0172ea262f5697b24a0afa3d3b340",
+    "file_size_kb": 5498.5712890625
+  },
+  {
+    "title": "PhysioSync: Temporal and Cross-Modal Contrastive Learning Inspired by Physiological Synchronization for EEG-Based Emotion Recognition",
+    "norm_title": "physiosynctemporalandcrossmodalcontrastivelearninginspiredbyphysiologicalsynchronizationforeegbasedemotionrecognition",
+    "authors": "Kai Cui; Jia Li; Yu Liu; Xuesong Zhang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Multi-Branch & Cross-Modal Attention)",
+    "doi": "10.48550/arXiv.2504.17163v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2504.17163v2.pdf",
+      "https://export.arxiv.org/pdf/2504.17163v2.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG) signals provide a promising and involuntary reflection of brain activity related to emotional states, offering significant advantages over behavioral cues like facial expressions. However, EEG signals are often noisy, affected by artifacts, and vary across individuals, complicating emotion recognition. While multimodal approaches have used Peripheral Physiological Signals (PPS) like GSR to complement EEG, they often overlook the dynamic synchronization and consistent semantics between the modalities. Additionally, the temporal dynamics of emotional fluctuations across different time resolutions in PPS remain underexplored. To address these challenges, we propose PhysioSync, a novel pre-training framework leveraging temporal and cross-modal contrastive learning, inspired by physiological synchronization phenomena. PhysioSync incorporates Cross-Modal Consistency Alignment (CM-CA) to model dynamic relationships between EEG and complementary PPS, enabling emotion-related synchronizations across modalities. Besides, it introduces Long- and Short-Term Temporal Contrastive Learning (LS-TCL) to capture emotional synchronization at different temporal resolutions within modalities. After pre-training, cross-resolution and cross-modal features are hierarchically fused and fine-tuned to enhance emotion recognition. Experiments on DEAP and DREAMER datasets demonstrate PhysioSync's advanced performance under uni-modal and cross-modal conditions, highlighting its effectiveness for EEG-centered emotion recognition.",
+    "source": "arXiv",
+    "paper_code": "OA_KW3_100",
+    "file_name": "OA_KW3_100.pdf",
+    "md5_hash": "d74be6ff5e5670b141c55954a45e60c2",
+    "file_size_kb": 5021.3583984375
+  }
+]

@@ -1,0 +1,952 @@
+[
+  {
+    "title": "HEEGNet: Hyperbolic Embeddings for EEG",
+    "norm_title": "heegnethyperbolicembeddingsforeeg",
+    "authors": "Shanglin Li; Shiwen Chu; Okan Koç; Yi Ding",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2601.03322v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.03322v2.pdf",
+      "https://export.arxiv.org/pdf/2601.03322v2.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG)-based brain-computer interfaces facilitate direct communication with a computer, enabling promising applications in human-computer interactions. However, their utility is currently limited because EEG decoding often suffers from poor generalization due to distribution shifts across domains (e.g., subjects). Learning robust representations that capture underlying task-relevant information would mitigate these shifts and improve generalization. One promising approach is to exploit the underlying hierarchical structure in EEG, as recent studies suggest that hierarchical cognitive processes, such as visual processing, can be encoded in EEG. While many decoding methods still rely on Euclidean embeddings, recent work has begun exploring hyperbolic geometry for EEG. Hyperbolic spaces, regarded as the continuous analogue of tree structures, provide a natural geometry for representing hierarchical data. In this study, we first empirically demonstrate that EEG data exhibit hyperbolicity and show that hyperbolic embeddings improve generalization. Motivated by these findings, we propose HEEGNet, a hybrid hyperbolic network architecture to capture the hierarchical structure in EEG and learn domain-invariant hyperbolic embeddings. To this end, HEEGNet combines both Euclidean and hyperbolic encoders and employs a novel coarse-to-fine domain adaptation strategy. Extensive experiments on multiple public EEG datasets, covering visual evoked potentials, emotion recognition, and intracranial EEG, demonstrate that HEEGNet achieves state-of-the-art performance. The code is available at https://github.com/fightlesliefigt/HEEGNet",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_051",
+    "file_name": "OA_KW4_051.pdf",
+    "md5_hash": "bd41545b83ccf38ad5fb424c1a0e393a",
+    "file_size_kb": 1144.87109375
+  },
+  {
+    "title": "Dive into Waves: Morlet Spectral Transformer for Cross-Subject Emotion Decoding from EEG",
+    "norm_title": "diveintowavesmorletspectraltransformerforcrosssubjectemotiondecodingfromeeg",
+    "authors": "Jiaxin Qing; Lexin Li",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2606.00884v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2606.00884v1.pdf",
+      "https://export.arxiv.org/pdf/2606.00884v1.pdf"
+    ],
+    "abstract": "We study cross-subject emotion recognition from EEG, a practically important yet challenging problem in brain-computer interfaces. Unlike tasks with clear waveform signatures, emotion-related EEG signals are primarily encoded in spectral power and are weak, noisy, and highly variable across subjects. Existing approaches rely either on large pretrained EEG foundation models, which require massive data yet still struggle with cross-subject variability, or frequency-domain encoders, which better reflect spectral structure but suffer from mismatched representations, drift-dominated tokenization, and lack of band-specific spatial modeling. In this article, we propose the Morlet Spectral Transformer (MST), built around three key components and integrated with a spatiotemporal Transformer backbone. First, Morlet wavelet tokenization provides a time-frequency representation that matches the multi-scale structure of brain rhythms, and extends classical differential entropy features to a form suitable for Transformers. Second, long-context baseline removal acts as a simple temporal normalization that removes subject-specific drift and redundancy across nearby windows. Third, frequency-specific spatial projection learns a separate channel mixer for each frequency band, capturing interpretable band-specific patterns and reducing cross-channel mixing. We show that, even without pretraining, MST consistently outperforms both large pretrained EEG foundation models and frequency-based methods across all SEED-family datasets. These results suggest that careful representation design can yield an accurate, cost-effective, and interpretable alternative to large-scale pretraining.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_052",
+    "file_name": "OA_KW4_052.pdf",
+    "md5_hash": "0cbee7dc10cb71d5faef3cf31ff9125b",
+    "file_size_kb": 2652.2353515625
+  },
+  {
+    "title": "Cross-Subject EEG Emotion Recognition Based on Temporal Asynchronous Alignment Contrastive Learning",
+    "norm_title": "crosssubjecteegemotionrecognitionbasedontemporalasynchronousalignmentcontrastivelearning",
+    "authors": "Ying Xie; Yi Zheng; Zehui Xiao; Wenkai Lu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2605.22379v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2605.22379v1.pdf",
+      "https://export.arxiv.org/pdf/2605.22379v1.pdf"
+    ],
+    "abstract": "With the advancement of science and technology, the importance of emotion research has become increasingly evident. Electroencephalography (EEG)-based emotion recognition has emerged as an active research area in recent years, owing to its objectivity and high temporal resolution. However, most existing methods focus on optimizing encoder structures to enhance feature extraction capabilities, while paying relatively little attention to similarity calculation strategies, particularly overlooking the potential temporal misalignment of responses among different subjects. To address these shortcomings, this paper draws inspiration from the late interaction mechanism of ColBERT in natural language processing (NLP) and proposes a Temporal Asynchronous Alignment-based Contrastive Learning (TA2CL) framework. This method transforms the traditional global \"hard alignment\" similarity calculation approach into a fine-grained local matching mechanism, enabling the model to adaptively search for and align \"locally highly correlated\" segments between two EEG signals, thereby effectively mitigating the effects of inter-subject differences and temporal delays. Experimental results demonstrate that the proposed method achieves strong performance across multiple public datasets. Specifically, on the FACED dataset, it achieves an accuracy of 64.5% for the nine-class classification task and 79.5% for the binary classification task, while on the SEED and SEED-V datasets, it achieves accuracies of 86.4% and 70.1%, respectively, validating the method's effectiveness and generalization capability.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_053",
+    "file_name": "OA_KW4_053.pdf",
+    "md5_hash": "426c9b78ee7f6aba70617c50195da92d",
+    "file_size_kb": 4827.5498046875
+  },
+  {
+    "title": "SpecMoE: Spectral Mixture-of-Experts Foundation Model for Cross-Species EEG Decoding",
+    "norm_title": "specmoespectralmixtureofexpertsfoundationmodelforcrossspecieseegdecoding",
+    "authors": "Davy Darankoum; Chloé Habermacher; Julien Volle; Sergei Grudinin",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2603.16739v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.16739v2.pdf",
+      "https://export.arxiv.org/pdf/2603.16739v2.pdf"
+    ],
+    "abstract": "Decoding the orchestration of neural activity in electroencephalography (EEG) signals is a central challenge in bridging neuroscience with artificial intelligence. Foundation models have made strides in generalized EEG decoding, yet many existing frameworks primarily relying on separate temporal and spectral masking of raw signals during self-supervised pretraining. Such strategies often tend to bias learning toward high-frequency oscillations, as low-frequency rhythmic patterns can be easily inferred from the unmasked signal.   We introduce a foundation model that utilizes a novel Gaussian-smoothed masking scheme applied to short-time Fourier transform (STFT) maps. By jointly applying time, frequency, and time-frequency Gaussian masks, we make the reconstruction task much more challenging, forcing the model to learn intricate neural patterns across both high- and low-frequency domains. To effectively recover signals under this aggressive masking strategy, we design SpecHi-Net, a U-shaped hierarchical architecture with multiple encoding and decoding stages. To accelerate large-scale pretraining, we partition the data into three subsets, each used to train an independent expert model. We then combine these models through SpecMoE, a mixture of experts framework guided by a learned spectral gating mechanism.   SpecMoE achieves state-of-the-art performance across a diverse set of EEG decoding tasks, including sleep staging, emotion recognition, motor imagery classification, abnormal signal detection, and drug effect prediction. Importantly, the model demonstrates strong cross-species and cross-subject generalization, maintaining high accuracy on both human and murine EEG datasets.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_054",
+    "file_name": "OA_KW4_054.pdf",
+    "md5_hash": "a3824c6e45c78649b929681b0d15f3d1",
+    "file_size_kb": 9266.4755859375
+  },
+  {
+    "title": "Group Resonance Network: Learnable Prototypes and Multi-Subject Resonance for EEG Emotion Recognition",
+    "norm_title": "groupresonancenetworklearnableprototypesandmultisubjectresonanceforeegemotionrecognition",
+    "authors": "Renwei Meng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2603.11119v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.11119v2.pdf",
+      "https://export.arxiv.org/pdf/2603.11119v2.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG)-based emotion recognition remains challenging in cross-subject settings due to severe inter-subject variability. Existing methods mainly learn subject-invariant features, but often under-exploit stimulus-locked group regularities shared across subjects. To address this issue, we propose the Group Resonance Network (GRN), which integrates individual EEG dynamics with offline group resonance modeling. GRN contains three components: an individual encoder for band-wise EEG features, a set of learnable group prototypes for prototype-induced resonance, and a multi-subject resonance branch that encodes PLV/coherence-based synchrony with a small reference set. A resonance-aware fusion module combines individual and group-level representations for final classification. Experiments on SEED and DEAP under both subject-dependent and leave-one-subject-out protocols show that GRN consistently outperforms competitive baselines, while additional analyses confirm the effects of prototype learning, PLV/coherence resonance, and leakage-safe reference construction.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_055",
+    "file_name": "OA_KW4_055.pdf",
+    "md5_hash": "62a75c83d812f113404be3341dd1ab50",
+    "file_size_kb": 7975.3232421875
+  },
+  {
+    "title": "HFMCA: Orthonormal Feature Learning for EEG-based Brain Decoding",
+    "norm_title": "hfmcaorthonormalfeaturelearningforeegbasedbraindecoding",
+    "authors": "Yinghao Wang; Lintao Xu; Shujian Yu; Enzo Tartaglione",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2602.04681v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2602.04681v1.pdf",
+      "https://export.arxiv.org/pdf/2602.04681v1.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG) analysis is critical for brain-computer interfaces and neuroscience, but the intrinsic noise and high dimensionality of EEG signals hinder effective feature learning. We propose a self-supervised framework based on the Hierarchical Functional Maximal Correlation Algorithm (HFMCA), which learns orthonormal EEG representations by enforcing feature decorrelation and reducing redundancy. This design enables robust capture of essential brain dynamics for various EEG recognition tasks. We validate HFMCA on two benchmark datasets, SEED and BCIC-2A, where pretraining with HFMCA consistently outperforms competitive self-supervised baselines, achieving notable gains in classification accuracy. Across diverse EEG tasks, our method demonstrates superior cross-subject generalization under leave-one-subject-out validation, advancing state-of-the-art by 2.71\\% on SEED emotion recognition and 2.57\\% on BCIC-2A motor imagery classification.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_056",
+    "file_name": "OA_KW4_056.pdf",
+    "md5_hash": "df29a733c3ec5d59f8ec2f4fc3b659f6",
+    "file_size_kb": 267.2333984375
+  },
+  {
+    "title": "Region-aware Spatiotemporal Modeling with Collaborative Domain Generalization for Cross-Subject EEG Emotion Recognition",
+    "norm_title": "regionawarespatiotemporalmodelingwithcollaborativedomaingeneralizationforcrosssubjecteegemotionrecognition",
+    "authors": "Weiwei Wu; Yueyang Li; Yuhu Shi; Weiming Zeng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2601.15615v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.15615v1.pdf",
+      "https://export.arxiv.org/pdf/2601.15615v1.pdf"
+    ],
+    "abstract": "Cross-subject EEG-based emotion recognition (EER) remains challenging due to strong inter-subject variability, which induces substantial distribution shifts in EEG signals, as well as the high complexity of emotion-related neural representations in both spatial organization and temporal evolution. Existing approaches typically improve spatial modeling, temporal modeling, or generalization strategies in isolation, which limits their ability to align representations across subjects while capturing multi-scale dynamics and suppressing subject-specific bias within a unified framework. To address these gaps, we propose a Region-aware Spatiotemporal Modeling framework with Collaborative Domain Generalization (RSM-CoDG) for cross-subject EEG emotion recognition. RSM-CoDG incorporates neuroscience priors derived from functional brain region partitioning to construct region-level spatial representations, thereby improving cross-subject comparability. It also employs multi-scale temporal modeling to characterize the dynamic evolution of emotion-evoked neural activity. In addition, the framework employs a collaborative domain generalization strategy, incorporating multidimensional constraints to reduce subject-specific bias in a fully unseen target subject setting, which enhances the generalization to unknown individuals. Extensive experimental results on SEED series datasets demonstrate that RSM-CoDG consistently outperforms existing competing methods, providing an effective approach for improving robustness. The source code is available at https://github.com/RyanLi-X/RSM-CoDG.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_057",
+    "file_name": "OA_KW4_057.pdf",
+    "md5_hash": "89d71e412c2c0fdfcada556bde720c09",
+    "file_size_kb": 7135.8505859375
+  },
+  {
+    "title": "Rectifying Geometric Misalignment: Online Source-Free Adaptation for Class-Imbalanced EEG",
+    "norm_title": "rectifyinggeometricmisalignmentonlinesourcefreeadaptationforclassimbalancedeeg",
+    "authors": "Shiwen Chu; Shanglin Li; Motoaki Kawanabe; Reinmar Kobler",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2608.05315v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.05315v1.pdf",
+      "https://export.arxiv.org/pdf/2608.05315v1.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG) based Brain-Computer Interfaces (BCIs) often require unsupervised domain adaptation (UDA) to generalize across subjects and sessions. While Riemannian alignment methods like the Riemannian Centering Transformation (RCT) are effective for handling covariate shifts, they implicitly assume balanced class priors. However, in realistic online BCI scenarios, the label distributions vary dynamically (label shift), causing standard alignment techniques to geometrically misalign the target data distributions. In this work, we propose OSPDIM (Online SPD manifold information maximization), a source-free online UDA framework designed to address label shifts on the Riemannian manifold. OSPDIM introduces a manifold-constrained bias parameter into the tangent space mapping, which is optimized via information maximization to correct the geometric skew caused by imbalanced data streams. Unlike offline methods relying on global batch statistics, OSPDIM estimates and corrects geometric bias on-the-fly. Simulations on 2D SPD matrices visually demonstrate that OSPDIM successfully rectifies the misalignment where standard centering fails. Extensive experiments on multiple motor imagery datasets show that OSPDIM significantly outperforms standard Riemannian baselines, particularly in challenging online adaptation scenarios with severe class imbalance, offering a robust solution for practical, plug-and-play BCI systems.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_058",
+    "file_name": "OA_KW4_058.pdf",
+    "md5_hash": "35d3a61fcb8e9cb375bfe6f2ff9afda8",
+    "file_size_kb": 2310.11328125
+  },
+  {
+    "title": "STDA-Net: Spectrogram-Based Domain Adaptation for cross-dataset Sleep Stage Classification",
+    "norm_title": "stdanetspectrogrambaseddomainadaptationforcrossdatasetsleepstageclassification",
+    "authors": "Unaza Tallal; Shruti Kshirsagar; Ankita Shukla",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2605.06736v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2605.06736v1.pdf",
+      "https://export.arxiv.org/pdf/2605.06736v1.pdf"
+    ],
+    "abstract": "Accurate sleep stage classification across datasets remains challenging due to variability in EEG channel montages, sampling rates, recording environments, and subject populations. Although deep learning has shown considerable promise for automated sleep staging, most existing cross-dataset methods rely on one-dimensional EEG signal representations, whereas the use of two-dimensional spectrogram-based inputs within an unsupervised domain adaptation framework has remained largely unexplored. Here, we propose STDA-Net (Spectrogram-based Temporal Domain Adaptation Network), a framework that combines a convolutional neural network (CNN) for spectrogram-based feature extraction, a bidirectional long short-term memory (BiLSTM) module for temporal modeling of sleep dynamics, and a domain-adversarial neural network (DANN) for source-to-target feature alignment without requiring any labeled target-domain data during training. Experiments are conducted on three publicly available datasets Sleep-EDF, SHHS-1, and SHHS-2 under six cross-dataset transfer settings. Results show that the proposed framework achieves an average accuracy of 89.03% and an average macro F1-score of 87.64%, consistently outperforming existing 1D baseline methods in terms of balanced classification performance, with substantially lower variance across five independent runs, indicating improved stability and reproducibility. Overall, these findings demonstrate that 2D spectrogram-based representations, combined with temporal modeling and adversarial domain adaptation, provide a robust and competitive alternative to conventional 1D EEG inputs for cross-dataset sleep staging.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_059",
+    "file_name": "OA_KW4_059.pdf",
+    "md5_hash": "fa63c5958f81c47d8fd21a3ce4ab46fa",
+    "file_size_kb": 519.7451171875
+  },
+  {
+    "title": "SETEAB: Multiscale approach with Squeeze-and-Excitation Temporal Enhanced Aware Block for Speech Emotion Recognition",
+    "norm_title": "seteabmultiscaleapproachwithsqueezeandexcitationtemporalenhancedawareblockforspeechemotionrecognition",
+    "authors": "Duy Vo; Kiet Anh Hoang; Hao Do",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2609.06101v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2609.06101v1.pdf",
+      "https://export.arxiv.org/pdf/2609.06101v1.pdf"
+    ],
+    "abstract": "This paper proposes a novel lightweight multiscale architecture for speech emotion recognition (SER) with three key innovations. First, a depthwise convolution-based subsampling module is introduced to reduce model size and computation while preserving salient emotional cues. Second, a Squeeze-and-Excitation block is integrated to enhance channel-wise recalibration and improve representation robustness. Third, a new Temporal Enhanced Aware Block is designed to strengthen temporal dependency modeling and produce more discriminative emotion-aware features. The proposed model is explicitly designed to jointly improve compactness, recognition performance, and generalizability. Experiments on benchmark SER datasets show that our method achieves higher accuracy with reduced computational complexity, while also delivering stronger cross-corpus performance than most recent advanced networks for SER.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_060",
+    "file_name": "OA_KW4_060.pdf",
+    "md5_hash": "14141e3db2e11150be7f479b3ed9e164",
+    "file_size_kb": 622.9599609375
+  },
+  {
+    "title": "EmotionAI: A Privacy-Preserving Computational Intelligence Pipeline for Speech-Emotion-Grounded Conversational Analysis",
+    "norm_title": "emotionaiaprivacypreservingcomputationalintelligencepipelineforspeechemotiongroundedconversationalanalysis",
+    "authors": "Wai Laam Mak; Isibor Kennedy Ihianle; Pedro Machado",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2606.24941v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2606.24941v2.pdf",
+      "https://export.arxiv.org/pdf/2606.24941v2.pdf"
+    ],
+    "abstract": "Reviewing recorded interviews for affective cues such as composure and agitation is slow and subjective, and cloud services that could automate the task require sensitive audio to leave the device. EmotionAI is a fully local Computational Intelligence (CI) pipeline that couples Speech Emotion Recognition (SER) with generative reasoning. Speaker diarisation, Whisper Automatic Speech Recognition (ASR) and a wav2vec2 emotion classifier produce per-segment affective evidence, and an adversarial three-model local Large Language Model (LLM) panel turns that evidence into timestamp-grounded, citation-constrained answers. Zero-shot evaluation on the RAVDESS four-class English subset (n = 672) measures the cost of cross-corpus transfer: the deployed classifier scores 48.8% accuracy, above random (24.9%) and majority (28.6%) baselines but below an in-domain MFCC + logistic-regression comparator (71.0%). The complete pipeline runs in a mean 157 s on CPU (real-time factor approximately 1.33) with zero external calls. The contribution is not state-of-the-art SER but an auditable, privacy-preserving integration of imperfect affective evidence into grounded conversational analysis.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_061",
+    "file_name": "OA_KW4_061.pdf",
+    "md5_hash": "7ac4d34ad0a2b169c7fa470ef76bbdfd",
+    "file_size_kb": 423.3564453125
+  },
+  {
+    "title": "Boundary-aware Prototype-driven Adversarial Alignment for Cross-Corpus EEG Emotion Recognition",
+    "norm_title": "boundaryawareprototypedrivenadversarialalignmentforcrosscorpuseegemotionrecognition",
+    "authors": "Guangli Li; Canbiao Wu; Na Tian; Li Zhang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2603.26713v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.26713v1.pdf",
+      "https://export.arxiv.org/pdf/2603.26713v1.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG)-based emotion recognition suffers from severe performance degradation when models are transferred across heterogeneous datasets due to physiological variability, experimental paradigm differences, and device inconsistencies. Existing domain adversarial methods primarily enforce global marginal alignment and often overlook class-conditional mismatch and decision boundary distortion, limiting cross-corpus generalization. In this work, we propose a unified Prototype-driven Adversarial Alignment (PAA) framework for cross-corpus EEG emotion recognition. The framework is progressively instantiated in three configurations: PAA-L, which performs prototype-guided local class-conditional alignment; PAA-C, which further incorporates contrastive semantic regularization to enhance intra-class compactness and inter-class separability; and PAA-M, the full boundary-aware configuration that integrates dual relation-aware classifiers within a three-stage adversarial optimization scheme to explicitly refine controversial samples near decision boundaries. By combining prototype-guided subdomain alignment, contrastive discriminative enhancement, and boundary-aware aggregation within a coherent adversarial architecture, the proposed framework reformulates emotion recognition as a relation-driven representation learning problem, reducing sensitivity to label noise and improving cross-domain stability. Extensive experiments on SEED, SEED-IV, and SEED-V demonstrate state-of-the-art performance under four cross-corpus evaluation protocols, with average improvements of 6.72\\%, 5.59\\%, 6.69\\%, and 4.83\\%, respectively. Furthermore, the proposed framework generalizes effectively to clinical depression identification scenarios, validating its robustness in real-world heterogeneous settings. The source code is available at \\textit{https://github.com/WuCB-BCI/PAA}",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_062",
+    "file_name": "OA_KW4_062.pdf",
+    "md5_hash": "38b2486e6f684c4fe358d98a7912e895",
+    "file_size_kb": 2806.220703125
+  },
+  {
+    "title": "Test-Time Adaptation for Speech Emotion Recognition",
+    "norm_title": "testtimeadaptationforspeechemotionrecognition",
+    "authors": "Jiaheng Dong; Hong Jia; Ting Dang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2601.16240v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.16240v1.pdf",
+      "https://export.arxiv.org/pdf/2601.16240v1.pdf"
+    ],
+    "abstract": "The practical utility of Speech Emotion Recognition (SER) systems is undermined by their fragility to domain shifts, such as speaker variability, the distinction between acted and naturalistic emotions, and cross-corpus variations. While domain adaptation and fine-tuning are widely studied, they require either source data or labelled target data, which are often unavailable or raise privacy concerns in SER. Test-time adaptation (TTA) bridges this gap by adapting models at inference using only unlabeled target data. Yet, having been predominantly designed for image classification and speech recognition, the efficacy of TTA for mitigating the unique domain shifts in SER has not been investigated. In this paper, we present the first systematic evaluation and comparison covering 11 TTA methods across three representative SER tasks. The results indicate that backpropagation-free TTA methods are the most promising. Conversely, entropy minimization and pseudo-labeling generally fail, as their core assumption of a single, confident ground-truth label is incompatible with the inherent ambiguity of emotional expression. Further, no single method universally excels, and its effectiveness is highly dependent on the distributional shifts and tasks.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_063",
+    "file_name": "OA_KW4_063.pdf",
+    "md5_hash": "a61b8984d78a7faa06c1174d75145572",
+    "file_size_kb": 356.5263671875
+  },
+  {
+    "title": "ProCA: Progressive Contrastive Alignment for Robust EEG Visual Decoding",
+    "norm_title": "procaprogressivecontrastivealignmentforrobusteegvisualdecoding",
+    "authors": "Kanglei Zhou; Chunyan Lan; Dongyang Li; Jun Zhu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2609.05094v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2609.05094v1.pdf",
+      "https://export.arxiv.org/pdf/2609.05094v1.pdf"
+    ],
+    "abstract": "Electroencephalogram (EEG) visual decoding aims to recover visual semantics from non-invasive neural time-series signals, for which robust alignment between noisy neural responses and stable semantic representations is key to achieving high-performance decoding. Despite recent advances in contrastive learning, robust EEG decoding remains challenging because existing methods rely on fixed visual or textual anchors whose semantic relations may become misaligned with EEG representations that vary across trials, subjects, and learning stages. Our empirical evidence shows that this instability appears across both standard EEG decoding protocols and more challenging robustness settings, including strict cross-subject transfer and realistic personalized continual adaptation. We provide a formal analysis showing that fixed semantic supervision can bias optimization when EEG-specific relations evolve, and that structure-agnostic perturbations may distort semantically important EEG components. To address these issues, we propose Progressive Contrastive Alignment (ProCA), a unified and model-agnostic framework for adaptive neural-semantic alignment. ProCA progressively refines class-level contrastive supervision from frozen vision-language priors to EEG-aware semantic relations, and introduces structure-consistent interpolation to constrain feature mixing according to channel-wise and temporal importance. Across subject-dependent, subject-independent, strict cross-subject transfer, and continual adaptation settings, ProCA achieves average relative Top-1/Top-5 gains of 7.4%/3.9%, 10.0%/4.6%, 28.1%/17.8%, and 16.8%/11.6%, respectively.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_064",
+    "file_name": "OA_KW4_064.pdf",
+    "md5_hash": "c24c1ac39c4cc0f015143ff86bf1e1b2",
+    "file_size_kb": 6661.8779296875
+  },
+  {
+    "title": "Cross-Subject Generalization in Decoding Perceived Speech from Non-Invasive Brain Recordings",
+    "norm_title": "crosssubjectgeneralizationindecodingperceivedspeechfromnoninvasivebrainrecordings",
+    "authors": "Aoke Zhang; Bo Wang; Xihong Wu; Heping Cheng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2608.22420v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.22420v1.pdf",
+      "https://export.arxiv.org/pdf/2608.22420v1.pdf"
+    ],
+    "abstract": "Decoding perceived speech from non-invasive brain recordings has garnered significant attention in recent years due to its wide range of potential applications. However, existing methods face considerable challenges in cross-subject decoding, primarily due to limited generalizability and the absence of explicit mechanisms for extracting subject-consistent information. These limitations result in high training costs and suboptimal decoding performance. To address these challenges, we propose an innovative Cross-Subject Perceived Speech Decoding (CPSD) framework, which comprises two training stages: source model pre-training and personal specialization. In the source model pre-training stage, contrastive learning is employed to capture shared representations across multiple source subjects. Subsequently, personal specialization initializes the model for the target subject by extracting consistent components from the source model and fine-tuning it using target subject data. Additionally, we introduce the Positional Encoding-based Spatial Attention (PESA) module, which remaps MEG/EEG data into a standardized reference space, thereby enhancing cross-subject consistency and facilitating model training. We evaluate the proposed CPSD framework on three perceived speech neural datasets encompassing different modalities and languages. The results demonstrate that our framework outperforms baseline methods by more than 6.8%, 15.4%, and 15.8% in Top-10 accuracy on the Armeni 2022, PKUEEG 2025, and Broderick 2018 datasets, respectively. Further analyses confirm the effectiveness, efficiency, and robustness of the proposed approach.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_065",
+    "file_name": "OA_KW4_065.pdf",
+    "md5_hash": "73774a477096e1e115348f2123221005",
+    "file_size_kb": 2847.4990234375
+  },
+  {
+    "title": "What Does the Brain See? Multiview Neural Representations to Demystify the Brain-Visual Alignment",
+    "norm_title": "whatdoesthebrainseemultiviewneuralrepresentationstodemystifythebrainvisualalignment",
+    "authors": "Salini Yadav; Taveena Lotey; Pravendra Singh; Partha Pratim Roy",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2606.25718v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2606.25718v2.pdf",
+      "https://export.arxiv.org/pdf/2606.25718v2.pdf"
+    ],
+    "abstract": "Zero-shot visual decoding from electroencephalography (EEG) aims to infer visual semantics from non-invasive neural recordings, but remains challenging due to the low signal-to-noise ratio, non-stationarity, and limited spatial resolution of EEG. Existing EEG-vision alignment methods often rely on holistic EEG embeddings, which can obscure the complementary temporal, spectral, and spatial structure underlying visual perception. We introduce a unified multiview EEG representation learning framework for aligning brain responses with visual semantic embeddings. Our method builds an EEG encoder that jointly models three complementary views: input-conditioned state-space temporal dynamics, learnable wavelet-based spectral decomposition for sample-adaptive frequency modeling, and attention-modulated graph learning for structured electrode interactions. The resulting multiview EEG embeddings are fused and aligned with pretrained visual representations in a shared semantic space using contrastive learning with EEG-specific regularization, enabling 200-way zero-shot visual classification. Experiments on THINGS-EEG benchmark show that our method achieves state-of-the-art performance, with 54.8% Top-1 and 85.6% Top-5 accuracy in the within-subject setting and 15.3% Top-1 and 45.4% Top-5 accuracy in the cross-subject setting. We further present the first systematic cross-session EEG-image decoding evaluation, achieving 40.8% Top-1 and 78.0% Top-5 accuracy. These results suggest that explicitly modeling multiview neural structure improves both semantic alignment and generalization in EEG-based visual decoding.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_066",
+    "file_name": "OA_KW4_066.pdf",
+    "md5_hash": "cebc6de8eacecb689369c2d56e1e3669",
+    "file_size_kb": 613.759765625
+  },
+  {
+    "title": "Cross-Subject Generalization for EEG Decoding: A Survey of Deep Learning Methods",
+    "norm_title": "crosssubjectgeneralizationforeegdecodingasurveyofdeeplearningmethods",
+    "authors": "Taida Li; Yujun Yan; Fei Dou; Wenzhan Song",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.1088/2516-1091/ae65f0",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.27033v2.pdf",
+      "https://export.arxiv.org/pdf/2604.27033v2.pdf"
+    ],
+    "abstract": "Deep learning for cross-subject EEG decoding is hindered by high inter-subject variability, which introduces a severe domain shift between training and unseen test subjects. This survey presents a comprehensive review of deep learning methodologies specifically engineered to address this cross-subject generalization challenge. To ground this analysis, we formalize the cross-subject setting as a multi-source domain problem and delineate the rigorous, subject-independent evaluation protocols required for valid assessment. Central to this survey is a systematic taxonomy of the current literature into discrete methodological families, including feature alignment, adversarial learning, feature disentanglement, and contrastive learning. We conclude by examining three critical elements for advancing robust, real-world decoding: the theoretical limitations of current methodologies, the structural value of subject identity, and the emergence of EEG foundation models.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_067",
+    "file_name": "OA_KW4_067.pdf",
+    "md5_hash": "1a2d66159e57e23407aa8fadadc7a16e",
+    "file_size_kb": 8851.431640625
+  },
+  {
+    "title": "CRCC: Contrast-Based Robust Cross-Subject and Cross-Site Representation Learning for EEG",
+    "norm_title": "crcccontrastbasedrobustcrosssubjectandcrosssiterepresentationlearningforeeg",
+    "authors": "Xiaobin Wong; Zhonghua Zhao; Haoran Guo; Zhengyi Liu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2602.19138v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2602.19138v1.pdf",
+      "https://export.arxiv.org/pdf/2602.19138v1.pdf"
+    ],
+    "abstract": "EEG-based neural decoding models often fail to generalize across acquisition sites due to structured, site-dependent biases implicitly exploited during training. We reformulate cross-site clinical EEG learning as a bias-factorized generalization problem, in which domain shifts arise from multiple interacting sources. We identify three fundamental bias factors and propose a general training framework that mitigates their influence through data standardization and representation-level constraints. We construct a standardized multi-site EEG benchmark for Major Depressive Disorder and introduce CRCC, a two-stage training paradigm combining encoder-decoder pretraining with joint fine-tuning via cross-subject/site contrastive learning and site-adversarial optimization. CRCC consistently outperforms state-of-the-art baselines and achieves a 10.7 percentage-point improvement in balanced accuracy under strict zero-shot site transfer, demonstrating robust generalization to unseen environments.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_068",
+    "file_name": "OA_KW4_068.pdf",
+    "md5_hash": "21d912c25971df568833c98df9212041",
+    "file_size_kb": 5237.666015625
+  },
+  {
+    "title": "Augmenting Human Performance with an XR Agent Learning from Online Behavior and BCI Evidence",
+    "norm_title": "augmentinghumanperformancewithanxragentlearningfromonlinebehaviorandbcievidence",
+    "authors": "Ziheng Li; Xichen He; Haoyan Chen; Charlie Zou",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2608.30369v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.30369v1.pdf",
+      "https://export.arxiv.org/pdf/2608.30369v1.pdf"
+    ],
+    "abstract": "We present OLIVE, a framework for adapting a foundation model to provide real-time assistance in temporally demanding, high-stakes, and dynamic tasks. We show that passive EEG, fused online with behavioral evidence, can meaningfully extend the number of targets users detect and engage beyond their unaided action bandwidth. OLIVE learns from both explicit behavioral signals (the targets the user shoots down in an XR first-person shooter game) and implicit physiological signals (fixation-locked EEG) to provide timely guidance, continuously adapting a frozen vision-language model's inference on which items are task-relevant by jointly estimating per-source reliability without manual labels or offline training. Through three user studies, including two live deployments of an assistive agent driven by OLIVE in XR, we show that OLIVE Pareto-dominates prior test-time adaptation frameworks, achieving the highest convergence rate at comparable convergence speed. Combining implicit physiological and explicit behavioral signals, the OLIVE agent produces the largest and most reliable within-session improvement to a user's ability to detect and engage targets, largely independent of the individual's skill. When the target switches silently, the agent that uses both behavioral and physiological signals reconverges significantly faster than the behavior-only agent (1.27 times faster on average, p = .008), restoring trustworthy guidance at the moment the task changes, precisely when reliable assistance matters most.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_069",
+    "file_name": "OA_KW4_069.pdf",
+    "md5_hash": "5a38af52390dc593c04052780ed210a9",
+    "file_size_kb": 20714.2724609375
+  },
+  {
+    "title": "Test-Time Adaptation for EEG Foundation Models: A Systematic Study under Real-World Distribution Shifts",
+    "norm_title": "testtimeadaptationforeegfoundationmodelsasystematicstudyunderrealworlddistributionshifts",
+    "authors": "Gabriel Jason Lee; Jathurshan Pradeepkumar; Jimeng Sun",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2604.16926v3",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.16926v3.pdf",
+      "https://export.arxiv.org/pdf/2604.16926v3.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG) foundation models have shown strong potential for learning generalizable representations from large-scale neural data, yet their clinical deployment is hindered by distribution shifts across clinical settings, devices, and populations. Test-time adaptation (TTA) offers a promising solution by enabling models to adapt to unlabeled target data during inference without access to source data, a valuable property in healthcare settings constrained by privacy regulations and limited labeled data. However, its effectiveness for EEG remains largely underexplored. In this work, we introduce NeuroAdapt-Bench, a systematic benchmark for evaluating test-time adaptation methods on EEG foundation models under realistic distribution shifts. We evaluate representative TTA approaches from other domains across multiple pretrained foundation models, diverse downstream tasks, and heterogeneous datasets spanning in-distribution, out-of-distribution, and extreme modality shifts (e.g., Ear-EEG). Our results show that the evaluated TTA methods yield inconsistent gains and often degrade performance, with gradient-based approaches particularly prone to heavy degradation and optimization-free methods showing greater stability. For the evaluated EEG foundation models and representative TTA methods, these findings highlight the limitations of directly applying existing TTA techniques to EEG and underscore the need for domain-specific adaptation strategies.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_070",
+    "file_name": "OA_KW4_070.pdf",
+    "md5_hash": "3dce549af722c4ed547434a5280dc844",
+    "file_size_kb": 7908.970703125
+  },
+  {
+    "title": "Backpropagation-Free Test-Time Adaptation for Lightweight EEG-Based Brain-Computer Interfaces",
+    "norm_title": "backpropagationfreetesttimeadaptationforlightweighteegbasedbraincomputerinterfaces",
+    "authors": "Siyang Li; Jiayi Ouyang; Zhenyao Cui; Ziwei Wang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2601.07556v3",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2601.07556v3.pdf",
+      "https://export.arxiv.org/pdf/2601.07556v3.pdf"
+    ],
+    "abstract": "Electroencephalogram (EEG)-based brain-computer interfaces (BCIs) face significant deployment challenges due to inter-subject variability, signal non-stationarity, and computational constraints. While test-time adaptation (TTA) mitigates distribution shifts under online data streams without per-use calibration sessions, existing TTA approaches heavily rely on explicitly defined loss objectives that require backpropagation for updating model parameters, which incurs computational overhead, privacy risks, and sensitivity to noisy data streams. This paper proposes Backpropagation-Free Transformations (BFT), a TTA approach for EEG decoding that avoids these issues. BFT applies multiple sample-wise transformations, based on knowledge-guided augmentations or structured feature masking, to each test trial, producing multiple predictions for a single test sample using only forward passes. A learning-to-rank module, trained on source data, estimates the reliability of each transformed prediction, so that a weighted aggregation suppresses prediction uncertainty during online inference, with theoretical justification. Extensive experiments on five EEG datasets, covering motor imagery classification and driver drowsiness regression, demonstrate the effectiveness, versatility, robustness, and efficiency of BFT. This research enables lightweight plug-and-play BCIs on resource-constrained devices, broadening the real-world deployment of EEG-based BCIs.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_071",
+    "file_name": "OA_KW4_071.pdf",
+    "md5_hash": "ecafc9d9f3c8c0e04747547f95d16dd0",
+    "file_size_kb": 2642.71875
+  },
+  {
+    "title": "EEG-based Graph-guided Domain Adaptation for Robust Cross-Session Emotion Recognition",
+    "norm_title": "eegbasedgraphguideddomainadaptationforrobustcrosssessionemotionrecognition",
+    "authors": "Maryam Mirzaei; Farzaneh Shayegh; Hamed Narimani",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2512.23526v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2512.23526v2.pdf",
+      "https://export.arxiv.org/pdf/2512.23526v2.pdf"
+    ],
+    "abstract": "Accurate recognition of human emotional states is critical for effective human-machine interaction. Electroencephalography (EEG) offers a reliable source for emotion recognition due to its high temporal resolution and its direct reflection of neural activity. Nevertheless, variations across recording sessions present a major challenge for model generalization. To address this issue, we propose EGDA, a framework that reduces cross-session discrepancies by jointly aligning the global (marginal) and class-specific (conditional) distributions, while preserving the intrinsic structure of EEG data through graph regularization. Experimental results on the SEED-IV dataset demonstrate that EGDA achieves robust cross-session performance, obtaining accuracies of 81.22%, 80.15%, and 83.27% across three transfer tasks, and surpassing several baseline methods. Furthermore, the analysis highlights the Gamma frequency band as the most discriminative and identifies the central-parietal and prefrontal brain regions as critical for reliable emotion recognition.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_072",
+    "file_name": "OA_KW4_072.pdf",
+    "md5_hash": "5ac5beaa8c52f583cd2700fcc49bf526",
+    "file_size_kb": 409.4423828125
+  },
+  {
+    "title": "SSAS: Cross-subject EEG-based Emotion Recognition through Source Selection with Adversarial Strategy",
+    "norm_title": "ssascrosssubjecteegbasedemotionrecognitionthroughsourceselectionwithadversarialstrategy",
+    "authors": "Yici Liu; Qi Wei Oung; Hoi Leong Lee",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.1016/j.eswa.2025.130843",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2512.13458v2.pdf",
+      "https://export.arxiv.org/pdf/2512.13458v2.pdf"
+    ],
+    "abstract": "Electroencephalographic (EEG) signals have long been applied in the field of affective brain-computer interfaces (aBCIs). Cross-subject EEG-based emotion recognition has demonstrated significant potential in practical applications due to its suitability across diverse people. However, most studies on cross-subject EEG-based emotion recognition neglect the presence of inter-individual variability and negative transfer phenomena during model training. To address this issue, a cross-subject EEG-based emotion recognition through source selection with adversarial strategy is introduced in this paper. The proposed method comprises two modules: the source selection network (SS) and the adversarial strategies network (AS). The SS uses domain labels to reverse-engineer the training process of domain adaptation. Its key idea is to disrupt class separability and magnify inter-domain differences, thereby raising the classification difficulty and forcing the model to learn domain-invariant yet emotion-relevant representations. The AS gets the source domain selection results and the pretrained domain discriminators from SS. The pretrained domain discriminators compute a novel loss aimed at enhancing the performance of domain classification during adversarial training, ensuring the balance of adversarial strategies. This paper provides theoretical insights into the proposed method and achieves outstanding performance on two EEG-based emotion datasets, SEED and SEED-IV. The code can be found at https://github.com/liuyici/SSAS.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_073",
+    "file_name": "OA_KW4_073.pdf",
+    "md5_hash": "820f20b9b3cfdc5d8289e06740762439",
+    "file_size_kb": 7787.08203125
+  },
+  {
+    "title": "DAMSDAN: Distribution-Aware Multi-Source Domain Adaptation Network for Cross-Domain EEG-based Emotion Recognition",
+    "norm_title": "damsdandistributionawaremultisourcedomainadaptationnetworkforcrossdomaineegbasedemotionrecognition",
+    "authors": "Fo Hu; Can Wang; Qinxu Zheng; Xusheng Yang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2510.17475v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2510.17475v1.pdf",
+      "https://export.arxiv.org/pdf/2510.17475v1.pdf"
+    ],
+    "abstract": "Significant inter-individual variability limits the generalization of EEG-based emotion recognition under cross-domain settings. We address two core challenges in multi-source adaptation: (1) dynamically modeling distributional heterogeneity across sources and quantifying their relevance to a target to reduce negative transfer; and (2) achieving fine-grained semantic consistency to strengthen class discrimination. We propose a distribution-aware multi-source domain adaptation network (DAMSDAN). DAMSDAN integrates prototype-based constraints with adversarial learning to drive the encoder toward discriminative, domain-invariant emotion representations. A domain-aware source weighting strategy based on maximum mean discrepancy (MMD) dynamically estimates inter-domain shifts and reweights source contributions. In addition, a prototype-guided conditional alignment module with dual pseudo-label interaction enhances pseudo-label reliability and enables category-level, fine-grained alignment, mitigating noise propagation and semantic drift. Experiments on SEED and SEED-IV show average accuracies of 94.86\\% and 79.78\\% for cross-subject, and 95.12\\% and 83.15\\% for cross-session protocols. On the large-scale FACED dataset, DAMSDAN achieves 82.88\\% (cross-subject). Extensive ablations and interpretability analyses corroborate the effectiveness of the proposed framework for cross-domain EEG-based emotion recognition.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_074",
+    "file_name": "OA_KW4_074.pdf",
+    "md5_hash": "c18c249d55695c77dc5cfc763f56cfa3",
+    "file_size_kb": 10005.7705078125
+  },
+  {
+    "title": "SDC-Net: A Domain Adaptation Framework with Semantic-Dynamic Consistency for Cross-Subject EEG Emotion Recognition",
+    "norm_title": "sdcnetadomainadaptationframeworkwithsemanticdynamicconsistencyforcrosssubjecteegemotionrecognition",
+    "authors": "Jiahao Tang; Youjun Li; Xiangting Fan; Yangxuan Zheng",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2507.17524v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.17524v2.pdf",
+      "https://export.arxiv.org/pdf/2507.17524v2.pdf"
+    ],
+    "abstract": "Emotion recognition based on electroencephalography (EEG) holds significant promise for affective brain-computer interfaces (aBCIs). However, its practical deployment faces challenges due to the variability within inter-subject and the scarcity of labeled data in target domains. To overcome these limitations, we propose SDC-Net, a novel Semantic-Dynamic Consistency domain adaptation network for fully label-free cross-subject EEG emotion recognition. First, we introduce a Same-Subject Same-Trial Mixup strategy that generates augmented samples through intra-trial interpolation, enhancing data diversity while explicitly preserving individual identity to mitigate label ambiguity. Second, we construct a dynamic distribution alignment module within the Reproducing Kernel Hilbert Space (RKHS), jointly aligning marginal and conditional distributions through multi-objective kernel mean embedding, and leveraging a confidence-aware pseudo-labeling strategy to ensure stable adaptation. Third, we propose a dual-domain similarity consistency learning mechanism that enforces cross-domain structural constraints based on latent pairwise similarities, facilitating semantic boundary learning without reliance on temporal synchronization or label priors. To validate the effectiveness and robustness of the proposed SDC-Net, extensive experiments are conducted on three widely used EEG benchmark datasets: SEED, SEED-IV, and FACED. Comparative results against existing unsupervised domain adaptation methods demonstrate that SDC-Net achieves state-of-the-art performance in emotion recognition under both cross-subject and cross-session conditions. This advancement significantly improves the accuracy and generalization capability of emotion decoding, laying a solid foundation for real-world applications of personalized aBCIs. The source code is available at: https://github.com/XuanSuTrum/SDC-Net.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_075",
+    "file_name": "OA_KW4_075.pdf",
+    "md5_hash": "e65d6b2940b931958f7c81c2c582d3b6",
+    "file_size_kb": 4994.0625
+  },
+  {
+    "title": "Robust Emotion Recognition via Bi-Level Self-Supervised Continual Learning",
+    "norm_title": "robustemotionrecognitionviabilevelselfsupervisedcontinuallearning",
+    "authors": "Adnan Ahmad; Bahareh Nakisa; Mohammad Naim Rastgoo",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2505.10575v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2505.10575v2.pdf",
+      "https://export.arxiv.org/pdf/2505.10575v2.pdf"
+    ],
+    "abstract": "Emotion recognition through physiological signals such as electroencephalogram (EEG) has become an essential aspect of affective computing and provides an objective way to capture human emotions. However, physiological data characterized by cross-subject variability and noisy labels hinder the performance of emotion recognition models. Existing domain adaptation and continual learning methods struggle to address these issues, especially under realistic conditions where data is continuously streamed and unlabeled. To overcome these limitations, we propose a novel bi-level self-supervised continual learning framework, SSOCL, based on a dynamic memory buffer. This bi-level architecture iteratively refines the dynamic buffer and pseudo-label assignments to effectively retain representative samples, enabling generalization from continuous, unlabeled physiological data streams for emotion recognition. The assigned pseudo-labels are subsequently leveraged for accurate emotion prediction. Key components of the framework, including a fast adaptation module and a cluster-mapping module, enable robust learning and effective handling of evolving data streams. Experimental validation on two mainstream EEG tasks demonstrates the framework's ability to adapt to continuous data streams while maintaining strong generalization across subjects, outperforming existing approaches.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_076",
+    "file_name": "OA_KW4_076.pdf",
+    "md5_hash": "e5d0755df7cc7ac4f4a67b83eddcf802",
+    "file_size_kb": 1216.2236328125
+  },
+  {
+    "title": "mixEEG: Enhancing EEG Federated Learning for Cross-subject EEG Classification with Tailored mixup",
+    "norm_title": "mixeegenhancingeegfederatedlearningforcrosssubjecteegclassificationwithtailoredmixup",
+    "authors": "Xuan-Hao Liu; Bao-Liang Lu; Wei-Long Zheng",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2504.07987v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2504.07987v1.pdf",
+      "https://export.arxiv.org/pdf/2504.07987v1.pdf"
+    ],
+    "abstract": "The cross-subject electroencephalography (EEG) classification exhibits great challenges due to the diversity of cognitive processes and physiological structures between different subjects. Modern EEG models are based on neural networks, demanding a large amount of data to achieve high performance and generalizability. However, privacy concerns associated with EEG pose significant limitations to data sharing between different hospitals and institutions, resulting in the lack of large dataset for most EEG tasks. Federated learning (FL) enables multiple decentralized clients to collaboratively train a global model without direct communication of raw data, thus preserving privacy. For the first time, we investigate the cross-subject EEG classification in the FL setting. In this paper, we propose a simple yet effective framework termed mixEEG. Specifically, we tailor the vanilla mixup considering the unique properties of the EEG modality. mixEEG shares the unlabeled averaged data of the unseen subject rather than simply sharing raw data under the domain adaptation setting, thus better preserving privacy and offering an averaged label as pseudo-label. Extensive experiments are conducted on an epilepsy detection and an emotion recognition dataset. The experimental result demonstrates that our mixEEG enhances the transferability of global model for cross-subject EEG classification consistently across different datasets and model architectures. Code is published at: https://github.com/XuanhaoLiu/mixEEG.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_077",
+    "file_name": "OA_KW4_077.pdf",
+    "md5_hash": "2fce6dc72ce5b27a1dc0a658be021e56",
+    "file_size_kb": 6427.931640625
+  },
+  {
+    "title": "Towards Practical Emotion Recognition: An Unsupervised Source-Free Approach for EEG Domain Adaptation",
+    "norm_title": "towardspracticalemotionrecognitionanunsupervisedsourcefreeapproachforeegdomainadaptation",
+    "authors": "Md Niaz Imtiaz; Naimul Khan",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.1109/taffc.2026.3713402",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2504.03707v2.pdf",
+      "https://export.arxiv.org/pdf/2504.03707v2.pdf"
+    ],
+    "abstract": "Emotion recognition is crucial for advancing mental health, healthcare, and technologies such as brain-computer interfaces. EEG-based models, however, struggle in cross-domain settings due to the high cost of labeled data and signal variability across individuals and recording conditions. Unsupervised domain adaptation typically requires access to source data, which is often infeasible because of privacy and computational constraints. Source-free unsupervised domain adaptation (SF-UDA) removes this requirement, but it has not yet been applied to emotion recognition. We propose an SF-UDA approach for cross-domain EEG emotion classification, built on a multi-stage framework that adapts to the target domain without source data. Dual-Loss Adaptive Regularization (DLAR) minimizes prediction discrepancies on confident samples and aligns predictions with expected pseudo-labels. Localized Consistency Learning (LCL) enforces local consistency by promoting similar predictions among reliable neighbors. Together, these components address domain shift and reduce the impact of noisy pseudo-labels, a key challenge in SF-UDA. Experiments on DEAP, SEED, and DREAMER show that our method significantly outperforms state-of-the-art approaches, reaching 65.84% and 58.87% accuracy on SEED and DREAMER when trained on DEAP, and 58.99% and 67.08% on DEAP and DREAMER when trained on SEED. It detects both positive and negative emotions well, making it suitable for practical emotion recognition applications. Code available at: https://github.com/RyersonMultimediaLab/EmotionRecognitionSF-UDA",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_078",
+    "file_name": "OA_KW4_078.pdf",
+    "md5_hash": "e2bf463cbe0518a378ac488b58bdbe39",
+    "file_size_kb": 1933.6728515625
+  },
+  {
+    "title": "FACE: Few-shot Adapter with Cross-view Fusion for Cross-subject EEG Emotion Recognition",
+    "norm_title": "facefewshotadapterwithcrossviewfusionforcrosssubjecteegemotionrecognition",
+    "authors": "Haiqi Liu; C. L. Philip Chen; Tong Zhang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2503.18998v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2503.18998v1.pdf",
+      "https://export.arxiv.org/pdf/2503.18998v1.pdf"
+    ],
+    "abstract": "Cross-subject EEG emotion recognition is challenged by significant inter-subject variability and intricately entangled intra-subject variability. Existing works have primarily addressed these challenges through domain adaptation or generalization strategies. However, they typically require extensive target subject data or demonstrate limited generalization performance to unseen subjects. Recent few-shot learning paradigms attempt to address these limitations but often encounter catastrophic overfitting during subject-specific adaptation with limited samples. This article introduces the few-shot adapter with a cross-view fusion method called FACE for cross-subject EEG emotion recognition, which leverages dynamic multi-view fusion and effective subject-specific adaptation. Specifically, FACE incorporates a cross-view fusion module that dynamically integrates global brain connectivity with localized patterns via subject-specific fusion weights to provide complementary emotional information. Moreover, the few-shot adapter module is proposed to enable rapid adaptation for unseen subjects while reducing overfitting by enhancing adapter structures with meta-learning. Experimental results on three public EEG emotion recognition benchmarks demonstrate FACE's superior generalization performance over state-of-the-art methods. FACE provides a practical solution for cross-subject scenarios with limited labeled data.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_079",
+    "file_name": "OA_KW4_079.pdf",
+    "md5_hash": "8c083cf09b69364f52032b1b73430ed9",
+    "file_size_kb": 2735.232421875
+  },
+  {
+    "title": "SDA-DDA Semi-supervised Domain Adaptation with Dynamic Distribution Alignment Network For Emotion Recognition Using EEG Signals",
+    "norm_title": "sdaddasemisuperviseddomainadaptationwithdynamicdistributionalignmentnetworkforemotionrecognitionusingeegsignals",
+    "authors": "Jiahao Tang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2502.16485v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2502.16485v1.pdf",
+      "https://export.arxiv.org/pdf/2502.16485v1.pdf"
+    ],
+    "abstract": "In this paper, we focus on the challenge of individual variability in affective brain-computer interfaces (aBCI), which employs electroencephalogram (EEG) signals to monitor and recognize human emotional states, thereby facilitating the advancement of emotion-aware technologies. The variability in EEG data across individuals poses a significant barrier to the development of effective and widely applicable aBCI models. To tackle this issue, we propose a novel transfer learning framework called Semi-supervised Domain Adaptation with Dynamic Distribution Alignment (SDA-DDA). This approach aligns the marginal and conditional probability distribution of source and target domains using maximum mean discrepancy (MMD) and conditional maximum mean discrepancy (CMMD). We introduce a dynamic distribution alignment mechanism to adjust differences throughout training and enhance adaptation. Additionally, a pseudo-label confidence filtering module is integrated into the semi-supervised process to refine pseudo-label generation and improve the estimation of conditional distributions. Extensive experiments on EEG benchmark databases (SEED, SEED-IV and DEAP) validate the robustness and effectiveness of SDA-DDA. The results demonstrate its superiority over existing methods in emotion recognition across various scenarios, including cross-subject and cross-session conditions. This advancement enhances the generalization and accuracy of emotion recognition, potentially fostering the development of personalized aBCI applications. The source code is accessible at https://github.com/XuanSuTrum/SDA-DDA.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_080",
+    "file_name": "OA_KW4_080.pdf",
+    "md5_hash": "b7af759f36ff4346bde42efa03e0e169",
+    "file_size_kb": 5528.787109375
+  },
+  {
+    "title": "Cross-domain EEG-based Emotion Recognition with Contrastive Learning",
+    "norm_title": "crossdomaineegbasedemotionrecognitionwithcontrastivelearning",
+    "authors": "Rui Yan; Yibo Li; Han Ding; Fei Wang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2511.05293v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2511.05293v2.pdf",
+      "https://export.arxiv.org/pdf/2511.05293v2.pdf"
+    ],
+    "abstract": "Electroencephalogram (EEG)-based emotion recognition is vital for affective computing but faces challenges in feature utilization and cross-domain generalization. This work introduces EmotionCLIP, which reformulates recognition as an EEG-text matching task within the CLIP framework. A tailored backbone, SST-LegoViT, captures spatial, spectral, and temporal features using multi-scale convolution and Transformer modules. Experiments on SEED and SEED-IV datasets show superior cross-subject accuracies of 88.69\\% and 73.50\\%, and cross-time accuracies of 88.46\\% and 77.54\\%, outperforming existing models. Results demonstrate the effectiveness of multimodal contrastive learning for robust EEG emotion recognition. The code is available at https://github.com/Departure2021/EmotionCLIP.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_081",
+    "file_name": "OA_KW4_081.pdf",
+    "md5_hash": "a0680b28d6b2e944fd4e4857b8a04b8a",
+    "file_size_kb": 1357.62109375
+  },
+  {
+    "title": "FreqDGT: Frequency-Adaptive Dynamic Graph Networks with Transformer for Cross-subject EEG Emotion Recognition",
+    "norm_title": "freqdgtfrequencyadaptivedynamicgraphnetworkswithtransformerforcrosssubjecteegemotionrecognition",
+    "authors": "Yueyang Li; Shengyu Gong; Weiming Zeng; Nizhuan Wang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2506.22807v3",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2506.22807v3.pdf",
+      "https://export.arxiv.org/pdf/2506.22807v3.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG) serves as a reliable and objective signal for emotion recognition in affective brain-computer interfaces, offering unique advantages through its high temporal resolution and ability to capture authentic emotional states that cannot be consciously controlled. However, cross-subject generalization remains a fundamental challenge due to individual variability, cognitive traits, and emotional responses. We propose FreqDGT, a frequency-adaptive dynamic graph transformer that systematically addresses these limitations through an integrated framework. FreqDGT introduces frequency-adaptive processing (FAP) to dynamically weight emotion-relevant frequency bands based on neuroscientific evidence, employs adaptive dynamic graph learning (ADGL) to learn input-specific brain connectivity patterns, and implements multi-scale temporal disentanglement network (MTDN) that combines hierarchical temporal transformers with adversarial feature disentanglement to capture both temporal dynamics and ensure cross-subject robustness. Comprehensive experiments demonstrate that FreqDGT significantly improves cross-subject emotion recognition accuracy, confirming the effectiveness of integrating frequency-adaptive, spatial-dynamic, and temporal-hierarchical modeling while ensuring robustness to individual differences. The code is available at https://github.com/NZWANG/FreqDGT.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_082",
+    "file_name": "OA_KW4_082.pdf",
+    "md5_hash": "e8b571d9ddc0bd5150062886dead7dc0",
+    "file_size_kb": 5831.708984375
+  },
+  {
+    "title": "PTSM: Physiology-aware and Task-invariant Spatio-temporal Modeling for Cross-Subject EEG Decoding",
+    "norm_title": "ptsmphysiologyawareandtaskinvariantspatiotemporalmodelingforcrosssubjecteegdecoding",
+    "authors": "Changhong Jing; Yan Liu; Shuqiang Wang; Bruce X. B. Yu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2508.11357v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.11357v1.pdf",
+      "https://export.arxiv.org/pdf/2508.11357v1.pdf"
+    ],
+    "abstract": "Cross-subject electroencephalography (EEG) decoding remains a fundamental challenge in brain-computer interface (BCI) research due to substantial inter-subject variability and the scarcity of subject-invariant representations. This paper proposed PTSM (Physiology-aware and Task-invariant Spatio-temporal Modeling), a novel framework for interpretable and robust EEG decoding across unseen subjects. PTSM employs a dual-branch masking mechanism that independently learns personalized and shared spatio-temporal patterns, enabling the model to preserve individual-specific neural characteristics while extracting task-relevant, population-shared features. The masks are factorized across temporal and spatial dimensions, allowing fine-grained modulation of dynamic EEG patterns with low computational overhead. To further address representational entanglement, PTSM enforces information-theoretic constraints that decompose latent embeddings into orthogonal task-related and subject-related subspaces. The model is trained end-to-end via a multi-objective loss integrating classification, contrastive, and disentanglement objectives. Extensive experiments on cross-subject motor imagery datasets demonstrate that PTSM achieves strong zero-shot generalization, outperforming state-of-the-art baselines without subject-specific calibration. Results highlight the efficacy of disentangled neural representations for achieving both personalized and transferable decoding in non-stationary neurophysiological settings.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_083",
+    "file_name": "OA_KW4_083.pdf",
+    "md5_hash": "edfec47ccc50f796567c8d0b733ccead",
+    "file_size_kb": 501.4833984375
+  },
+  {
+    "title": "Learning Domain- and Class-Disentangled Prototypes for Domain-Generalized EEG Emotion Recognition",
+    "norm_title": "learningdomainandclassdisentangledprototypesfordomaingeneralizedeegemotionrecognition",
+    "authors": "Guangli Li; Canbiao Wu; Zhehao Zhou; Na Tian",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2509.01135v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.01135v2.pdf",
+      "https://export.arxiv.org/pdf/2509.01135v2.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG)-based emotion recognition plays a critical role in affective Brain-Computer Interfaces (aBCIs), yet its practical deployment remains limited by inter-subject variability, reliance on target-domain data, and unavoidable label noise. To address these challenges, we propose a Multi-domain Aggregation Transfer learning framework with domain-class prototypes (MAT) for emotion recognition under completely unseen target domains. MAT introduces a feature decoupling module to disentangle class-invariant domain features from domain-invariant class features, enabling more robust and interpretable EEG representations. A Hierarchical-Domain Aggregation (HDA) mechanism based on Maximum Mean Discrepancy (MMD) constructs superdomains to model shared distributional structures across subjects, while adaptive prototype updating refines domain and class prototypes to capture stable intrinsic representations. Moreover, a pairwise learning strategy reformulates classification as similarity estimation between sample pairs, effectively mitigating the effect of label noise. Extensive experiments on three public EEG emotion datasets (SEED, SEED-IV, and SEED-V) show that the accuracy of MAT is improved by 2.87%, 3.84%, and 2.05% compared with the state-of-the-art (SOTA) model for unseen target domains. Our results provide a promising direction for emotion recognition under real-world unseen-subject scenarios.The source code is available at https://github.com/WuCB-BCI/MAT.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_084",
+    "file_name": "OA_KW4_084.pdf",
+    "md5_hash": "e077ff14c18c108fc3e5d6882d4bfd54",
+    "file_size_kb": 6600.9853515625
+  },
+  {
+    "title": "Spatial Distillation based Distribution Alignment (SDDA) for Cross-Headset EEG Classification",
+    "norm_title": "spatialdistillationbaseddistributionalignmentsddaforcrossheadseteegclassification",
+    "authors": "Dingkun Liu; Siyang Li; Ziwei Wang; Wei Li",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.1109/tbme.2025.3631604",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2503.05349v1.pdf",
+      "https://export.arxiv.org/pdf/2503.05349v1.pdf"
+    ],
+    "abstract": "A non-invasive brain-computer interface (BCI) enables direct interaction between the user and external devices, typically via electroencephalogram (EEG) signals. However, decoding EEG signals across different headsets remains a significant challenge due to differences in the number and locations of the electrodes. To address this challenge, we propose a spatial distillation based distribution alignment (SDDA) approach for heterogeneous cross-headset transfer in non-invasive BCIs. SDDA uses first spatial distillation to make use of the full set of electrodes, and then input/feature/output space distribution alignments to cope with the significant differences between the source and target domains. To our knowledge, this is the first work to use knowledge distillation in cross-headset transfers. Extensive experiments on six EEG datasets from two BCI paradigms demonstrated that SDDA achieved superior performance in both offline unsupervised domain adaptation and online supervised domain adaptation scenarios, consistently outperforming 10 classical and state-of-the-art transfer learning algorithms.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_085",
+    "file_name": "OA_KW4_085.pdf",
+    "md5_hash": "eb56b34214113f14d16e13ee3cb8dc2d",
+    "file_size_kb": 1163.1796875
+  },
+  {
+    "title": "Distilled HuBERT for Mobile Speech Emotion Recognition: A Cross-Corpus Validation Study",
+    "norm_title": "distilledhubertformobilespeechemotionrecognitionacrosscorpusvalidationstudy",
+    "authors": "Saifelden M. Ismail",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2512.23435v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2512.23435v2.pdf",
+      "https://export.arxiv.org/pdf/2512.23435v2.pdf"
+    ],
+    "abstract": "Speech Emotion Recognition (SER) has significant potential for mobile applications, yet deployment remains constrained by the computational demands of state-of-the-art transformer architectures. This paper presents a mobile-efficient SER system based on DistilHuBERT, a distilled and 8-bit quantized transformer that achieves approximately 92% parameter reduction compared to full-scale Wav2Vec 2.0 models while maintaining competitive accuracy. We conduct a rigorous 5-fold Leave-One-Session-Out (LOSO) cross-validation on the IEMOCAP dataset to ensure speaker independence, augmented with cross-corpus training on CREMA-D to enhance generalization. Cross-corpus training with CREMA-D yields a 1.2% improvement in Weighted Accuracy, a 1.4% gain in Macro F1-score, and a 32% reduction in cross-fold variance, with the Neutral class showing the most substantial benefit at 5.4% F1-score improvement. Our approach achieves an Unweighted Accuracy of 61.4% with a quantized model footprint of only 23 MB, representing approximately 91% of the Unweighted Accuracy of a full-scale baseline. Cross-corpus evaluation on RAVDESS reveals that the theatrical nature of acted emotions causes predictions to cluster by arousal level rather than by specific emotion categories - happiness predictions systematically bleed into anger predictions, and sadness predictions bleed into neutral predictions, due to acoustic saturation when actors prioritize clarity over subtlety. Despite this theatricality effect reducing overall RAVDESS accuracy to 46.64%, the model maintains robust arousal detection with 99% recall for anger, 55% recall for neutral, and 27% recall for sadness. These findings demonstrate a Pareto-optimal tradeoff between model size and accuracy, enabling practical affect recognition on resource-constrained mobile devices.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_086",
+    "file_name": "OA_KW4_086.pdf",
+    "md5_hash": "0ea22a2ba695e5ad598a17b8fe893aa0",
+    "file_size_kb": 223.6171875
+  },
+  {
+    "title": "Cross-Corpus Validation of Speech Emotion Recognition in Urdu using Domain-Knowledge Acoustic Features",
+    "norm_title": "crosscorpusvalidationofspeechemotionrecognitioninurduusingdomainknowledgeacousticfeatures",
+    "authors": "Unzela Talpur; Zafi Sherhan Syed; Muhammad Shehram Shah Syed; Abbas Shah Syed",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2510.26823v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2510.26823v1.pdf",
+      "https://export.arxiv.org/pdf/2510.26823v1.pdf"
+    ],
+    "abstract": "Speech Emotion Recognition (SER) is a key affective computing technology that enables emotionally intelligent artificial intelligence. While SER is challenging in general, it is particularly difficult for low-resource languages such as Urdu. This study investigates Urdu SER in a cross-corpus setting, an area that has remained largely unexplored. We employ a cross-corpus evaluation framework across three different Urdu emotional speech datasets to test model generalization. Two standard domain-knowledge based acoustic feature sets, eGeMAPS and ComParE, are used to represent speech signals as feature vectors which are then passed to Logistic Regression and Multilayer Perceptron classifiers. Classification performance is assessed using unweighted average recall (UAR) whilst considering class-label imbalance. Results show that Self-corpus validation often overestimates performance, with UAR exceeding cross-corpus evaluation by up to 13%, underscoring that cross-corpus evaluation offers a more realistic measure of model robustness. Overall, this work emphasizes the importance of cross-corpus validation for Urdu SER and its implications contribute to advancing affective computing research for underrepresented language communities.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_087",
+    "file_name": "OA_KW4_087.pdf",
+    "md5_hash": "c861bd9bcb4d39d0da34e45ffff5421c",
+    "file_size_kb": 351.6748046875
+  },
+  {
+    "title": "Emotion-Disentangled Embedding Alignment for Noise-Robust and Cross-Corpus Speech Emotion Recognition",
+    "norm_title": "emotiondisentangledembeddingalignmentfornoiserobustandcrosscorpusspeechemotionrecognition",
+    "authors": "Upasana Tiwari; Rupayan Chakraborty; Sunil Kumar Kopparapu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2510.09072v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2510.09072v1.pdf",
+      "https://export.arxiv.org/pdf/2510.09072v1.pdf"
+    ],
+    "abstract": "Effectiveness of speech emotion recognition in real-world scenarios is often hindered by noisy environments and variability across datasets. This paper introduces a two-step approach to enhance the robustness and generalization of speech emotion recognition models through improved representation learning. First, our model employs EDRL (Emotion-Disentangled Representation Learning) to extract class-specific discriminative features while preserving shared similarities across emotion categories. Next, MEA (Multiblock Embedding Alignment) refines these representations by projecting them into a joint discriminative latent subspace that maximizes covariance with the original speech input. The learned EDRL-MEA embeddings are subsequently used to train an emotion classifier using clean samples from publicly available datasets, and are evaluated on unseen noisy and cross-corpus speech samples. Improved performance under these challenging conditions demonstrates the effectiveness of the proposed method.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_088",
+    "file_name": "OA_KW4_088.pdf",
+    "md5_hash": "053a9e0608c15427347ff7fd8395feae",
+    "file_size_kb": 614.0458984375
+  },
+  {
+    "title": "Rethinking Cross-Corpus Speech Emotion Recognition Benchmarking: Are Paralinguistic Pre-Trained Representations Sufficient?",
+    "norm_title": "rethinkingcrosscorpusspeechemotionrecognitionbenchmarkingareparalinguisticpretrainedrepresentationssufficient",
+    "authors": "Orchid Chetia Phukan; Mohd Mujtaba Akhtar;  Girish; Swarup Ranjan Behera",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2509.16182v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.16182v1.pdf",
+      "https://export.arxiv.org/pdf/2509.16182v1.pdf"
+    ],
+    "abstract": "Recent benchmarks evaluating pre-trained models (PTMs) for cross-corpus speech emotion recognition (SER) have overlooked PTM pre-trained for paralinguistic speech processing (PSP), raising concerns about their reliability, since SER is inherently a paralinguistic task. We hypothesize that PSP-focused PTM will perform better in cross-corpus SER settings. To test this, we analyze state-of-the-art PTMs representations including paralinguistic, monolingual, multilingual, and speaker recognition. Our results confirm that TRILLsson (a paralinguistic PTM) outperforms others, reinforcing the need to consider PSP-focused PTMs in cross-corpus SER benchmarks. This study enhances benchmark trustworthiness and guides PTMs evaluations for reliable cross-corpus SER.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_089",
+    "file_name": "OA_KW4_089.pdf",
+    "md5_hash": "03072bf5eea073fd999364da21af9977",
+    "file_size_kb": 2709.7724609375
+  },
+  {
+    "title": "More Similar than Dissimilar: Modeling Annotators for Cross-Corpus Speech Emotion Recognition",
+    "norm_title": "moresimilarthandissimilarmodelingannotatorsforcrosscorpusspeechemotionrecognition",
+    "authors": "James Tavernor; Emily Mower Provost",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2509.12295v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.12295v1.pdf",
+      "https://export.arxiv.org/pdf/2509.12295v1.pdf"
+    ],
+    "abstract": "Speech emotion recognition systems often predict a consensus value generated from the ratings of multiple annotators. However, these models have limited ability to predict the annotation of any one person. Alternatively, models can learn to predict the annotations of all annotators. Adapting such models to new annotators is difficult as new annotators must individually provide sufficient labeled training data. We propose to leverage inter-annotator similarity by using a model pre-trained on a large annotator population to identify a similar, previously seen annotator. Given a new, previously unseen, annotator and limited enrollment data, we can make predictions for a similar annotator, enabling off-the-shelf annotation of unseen data in target datasets, providing a mechanism for extremely low-cost personalization. We demonstrate our approach significantly outperforms other off-the-shelf approaches, paving the way for lightweight emotion adaptation, practical for real-world deployment.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_090",
+    "file_name": "OA_KW4_090.pdf",
+    "md5_hash": "bedf1d5283412ec4f79a641d8e062ad0",
+    "file_size_kb": 251.255859375
+  },
+  {
+    "title": "Speech-Based Depressive Mood Detection in the Presence of Multiple Sclerosis: A Cross-Corpus and Cross-Lingual Study",
+    "norm_title": "speechbaseddepressivemooddetectioninthepresenceofmultiplesclerosisacrosscorpusandcrosslingualstudy",
+    "authors": "Monica Gonzalez-Machorro; Uwe Reichel; Pascal Hecker; Helly Hammer",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2508.18092v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.18092v1.pdf",
+      "https://export.arxiv.org/pdf/2508.18092v1.pdf"
+    ],
+    "abstract": "Depression commonly co-occurs with neurodegenerative disorders like Multiple Sclerosis (MS), yet the potential of speech-based Artificial Intelligence for detecting depression in such contexts remains unexplored. This study examines the transferability of speech-based depression detection methods to people with MS (pwMS) through cross-corpus and cross-lingual analysis using English data from the general population and German data from pwMS. Our approach implements supervised machine learning models using: 1) conventional speech and language features commonly used in the field, 2) emotional dimensions derived from a Speech Emotion Recognition (SER) model, and 3) exploratory speech feature analysis. Despite limited data, our models detect depressive mood in pwMS with moderate generalisability, achieving a 66% Unweighted Average Recall (UAR) on a binary task. Feature selection further improved performance, boosting UAR to 74%. Our findings also highlight the relevant role emotional changes have as an indicator of depressive mood in both the general population and within PwMS. This study provides an initial exploration into generalising speech-based depression detection, even in the presence of co-occurring conditions, such as neurodegenerative diseases.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_091",
+    "file_name": "OA_KW4_091.pdf",
+    "md5_hash": "3ac7e3b97a51f60b77a63a7d19001056",
+    "file_size_kb": 272.494140625
+  },
+  {
+    "title": "Unsupervised Pairwise Learning Optimization Framework for Cross-Corpus EEG-Based Emotion Recognition Based on Prototype Representation",
+    "norm_title": "unsupervisedpairwiselearningoptimizationframeworkforcrosscorpuseegbasedemotionrecognitionbasedonprototyperepresentation",
+    "authors": "Guangli Li; Canbiao Wu; Zhen Liang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2508.11663v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.11663v1.pdf",
+      "https://export.arxiv.org/pdf/2508.11663v1.pdf"
+    ],
+    "abstract": "Affective computing is a rapidly developing interdisciplinary research direction in the field of brain-computer interface. In recent years, the introduction of deep learning technology has greatly promoted the development of the field of emotion recognition. However, due to physiological differences between subjects, as well as the variations in experimental environments and equipment, cross-corpus emotion recognition faces serious challenges, especially for samples near the decision boundary. To solve the above problems, we propose an optimization method based on domain adversarial transfer learning to fine-grained alignment of affective features, named Maximum classifier discrepancy with Pairwise Learning (McdPL) framework. In McdPL, we design a dual adversarial classifier (Ada classifier and RMS classifier), and apply a three-stage adversarial training to maximize classification discrepancy and minimize feature distribution to align controversy samples near the decision boundary. In the process of domain adversarial training, the two classifiers also maintain an adversarial relationship, ultimately enabling precise cross-corpus feature alignment. In addition, the introduction of pairwise learning transforms the classification problem of samples into a similarity problem between samples, alleviating the influence of label noise. We conducted systematic experimental evaluation of the model using publicly available SEED, SEED-IV and SEED-V databases. The results show that the McdPL model is superior to other baseline models in the cross-corpus emotion recognition task, and the average accuracy improvements of 4.76\\% and 3.97\\%, respectively. Our work provides a promising solution for emotion recognition cross-corpus. The source code is available at https://github.com/WuCB-BCI/Mcd_PL.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_092",
+    "file_name": "OA_KW4_092.pdf",
+    "md5_hash": "be4a2b0135e9380c598dc7f0e1c4933c",
+    "file_size_kb": 2320.517578125
+  },
+  {
+    "title": "THAI Speech Emotion Recognition (THAI-SER) corpus",
+    "norm_title": "thaispeechemotionrecognitionthaisercorpus",
+    "authors": "Jilamika Wongpithayadisai; Chompakorn Chaksangchaichot; Soravitt Sangnark; Patawee Prakrankamanant",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2507.09618v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.09618v1.pdf",
+      "https://export.arxiv.org/pdf/2507.09618v1.pdf"
+    ],
+    "abstract": "We present the first sizeable corpus of Thai speech emotion recognition, THAI-SER, containing 41 hours and 36 minutes (27,854 utterances) from 100 recordings made in different recording environments: Zoom and two studio setups. The recordings contain both scripted and improvised sessions, acted by 200 professional actors (112 females and 88 males, aged 18 to 55) and were directed by professional directors. There are five primary emotions: neutral, angry, happy, sad, and frustrated, assigned to the actors when recording utterances. The utterances are annotated with an emotional category using crowdsourcing. To control the annotation process's quality, we also design an extensive filtering and quality control scheme to ensure that the majority agreement score remains above 0.71. We evaluate our annotated corpus using two metrics: inter-annotator reliability and human recognition accuracy. Inter-annotator reliability score was calculated using Krippendorff's alpha, where our corpus, after filtering, achieved an alpha score of 0.692, higher than a recommendation of 0.667. For human recognition accuracy, our corpus scored up to 0.772 post-filtering. We also provide the results of the model trained on the corpus evaluated on both in-corpus and cross-corpus setups. The corpus is publicly available under a Creative Commons BY-SA 4.0, as well as our codes for the experiments.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_093",
+    "file_name": "OA_KW4_093.pdf",
+    "md5_hash": "6802e4907735fab99e73417c5a48d49b",
+    "file_size_kb": 3834.3759765625
+  },
+  {
+    "title": "Is It Still Fair? Investigating Gender Fairness in Cross-Corpus Speech Emotion Recognition",
+    "norm_title": "isitstillfairinvestigatinggenderfairnessincrosscorpusspeechemotionrecognition",
+    "authors": "Shreya G. Upadhyay; Woan-Shiuan Chien; Chi-Chun Lee",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2501.00995v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2501.00995v1.pdf",
+      "https://export.arxiv.org/pdf/2501.00995v1.pdf"
+    ],
+    "abstract": "Speech emotion recognition (SER) is a vital component in various everyday applications. Cross-corpus SER models are increasingly recognized for their ability to generalize performance. However, concerns arise regarding fairness across demographics in diverse corpora. Existing fairness research often focuses solely on corpus-specific fairness, neglecting its generalizability in cross-corpus scenarios. Our study focuses on this underexplored area, examining the gender fairness generalizability in cross-corpus SER scenarios. We emphasize that the performance of cross-corpus SER models and their fairness are two distinct considerations. Moreover, we propose the approach of a combined fairness adaptation mechanism to enhance gender fairness in the SER transfer learning tasks by addressing both source and target genders. Our findings bring one of the first insights into the generalizability of gender fairness in cross-corpus SER systems.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_094",
+    "file_name": "OA_KW4_094.pdf",
+    "md5_hash": "9635677f7ee0e983fa5f36dcf92a7f5e",
+    "file_size_kb": 739.431640625
+  },
+  {
+    "title": "Semi-supervised Deep Transfer for Regression without Domain Alignment",
+    "norm_title": "semisuperviseddeeptransferforregressionwithoutdomainalignment",
+    "authors": "Mainak Biswas; Ambedkar Dukkipati; Devarajan Sridharan",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2509.05092v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.05092v1.pdf",
+      "https://export.arxiv.org/pdf/2509.05092v1.pdf"
+    ],
+    "abstract": "Deep learning models deployed in real-world applications (e.g., medicine) face challenges because source models do not generalize well to domain-shifted target data. Many successful domain adaptation (DA) approaches require full access to source data. Yet, such requirements are unrealistic in scenarios where source data cannot be shared either because of privacy concerns or because it is too large and incurs prohibitive storage or computational costs. Moreover, resource constraints may limit the availability of labeled targets. We illustrate this challenge in a neuroscience setting where source data are unavailable, labeled target data are meager, and predictions involve continuous-valued outputs. We build upon Contradistinguisher (CUDA), an efficient framework that learns a shared model across the labeled source and unlabeled target samples, without intermediate representation alignment. Yet, CUDA was designed for unsupervised DA, with full access to source data, and for classification tasks. We develop CRAFT -- a Contradistinguisher-based Regularization Approach for Flexible Training -- for source-free (SF), semi-supervised transfer of pretrained models in regression tasks. We showcase the efficacy of CRAFT in two neuroscience settings: gaze prediction with electroencephalography (EEG) data and ``brain age'' prediction with structural MRI data. For both datasets, CRAFT yielded up to 9% improvement in root-mean-squared error (RMSE) over fine-tuned models when labeled training examples were scarce. Moreover, CRAFT leveraged unlabeled target data and outperformed four competing state-of-the-art source-free domain adaptation models by more than 3%. Lastly, we demonstrate the efficacy of CRAFT on two other real-world regression benchmarks. We propose CRAFT as an efficient approach for source-free, semi-supervised deep transfer for regression that is ubiquitous in biology and medicine.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_095",
+    "file_name": "OA_KW4_095.pdf",
+    "md5_hash": "70bd9da8fc1dc103f6fe452abe0e54e8",
+    "file_size_kb": 6617.5087890625
+  },
+  {
+    "title": "StableSleep: Source-Free Test-Time Adaptation for Sleep Staging with Lightweight Safety Rails",
+    "norm_title": "stablesleepsourcefreetesttimeadaptationforsleepstagingwithlightweightsafetyrails",
+    "authors": "Hritik Arasu; Faisal R Jahangiri",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2509.02982v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.02982v1.pdf",
+      "https://export.arxiv.org/pdf/2509.02982v1.pdf"
+    ],
+    "abstract": "Sleep staging models often degrade when deployed on patients with unseen physiology or recording conditions. We propose a streaming, source-free test-time adaptation (TTA) recipe that combines entropy minimization (Tent) with Batch-Norm statistic refresh and two safety rails: an entropy gate to pause adaptation on uncertain windows and an EMA-based reset to reel back drift. On Sleep-EDF Expanded, using single-lead EEG (Fpz-Cz, 100 Hz, 30s epochs; R&amp;K to AASM mapping), we show consistent gains over a frozen baseline at seconds-level latency and minimal memory, reporting per-stage metrics and Cohen's k. The method is model-agnostic, requires no source data or patient calibration, and is practical for on-device or bedside use.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_096",
+    "file_name": "OA_KW4_096.pdf",
+    "md5_hash": "cde893a38721fddfb7d79f3c976e7a4f",
+    "file_size_kb": 567.5087890625
+  },
+  {
+    "title": "EEG-to-Gait Decoding via Phase-Aware Representation Learning",
+    "norm_title": "eegtogaitdecodingviaphaseawarerepresentationlearning",
+    "authors": "Xi Fu; Weibang Jiang; Rui Liu; Gernot R. Müller-Putz",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2506.22488v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2506.22488v2.pdf",
+      "https://export.arxiv.org/pdf/2506.22488v2.pdf"
+    ],
+    "abstract": "Accurate decoding of lower-limb motion from EEG signals is essential for advancing brain-computer interface (BCI) applications in movement intent recognition and control. This study presents NeuroDyGait, a two-stage, phase-aware EEG-to-gait decoding framework that explicitly models temporal continuity and domain relationships. To address challenges of causal, phase-consistent prediction and cross-subject variability, Stage I learns semantically aligned EEG-motion embeddings via relative contrastive learning with a cross-attention-based metric, while Stage II performs domain relation-aware decoding through dynamic fusion of session-specific heads. Comprehensive experiments on two benchmark datasets (GED and FMD) show substantial gains over baselines, including a recent 2025 model EEG2GAIT. The framework generalizes to unseen subjects and maintains inference latency below 5 ms per window, satisfying real-time BCI requirements. Visualization of learned attention and phase-specific cortical saliency maps further reveals interpretable neural correlates of gait phases. Future extensions will target rehabilitation populations and multimodal integration.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_097",
+    "file_name": "OA_KW4_097.pdf",
+    "md5_hash": "8dfb1f6de17103f9b66a60c1d3f07079",
+    "file_size_kb": 8233.6337890625
+  },
+  {
+    "title": "Fine-Tuning Strategies for Continual Online EEG Motor Imagery Decoding: Insights from a Large-Scale Longitudinal Study",
+    "norm_title": "finetuningstrategiesforcontinualonlineeegmotorimagerydecodinginsightsfromalargescalelongitudinalstudy",
+    "authors": "Martin Wimpff; Bruno Aristimunha; Sylvain Chevallier; Bin Yang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2502.06828v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2502.06828v1.pdf",
+      "https://export.arxiv.org/pdf/2502.06828v1.pdf"
+    ],
+    "abstract": "This study investigates continual fine-tuning strategies for deep learning in online longitudinal electroencephalography (EEG) motor imagery (MI) decoding within a causal setting involving a large user group and multiple sessions per participant. We are the first to explore such strategies across a large user group, as longitudinal adaptation is typically studied in the single-subject setting with a single adaptation strategy, which limits the ability to generalize findings. First, we examine the impact of different fine-tuning approaches on decoder performance and stability. Building on this, we integrate online test-time adaptation (OTTA) to adapt the model during deployment, complementing the effects of prior fine-tuning. Our findings demonstrate that fine-tuning that successively builds on prior subject-specific information improves both performance and stability, while OTTA effectively adapts the model to evolving data distributions across consecutive sessions, enabling calibration-free operation. These results offer valuable insights and recommendations for future research in longitudinal online MI decoding and highlight the importance of combining domain adaptation strategies for improving BCI performance in real-world applications. Clinical Relevance: Our investigation enables more stable and efficient long-term motor imagery decoding, which is critical for neurorehabilitation and assistive technologies.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_098",
+    "file_name": "OA_KW4_098.pdf",
+    "md5_hash": "379b242ed5079c18656d8896781ddf1b",
+    "file_size_kb": 360.8828125
+  },
+  {
+    "title": "Enhanced Cross-Dataset Electroencephalogram-based Emotion Recognition using Unsupervised Domain Adaptation",
+    "norm_title": "enhancedcrossdatasetelectroencephalogrambasedemotionrecognitionusingunsuperviseddomainadaptation",
+    "authors": "Md Niaz Imtiaz; Naimul Khan",
+    "year": 2024,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.1016/j.compbiomed.2024.109394",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2411.12852v1.pdf",
+      "https://export.arxiv.org/pdf/2411.12852v1.pdf"
+    ],
+    "abstract": "Emotion recognition has significant potential in healthcare and affect-sensitive systems such as brain-computer interfaces (BCIs). However, challenges such as the high cost of labeled data and variability in electroencephalogram (EEG) signals across individuals limit the applicability of EEG-based emotion recognition models across domains. These challenges are exacerbated in cross-dataset scenarios due to differences in subject demographics, recording devices, and presented stimuli. To address these issues, we propose a novel approach to improve cross-domain EEG-based emotion classification. Our method, Gradual Proximity-guided Target Data Selection (GPTDS), incrementally selects reliable target domain samples for training. By evaluating their proximity to source clusters and the models confidence in predicting them, GPTDS minimizes negative transfer caused by noisy and diverse samples. Additionally, we introduce Prediction Confidence-aware Test-Time Augmentation (PC-TTA), a cost-effective augmentation technique. Unlike traditional TTA methods, which are computationally intensive, PC-TTA activates only when model confidence is low, improving inference performance while drastically reducing computational costs. Experiments on the DEAP and SEED datasets validate the effectiveness of our approach. When trained on DEAP and tested on SEED, our model achieves 67.44% accuracy, a 7.09% improvement over the baseline. Conversely, training on SEED and testing on DEAP yields 59.68% accuracy, a 6.07% improvement. Furthermore, PC-TTA reduces computational time by a factor of 15 compared to traditional TTA methods. Our method excels in detecting both positive and negative emotions, demonstrating its practical utility in healthcare applications. Code available at: https://github.com/RyersonMultimediaLab/EmotionRecognitionUDA",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_099",
+    "file_name": "OA_KW4_099.pdf",
+    "md5_hash": "ca75d55a9ab9810283608fdf019db261",
+    "file_size_kb": 3176.658203125
+  },
+  {
+    "title": "EvoFA: Evolvable Fast Adaptation for EEG Emotion Recognition",
+    "norm_title": "evofaevolvablefastadaptationforeegemotionrecognition",
+    "authors": "Ming Jin; Danni Zhang; Gangming Zhao; Changde Du",
+    "year": 2024,
+    "journal": "arXiv Preprints (Subspace Disentanglement & Domain Adaptation)",
+    "doi": "10.48550/arXiv.2409.15733v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2409.15733v1.pdf",
+      "https://export.arxiv.org/pdf/2409.15733v1.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG)-based emotion recognition has gained significant traction due to its accuracy and objectivity. However, the non-stationary nature of EEG signals leads to distribution drift over time, causing severe performance degradation when the model is reused. While numerous domain adaptation (DA) approaches have been proposed in recent years to address this issue, their reliance on large amounts of target data for calibration restricts them to offline scenarios, rendering them unsuitable for real-time applications. To address this challenge, this paper proposes Evolvable Fast Adaptation (EvoFA), an online adaptive framework tailored for EEG data. EvoFA organically integrates the rapid adaptation of Few-Shot Learning (FSL) and the distribution matching of Domain Adaptation (DA) through a two-stage generalization process. During the training phase, a robust base meta-learning model is constructed for strong generalization. In the testing phase, a designed evolvable meta-adaptation module iteratively aligns the marginal distribution of target (testing) data with the evolving source (training) data within a model-agnostic meta-learning framework, enabling the model to learn the evolving trends of testing data relative to training data and improving online testing performance. Experimental results demonstrate that EvoFA achieves significant improvements compared to the basic FSL method and previous online methods. The introduction of EvoFA paves the way for broader adoption of EEG-based emotion recognition in real-world applications. Our code will be released upon publication.",
+    "source": "arXiv",
+    "paper_code": "OA_KW4_100",
+    "file_name": "OA_KW4_100.pdf",
+    "md5_hash": "ce259374aa84779d3f7258e03a25082a",
+    "file_size_kb": 695.3115234375
+  }
+]

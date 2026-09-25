@@ -1,17 +1,17 @@
-# NB03 - Multi-Branch Architectures & Cross-Modal Attention Mechanisms
-## Chủ đề Tiếng Việt: Kiến trúc Đa nhánh & Cơ chế Chú ý Chéo Đa phương thức
+# NB03 - Multi-Branch & Cross-Modal Attention Architectures
+## Chủ đề Tiếng Việt: Kiến Trúc Đa Nhánh & Cơ Chế Chú Ý Liên Phương Thức (Cross-Modal Attention)
 
-- **Ánh xạ Chương Luận Án**: **Chương 3 & Chương 5 (Tầng mã hóa chuyên biệt & Thực nghiệm Triệt tiêu Attention)**
-- **Trọng tâm Nghiên cứu**: Signal-specific deep feature encoders (Spatial-GCN for EEG, TCN for ECG, CWT-CNN for EDA), and bidirectional QKV cross-modal attention fusion.
-- **Tổng số bài báo khoa học chỉ mục**: **46 bài** (Giai đoạn 2023–2026)
-- **Số lượng file PDF toàn văn sẵn có**: **22 file PDF** (trong thư mục [`pdfs/`](pdfs/))
+- **Ánh xạ Chương Luận Án**: **Chương 3 & Chương 5 (Kiến trúc Đa nhánh MMB-EmotionNet & Cơ chế Cross-Modal Attention)**
+- **Trọng tâm Nghiên cứu**: Modality-specific branch encoders, cross-modal multi-head attention, bidirectional attention calibration, and dynamic inter-sensor fusion.
+- **Tổng số bài báo khoa học chỉ mục**: **100 bài** (Giai đoạn 2023–2026)
+- **Số lượng file PDF toàn văn sẵn có**: **100 file PDF** (trong thư mục [`pdfs/`](pdfs/))
 
 ---
 
 ## 🎯 Các Câu Hỏi Nghiên Cứu Trọng Tâm
-1. Tại sao kiến trúc đa nhánh (Multi-branch) vượt trội hơn việc nối vector thô (Early Concatenation)?
-2. Cơ chế Cross-Attention Query-Key-Value giữa EEG và Biosignals hoạt động ra sao về mặt toán học?
-3. Kết quả thử nghiệm Ablation Study chứng minh vai trò của từng nhánh tín hiệu như thế nào?
+1. Làm thế nào để thiết kế cơ chế Cross-Attention giải quyết sự lệch pha về thời gian (temporal misalignment) giữa EEG và tín hiệu ngoại vi?
+2. Phân nhánh không gian - thời gian (Spatial-Temporal Multi-Branch) đem lại lợi ích gì so với mạng đơn luồng?
+3. Cơ chế Co-Attention giúp lọc bỏ nhiễu và trích xuất đặc trưng bổ trợ liên phương thức như thế nào?
 
 ---
 
@@ -28,5 +28,6 @@ Mở file [`00_NOTEBOOKLM_PROMPTS_AND_INDEX.md`](00_NOTEBOOKLM_PROMPTS_AND_INDEX
 
 ## 📂 Danh Mục Bài Báo Trong Notebook
 Chi tiết toàn văn và tóm tắt từng bài báo có thể xem tại:
-- [Tài liệu tóm tắt mở rộng](../../literature/open_access_repository/kw03_multibranch_crossmodal_attention/README.md)
-- [Bảng dữ liệu thô `papers_index.csv`](../../literature/open_access_repository/kw03_multibranch_crossmodal_attention/papers_index.csv)
+- [Bảng dữ liệu chỉ mục `papers_index.csv`](papers_index.csv)
+- [Thư mục tóm tắt chuyên sâu `paper_notes/`](paper_notes/)
+- [Thư mục chứa 100% PDF toàn văn `pdfs/`](pdfs/)

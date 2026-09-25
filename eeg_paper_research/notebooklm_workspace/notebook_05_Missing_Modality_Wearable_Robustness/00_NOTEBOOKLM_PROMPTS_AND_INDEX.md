@@ -1,88 +1,117 @@
-# NotebookLM Workspace: Cluster 05 - Missing Modality & Wearable Robustness
+# 📚 SỔ TAY NOTEBOOKLM #05: XỬ LÝ KHUYẾT THIẾU PHƯƠNG THỨC & TÍNH BỀN VỮNG THIẾT BỊ ĐEO
+## Missing Modality & Wearable Robustness in Affective Computing
 
-> **Total Curated Papers**: 50 / 50 (Strictly 100% Unique, Full-Text Verified Open Access PDFs)  
-> **Topic**: Missing Modality Handling, Wearable Sensor Robustness, Generative Imputation, and Fault-Tolerant Multimodal Biosignals  
-> **Target Dissertation Focus**: Multi-Task Multi-Branch Architecture for Emotion Recognition from Multimodal Biosignals (MMB-EmotionNet)
-
----
-
-## 📑 Complete Index of 50 Curated Papers
-
-| Code | Year | Title | Venue / Authors | DOI / PDF Link |
-| :--- | :---: | :--- | :--- | :--- |
-| **OA_KW5_001** | 2023 | Journal of NeuroEngineering and Rehabilitation           (2023) 20:40 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_001.pdf` |
-| **OA_KW5_002** | 2023 | Accepted: 30 January 2025 / Published online: 14 February 2025 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_002.pdf` |
-| **OA_KW5_003** | 2023 | Vol.:(0123456789)1 3 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_003.pdf` |
-| **OA_KW5_004** | 2023 | JOURNAL OF LATEX CLASS FILES, 2024 1 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_004.pdf` |
-| **OA_KW5_005** | 2023 | Machine learning for human emotion recognition: a comprehensive | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_005.pdf` |
-| **OA_KW5_006** | 2023 | Frontiers in Psychology 01 frontiersin.org | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_006.pdf` |
-| **OA_KW5_007** | 2023 | Accepted: 16 June 2025 / Published online: 16 July 2025 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_007.pdf` |
-| **OA_KW5_008** | 2023 | Vol.:(0123456789) | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_008.pdf` |
-| **OA_KW5_009** | 2023 | * Corresponding author, email: xy227@cam.ac.uk | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_009.pdf` |
-| **OA_KW5_010** | 2023 | To Appear in Emotion Measurement 2021 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_010.pdf` |
-| **OA_KW5_011** | 2023 | RESEARCH Open Access | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_011.pdf` |
-| **OA_KW5_012** | 2023 | published: 25 February 2021 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_012.pdf` |
-| **OA_KW5_013** | 2023 | REVIEW Open Access | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_013.pdf` |
-| **OA_KW5_014** | 2023 | Int. J. Phys. Educ. Fit. Sports, 15(1) (2026), 93-112 | 93 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_014.pdf` |
-| **OA_KW5_015** | 2023 | FatigueNet: A hybrid graph | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_015.pdf` |
-| **OA_KW5_016** | 2023 | Chinese Journal of Information Fusion | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_016.pdf` |
-| **OA_KW5_017** | 2023 | American Journal of Interdisciplinary Studies, September 2025, 01– 39 | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_017.pdf` |
-| **OA_KW5_018** | 2023 | Frontiers in Public Health 01 frontiersin.org | *IEEE Trans / Journal* (Researchers et al.) | N/A / `OA_KW5_018.pdf` |
-| **OA_KW5_019** | 2022 | Self-Supervised Representation Learning: Introduction, advances, and challenges | *IEEE Signal Processing Magazine* (Linus Ericsson, Henry Gouk, Chen Change Loy et al.) | [10.1109/msp.2021.3134634](https://doi.org/10.1109/msp.2021.3134634) / [PDF Link](https://arxiv.org/pdf/2110.09327.pdf) |
-| **OA_KW5_020** | 2024 | Exploring contactless techniques in multimodal emotion recognition: insights into diverse applications, challenges, solutions, and prospects | *Multimedia Systems* (Umair Ali Khan, Qianru Xu, Yang Merik Liu et al.) | [10.1007/s00530-024-01302-2](https://doi.org/10.1007/s00530-024-01302-2) / [PDF Link](https://link.springer.com/content/pdf/10.1007/s00530-024-01302-2.pdf) |
-| **OA_KW5_021** | 2025 | An ensemble deep learning framework for emotion recognition through wearable devices multi-modal physiological signals | *Scientific Reports* (Durgesh Nandini, Jyoti Yadav, Vijander Singh et al.) | [10.1038/s41598-025-99858-0](https://doi.org/10.1038/s41598-025-99858-0) / [PDF Link](https://www.nature.com/articles/s41598-025-99858-0.pdf) |
-| **OA_KW5_022** | 2022 | Multimodal EEG and Eye Tracking Feature Fusion Approaches for Attention Classification in Hybrid BCIs | *Frontiers in Computer Science* (Lisa-Marie Vortmann, Simon Ceh, Felix Putze) | [10.3389/fcomp.2022.780580](https://doi.org/10.3389/fcomp.2022.780580) / [PDF Link](https://www.frontiersin.org/articles/10.3389/fcomp.2022.780580/pdf) |
-| **OA_KW5_023** | 2023 | Group Synchrony for Emotion Recognition Using Physiological Signals | *IEEE Transactions on Affective Computing* (Patrícia Justo Bota, Tianyi Zhang, Abdallah El Ali et al.) | [10.1109/taffc.2023.3265433](https://doi.org/10.1109/taffc.2023.3265433) / [PDF Link](https://ir.cwi.nl/pub/33017/33017.pdf) |
-| **OA_KW5_024** | 2023 | Multimodal physiological sensing for the assessment of acute pain | *Frontiers in Pain Research* (Raul Fernandez Rojas, Niraj Hirachan, Nicholas A. T. Brown et al.) | [10.3389/fpain.2023.1150264](https://doi.org/10.3389/fpain.2023.1150264) / [PDF Link](https://www.frontiersin.org/articles/10.3389/fpain.2023.1150264/pdf) |
-| **OA_KW5_025** | 2025 | Stress and Emotion Open Access Data: A Review on Datasets, Modalities, Methods, Challenges, and Future Research Perspectives | *Journal of Healthcare Informatics Research* (Aleksandr Ometov, Anzhelika Mezina, Hsiao-Chun Lin et al.) | [10.1007/s41666-025-00200-0](https://doi.org/10.1007/s41666-025-00200-0) / [PDF Link](https://link.springer.com/content/pdf/10.1007/s41666-025-00200-0.pdf) |
-| **OA_KW5_026** | 2025 | Challenges and standardisation strategies for sensor-based data collection for digital phenotyping | *Communications Medicine* (Nadia Binte Alam, Mohsin Surani, Chayon Kumar Das et al.) | [10.1038/s43856-025-01013-3](https://doi.org/10.1038/s43856-025-01013-3) / [PDF Link](https://www.nature.com/articles/s43856-025-01013-3.pdf) |
-| **OA_KW5_027** | 2023 | Sparks of Artificial General Intelligence: Early experiments with GPT-4 | *arXiv (Cornell University)* (Sébastien Bubeck, Varun Chandrasekaran, Ronen Eldan et al.) | [10.48550/arxiv.2303.12712](https://doi.org/10.48550/arxiv.2303.12712) / [PDF Link](https://arxiv.org/pdf/2303.12712.pdf) |
-| **OA_KW5_028** | 2022 | Memory-inspired spiking hyperdimensional network for robust online learning | *Scientific Reports* (Zhuowen Zou, Haleh Alimohamadi, Ali Zakeri et al.) | [10.1038/s41598-022-11073-3](https://doi.org/10.1038/s41598-022-11073-3) / [PDF Link](https://www.nature.com/articles/s41598-022-11073-3.pdf) |
-| **OA_KW5_029** | 2025 | A cross-domain framework for emotion and stress detection using WESAD, SCIENTISST-MOVE, and DREAMER datasets | *Frontiers in Bioengineering and Biotechnology* (Ahmad S. Almadhor, Stephen Ojo, Thomas I. Nathaniel et al.) | [10.3389/fbioe.2025.1659002](https://doi.org/10.3389/fbioe.2025.1659002) / [PDF Link](https://public-pages-files-2025.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2025.1659002/pdf) |
-| **OA_KW5_030** | 2024 | Multimodal Brain–Computer Interface for In-Vehicle Driver Cognitive Load Measurement: Dataset and Baselines | *IEEE Transactions on Intelligent Transportation Systems* (Prithila Angkan, Behnam Behinaein, Zunayed Mahmud et al.) | [10.1109/tits.2023.3345846](https://doi.org/10.1109/tits.2023.3345846) / [PDF Link](https://arxiv.org/pdf/2304.04273.pdf) |
-| **OA_KW5_031** | 2023 | PhysFormer++: Facial Video-Based Physiological Measurement with SlowFast Temporal Difference Transformer | *International Journal of Computer Vision* (Zitong Yu, Yuming Shen, Jingang Shi et al.) | [10.1007/s11263-023-01758-1](https://doi.org/10.1007/s11263-023-01758-1) / [PDF Link](https://link.springer.com/content/pdf/10.1007/s11263-023-01758-1.pdf) |
-| **OA_KW5_032** | 2022 | Two-dimensional CNN-based distinction of human emotions from EEG channels selected by multi-objective evolutionary algorithm | *Scientific Reports* (Luis Alfredo Moctezuma, Takashi Abe, Marta Molinas) | [10.1038/s41598-022-07517-5](https://doi.org/10.1038/s41598-022-07517-5) / [PDF Link](https://www.nature.com/articles/s41598-022-07517-5.pdf) |
-| **OA_KW5_033** | 2023 | Interpretable and Robust AI in EEG Systems: A Survey | *arXiv (Cornell University)* (Xinliang Zhou, Chenyu Liu, Zhou, Jinan et al.) | [10.48550/arxiv.2304.10755](https://doi.org/10.48550/arxiv.2304.10755) / [PDF Link](https://arxiv.org/pdf/2304.10755.pdf) |
-| **OA_KW5_034** | 2023 | The blood–brain barrier: Structure, regulation and drug delivery | *Signal Transduction and Targeted Therapy* (Di Wu, Qi Chen, Xiaojie Chen et al.) | [10.1038/s41392-023-01481-w](https://doi.org/10.1038/s41392-023-01481-w) / [PDF Link](https://www.nature.com/articles/s41392-023-01481-w.pdf) |
-| **OA_KW5_035** | 2022 | Artificial empathy in marketing interactions: Bridging the human-AI gap in affective and social customer experience | *Journal of the Academy of Marketing Science* (Yuping Liu–Thompkins, Shintaro Okazaki, Hairong Li) | [10.1007/s11747-022-00892-5](https://doi.org/10.1007/s11747-022-00892-5) / [PDF Link](https://link.springer.com/content/pdf/10.1007/s11747-022-00892-5.pdf) |
-| **OA_KW5_036** | 2023 | Integrated multimodal cell atlas of Alzheimer’s disease | *Research Square* (Mariano I. Gabitto, Kyle J. Travaglini, Jeannelle Ariza et al.) | [10.21203/rs.3.rs-2921860/v1](https://doi.org/10.21203/rs.3.rs-2921860/v1) / [PDF Link](https://www.researchsquare.com/article/rs-2921860/latest.pdf) |
-| **OA_KW5_037** | 2024 | Federated Learning for Time-Series Healthcare Sensing with Incomplete Modalities | *arXiv (Cornell University)* (Adiba Orzikulova, Jaehyun Kwak, Jaemin Shin et al.) | [10.48550/arxiv.2405.11828](https://doi.org/10.48550/arxiv.2405.11828) / [PDF Link](https://arxiv.org/pdf/2405.11828.pdf) |
-| **OA_KW5_038** | 2024 | Crossmodal sensory neurons based on high-performance flexible memristors for human-machine in-sensor computing system | *Nature Communications* (Zhiyuan Li, Zhongshao Li, Wei Yieng Tang et al.) | [10.1038/s41467-024-51609-x](https://doi.org/10.1038/s41467-024-51609-x) / [PDF Link](https://www.nature.com/articles/s41467-024-51609-x.pdf) |
-| **OA_KW5_039** | 2023 | Generative AI for brain image computing and brain network computing: a review | *Frontiers in Neuroscience* (Changwei Gong, Changhong Jing, Xuhang Chen et al.) | [10.3389/fnins.2023.1203104](https://doi.org/10.3389/fnins.2023.1203104) / [PDF Link](https://www.frontiersin.org/articles/10.3389/fnins.2023.1203104/pdf) |
-| **OA_KW5_040** | 2022 | Automated Diagnosis of Cardiovascular Diseases from Cardiac Magnetic Resonance Imaging Using Deep Learning Models: A Review | *arXiv (Cornell University)* (Mahboobeh Jafari, Afshin Shoeibi, Marjane Khodatars et al.) | [10.48550/arxiv.2210.14909](https://doi.org/10.48550/arxiv.2210.14909) / [PDF Link](https://arxiv.org/pdf/2210.14909.pdf) |
-| **OA_KW5_041** | 2025 | Personalized health monitoring using explainable AI: bridging trust in predictive healthcare | *Scientific Reports* (M. Sree Vani, R. Sudhakar, A. Mahendar et al.) | [10.1038/s41598-025-15867-z](https://doi.org/10.1038/s41598-025-15867-z) / [PDF Link](https://www.nature.com/articles/s41598-025-15867-z.pdf) |
-| **OA_KW5_042** | 2025 | LSM-2: Learning from Incomplete Wearable Sensor Data | *arXiv (Cornell University)* (Maxwell A. Xu, Girish Narayanswamy, Kumar Ayush et al.) | [10.48550/arxiv.2506.05321](https://doi.org/10.48550/arxiv.2506.05321) / [PDF Link](https://arxiv.org/pdf/2506.05321.pdf) |
-| **OA_KW5_043** | 2024 | A Survey of Few-Shot Learning for Biomedical Time Series | *arXiv (Cornell University)* (Chenqi Li, Timothy Denison, Tingting Zhu) | [10.48550/arxiv.2405.02485](https://doi.org/10.48550/arxiv.2405.02485) / [PDF Link](https://arxiv.org/pdf/2405.02485.pdf) |
-| **OA_KW5_044** | 2025 | A review and critical analysis of multimodal datasets for emotional AI | *Artificial Intelligence Review* (Sadam Al-Azani, El-Sayed M. El-Alfy) | [10.1007/s10462-025-11271-1](https://doi.org/10.1007/s10462-025-11271-1) / [PDF Link](https://link.springer.com/content/pdf/10.1007/s10462-025-11271-1.pdf) |
-| **OA_KW5_045** | 2025 | Multimodal sentiment analysis based on multi-layer feature fusion and multi-task learning | *Scientific Reports* (Yujian Cai, Xingguang Li, Yingyu Zhang et al.) | [10.1038/s41598-025-85859-6](https://doi.org/10.1038/s41598-025-85859-6) / [PDF Link](https://www.nature.com/articles/s41598-025-85859-6.pdf) |
-| **OA_KW5_046** | 2024 | Learning Robust Representations of Tonic-Clonic Seizures With Cyclic Transformer | *IEEE Journal of Biomedical and Health Informatics* (Jingwei Zhang, Lauren Swinnen, Christos Chatzichristos et al.) | [10.1109/jbhi.2024.3375123](https://doi.org/10.1109/jbhi.2024.3375123) / [PDF Link](https://lirias.kuleuven.be/retrieve/410572d4-f453-4186-87be-e84e11ed6a49) |
-| **OA_KW5_047** | 2026 | Generative Modeling for Physiological Signals | *arXiv (Cornell University)* (Xinqi Bao, Ernest Kamavuako, Saikat Chatterjee) | N/A / [PDF Link](https://arxiv.org/pdf/2606.23864.pdf) |
-| **OA_KW5_048** | 2026 | Signal or Noise? Understanding Generative Models for Real-World Sensor Time Series | *arXiv (Cornell University)* (Zitao Shuai, Zongzhe Xu, Yuntian Wu et al.) | N/A / [PDF Link](https://arxiv.org/pdf/2607.04245.pdf) |
-| **OA_KW5_049** | 2025 | Challenges and Limitations of Generative AI in Synthesizing Wearable Sensor Data | *arXiv (Cornell University)* (Flavio Di Martino, Franca Delmastro) | [10.48550/arxiv.2505.14206](https://doi.org/10.48550/arxiv.2505.14206) / [PDF Link](https://arxiv.org/pdf/2505.14206.pdf) |
-| **OA_KW5_050** | 2022 | Recent development of contrast agents for magnetic resonance and multimodal imaging of glioblastoma | *Journal of Nanobiotechnology* (Danping Zhuang, Huifen Zhang, Genwen Hu et al.) | [10.1186/s12951-022-01479-6](https://doi.org/10.1186/s12951-022-01479-6) / [PDF Link](https://jnanobiotechnology.biomedcentral.com/counter/pdf/10.1186/s12951-022-01479-6) |
+> **Mục tiêu chuyên sâu:** Làm chủ các phương pháp huấn luyện chịu lỗi khuyết thiếu tín hiệu (Incomplete Multimodal Learning, Modality Dropout), các kiến trúc tự sinh phục hồi kênh đo (Generative Imputation, Masked Modeling), và các giải pháp tiền xử lý triệt tiêu nhiễu chuyển động trên thiết bị đeo thực tế.
 
 ---
 
-## 🔬 Specialized NotebookLM Analysis Prompts for Cluster 05
+## 📑 DANH MỤC 100 BÀI BÁO KHOA HỌC TRONG NOTEBOOK (100% FULLTEXT PDF CỤC BỘ)
 
-### Prompt 1: Comprehensive Taxonomy of Missing Modality Strategies in Biosignals
-```text
-Từ 50 bài báo trong Notebook này, hãy hệ thống hóa và so sánh toàn diện các chiến lược xử lý dữ liệu bị thiếu (Missing Modality / Sensor Dropout) trong nhận dạng cảm xúc từ tín hiệu sinh lý:
-1. Phân loại các trường phái: (a) Generative Imputation (GAN/VAE/Diffusion), (b) Joint Embedding / Modality-Agnostic Representation, (c) Dynamic Routing / Masked Multimodal Transformers, và (d) Knowledge Distillation từ Full-Modality sang Partial-Modality.
-2. Tổng hợp bảng so sánh định lượng: Phương pháp, cơ chế bù đắp tín hiệu, độ suy giảm hiệu năng khi thiếu từng kênh (ví dụ: mất hoàn toàn EEG, chỉ còn ECG/EDA), và tài nguyên tính toán runtime.
-```
+| ID | Năm | Tiêu đề bài báo | Tạp chí / Nguồn | Trạng thái PDF |
+| :--- | :--- | :--- | :--- | :--- |
+| `OA_KW5_001` | **2023** | **Journal of NeuroEngineering and Rehabilitation           (2023) 20:40**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_002` | **2023** | **Accepted: 30 January 2025 / Published online: 14 February 2025**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_003` | **2023** | **Vol.:(0123456789)1 3**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_004` | **2023** | **JOURNAL OF LATEX CLASS FILES, 2024 1**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_005` | **2023** | **Machine learning for human emotion recognition: a comprehensive**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_006` | **2023** | **Frontiers in Psychology 01 frontiersin.org**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_007` | **2023** | **Accepted: 16 June 2025 / Published online: 16 July 2025**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_008` | **2023** | **Vol.:(0123456789)**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_009` | **2023** | *** Corresponding author, email: xy227@cam.ac.uk**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_010` | **2023** | **To Appear in Emotion Measurement 2021**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_011` | **2023** | **RESEARCH Open Access**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_012` | **2023** | **published: 25 February 2021**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_013` | **2023** | **REVIEW Open Access**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_014` | **2023** | **Int. J. Phys. Educ. Fit. Sports, 15(1) (2026), 93-112 | 93**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_015` | **2023** | **FatigueNet: A hybrid graph**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_016` | **2023** | **Chinese Journal of Information Fusion**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_017` | **2023** | **American Journal of Interdisciplinary Studies, September 2025, 01– 39**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_018` | **2023** | **Frontiers in Public Health 01 frontiersin.org**<br>*Researchers et al.* | IEEE Trans / Journal | 📄 Có sẵn PDF |
+| `OA_KW5_019` | **2022** | **Self-Supervised Representation Learning: Introduction, advances, and challenges**<br>*Linus Ericsson, Henry Gouk, Chen Change Loy et al.* | IEEE Signal Processing Magazine | 📄 Có sẵn PDF |
+| `OA_KW5_020` | **2024** | **Exploring contactless techniques in multimodal emotion recognition: insights into diverse applications, challenges, solutions, and prospects**<br>*Umair Ali Khan, Qianru Xu, Yang Merik Liu et al.* | Multimedia Systems | 📄 Có sẵn PDF |
+| `OA_KW5_021` | **2025** | **An ensemble deep learning framework for emotion recognition through wearable devices multi-modal physiological signals**<br>*Durgesh Nandini, Jyoti Yadav, Vijander Singh et al.* | Scientific Reports | 📄 Có sẵn PDF |
+| `OA_KW5_022` | **2022** | **Multimodal EEG and Eye Tracking Feature Fusion Approaches for Attention Classification in Hybrid BCIs**<br>*Lisa-Marie Vortmann, Simon Ceh, Felix Putze* | Frontiers in Computer Science | 📄 Có sẵn PDF |
+| `OA_KW5_023` | **2023** | **Group Synchrony for Emotion Recognition Using Physiological Signals**<br>*Patrícia Justo Bota, Tianyi Zhang, Abdallah El Ali et al.* | IEEE Transactions on Affective Computing | 📄 Có sẵn PDF |
+| `OA_KW5_024` | **2023** | **Multimodal physiological sensing for the assessment of acute pain**<br>*Raul Fernandez Rojas, Niraj Hirachan, Nicholas A. T. Brown et al.* | Frontiers in Pain Research | 📄 Có sẵn PDF |
+| `OA_KW5_025` | **2025** | **Stress and Emotion Open Access Data: A Review on Datasets, Modalities, Methods, Challenges, and Future Research Perspectives**<br>*Aleksandr Ometov, Anzhelika Mezina, Hsiao-Chun Lin et al.* | Journal of Healthcare Informatics Research | 📄 Có sẵn PDF |
+| `OA_KW5_026` | **2025** | **Challenges and standardisation strategies for sensor-based data collection for digital phenotyping**<br>*Nadia Binte Alam, Mohsin Surani, Chayon Kumar Das et al.* | Communications Medicine | 📄 Có sẵn PDF |
+| `OA_KW5_027` | **2023** | **Sparks of Artificial General Intelligence: Early experiments with GPT-4**<br>*Sébastien Bubeck, Varun Chandrasekaran, Ronen Eldan et al.* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_028` | **2022** | **Memory-inspired spiking hyperdimensional network for robust online learning**<br>*Zhuowen Zou, Haleh Alimohamadi, Ali Zakeri et al.* | Scientific Reports | 📄 Có sẵn PDF |
+| `OA_KW5_029` | **2025** | **A cross-domain framework for emotion and stress detection using WESAD, SCIENTISST-MOVE, and DREAMER datasets**<br>*Ahmad S. Almadhor, Stephen Ojo, Thomas I. Nathaniel et al.* | Frontiers in Bioengineering and Biotechnology | 📄 Có sẵn PDF |
+| `OA_KW5_030` | **2024** | **Multimodal Brain–Computer Interface for In-Vehicle Driver Cognitive Load Measurement: Dataset and Baselines**<br>*Prithila Angkan, Behnam Behinaein, Zunayed Mahmud et al.* | IEEE Transactions on Intelligent Transportation Systems | 📄 Có sẵn PDF |
+| `OA_KW5_031` | **2023** | **PhysFormer++: Facial Video-Based Physiological Measurement with SlowFast Temporal Difference Transformer**<br>*Zitong Yu, Yuming Shen, Jingang Shi et al.* | International Journal of Computer Vision | 📄 Có sẵn PDF |
+| `OA_KW5_032` | **2022** | **Two-dimensional CNN-based distinction of human emotions from EEG channels selected by multi-objective evolutionary algorithm**<br>*Luis Alfredo Moctezuma, Takashi Abe, Marta Molinas* | Scientific Reports | 📄 Có sẵn PDF |
+| `OA_KW5_033` | **2023** | **Interpretable and Robust AI in EEG Systems: A Survey**<br>*Xinliang Zhou, Chenyu Liu, Zhou, Jinan et al.* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_034` | **2023** | **The blood–brain barrier: Structure, regulation and drug delivery**<br>*Di Wu, Qi Chen, Xiaojie Chen et al.* | Signal Transduction and Targeted Therapy | 📄 Có sẵn PDF |
+| `OA_KW5_035` | **2022** | **Artificial empathy in marketing interactions: Bridging the human-AI gap in affective and social customer experience**<br>*Yuping Liu–Thompkins, Shintaro Okazaki, Hairong Li* | Journal of the Academy of Marketing Science | 📄 Có sẵn PDF |
+| `OA_KW5_036` | **2023** | **Integrated multimodal cell atlas of Alzheimer’s disease**<br>*Mariano I. Gabitto, Kyle J. Travaglini, Jeannelle Ariza et al.* | Research Square | 📄 Có sẵn PDF |
+| `OA_KW5_037` | **2024** | **Federated Learning for Time-Series Healthcare Sensing with Incomplete Modalities**<br>*Adiba Orzikulova, Jaehyun Kwak, Jaemin Shin et al.* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_038` | **2024** | **Crossmodal sensory neurons based on high-performance flexible memristors for human-machine in-sensor computing system**<br>*Zhiyuan Li, Zhongshao Li, Wei Yieng Tang et al.* | Nature Communications | 📄 Có sẵn PDF |
+| `OA_KW5_039` | **2023** | **Generative AI for brain image computing and brain network computing: a review**<br>*Changwei Gong, Changhong Jing, Xuhang Chen et al.* | Frontiers in Neuroscience | 📄 Có sẵn PDF |
+| `OA_KW5_040` | **2022** | **Automated Diagnosis of Cardiovascular Diseases from Cardiac Magnetic Resonance Imaging Using Deep Learning Models: A Review**<br>*Mahboobeh Jafari, Afshin Shoeibi, Marjane Khodatars et al.* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_041` | **2025** | **Personalized health monitoring using explainable AI: bridging trust in predictive healthcare**<br>*M. Sree Vani, R. Sudhakar, A. Mahendar et al.* | Scientific Reports | 📄 Có sẵn PDF |
+| `OA_KW5_042` | **2025** | **LSM-2: Learning from Incomplete Wearable Sensor Data**<br>*Maxwell A. Xu, Girish Narayanswamy, Kumar Ayush et al.* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_043` | **2024** | **A Survey of Few-Shot Learning for Biomedical Time Series**<br>*Chenqi Li, Timothy Denison, Tingting Zhu* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_044` | **2025** | **A review and critical analysis of multimodal datasets for emotional AI**<br>*Sadam Al-Azani, El-Sayed M. El-Alfy* | Artificial Intelligence Review | 📄 Có sẵn PDF |
+| `OA_KW5_045` | **2025** | **Multimodal sentiment analysis based on multi-layer feature fusion and multi-task learning**<br>*Yujian Cai, Xingguang Li, Yingyu Zhang et al.* | Scientific Reports | 📄 Có sẵn PDF |
+| `OA_KW5_046` | **2024** | **Learning Robust Representations of Tonic-Clonic Seizures With Cyclic Transformer**<br>*Jingwei Zhang, Lauren Swinnen, Christos Chatzichristos et al.* | IEEE Journal of Biomedical and Health Informatics | 📄 Có sẵn PDF |
+| `OA_KW5_047` | **2026** | **Generative Modeling for Physiological Signals**<br>*Xinqi Bao, Ernest Kamavuako, Saikat Chatterjee* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_048` | **2026** | **Signal or Noise? Understanding Generative Models for Real-World Sensor Time Series**<br>*Zitao Shuai, Zongzhe Xu, Yuntian Wu et al.* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_049` | **2025** | **Challenges and Limitations of Generative AI in Synthesizing Wearable Sensor Data**<br>*Flavio Di Martino, Franca Delmastro* | arXiv (Cornell University) | 📄 Có sẵn PDF |
+| `OA_KW5_050` | **2022** | **Recent development of contrast agents for magnetic resonance and multimodal imaging of glioblastoma**<br>*Danping Zhuang, Huifen Zhang, Genwen Hu et al.* | Journal of Nanobiotechnology | 📄 Có sẵn PDF |
+| `OA_KW5_051` | **2026** | **Modality Disentangled Learning for Incomplete Multimodal Emotion Recognition: A Primitive Memory Distillation Perspective**<br>*Jiaqi Zhang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_052` | **2026** | **TTSD-FAR: Test-Time Self-Distillation with Fisher-Anchored Restoration for Missing-Modality Emotion Recognition in LVLMs**<br>*Muhammad Haseeb Aslam...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_053` | **2026** | **EmoEUS: Uncertainty Supervision for Multimodal Emotion Recognition in Conversation**<br>*Zilong Huang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_054` | **2026** | **Pattern-Calibrated Multimodal Prediction under Blockwise Missingness**<br>*Junhan Yu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_055` | **2026** | **Enhance-then-Balance Modality Collaboration for Robust Multimodal Sentiment Analysis**<br>*Kang He...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_056` | **2026** | **BALM: A Model-Agnostic Framework for Balanced Multimodal Learning under Imbalanced Missing Rates**<br>*Phuong-Anh Nguyen...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_057` | **2026** | **Memory Bear AI Memory Science Engine for Multimodal Affective Intelligence: A Technical Report**<br>*Deliang Wen...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_058` | **2026** | **MissBench: Benchmarking Multimodal Affective Analysis under Imbalanced Missing Modalities**<br>*Tien Anh Pham...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_059` | **2026** | **Progressive Representation Learning for Multimodal Sentiment Analysis with Incomplete Modalities**<br>*Jindi Bao...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_060` | **2026** | **Omni-Sleep: A Sleep Foundation Model via Hierarchical Contrastive Learning of CNS-ANS Dynamics**<br>*Zhoujie Hou...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_061` | **2026** | **PanLUNA: An Efficient and Robust Query-Unified Multimodal Model for Edge Biosignal Intelligence**<br>*Marija Zelic...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_062` | **2026** | **TAMI: Temporally Aligned, Missingness-Aware, and Interpretable Multimodal Fusion for Mental Health Assessment in Older Adults with Mild Cognitive Impairment**<br>*Merna Bibars...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_063` | **2026** | **CF-Net: Conflict Fusion with Speaker Normalisation and Certainty Weighting for Ambivalence/Hesitancy Recognition**<br>*Tung Hung Bui...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_064` | **2026** | **Two-Stage Multimodal Framework for Emotion Mimicry Intensity Prediction**<br>*Dinithi Dissanayake...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_065` | **2026** | **MuteBench: Modality Unavailability Tolerance Evaluation for Incomplete Multimodal Fusion**<br>*Wugeng Zheng...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_066` | **2026** | **ECG-R1: Protocol-Guided and Modality-Agnostic MLLM for Reliable ECG Interpretation**<br>*Jiarui Jin...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_067` | **2026** | **Occlusion-Robust Multimodal Emotion Recognition in VR via Fusion of Facial Images and EMG**<br>*Birgit Nierula...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_068` | **2026** | **SURE: Synergistic Uncertainty-aware Reasoning for Multimodal Emotion Recognition in Conversations**<br>*Yiqiang Cai...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_069` | **2026** | **A Dry-Contact Ear-EEG System With Continuous Electrode-Skin Impedance Mismatch Monitoring for Motion Artifact Cancellation Using DRL Stimulus**<br>*Lohan Atapattu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_070` | **2026** | **WearBCI Dataset: Understanding and Benchmarking Real-World Wearable Brain-Computer Interfaces Signals**<br>*Haoxian Liu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_071` | **2026** | **LI-DSN: A Layer-wise Interactive Dual-Stream Network for EEG Decoding**<br>*Chenghao Yue...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_072` | **2025** | **Federated Dialogue-Semantic Diffusion for Emotion Recognition under Incomplete Modalities**<br>*Xihang Qiu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_073` | **2025** | **Socially Aware Music Recommendation: A Multi-Modal Graph Neural Networks for Collaborative Music Consumption and Community-Based Engagement**<br>*Kajwan Ziaoddini* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_074` | **2025** | **Hardness-Aware Dynamic Curriculum Learning for Robust Multimodal Emotion Recognition with Missing Modalities**<br>*Rui Liu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_075` | **2025** | **Hierarchical MoE: Continuous Multimodal Emotion Recognition with Incomplete and Asynchronous Inputs**<br>*Yitong Zhu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_076` | **2025** | **ADMC: Attention-based Diffusion Model for Missing Modalities Feature Completion**<br>*Yuhan Li...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_077` | **2025** | **GSDNet: Revisiting Incomplete Multimodal-Diffusion from Graph Spectrum Perspective for Conversation Emotion Recognition**<br>*Yuntao Shou...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_078` | **2025** | **Towards Robust Multimodal Emotion Recognition under Missing Modalities and Distribution Shifts**<br>*Guowei Zhong...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_079` | **2025** | **EmotionTalk: An Interactive Chinese Multimodal Emotion Dataset With Rich Annotations**<br>*Haoqin Sun...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_080` | **2025** | **RoHyDR: Robust Hybrid Diffusion Recovery for Incomplete Multimodal Emotion Recognition**<br>*Yuehan Jin...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_081` | **2025** | **Towards Robust Multimodal Physiological Foundation Models: Handling Arbitrary Missing Modalities**<br>*Wei-Bang Jiang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_082` | **2025** | **RAMer: Reconstruction-based Adversarial Model for Multi-party Multi-modal Multi-label Emotion Recognition**<br>*Xudong Yang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_083` | **2025** | **Modality-Invariant Bidirectional Temporal Representation Distillation Network for Missing Multimodal Sentiment Analysis**<br>*Xincheng Wang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_084` | **2025** | **A Robust Incomplete Multimodal Low-Rank Adaptation Approach for Emotion Recognition**<br>*Xinkui Zhao...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_085` | **2025** | **Contribution-Guided Asymmetric Learning for Robust Multimodal Fusion under Imbalance and Noise**<br>*Zijing Xu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_086` | **2025** | **Enhancing Speech Emotion Recognition Leveraging Aligning Timestamps of ASR Transcripts and Speaker Diarization**<br>*Hsuan-Yu Wang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_087` | **2025** | **Real-time Noise Detection and Classification in Single-Channel EEG: A Lightweight Machine Learning Approach for EMG, White Noise, and EOG Artifacts**<br>*Hossein Enshaei...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_088` | **2025** | **PhysioWave: A Multi-Scale Wavelet-Transformer for Physiological Signal Representation**<br>*Yanlong Chen...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_089` | **2025** | **Multimodal Functional Maximum Correlation for Emotion Recognition**<br>*Deyang Zheng...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_090` | **2025** | **LEAF: Language-EEG Aligned Foundation Model for Brain-Computer Interfaces**<br>*Muyun Jiang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_091` | **2025** | **REFS: Robust EEG feature selection with missing multi-dimensional annotation for emotion recognition**<br>*Xueyuan Xu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_092` | **2025** | **FDC-Net: Rethinking the association between EEG artifact removal and multi-dimensional affective computing**<br>*Wenjia Dong...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_093` | **2024** | **Leveraging Retrieval Augment Approach for Multimodal Emotion Recognition Under Missing Modalities**<br>*Qi Fan...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_094` | **2024** | **Robust Facial Reactions Generation: An Emotion-Aware Framework with Modality Compensation**<br>*Guanyu Hu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_095` | **2024** | **Enhancing Emotion Recognition in Incomplete Data: A Novel Cross-Modal Alignment, Reconstruction, and Refinement Framework**<br>*Haoqin Sun...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_096` | **2024** | **Multimodal Prompt Learning with Missing Modalities for Sentiment Analysis and Emotion Recognition**<br>*Zirun Guo...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_097` | **2024** | **Dynamic Modality and View Selection for Multimodal Emotion Recognition with Missing Modalities**<br>*Luciana Trinkaus Menon...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_098` | **2024** | **AM^2-EmoJE: Adaptive Missing-Modality Emotion Recognition in Conversation via Joint Embedding Learning**<br>*Naresh Kumar Devulapally...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_099` | **2024** | **SDR-GNN: Spectral Domain Reconstruction Graph Neural Network for Incomplete Multimodal Learning in Conversational Emotion Recognition**<br>*Fangze Fu...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
+| `OA_KW5_100` | **2024** | **Promoting cross-modal representations to improve multimodal foundation models for physiological signals**<br>*Ching Fang...* | arXiv Preprints (Missing Modality & Wearable Robustness) | 📄 Có sẵn PDF |
 
-### Prompt 2: Wearable Artifact Robustness & Real-World Noise Handling
-```text
-Tổng hợp các giải pháp nâng cao độ bền vững (Robustness) cho thiết bị đeo (Wearables) trước các loại nhiễu thực tế:
-1. Các kỹ thuật xử lý nhiễu vận động (Motion Artifacts), tiếp xúc điện cực không ổn định (Loose Electrode Contact), và hiện tượng lệch pha thời gian (Asynchronous Sampling Rates giữa EEG 250Hz và PPG 64Hz, EDA 4Hz).
-2. Cơ chế ước lượng độ tin cậy tín hiệu (Uncertainty Estimation / Signal Quality Index - SQI) được tích hợp vào mạng nơ-ron như thế nào để tự động điều chỉnh trọng số fusion?
-```
+---
 
-### Prompt 3: Robustness & Fault-Tolerance Architecture for MMB-EmotionNet (PhD Focus)
-```text
-Dựa trên 50 công trình nghiên cứu trong Notebook này, hãy thiết kế giải pháp Fault-Tolerant Multimodal Biosignal Architecture cho luận án Tiến sĩ 'MMB-EmotionNet':
-1. Đề xuất cơ chế Dynamic Modality Masking & Feature Reconstruction Module tại tầng Multi-Branch.
-2. Thiết kế hàm mất mát liên hợp (Joint Reconstruction & Classification Loss) để đảm bảo mô hình hoạt động ổn định ở cả 3 kịch bản: Full Modalities, EEG-only, và Wearable Peripherals-only.
-3. Kế hoạch đo lường Robustness Benchmark: Xây dựng ma trận thực nghiệm đánh giá khả năng chống chịu khi tỷ lệ mất dữ liệu tăng từ 0% đến 80%.
-```
+## 🎯 BỘ PROMPT PHÂN TÍCH NOTEBOOKLM CHUYÊN SÂU
+
+*(Sử dụng các prompt trong file `NOTEBOOKLM_PER_PAPER_PROMPTS.md` để phân tích từng bài báo trong danh mục trên).*

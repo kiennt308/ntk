@@ -1,17 +1,17 @@
-# NB05 - Missing Modality Robustness & Physiological Wearables
-## Chủ đề Tiếng Việt: Độ bền vững khi Khuyết thiếu Cảm biến & Thiết bị Đeo Sinh lý
+# NB05 - Missing Modality & Wearable Robustness in Affective Computing
+## Chủ đề Tiếng Việt: Xử Lý Khuyết Thiếu Phương Thức & Tính Bền Vững Thiết Bị Đeo
 
-- **Ánh xạ Chương Luận Án**: **Chương 5 (Thực nghiệm Bền vững, Rớt cảm biến & Đo kiểm Độ trễ Biên)**
-- **Trọng tâm Nghiên cứu**: Handling missing sensor streams in wild environments via cross-modal knowledge distillation, generative imputation (GAN/VAE), and masked biosignal modeling.
-- **Tổng số bài báo khoa học chỉ mục**: **50 bài** (Giai đoạn 2023–2026)
-- **Số lượng file PDF toàn văn sẵn có**: **28 file PDF** (trong thư mục [`pdfs/`](pdfs/))
+- **Ánh xạ Chương Luận Án**: **Chương 4 & Chương 6 (Xử lý Dữ liệu Thực tế Mất mát & Đánh giá Tính Bền Vững MMB-EmotionNet)**
+- **Trọng tâm Nghiên cứu**: Incomplete Multimodal Learning, Modality Dropout, Cross-Modal Generative Imputation, Masked Autoencoding, and Motion Artifact Suppression in Wearables.
+- **Tổng số bài báo khoa học chỉ mục**: **100 bài** (Giai đoạn 2023–2026)
+- **Số lượng file PDF toàn văn sẵn có**: **100 file PDF** (trong thư mục [`pdfs/`](pdfs/))
 
 ---
 
 ## 🎯 Các Câu Hỏi Nghiên Cứu Trọng Tâm
-1. Mô hình hoạt động như thế nào khi mất hoàn toàn tín hiệu EEG (chỉ còn ECG/GSR từ đồng hồ đeo tay)?
-2. Chiến lược Teacher-Student Knowledge Distillation giúp bảo toàn bao nhiêu % hiệu năng?
-3. Độ trễ suy luận (Inference Latency) và mức tiêu thụ tài nguyên trên thiết bị biên (Edge Hardware) là bao nhiêu?
+1. Làm thế nào để mô hình duy trì hiệu năng nhận diện cảm xúc ổn định khi một hoặc nhiều kênh tín hiệu (như EEG hoặc ECG) bị mất hoàn toàn trong quá trình sử dụng thực tế?
+2. Kỹ thuật tái tạo phương thức bị khuyết (Modality Hallucination / Reconstruction) nào đem lại độ tin cậy cao nhất?
+3. Làm sao để loại bỏ nhiễu chuyển động (Motion Artifacts) từ thiết bị đeo mà không làm mất đặc trưng cảm xúc sinh lý cốt lõi?
 
 ---
 
@@ -28,5 +28,6 @@ Mở file [`00_NOTEBOOKLM_PROMPTS_AND_INDEX.md`](00_NOTEBOOKLM_PROMPTS_AND_INDEX
 
 ## 📂 Danh Mục Bài Báo Trong Notebook
 Chi tiết toàn văn và tóm tắt từng bài báo có thể xem tại:
-- [Tài liệu tóm tắt mở rộng](../../literature/open_access_repository/kw05_missing_modality_wearable_robustness/README.md)
-- [Bảng dữ liệu thô `papers_index.csv`](../../literature/open_access_repository/kw05_missing_modality_wearable_robustness/papers_index.csv)
+- [Bảng dữ liệu chỉ mục `papers_index.csv`](papers_index.csv)
+- [Thư mục tóm tắt chuyên sâu `paper_notes/`](paper_notes/)
+- [Thư mục chứa 100% PDF toàn văn `pdfs/`](pdfs/)

@@ -1,0 +1,502 @@
+[
+  {
+    "paper_code": "OA_KW1_051",
+    "title": "Emotion recognition and artificial intelligence: A systematic review (2014–2023) and research recommendations",
+    "authors": "Smith K. Khare; Victoria Blanes‐Vidal; Esmaeil S. Nadimi; U. Rajendra Acharya",
+    "year": "2023",
+    "journal": "Information Fusion",
+    "doi": "10.1016/j.inffus.2023.102019",
+    "file_name": "OA_KW1_051.pdf",
+    "md5_hash": "983905beb80ec9c1ac588a8fe402f855"
+  },
+  {
+    "paper_code": "OA_KW1_052",
+    "title": "Integrating artificial intelligence to assess emotions in learning environments: a systematic literature review",
+    "authors": "Angel Olider Rojas Vistorte; Ángel Deroncele-Acosta; Juan Luis Martín Ayala; Ángel Barrasa",
+    "year": "2024",
+    "journal": "Frontiers in Psychology",
+    "doi": "10.3389/fpsyg.2024.1387089",
+    "file_name": "OA_KW1_052.pdf",
+    "md5_hash": "d8fc097bdf652fd752514a3d945cc35b"
+  },
+  {
+    "paper_code": "OA_KW1_053",
+    "title": "Deep Learning in EEG-Based BCIs: A Comprehensive Review of Transformer Models, Advantages, Challenges, and Applications",
+    "authors": "Berdakh Abibullaev; Aigerim Keutayeva; Amin Zollanvari",
+    "year": "2023",
+    "journal": "IEEE Access",
+    "doi": "10.1109/access.2023.3329678",
+    "file_name": "OA_KW1_053.pdf",
+    "md5_hash": "c89e9053a6b36ddfb7dd66803dcda5aa"
+  },
+  {
+    "paper_code": "OA_KW1_054",
+    "title": "A review on EEG-based multimodal learning for emotion recognition",
+    "authors": "Rajasekhar Pillalamarri; Udhayakumar Shanmugam",
+    "year": "2025",
+    "journal": "Artificial Intelligence Review",
+    "doi": "10.1007/s10462-025-11126-9",
+    "file_name": "OA_KW1_054.pdf",
+    "md5_hash": "bcd88b8f4482421a6ed78e32026ff226"
+  },
+  {
+    "paper_code": "OA_KW1_055",
+    "title": "Enhancing biofeedback-driven self-guided virtual reality exposure therapy through arousal detection from multimodal data using machine learning",
+    "authors": "Muhammad Arifur Rahman; David Joseph Brown; Mufti Mahmud; Matthew C. Harris",
+    "year": "2023",
+    "journal": "Brain Informatics",
+    "doi": "10.1186/s40708-023-00193-9",
+    "file_name": "OA_KW1_055.pdf",
+    "md5_hash": "9f087f6248f32197c5f508953f53ca5f"
+  },
+  {
+    "paper_code": "OA_KW1_056",
+    "title": "A recent advances on autism spectrum disorders in diagnosing based on machine learning and deep learning",
+    "authors": "Hajir Ammar Hatim; Zaid Abdi Alkareem Alyasseri; Norziana Jamil",
+    "year": "2025",
+    "journal": "Artificial Intelligence Review",
+    "doi": "10.1007/s10462-025-11302-x",
+    "file_name": "OA_KW1_056.pdf",
+    "md5_hash": "1282ffef45ec9f0ae261a19f0b148152"
+  },
+  {
+    "paper_code": "OA_KW1_057",
+    "title": "Harnessing Few-Shot Learning for EEG signal classification: a survey of state-of-the-art techniques and future directions",
+    "authors": "Chirag Kamal Ahuja; Divyashikha Sethia",
+    "year": "2024",
+    "journal": "Frontiers in Human Neuroscience",
+    "doi": "10.3389/fnhum.2024.1421922",
+    "file_name": "OA_KW1_057.pdf",
+    "md5_hash": "51426af24f18512d8ae78ba1cfd06d0d"
+  },
+  {
+    "paper_code": "OA_KW1_058",
+    "title": "Stress Detection Using Frequency Spectrum Analysis of Wrist-Measured Electrodermal Activity",
+    "authors": "Žiga Stržinar; Araceli Sanchis; Agapito Ledezma; Óscar Sipele",
+    "year": "2023",
+    "journal": "Sensors",
+    "doi": "10.3390/s23020963",
+    "file_name": "OA_KW1_058.pdf",
+    "md5_hash": "08c00b1638c5d36d4aebbb6e7f93d342"
+  },
+  {
+    "paper_code": "OA_KW1_059",
+    "title": "Multimodal emotion classification using machine learning in immersive and non-immersive virtual reality",
+    "authors": "Rodrigo Lima; Alice Chirico; Rui Sousa Pedro Varandas; Hugo Filipe Silveira Gamboa",
+    "year": "2024",
+    "journal": "Virtual Reality",
+    "doi": "10.1007/s10055-024-00989-y",
+    "file_name": "OA_KW1_059.pdf",
+    "md5_hash": "d9c8bdc5bc068b43ab0ef9e8a5055397"
+  },
+  {
+    "paper_code": "OA_KW1_060",
+    "title": "A physiological signal database of children with different special needs for stress recognition",
+    "authors": "Buket Coşkun; Şevket Ay; Duygun Erol Barkana; Hilal Bostancı",
+    "year": "2023",
+    "journal": "Scientific Data",
+    "doi": "10.1038/s41597-023-02272-2",
+    "file_name": "OA_KW1_060.pdf",
+    "md5_hash": "42ba9c2697b383cc295aa36dc5b0b84a"
+  },
+  {
+    "paper_code": "OA_KW1_061",
+    "title": "AVDOS-VR: Affective Video Database with Physiological Signals and Continuous Ratings Collected Remotely in VR",
+    "authors": "Michal Gnacek; Luis Quintero; Ifigeneia I. Mavridou; Emili Balaguer‐Ballester",
+    "year": "2024",
+    "journal": "Scientific Data",
+    "doi": "10.1038/s41597-024-02953-6",
+    "file_name": "OA_KW1_061.pdf",
+    "md5_hash": "01ca09d7b2c056296677bd0687e20e62"
+  },
+  {
+    "paper_code": "OA_KW1_062",
+    "title": "E3Sense: Head-Confined Multimodal Sensing of Learner Engagement",
+    "authors": "Sidharth Anupkrishnan; Itir Sayar; Jeongah Lee; Sri Harsha Musunuri",
+    "year": "2026",
+    "journal": "arXiv Preprints (Affective Computing & Neural Engineering)",
+    "doi": "10.48550/arXiv.2609.26569v1",
+    "file_name": "OA_KW1_062.pdf",
+    "md5_hash": "38a67bf7af55edc618a8ae0282d0ea1e"
+  },
+  {
+    "paper_code": "OA_KW1_063",
+    "title": "An ensemble deep learning framework for emotion recognition through wearable devices multi-modal physiological signals",
+    "authors": "Nandini D, Yadav J, Singh V, Mohan V, Agarwal S.",
+    "year": "2025",
+    "journal": "Europe PMC Open Access",
+    "doi": "10.1038/s41598-025-99858-0",
+    "file_name": "OA_KW1_063.pdf",
+    "md5_hash": "ce54d9b282bdfa27b25dc52a0d543f59"
+  },
+  {
+    "paper_code": "OA_KW1_064",
+    "title": "Emotion recognition from multimodal biosignals: supervised and unsupervised machine learning approaches based on EEG and GSR",
+    "authors": "Sáiz-Manzanares MC, Marticorena-Sánchez R.",
+    "year": "2026",
+    "journal": "Europe PMC Open Access",
+    "doi": "10.3389/fpsyg.2026.1835911",
+    "file_name": "OA_KW1_064.pdf",
+    "md5_hash": "20e99a7be0b4fd9562237051de7ee3ca"
+  },
+  {
+    "paper_code": "OA_KW1_065",
+    "title": "Psychological-physical synergy of athletes based on artificial intelligence and deep learning",
+    "authors": "Cheng Y, Gong T, Zhao H.",
+    "year": "2026",
+    "journal": "Europe PMC Open Access",
+    "doi": "10.1038/s41598-026-45920-4",
+    "file_name": "OA_KW1_065.pdf",
+    "md5_hash": "aaad8a08ca12c2750485eb4a25aa1c68"
+  },
+  {
+    "paper_code": "OA_KW1_066",
+    "title": "Quantifying emotion-dependent brain-eye interactions during audiovisual emotional stimulation",
+    "authors": "Alskafi FA, Khandoker AH, Marzbanrad F, Jelinek HF.",
+    "year": "2026",
+    "journal": "Europe PMC Open Access",
+    "doi": "10.3389/fnsys.2026.1744042",
+    "file_name": "OA_KW1_066.pdf",
+    "md5_hash": "7b10863008b9b699fb4d8ba55deed43d"
+  },
+  {
+    "paper_code": "OA_KW1_067",
+    "title": "Adaptive Forgetting for Nonstationary Optimization: Towards Robust EEG Decoding",
+    "authors": "Hongyu Zhu; Lin Chen; Jing Chen; Yuting Zhou",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2609.24233v1",
+    "file_name": "OA_KW1_067.pdf",
+    "md5_hash": "a49b81b9df65f5daa5c02d49c119a870"
+  },
+  {
+    "paper_code": "OA_KW1_068",
+    "title": "Beyond Flattened Tokens: Structure-Preserving EEG Decoding with Reusable TriDim Blocks",
+    "authors": "Shiyue Su; Song Wang; Zekai Zhan; Junjie Zeng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2609.19842v1",
+    "file_name": "OA_KW1_068.pdf",
+    "md5_hash": "cacfd7ddd4e5449b31fd13ee046f7708"
+  },
+  {
+    "paper_code": "OA_KW1_069",
+    "title": "BRIDGE-EEG: Bridging Self-Supervised Pretraining and Efficient Deployment for Cross-Dataset EEG Classification",
+    "authors": "Meghna Roy Chowdhury; Chengwei Zhou; Haotian Yu; Gourav Datta",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2609.12218v1",
+    "file_name": "OA_KW1_069.pdf",
+    "md5_hash": "ca613eac12b827062ae31295f567c680"
+  },
+  {
+    "paper_code": "OA_KW1_070",
+    "title": "Discovering Machine Correlates of Consciousness",
+    "authors": "Romain Salvi; Ouri Wolfson",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.1007/978-3-032-33195-3_18",
+    "file_name": "OA_KW1_070.pdf",
+    "md5_hash": "bedc195a1a6588db4c73c7383826d978"
+  },
+  {
+    "paper_code": "OA_KW1_071",
+    "title": "Multi-Feature Riemannian Hypergraph for Online Test-Time Adaptation of Motor Imagery Brain-Computer Interface",
+    "authors": "Siqi Li; Zhi Li; Tong Liu; Shuai Zhang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2608.16134v1",
+    "file_name": "OA_KW1_071.pdf",
+    "md5_hash": "fdd66bb4c11449a2a89e5f68dbadea38"
+  },
+  {
+    "paper_code": "OA_KW1_072",
+    "title": "EEG-PRIME: Prototype-Aligned Representation Learning with Multi-Level Conditioning for EEG Decoding",
+    "authors": "Shuailei Zhang; Muyun Jiang; Wei Zhang; Jinbo Chen",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2608.13072v1",
+    "file_name": "OA_KW1_072.pdf",
+    "md5_hash": "e0fb8fc624ae10479da143dcceafc621"
+  },
+  {
+    "paper_code": "OA_KW1_073",
+    "title": "Graph Learning for Cross-Subject, Cross-Population EEG Emotion Decoding and Model-Derived Spatial-Spectral Neural Signatures",
+    "authors": "Dongyi He; Bin Jiang; Xiangkai Wang; Yun Zhao",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2609.22103v1",
+    "file_name": "OA_KW1_073.pdf",
+    "md5_hash": "9fb8e7ce0de7f05c4a81f6ffc309cf39"
+  },
+  {
+    "paper_code": "OA_KW1_074",
+    "title": "A Multi-Scale Temporal Framework with Dynamic Fusion for EEG-Based Emotion Recognition",
+    "authors": "Stefanos Gkikas; Yang Guo; Guangliang Li; Raul Fernandez Rojas",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2608.09088v1",
+    "file_name": "OA_KW1_074.pdf",
+    "md5_hash": "66c436a78807278facbbf844dc4227a7"
+  },
+  {
+    "paper_code": "OA_KW1_075",
+    "title": "MGMCL: Multi-Granularity Manifold Contrastive Learning With Neural ODEs for Cross-Subject EEG Emotion Recognition",
+    "authors": "Xiang Xie",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2608.08440v1",
+    "file_name": "OA_KW1_075.pdf",
+    "md5_hash": "472d418cdbc8fbc378d4428c5b019987"
+  },
+  {
+    "paper_code": "OA_KW1_076",
+    "title": "Toward Annotation-Efficient Continuous Emotion Arousal Quantification via Group-Level EEG Dynamic Neural Synchrony",
+    "authors": "Guandong Pan; Yaqian Yang; Shi Chen; Yi Zheng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.28204v1",
+    "file_name": "OA_KW1_076.pdf",
+    "md5_hash": "d928556376a0e8c431b84326e0ed98d4"
+  },
+  {
+    "paper_code": "OA_KW1_077",
+    "title": "Checkpoint Selection and Evaluation in EEG Emotion Recognition",
+    "authors": "Hanting Suo; Hongxun Wang; Yuwen Li",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.27655v2",
+    "file_name": "OA_KW1_077.pdf",
+    "md5_hash": "7743d4fa5d8a9909453451e4779c0fda"
+  },
+  {
+    "paper_code": "OA_KW1_078",
+    "title": "Do EEG Foundation Models Transfer to Speech? A Benchmark on Overt and Imagined Speech Decoding",
+    "authors": "Owais Mujtaba Khanday; Mohamed Baha Ben Ticha; Sanae Belfrouh; Marc Ouellet",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.27268v2",
+    "file_name": "OA_KW1_078.pdf",
+    "md5_hash": "b4f28ae893df7877e496f7a5db01742a"
+  },
+  {
+    "paper_code": "OA_KW1_079",
+    "title": "Sequential Contextual Fit Predicts Human Behavioural and Neural Dynamics Across Domains",
+    "authors": "Kun Sun; Rong Wang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2609.20179v1",
+    "file_name": "OA_KW1_079.pdf",
+    "md5_hash": "86e6459a61db2c3870bef4f85e2ed6d1"
+  },
+  {
+    "paper_code": "OA_KW1_080",
+    "title": "Multimodal Wearable-Based Olfactory-Induced Emotion Recognition in Arousal-Valence Dimensions",
+    "authors": "Chen-Yang Xu; Lan Zhang; Fei-Yi Fan; Bin Hu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2608.00043v1",
+    "file_name": "OA_KW1_080.pdf",
+    "md5_hash": "67d7db722dbaa047d972c42a04f63406"
+  },
+  {
+    "paper_code": "OA_KW1_081",
+    "title": "PeakFlow: Peak-Guided Coarse-to-Refined Modeling for EEG-Based Dynamic Affective Trajectory Prediction",
+    "authors": "Hao Tang; Songyun Xie; Xinzhou Xie; Can Liao",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.18671v1",
+    "file_name": "OA_KW1_081.pdf",
+    "md5_hash": "8d254f23737fb7d94b0e6f9afa212c39"
+  },
+  {
+    "paper_code": "OA_KW1_082",
+    "title": "Differentiable Logic Gate Networks for Low-Latency EEG Classification on Edge Devices",
+    "authors": "Shyamal Y. Dharia; Stephen D. Smith; Camilo E. Valderrama",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.18149v1",
+    "file_name": "OA_KW1_082.pdf",
+    "md5_hash": "2cd971eb32232b0b0f3ca06b3587c297"
+  },
+  {
+    "paper_code": "OA_KW1_083",
+    "title": "Physiological Prior-Driven Label Enhancement for Cross-Subject EEG Emotion Recognition",
+    "authors": "Hongyu Zhu; Lin Chen; Yuming Fu; Mounim A. El-Yacoubi",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.15566v1",
+    "file_name": "OA_KW1_083.pdf",
+    "md5_hash": "176e72d0c581627ca5aa671e9362f623"
+  },
+  {
+    "paper_code": "OA_KW1_084",
+    "title": "EEG Emotion Recognition From AI-Generated Biodigital Architecture Images",
+    "authors": "Hongye Yang; Eva Guttmann-Flury",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.24808v2",
+    "file_name": "OA_KW1_084.pdf",
+    "md5_hash": "636e7c0642bb65c2cc572e201341ccef"
+  },
+  {
+    "paper_code": "OA_KW1_085",
+    "title": "Graph-Regularized Deep Learning for EEG-Based Emotion Recognition with Psychologically-Grounded Label Structure",
+    "authors": "Dongyang Kuang; Zizheng Ma; Yushan Zhang; Xiaocong Zeng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.07773v1",
+    "file_name": "OA_KW1_085.pdf",
+    "md5_hash": "e08030236af1c6a0be2adf51dc031dc1"
+  },
+  {
+    "paper_code": "OA_KW1_086",
+    "title": "Masked Generative-Contrastive Representation Learning for Cross-Dataset EEG-Based Emotion Recognition",
+    "authors": "Huqin Weng; Jiayang Huang; Yimin Wen; Jie Du",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.04139v2",
+    "file_name": "OA_KW1_086.pdf",
+    "md5_hash": "595bb077904cf9069d27eb4bef9b29a0"
+  },
+  {
+    "paper_code": "OA_KW1_087",
+    "title": "See the Emotion: A Facial Emoji Proxy Modeling for EEG Emotion Recognition",
+    "authors": "Jingjing Hu; Guo Dan; Haofan Cheng; Ying Zeng",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.02912v1",
+    "file_name": "OA_KW1_087.pdf",
+    "md5_hash": "751cf537c738de8b1f1cc441f160eaef"
+  },
+  {
+    "paper_code": "OA_KW1_088",
+    "title": "PRISM: Prioritized Channel Importance with Semi-supervised Domain Adaptation for Cross-Subject EEG Emotion Recognition",
+    "authors": "Xin Zhou; Xiang Zhang; Hao Deng; Lijun Yin",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.00358v1",
+    "file_name": "OA_KW1_088.pdf",
+    "md5_hash": "3a8b4c9ae556ce22e59d49353023b731"
+  },
+  {
+    "paper_code": "OA_KW1_089",
+    "title": "Temporal Feature Extractors in EEG Foundation Models: A Controlled Comparison Including a Pretrained Time-Series Model",
+    "authors": "Ayşe Betül Yüce; Chris Joey Leffler; Sarun Varghese; Myra Spiliopoulou",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2606.30104v1",
+    "file_name": "OA_KW1_089.pdf",
+    "md5_hash": "19cda35c9593359f43c3223e7df99e31"
+  },
+  {
+    "paper_code": "OA_KW1_090",
+    "title": "An Enhanced Source-Free Unsupervised Domain Adaptation Framework for Cross-Dataset EEG Emotion Recognition via Predictive Coding and Test-Time Training",
+    "authors": "Md Niaz Imtiaz; Naimul Khan",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2606.28202v1",
+    "file_name": "OA_KW1_090.pdf",
+    "md5_hash": "98ce9b6704b0c2589cd568474a2cb98d"
+  },
+  {
+    "paper_code": "OA_KW1_091",
+    "title": "RECTOR: Masked Region-Channel-Temporal Modeling for Affective and Cognitive Representation Learning",
+    "authors": "Jinhan Liu; Mahsa Shoaran",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2606.15278v1",
+    "file_name": "OA_KW1_091.pdf",
+    "md5_hash": "9b3b034ca5b14147ed1a39faa8b57af5"
+  },
+  {
+    "paper_code": "OA_KW1_092",
+    "title": "Transformer Based Model for Spatiotemporal Feature Learning in EEG Emotion Recognition",
+    "authors": "Xinglong Cui; Dian Gu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2606.10718v1",
+    "file_name": "OA_KW1_092.pdf",
+    "md5_hash": "f207272c00dc26d3b5f9a1ffd1556389"
+  },
+  {
+    "paper_code": "OA_KW1_093",
+    "title": "Nine Emotion Centroids: A Label-Free Valence Axis That Transfers Across Four Modalities",
+    "authors": "Yousef Radwan",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2608.18090v1",
+    "file_name": "OA_KW1_093.pdf",
+    "md5_hash": "6bead1052af1353675c9182c0ef67e6c"
+  },
+  {
+    "paper_code": "OA_KW1_094",
+    "title": "EEGDancer: Dynamic Emotion Latent Space Masked Modeling with Reinforcement Learning for EEG Continuous Emotion Prediction",
+    "authors": "Zhihao Zhou; Weishan Ye; Li Zhang; Gan Huang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2606.05855v1",
+    "file_name": "OA_KW1_094.pdf",
+    "md5_hash": "f72dd3aa33c78ca131117af4e5d0502b"
+  },
+  {
+    "paper_code": "OA_KW1_095",
+    "title": "Brain-Token Learning: Microstate-Based Tokenization and Multi-Scale Interaction for Long-Horizon EEG Sequence Modeling",
+    "authors": "Weishan Ye; Yue Pan; Li Zhang; Gan Huang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2609.24324v1",
+    "file_name": "OA_KW1_095.pdf",
+    "md5_hash": "fb81739e365b9aca7dfb9022570019ec"
+  },
+  {
+    "paper_code": "OA_KW1_096",
+    "title": "Neuro-Geospatial Modelling of EEG Affective States Using Literature-Informed Environmental Context",
+    "authors": "Utsav Poudel; Jagannath Aryal; Subramaniyaswamy Vairavasundaram",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2608.20807v1",
+    "file_name": "OA_KW1_096.pdf",
+    "md5_hash": "57a618877a80c39d26b931c466336d34"
+  },
+  {
+    "paper_code": "OA_KW1_097",
+    "title": "SA-HGNN: Sample-Adaptive Hyperbolic Graph Neural Network for EEG-Based Depression Recognition",
+    "authors": "Yang Li; Pan Hu; Yan Zhang; Wenfan Yang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2607.02063v1",
+    "file_name": "OA_KW1_097.pdf",
+    "md5_hash": "9a6e61825bd0e9612e8d676be98ea48a"
+  },
+  {
+    "paper_code": "OA_KW1_098",
+    "title": "REACT 2026: The Fourth Multiple Appropriate Facial Reaction Generation Challenge: Personalised MAFRG and Appropriate EEG Reaction Prediction",
+    "authors": "Siyang Song; Micol Spitale; Zijian Wu; Xiangyu Kong",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2606.07935v1",
+    "file_name": "OA_KW1_098.pdf",
+    "md5_hash": "6411e8af5aeb521c03e27b310686ffce"
+  },
+  {
+    "paper_code": "OA_KW1_099",
+    "title": "A Shared Valence Axis Across Modern LLMs and Human EEG: The Saturation Regularity",
+    "authors": "Yousef A. Radwan; Xuhui Liu; Kilichbek Haydarov; Yuqian Fu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2606.00129v1",
+    "file_name": "OA_KW1_099.pdf",
+    "md5_hash": "3a89899168d4690b57d6cf3b6d61fe9a"
+  },
+  {
+    "paper_code": "OA_KW1_100",
+    "title": "MSCGC-KAN: Multi-scale Causal Graph Convolution and KAN-inspired Analytic-basis Mapping for EEG Emotion Recognition",
+    "authors": "Haoliang Gong; Qingshan She; Jiale Xu; Yunyuan Gao",
+    "year": 2026,
+    "journal": "arXiv Preprints (Affective Computing & Neural Systems)",
+    "doi": "10.48550/arXiv.2605.26624v3",
+    "file_name": "OA_KW1_100.pdf",
+    "md5_hash": "54acf7d6a4c01ec3f5e85b4be2ad4f45"
+  }
+]

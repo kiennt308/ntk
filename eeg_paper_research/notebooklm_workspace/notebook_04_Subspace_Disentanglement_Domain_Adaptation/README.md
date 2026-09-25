@@ -1,17 +1,17 @@
-# NB04 - Shared-Private Subspace Disentanglement & Domain Adaptation
-## Chủ đề Tiếng Việt: Tách Không gian con Dùng chung - Riêng biệt & Thích ứng Miền
+# NB04 - Subspace Disentanglement & Domain Adaptation in Affective Computing
+## Chủ đề Tiếng Việt: Phân Rã Không Gian Con (Shared-Private) & Thích Ứng Miền (Domain Adaptation)
 
-- **Ánh xạ Chương Luận Án**: **Chương 3 & Chương 5 (Phân tách Biểu diễn & Thử nghiệm Tổng quát hóa LOSO)**
-- **Trọng tâm Nghiên cứu**: Decomposing representations into subject-invariant emotion content (Z_shared) and subject-specific physiological style (Z_private) with orthogonality constraints.
-- **Tổng số bài báo khoa học chỉ mục**: **47 bài** (Giai đoạn 2023–2026)
-- **Số lượng file PDF toàn văn sẵn có**: **28 file PDF** (trong thư mục [`pdfs/`](pdfs/))
+- **Ánh xạ Chương Luận Án**: **Chương 3 & Chương 5 (Phân tích Không gian con Chia sẻ - Riêng tư MMB-EmotionNet)**
+- **Trọng tâm Nghiên cứu**: Shared-Private Subspace Disentanglement, Domain Adversarial Training (DANN), Optimal Transport, Test-Time Adaptation (TTA), and Cross-Subject / Cross-Session Generalization.
+- **Tổng số bài báo khoa học chỉ mục**: **100 bài** (Giai đoạn 2023–2026)
+- **Số lượng file PDF toàn văn sẵn có**: **100 file PDF** (trong thư mục [`pdfs/`](pdfs/))
 
 ---
 
 ## 🎯 Các Câu Hỏi Nghiên Cứu Trọng Tâm
-1. Làm thế nào để ràng buộc trực giao (Orthogonality Constraint) giữa Z_shared và Z_private?
-2. Hiệu quả cải thiện độ chính xác phân loại cảm xúc Cross-Subject (LOSO) đạt được bao nhiêu %?
-3. Domain Adversarial Neural Networks (DANN) kết hợp với Disentanglement như thế nào?
+1. Làm thế nào để phân rã tín hiệu EEG thành 2 thành phần độc lập: Không gian con chia sẻ (Shared Emotion Subspace) và Không gian con riêng biệt (Private Identity/Noise Subspace)?
+2. Làm sao để đo lường và triệt tiêu tính trực giao (Orthogonality Constraint) giữa các không gian con?
+3. Phương pháp thích ứng miền không giám sát (UDA) nào hiệu quả nhất để giảm thiểu Domain Shift giữa các người tham gia (Cross-Subject Transfer)?
 
 ---
 
@@ -28,5 +28,6 @@ Mở file [`00_NOTEBOOKLM_PROMPTS_AND_INDEX.md`](00_NOTEBOOKLM_PROMPTS_AND_INDEX
 
 ## 📂 Danh Mục Bài Báo Trong Notebook
 Chi tiết toàn văn và tóm tắt từng bài báo có thể xem tại:
-- [Tài liệu tóm tắt mở rộng](../../literature/open_access_repository/kw04_subspace_disentanglement_domain_adaptation/README.md)
-- [Bảng dữ liệu thô `papers_index.csv`](../../literature/open_access_repository/kw04_subspace_disentanglement_domain_adaptation/papers_index.csv)
+- [Bảng dữ liệu chỉ mục `papers_index.csv`](papers_index.csv)
+- [Thư mục tóm tắt chuyên sâu `paper_notes/`](paper_notes/)
+- [Thư mục chứa 100% PDF toàn văn `pdfs/`](pdfs/)

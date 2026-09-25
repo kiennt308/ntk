@@ -1,608 +1,1008 @@
 {
-  "cluster_id": "notebook_06",
-  "cluster_name": "Foundation Models & Self-Supervised Biosignals",
-  "description": "Curated collection of 50 verified full-text Open Access research papers (2022-2026) on foundation models, self-supervised pre-training, masked autoencoders, contrastive learning, and transfer learning for EEG and multimodal biosignals.",
-  "total_papers": 50,
+  "notebook_id": "notebook_06_Foundation_Models_Self_Supervised_Biosignals",
+  "topic": "Foundation Models & Self-Supervised Biosignals",
+  "total_papers": 100,
+  "last_updated": "2026-09-25",
   "papers": [
     {
       "paper_code": "OA_KW6_001",
       "title": "EEG Based Emotion Recognition: A Tutorial and Review",
       "authors": "Xiang Li, Yazhou Zhang, Prayag Tiwari et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "ACM Computing Surveys",
       "doi": "10.1145/3524499",
-      "pdf_url": "https://arxiv.org/pdf/2203.11279.pdf",
       "file_name": "OA_KW6_001.pdf",
-      "md5_hash": "9f7969643edd8865b614c32838589272",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "9f7969643edd8865b614c32838589272"
     },
     {
       "paper_code": "OA_KW6_002",
       "title": "Self-Supervised Contrastive Pre-Training For Time Series via Time-Frequency Consistency",
       "authors": "Xiang Zhang, Ziyuan Zhao, Theodoros Tsiligkaridis et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv (Cornell University)",
       "doi": "10.48550/arxiv.2206.08496",
-      "pdf_url": "https://arxiv.org/pdf/2206.08496.pdf",
       "file_name": "OA_KW6_002.pdf",
-      "md5_hash": "0b069252e40fc66880352f70dc1f10b2",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "0b069252e40fc66880352f70dc1f10b2"
     },
     {
       "paper_code": "OA_KW6_003",
       "title": "STGATE: Spatial-temporal graph attention network with a transformer encoder for EEG-based emotion recognition",
       "authors": "Jingcong Li, Weijian Pan, Haiyun Huang et al.",
-      "year": 2023,
+      "year": "2023",
       "journal": "Frontiers in Human Neuroscience",
       "doi": "10.3389/fnhum.2023.1169949",
-      "pdf_url": "https://www.frontiersin.org/articles/10.3389/fnhum.2023.1169949/pdf",
       "file_name": "OA_KW6_003.pdf",
-      "md5_hash": "6e6d2d48ec4086a8dbce1579283238fa",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "6e6d2d48ec4086a8dbce1579283238fa"
     },
     {
       "paper_code": "OA_KW6_004",
       "title": "Role of machine learning and deep learning techniques in EEG-based BCI emotion recognition system: a review",
       "authors": "Priyadarsini Samal, Mohammad Farukh Hashmi",
-      "year": 2024,
+      "year": "2024",
       "journal": "Artificial Intelligence Review",
       "doi": "10.1007/s10462-023-10690-2",
-      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10462-023-10690-2.pdf",
       "file_name": "OA_KW6_004.pdf",
-      "md5_hash": "10ccccd8c4391dc1177d0f8adb631eee",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "10ccccd8c4391dc1177d0f8adb631eee"
     },
     {
       "paper_code": "OA_KW6_005",
       "title": "Human emotion recognition from EEG-based brain–computer interface using machine learning: a comprehensive review",
       "authors": "Essam Halim Houssein, Asmaa S.A. Hammad, Abdelmgeid A. Ali",
-      "year": 2022,
+      "year": "2022",
       "journal": "Neural Computing and Applications",
       "doi": "10.1007/s00521-022-07292-4",
-      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s00521-022-07292-4.pdf",
       "file_name": "OA_KW6_005.pdf",
-      "md5_hash": "54ba887c25181daa8bbf683df95e3f13",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "54ba887c25181daa8bbf683df95e3f13"
     },
     {
       "paper_code": "OA_KW6_006",
       "title": "SS-EMERGE - self-supervised enhancement for multidimension emotion recognition using GNNs for EEG",
       "authors": "Chirag Kamal Ahuja, Divyashikha Sethia",
-      "year": 2025,
+      "year": "2025",
       "journal": "Scientific Reports",
       "doi": "10.1038/s41598-025-98623-7",
-      "pdf_url": "https://www.nature.com/articles/s41598-025-98623-7.pdf",
       "file_name": "OA_KW6_006.pdf",
-      "md5_hash": "61c4d02d04ef4e4ee1317b98de9e82a8",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "61c4d02d04ef4e4ee1317b98de9e82a8"
     },
     {
       "paper_code": "OA_KW6_007",
       "title": "Leveraging Generic Time Series Foundation Models for EEG Classification",
       "authors": "Théo Gnassounou, Yessin Moakher, Shifeng Xie et al.",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2510.27522v1",
-      "pdf_url": "https://arxiv.org/pdf/2510.27522v1.pdf",
       "file_name": "OA_KW6_007.pdf",
-      "md5_hash": "a5e2c599231047a8a2836f62d6390d78",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "a5e2c599231047a8a2836f62d6390d78"
     },
     {
       "paper_code": "OA_KW6_008",
       "title": "Robust Tabular Foundation Models",
       "authors": "Matthew Peroni, Franck Le, Vadim Sheinin",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2512.03307v1",
-      "pdf_url": "https://arxiv.org/pdf/2512.03307v1.pdf",
       "file_name": "OA_KW6_008.pdf",
-      "md5_hash": "c78bbc753dcf3e670199c44c369a74e2",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "c78bbc753dcf3e670199c44c369a74e2"
     },
     {
       "paper_code": "OA_KW6_009",
       "title": "Finetuning and Quantization of EEG-Based Foundational BioSignal Models on ECG and PPG Data for Blood Pressure Estimation",
       "authors": "Bálint Tóth, Dominik Senti, Thorir Mar Ingolfsson et al.",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2502.17460v2",
-      "pdf_url": "https://arxiv.org/pdf/2502.17460v2.pdf",
       "file_name": "OA_KW6_009.pdf",
-      "md5_hash": "991d991b07da0eda355368a5302ddb39",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "991d991b07da0eda355368a5302ddb39"
     },
     {
       "paper_code": "OA_KW6_010",
       "title": "CTNet: a convolutional transformer network for EEG-based motor imagery classification",
       "authors": "Wei Zhao, Xiaolu Jiang, Baocan Zhang et al.",
-      "year": 2024,
+      "year": "2024",
       "journal": "Scientific Reports",
       "doi": "10.1038/s41598-024-71118-7",
-      "pdf_url": "https://www.nature.com/articles/s41598-024-71118-7.pdf",
       "file_name": "OA_KW6_010.pdf",
-      "md5_hash": "b754a18f8343fc209734fb6e52d77f5c",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "b754a18f8343fc209734fb6e52d77f5c"
     },
     {
       "paper_code": "OA_KW6_011",
       "title": "EEG-based emotion recognition using graph convolutional neural network with dual attention mechanism",
       "authors": "Wei Chen, Yuan Liao, Rui Dai et al.",
-      "year": 2024,
+      "year": "2024",
       "journal": "Frontiers in Computational Neuroscience",
       "doi": "10.3389/fncom.2024.1416494",
-      "pdf_url": "https://www.frontiersin.org/journals/computational-neuroscience/articles/10.3389/fncom.2024.1416494/pdf",
       "file_name": "OA_KW6_011.pdf",
-      "md5_hash": "0c219f509f4144033d3fefa59ef2e6a3",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "0c219f509f4144033d3fefa59ef2e6a3"
     },
     {
       "paper_code": "OA_KW6_012",
       "title": "DAGAM: a domain adversarial graph attention model for subject-independent EEG-based emotion recognition",
       "authors": "Tao Xu, Wang Dang, Jiabao Wang et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "Journal of Neural Engineering",
       "doi": "10.1088/1741-2552/acae06",
-      "pdf_url": "https://arxiv.org/pdf/2202.12948",
       "file_name": "OA_KW6_012.pdf",
-      "md5_hash": "3508829abd4eef270852c36d37a52879",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "3508829abd4eef270852c36d37a52879"
     },
     {
       "paper_code": "OA_KW6_013",
       "title": "Zero-Shot Neural Priors for Generalizable Cross-Subject and Cross-Task EEG Decoding",
       "authors": "Baimam Boukar Jean Jacques, Brandone Fonya, Nchofon Tagha Ghogomu et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2606.23706v2",
-      "pdf_url": "https://arxiv.org/pdf/2606.23706v2.pdf",
       "file_name": "OA_KW6_013.pdf",
-      "md5_hash": "e9c5568ed8c227bfc054dd0175e44563",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "e9c5568ed8c227bfc054dd0175e44563"
     },
     {
       "paper_code": "OA_KW6_014",
       "title": "EEG-Bench: A Benchmark for EEG Foundation Models in Clinical Applications",
       "authors": "Ard Kastrati, Josua Bürki, Jonas Lauer et al.",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2512.08959v1",
-      "pdf_url": "https://arxiv.org/pdf/2512.08959v1.pdf",
       "file_name": "OA_KW6_014.pdf",
-      "md5_hash": "39dd3e20d74c281c2db7167c0d188ce0",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "39dd3e20d74c281c2db7167c0d188ce0"
     },
     {
       "paper_code": "OA_KW6_015",
       "title": "EEG-AS: Instance-Level Foundation Model Selection for EEG Foundation Models via Behavior Reconstruction",
       "authors": "Yunzhen Zhang, Ruoxi Piao, Hasan Onur Keles et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2609.00653v1",
-      "pdf_url": "https://arxiv.org/pdf/2609.00653v1.pdf",
       "file_name": "OA_KW6_015.pdf",
-      "md5_hash": "7fd74b85cc7dc98b6a509f587c7a17ae",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "7fd74b85cc7dc98b6a509f587c7a17ae"
     },
     {
       "paper_code": "OA_KW6_016",
       "title": "OmniEEG-Bench: A Standardized Evaluation Benchmark for EEG Foundation Models",
       "authors": "Ziling Lu, Zongsheng Li, Xinke Shen et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2606.00815v1",
-      "pdf_url": "https://arxiv.org/pdf/2606.00815v1.pdf",
       "file_name": "OA_KW6_016.pdf",
-      "md5_hash": "dbb3379686fbacacb81d4206052c3619",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "dbb3379686fbacacb81d4206052c3619"
     },
     {
       "paper_code": "OA_KW6_017",
       "title": "EEG-EditBench: Probing Visual Information in EEG-Image Retrieval Models with Controlled Image Edits",
       "authors": "Kaifan Zhang, Lihuo He, Yuqi Ji et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2607.27857v1",
-      "pdf_url": "https://arxiv.org/pdf/2607.27857v1.pdf",
       "file_name": "OA_KW6_017.pdf",
-      "md5_hash": "fea813d5c66173cdfb5bb218fc46df9e",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "fea813d5c66173cdfb5bb218fc46df9e"
     },
     {
       "paper_code": "OA_KW6_018",
       "title": "The applied principles of EEG analysis methods in neuroscience and clinical neurology",
       "authors": "Hao Zhang, Qing-Qi Zhou, He Chen et al.",
-      "year": 2023,
+      "year": "2023",
       "journal": "Military Medical Research",
       "doi": "10.1186/s40779-023-00502-7",
-      "pdf_url": "https://mmrjournal.biomedcentral.com/counter/pdf/10.1186/s40779-023-00502-7",
       "file_name": "OA_KW6_018.pdf",
-      "md5_hash": "871fc1b7b7bc27107312258d6932a67b",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "871fc1b7b7bc27107312258d6932a67b"
     },
     {
       "paper_code": "OA_KW6_019",
       "title": "EEG-MSAF: An Interpretable Microstate Framework uncovers Default-Mode Decoherence in Early Neurodegeneration",
       "authors": "Mohammad Mehedi Hasan, Pedro G. Lind, Hernando Ombao et al.",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2509.02568v1",
-      "pdf_url": "https://arxiv.org/pdf/2509.02568v1.pdf",
       "file_name": "OA_KW6_019.pdf",
-      "md5_hash": "de6f3556f15a29b3563d9c0a4df4e6c0",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "de6f3556f15a29b3563d9c0a4df4e6c0"
     },
     {
       "paper_code": "OA_KW6_020",
       "title": "Neuro-GPT: Towards A Foundation Model for EEG",
       "authors": "Wenhui Cui, Woojae Jeong, Philipp Thölke et al.",
-      "year": 2023,
+      "year": "2023",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2311.03764v4",
-      "pdf_url": "https://arxiv.org/pdf/2311.03764v4.pdf",
       "file_name": "OA_KW6_020.pdf",
-      "md5_hash": "eed0dd5669c95c7077923b786c05826d",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "eed0dd5669c95c7077923b786c05826d"
     },
     {
       "paper_code": "OA_KW6_021",
       "title": "Evaluating Latent Space Robustness and Uncertainty of EEG-ML Models under Realistic Distribution Shifts",
       "authors": "Neeraj Wagh, Jionghao Wei, Samarth Rawal et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2209.11233v2",
-      "pdf_url": "https://arxiv.org/pdf/2209.11233v2.pdf",
       "file_name": "OA_KW6_021.pdf",
-      "md5_hash": "c64af6f008013994b4720b49a93abc74",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "c64af6f008013994b4720b49a93abc74"
     },
     {
       "paper_code": "OA_KW6_022",
       "title": "Large-scale Training of Foundation Models for Wearable Biosignals",
       "authors": "Salar Abbaspourazad, Oussama Elachqar, Andrew C. Miller et al.",
-      "year": 2023,
+      "year": "2023",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2312.05409v2",
-      "pdf_url": "https://arxiv.org/pdf/2312.05409v2.pdf",
       "file_name": "OA_KW6_022.pdf",
-      "md5_hash": "b386b01839fff9001e832ad0f3ab53f9",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "b386b01839fff9001e832ad0f3ab53f9"
     },
     {
       "paper_code": "OA_KW6_023",
       "title": "GEFM: Graph-Enhanced EEG Foundation Model",
       "authors": "Limin Wang, Toyotaro Suzumura, Hiroki Kanezashi",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2411.19507v3",
-      "pdf_url": "https://arxiv.org/pdf/2411.19507v3.pdf",
       "file_name": "OA_KW6_023.pdf",
-      "md5_hash": "9611e7b30127587740f4d8bf218690ca",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "9611e7b30127587740f4d8bf218690ca"
     },
     {
       "paper_code": "OA_KW6_024",
       "title": "NeuroRVQ: Multi-Scale Biosignal Tokenization for Generative Foundation Models",
       "authors": "Konstantinos Barmpas, Na Lee, Dimitrios Chalatsis et al.",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2510.13068v4",
-      "pdf_url": "https://arxiv.org/pdf/2510.13068v4.pdf",
       "file_name": "OA_KW6_024.pdf",
-      "md5_hash": "ba4004d241d273f3da96f1965f3b881a",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "ba4004d241d273f3da96f1965f3b881a"
     },
     {
       "paper_code": "OA_KW6_025",
       "title": "CLEF: EEG Foundation Model for Learning Clinical Semantics",
       "authors": "Peng Cao, Ali Mirzazadeh, Jong Woo Lee et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2605.10817v1",
-      "pdf_url": "https://arxiv.org/pdf/2605.10817v1.pdf",
       "file_name": "OA_KW6_025.pdf",
-      "md5_hash": "67ed193b8571e6ad20388cf2a4004150",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "67ed193b8571e6ad20388cf2a4004150"
     },
     {
       "paper_code": "OA_KW6_026",
       "title": "Understanding data analysis aspects of TMS-EEG in clinical study: a mini review and a case study with open dataset",
       "authors": "Hua Cheng",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2403.09707v1",
-      "pdf_url": "https://arxiv.org/pdf/2403.09707v1.pdf",
       "file_name": "OA_KW6_026.pdf",
-      "md5_hash": "91452ad6241e3100076b2dc381181c1d",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "91452ad6241e3100076b2dc381181c1d"
     },
     {
       "paper_code": "OA_KW6_027",
       "title": "EHR-RAGp: Retrieval-Augmented Prototype-Guided Foundation Model for Electronic Health Records",
       "authors": "Saeed Shurrab, Mariam Al-Omari, Dana El Samad et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2605.12335v1",
-      "pdf_url": "https://arxiv.org/pdf/2605.12335v1.pdf",
       "file_name": "OA_KW6_027.pdf",
-      "md5_hash": "afce86f085f2977d8461f8a595e5fd5b",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "afce86f085f2977d8461f8a595e5fd5b"
     },
     {
       "paper_code": "OA_KW6_028",
       "title": "EEG-PRISM: Physiologically-Grounded Interpretability of Predictions by EEG Foundation Models",
       "authors": "Deeksha M Shama, Punnisa Amornsirikul, Archana Venkataraman",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2608.13676v1",
-      "pdf_url": "https://arxiv.org/pdf/2608.13676v1.pdf",
       "file_name": "OA_KW6_028.pdf",
-      "md5_hash": "8604c999f06cc5640c1a2e47164f7c54",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "8604c999f06cc5640c1a2e47164f7c54"
     },
     {
       "paper_code": "OA_KW6_029",
       "title": "CBraMod: A Criss-Cross Brain Foundation Model for EEG Decoding",
       "authors": "Jiquan Wang, Sha Zhao, Zhiling Luo et al.",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2412.07236v6",
-      "pdf_url": "https://arxiv.org/pdf/2412.07236v6.pdf",
       "file_name": "OA_KW6_029.pdf",
-      "md5_hash": "03f37f9f2023fdacad651f165c52c8cf",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "03f37f9f2023fdacad651f165c52c8cf"
     },
     {
       "paper_code": "OA_KW6_030",
       "title": "EEG-JEPA: Structured Latent Prediction for EEG Foundation Models",
       "authors": "Jinhao Li, Zhiyuan Ma, Xueqiao Han et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2608.00114v1",
-      "pdf_url": "https://arxiv.org/pdf/2608.00114v1.pdf",
       "file_name": "OA_KW6_030.pdf",
-      "md5_hash": "5bda0a5e0b8339447bfb6b19bbe3cb93",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "5bda0a5e0b8339447bfb6b19bbe3cb93"
     },
     {
       "paper_code": "OA_KW6_031",
       "title": "HunyuanImage 3.0 Technical Report",
       "authors": " Tencent Hunyuan Foundation Model Team",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2509.23951v3",
-      "pdf_url": "https://arxiv.org/pdf/2509.23951v3.pdf",
       "file_name": "OA_KW6_031.pdf",
-      "md5_hash": "0fe7d3c0675983bc5d4c5fa93ff5bcd4",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "0fe7d3c0675983bc5d4c5fa93ff5bcd4"
     },
     {
       "paper_code": "OA_KW6_032",
       "title": "CLEF: Clinically-Guided Contrastive Learning for Electrocardiogram Foundation Models",
       "authors": "Yuxuan Shu, Peter H. Charlton, Fahim Kawsar et al.",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2512.02180v1",
-      "pdf_url": "https://arxiv.org/pdf/2512.02180v1.pdf",
       "file_name": "OA_KW6_032.pdf",
-      "md5_hash": "3f004a1283bafc1f83623b1c8abd3246",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "3f004a1283bafc1f83623b1c8abd3246"
     },
     {
       "paper_code": "OA_KW6_033",
       "title": "PSO Fuzzy XGBoost Classifier Boosted with Neural Gas Features on EEG Signals in Emotion Recognition",
       "authors": "Seyed Muhammad Hossein Mousavi",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2407.09950v2",
-      "pdf_url": "https://arxiv.org/pdf/2407.09950v2.pdf",
       "file_name": "OA_KW6_033.pdf",
-      "md5_hash": "c6aa81122839573252616ed73eebcae9",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "c6aa81122839573252616ed73eebcae9"
     },
     {
       "paper_code": "OA_KW6_034",
       "title": "Elastic Weight Consolidation Improves the Robustness of Self-Supervised Learning Methods under Transfer",
       "authors": "Andrius Ovsianas, Jason Ramapuram, Dan Busbridge et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2210.16365v1",
-      "pdf_url": "https://arxiv.org/pdf/2210.16365v1.pdf",
       "file_name": "OA_KW6_034.pdf",
-      "md5_hash": "91cdf956781c63ab8e1cbf76ff401368",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "91cdf956781c63ab8e1cbf76ff401368"
     },
     {
       "paper_code": "OA_KW6_035",
       "title": "The Case for Cleaner Biosignals: High-fidelity Neural Compressor Enables Transfer from Cleaner iEEG to Noisier EEG",
       "authors": "Francesco Stefano Carzaniga, Gary Tom Hoppeler, Michael Hersche et al.",
-      "year": 2025,
+      "year": "2025",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2502.17462v1",
-      "pdf_url": "https://arxiv.org/pdf/2502.17462v1.pdf",
       "file_name": "OA_KW6_035.pdf",
-      "md5_hash": "0c7e36933887c57ea3456ae022fe006c",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "0c7e36933887c57ea3456ae022fe006c"
     },
     {
       "paper_code": "OA_KW6_036",
       "title": "Non-Contrastive Self-supervised Learning for Utterance-Level Information Extraction from Speech",
       "authors": "Jaejin Cho, Jes'us Villalba, Laureano Moro-Velazquez et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2208.05445v1",
-      "pdf_url": "https://arxiv.org/pdf/2208.05445v1.pdf",
       "file_name": "OA_KW6_036.pdf",
-      "md5_hash": "d87defb3341127f7019c7771c813f4da",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "d87defb3341127f7019c7771c813f4da"
     },
     {
       "paper_code": "OA_KW6_037",
       "title": "Real-Time Seizure Detection using EEG: A Comprehensive Comparison of Recent Approaches under a Realistic Setting",
       "authors": "Kwanhyung Lee, Hyewon Jeong, Seyun Kim et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2201.08780v2",
-      "pdf_url": "https://arxiv.org/pdf/2201.08780v2.pdf",
       "file_name": "OA_KW6_037.pdf",
-      "md5_hash": "16c033692b39e39c67e9fdbf5a015b5c",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "16c033692b39e39c67e9fdbf5a015b5c"
     },
     {
       "paper_code": "OA_KW6_038",
       "title": "GMSS: Graph-Based Multi-Task Self-Supervised Learning for EEG Emotion Recognition",
       "authors": "Yang Li, Ji Chen, Fu Li et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2205.01030v1",
-      "pdf_url": "https://arxiv.org/pdf/2205.01030v1.pdf",
       "file_name": "OA_KW6_038.pdf",
-      "md5_hash": "03aee7d9084d8db4b42a911046f17228",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "03aee7d9084d8db4b42a911046f17228"
     },
     {
       "paper_code": "OA_KW6_039",
       "title": "Toward cross-subject and cross-session generalization in EEG-based emotion recognition: Systematic review, taxonomy, and methods",
       "authors": "Andrea Apicella, Pasquale Arpaia, Giovanni D'Errico et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2212.08744v3",
-      "pdf_url": "https://arxiv.org/pdf/2212.08744v3.pdf",
       "file_name": "OA_KW6_039.pdf",
-      "md5_hash": "6ee3804cd5907866a80210f99b3a2a72",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "6ee3804cd5907866a80210f99b3a2a72"
     },
     {
       "paper_code": "OA_KW6_040",
       "title": "Self-Distilled Representation Learning for Time Series",
       "authors": "Felix Pieper, Konstantin Ditschuneit, Martin Genzel et al.",
-      "year": 2023,
+      "year": "2023",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2311.11335v1",
-      "pdf_url": "https://arxiv.org/pdf/2311.11335v1.pdf",
       "file_name": "OA_KW6_040.pdf",
-      "md5_hash": "0964e395f8fb96d8b63a12447bf4b63c",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "0964e395f8fb96d8b63a12447bf4b63c"
     },
     {
       "paper_code": "OA_KW6_041",
       "title": "Continuous Learning Based Novelty Aware Emotion Recognition System",
       "authors": "Mijanur Palash, Bharat Bhargava",
-      "year": 2023,
+      "year": "2023",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2306.08733v1",
-      "pdf_url": "https://arxiv.org/pdf/2306.08733v1.pdf",
       "file_name": "OA_KW6_041.pdf",
-      "md5_hash": "3febfe12f8f2e7cfae0988604177894e",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "3febfe12f8f2e7cfae0988604177894e"
     },
     {
       "paper_code": "OA_KW6_042",
       "title": "On the Workflows and Smells of Leaderboard Operations (LBOps): An Exploratory Study of Foundation Model Leaderboards",
       "authors": "Zhimin Zhao, Abdul Ali Bangash, Filipe Roseiro Côgo et al.",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2407.04065v4",
-      "pdf_url": "https://arxiv.org/pdf/2407.04065v4.pdf",
       "file_name": "OA_KW6_042.pdf",
-      "md5_hash": "dfe0c630d62952c1542359c60ed0878e",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "dfe0c630d62952c1542359c60ed0878e"
     },
     {
       "paper_code": "OA_KW6_043",
       "title": "Contrastive Self-Supervised Learning for Skeleton Representations",
       "authors": "Nico Lingg, Miguel Sarabia, Luca Zappella et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2211.05304v1",
-      "pdf_url": "https://arxiv.org/pdf/2211.05304v1.pdf",
       "file_name": "OA_KW6_043.pdf",
-      "md5_hash": "ae176072444d97d90acb7bda3ec3f092",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "ae176072444d97d90acb7bda3ec3f092"
     },
     {
       "paper_code": "OA_KW6_044",
       "title": "Standing on the Shoulders of Giants: Rethinking EEG Foundation Model Pretraining via Multi-Teacher Distillation",
       "authors": "Chenqi Li, Yu Liu, Shuo Zhang et al.",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2603.04478v1",
-      "pdf_url": "https://arxiv.org/pdf/2603.04478v1.pdf",
       "file_name": "OA_KW6_044.pdf",
-      "md5_hash": "3d7597910422e6c972226b642b496e41",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "3d7597910422e6c972226b642b496e41"
     },
     {
       "paper_code": "OA_KW6_045",
       "title": "Similarity Contrastive Estimation for Image and Video Soft Contrastive Self-Supervised Learning",
       "authors": "Julien Denize, Jaonary Rabarisoa, Astrid Orcesi et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2212.11187v1",
-      "pdf_url": "https://arxiv.org/pdf/2212.11187v1.pdf",
       "file_name": "OA_KW6_045.pdf",
-      "md5_hash": "7c1f1ed0039c87f86a22df559b4d4283",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "7c1f1ed0039c87f86a22df559b4d4283"
     },
     {
       "paper_code": "OA_KW6_046",
       "title": "A Supervised Information Enhanced Multi-Granularity Contrastive Learning Framework for EEG Based Emotion Recognition",
       "authors": "Xiang Li, Jian Song, Zhigang Zhao et al.",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2405.07260v1",
-      "pdf_url": "https://arxiv.org/pdf/2405.07260v1.pdf",
       "file_name": "OA_KW6_046.pdf",
-      "md5_hash": "49c553f2a33e11d93a06f06bd2b41047",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "49c553f2a33e11d93a06f06bd2b41047"
     },
     {
       "paper_code": "OA_KW6_047",
       "title": "Image Segmentation in Foundation Model Era: A Survey",
       "authors": "Tianfei Zhou, Wang Xia, Fei Zhang et al.",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2408.12957v3",
-      "pdf_url": "https://arxiv.org/pdf/2408.12957v3.pdf",
       "file_name": "OA_KW6_047.pdf",
-      "md5_hash": "3a6fa87b1666e308fc356c44840b084c",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "3a6fa87b1666e308fc356c44840b084c"
     },
     {
       "paper_code": "OA_KW6_048",
       "title": "ME-VLM: A Unified VLM for Embodied Cognition and Agent Coordination",
       "authors": "Foundation Model, Li Auto Inc",
-      "year": 2026,
+      "year": "2026",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2609.24526v2",
-      "pdf_url": "https://arxiv.org/pdf/2609.24526v2.pdf",
       "file_name": "OA_KW6_048.pdf",
-      "md5_hash": "1a7885973f05b2f3bf822ed95db8400f",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "1a7885973f05b2f3bf822ed95db8400f"
     },
     {
       "paper_code": "OA_KW6_049",
       "title": "Enhancing Representation Learning of EEG Data with Masked Autoencoders",
       "authors": "Yifei Zhou, Sitong Liu",
-      "year": 2024,
+      "year": "2024",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2408.05375v2",
-      "pdf_url": "https://arxiv.org/pdf/2408.05375v2.pdf",
       "file_name": "OA_KW6_049.pdf",
-      "md5_hash": "6b2cc91de08925ed2a88588bb9a8c88c",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "6b2cc91de08925ed2a88588bb9a8c88c"
     },
     {
       "paper_code": "OA_KW6_050",
       "title": "A Survey on Masked Autoencoder for Self-supervised Learning in Vision and Beyond",
       "authors": "Chaoning Zhang, Chenshuang Zhang, Junha Song et al.",
-      "year": 2022,
+      "year": "2022",
       "journal": "arXiv Preprint",
       "doi": "10.48550/arXiv.2208.00173v1",
-      "pdf_url": "https://arxiv.org/pdf/2208.00173v1.pdf",
       "file_name": "OA_KW6_050.pdf",
-      "md5_hash": "9b2279d042e185acdddce8a1646a6826",
-      "cluster": "KW06_Foundation_Models_Self_Supervised_Biosignals"
+      "md5_hash": "9b2279d042e185acdddce8a1646a6826"
+    },
+    {
+      "paper_code": "OA_KW6_051",
+      "title": "Matched-Input Estimates Differ in Sign Across Architectures: Auditing EEG Foundation Models on Motor Imagery",
+      "authors": "Kevin Zhou; Sparsh Roy",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.23924v1",
+      "file_name": "OA_KW6_051.pdf",
+      "md5_hash": "b734d95e3fa13aa53f4557e1a1cf4bf7"
+    },
+    {
+      "paper_code": "OA_KW6_052",
+      "title": "A Deep Neural Network for Predicting Continuous Human EEG Across the Auditory Pathway in Response to Sound",
+      "authors": "Thomas J Stoll; Ross K Maddox",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.20595v2",
+      "file_name": "OA_KW6_052.pdf",
+      "md5_hash": "0fa38b6e51c0204159a5e62b673dcff4"
+    },
+    {
+      "paper_code": "OA_KW6_053",
+      "title": "Dataset-Dependent Effects of Cross-Depth Aggregation and Soft-Routed Experts in EEG Foundation Model Fine-Tuning",
+      "authors": "Mingyang Jiang; Yamin Li; Daniel Moyer; Fan Ma",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.17886v1",
+      "file_name": "OA_KW6_053.pdf",
+      "md5_hash": "29709134b8d1440f4853c3220bf749cb"
+    },
+    {
+      "paper_code": "OA_KW6_054",
+      "title": "EEG-Xplain: Decoding Neural Black-Boxes of EEG Foundation Models",
+      "authors": "Hansong Ma; Junxiao Wang",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.15687v1",
+      "file_name": "OA_KW6_054.pdf",
+      "md5_hash": "0c1d06c972372d97564042d571e468a2"
+    },
+    {
+      "paper_code": "OA_KW6_055",
+      "title": "MANAS-2: Constrained Reconstruction for EEG Foundation Models",
+      "authors": "Arvasu Kulkarni; Aditya Ray Mishra; Jeet Bandhu Lahiri; Mahir Jain",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.13717v2",
+      "file_name": "OA_KW6_055.pdf",
+      "md5_hash": "e424d88c6dc3f5c2ea36a8cf6284f611"
+    },
+    {
+      "paper_code": "OA_KW6_056",
+      "title": "iBrain: A Unified Foundation Model Reading the Brain from Surface to Spikes",
+      "authors": "Ying Chen; Tiou Wang; Zhifeng Yue",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.06960v1",
+      "file_name": "OA_KW6_056.pdf",
+      "md5_hash": "5be248236d2e33ec72cda7a842f17071"
+    },
+    {
+      "paper_code": "OA_KW6_057",
+      "title": "Learning transferable human physiology from two million hours of sleep with SleepFM-2",
+      "authors": "Rahul Thapa; Christopher Sun; William Theodor Lehn-Schioler; Sophia Claire Kivelson",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.06849v1",
+      "file_name": "OA_KW6_057.pdf",
+      "md5_hash": "5d4239e13db2511597288a2e5df5e715"
+    },
+    {
+      "paper_code": "OA_KW6_058",
+      "title": "A Roadmap for MEG Foundation Models",
+      "authors": "Philipp Thölke; Hamza Abdelhedi; Yorguin Mantilla-Ramos; Fouad Lbakali",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.04461v2",
+      "file_name": "OA_KW6_058.pdf",
+      "md5_hash": "368c6c3ed710add3d5057ff4a92f6d83"
+    },
+    {
+      "paper_code": "OA_KW6_059",
+      "title": "Lightweight Adaptation of EEG Foundation Models for Stroke Motor Imagery Decoding: Domain Shift and Subject-Level Robustness",
+      "authors": "Anh T. Nguyen; Zihua Sun; Michelle J. Johnson",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.00282v1",
+      "file_name": "OA_KW6_059.pdf",
+      "md5_hash": "3016de3e12c0947a59e73ba5dce16d3e"
+    },
+    {
+      "paper_code": "OA_KW6_060",
+      "title": "Leveraging a Foundation Model for the EEG-Based Diagnosis of Alzheimer's Disease",
+      "authors": "Maggie Lin; Chung-Lin Hou; Tzyy-Ping Jung",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.27719v1",
+      "file_name": "OA_KW6_060.pdf",
+      "md5_hash": "b68b720808c21decd26b251e1a0e6b47"
+    },
+    {
+      "paper_code": "OA_KW6_061",
+      "title": "Parameter-Efficient Self-Supervised Adaptation for EEG-FM under Fixed Computational Budgets",
+      "authors": "Meghal Dani; Stefanie Liebe",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.24727v1",
+      "file_name": "OA_KW6_061.pdf",
+      "md5_hash": "704a1eeb90aec1f5d129d27dd84e3a43"
+    },
+    {
+      "paper_code": "OA_KW6_062",
+      "title": "Taming foundation model with invariance-oriented pre-training for broad-spectrum EEG analysis across signal-level, brain-state, and brain-health tasks",
+      "authors": "Yulong Dou; Han Wu; Guo Chen; Fangmao Ju",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.24597v1",
+      "file_name": "OA_KW6_062.pdf",
+      "md5_hash": "f276f811ca3da24b7e5b785e791906ea"
+    },
+    {
+      "paper_code": "OA_KW6_063",
+      "title": "ReMAP: Self-supervised learning to unveil brain representations and vulnerability",
+      "authors": "Jade Perdereau; Virginie Loison; Kanssa El Ayeb; Louis Gervais",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.22042v1",
+      "file_name": "OA_KW6_063.pdf",
+      "md5_hash": "8c146c2c91288b0c41574fc3225f1140"
+    },
+    {
+      "paper_code": "OA_KW6_064",
+      "title": "Comparative Analysis of State-of-the-Art Foundation Models for Sleep Analysis Under Channel Reduction",
+      "authors": "Hassan Mehdi; Riku Klen; Ayse Kosal Bulbul; Suzanne Timmons",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.22105v1",
+      "file_name": "OA_KW6_064.pdf",
+      "md5_hash": "15ff0f4281553442f15ffd4832041436"
+    },
+    {
+      "paper_code": "OA_KW6_065",
+      "title": "Continuous-Latent Predictive Modeling with Semantic Alignment for EEG-Language Foundation Models",
+      "authors": "Myeong-Ju Cho; Hye-Bin Shin; Seo-Hyun Lee; Seong-Whan Lee",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.11656v1",
+      "file_name": "OA_KW6_065.pdf",
+      "md5_hash": "79fd2611663ab06c11410fdd3e20878a"
+    },
+    {
+      "paper_code": "OA_KW6_066",
+      "title": "ZIPBrain: Can EEG Foundation Models Be Faster, Locally Deployable, but Accurate?",
+      "authors": "Lingwei Li; Yirong Kan; Peng Chen; Xu Cao",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.07033v1",
+      "file_name": "OA_KW6_066.pdf",
+      "md5_hash": "a57d413e48527edda7fcca7fda50444b"
+    },
+    {
+      "paper_code": "OA_KW6_067",
+      "title": "SW-ProxyCE: Zero-Query Adversarial Transfer from Public EEG Encoders to Private Downstream Models",
+      "authors": "Linhua Cong; Dingkun Liu; Dongrui Wu",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.16931v1",
+      "file_name": "OA_KW6_067.pdf",
+      "md5_hash": "c3937761993ae36ac15116d393eb5920"
+    },
+    {
+      "paper_code": "OA_KW6_068",
+      "title": "STEAM: A Spatio-TEmporal Alignment Mixture-of-Experts Model with Hierarchical Pre-training for EEG Decoding",
+      "authors": "Zhu Chen; Dingkun Liu; Yuheng Chen; Dongrui Wu",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.02070v2",
+      "file_name": "OA_KW6_068.pdf",
+      "md5_hash": "c653a535065665c520a255e22e9058f0"
+    },
+    {
+      "paper_code": "OA_KW6_069",
+      "title": "Understanding and Correcting Low-Frequency Bias in EEG Foundation Model",
+      "authors": "Junjie Yu; Zihan Deng; Jianyu Zhang; Junrong Mu",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2608.01898v1",
+      "file_name": "OA_KW6_069.pdf",
+      "md5_hash": "97c4f95b91be7781cfa6453ec47e2051"
+    },
+    {
+      "paper_code": "OA_KW6_070",
+      "title": "S-CEReBrO: Breaking the Memory Barrier in Continuous EEG Monitoring",
+      "authors": "Glenn Anta Bucagu; Thorir Mar Ingolfsson; Yawei Li; Luca Benini",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.27913v3",
+      "file_name": "OA_KW6_070.pdf",
+      "md5_hash": "07e156cd0b74094427bdf1960742e84e"
+    },
+    {
+      "paper_code": "OA_KW6_071",
+      "title": "ZUNA1.1: A more flexible EEG foundation model for Denoising and Super-resolution",
+      "authors": "Christopher Warner; Jonas Mago; JR Huml; Beren Millidge",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.27308v1",
+      "file_name": "OA_KW6_071.pdf",
+      "md5_hash": "8d57031324e14c8d0888c370963d8781"
+    },
+    {
+      "paper_code": "OA_KW6_072",
+      "title": "Interpretable EEG biomarkers with bag-of-waves: Spatial and temporal waveform dictionaries for low-data regimes",
+      "authors": "Athanasios Papastathopoulos-Katsaros; Steven T. Lee; Lin Yao; Ajay Thomas",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.22508v1",
+      "file_name": "OA_KW6_072.pdf",
+      "md5_hash": "22b4170a40878ba0fb5bdd03843fcc9b"
+    },
+    {
+      "paper_code": "OA_KW6_073",
+      "title": "Universal BCI Personalization: One API for Frozen EEG Trunks and Foundation Models",
+      "authors": "Sergey Musienko",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.22397v1",
+      "file_name": "OA_KW6_073.pdf",
+      "md5_hash": "424807713f2d15101d63a7f8bc454cfb"
+    },
+    {
+      "paper_code": "OA_KW6_074",
+      "title": "Benchmarking Positional Encoding Strategies for Transformer-Based EEG Foundation Models",
+      "authors": "Ayse Betul Yuce; Sebastian Stober",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2605.29754v1",
+      "file_name": "OA_KW6_074.pdf",
+      "md5_hash": "8bed61f0958a0a3650901098ceca53e6"
+    },
+    {
+      "paper_code": "OA_KW6_075",
+      "title": "Neonatal Hypoxic-ischaemic Encephalopathy Classification from the EEG and HRV Signals Using a Conformer based Masked Autoencoder",
+      "authors": "Shuwen Yu; William P Marnane; Geraldine B. Boylan; Gordon Lightbody",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.23554v1",
+      "file_name": "OA_KW6_075.pdf",
+      "md5_hash": "8659dbf39eda4991747fa0d21feed81f"
+    },
+    {
+      "paper_code": "OA_KW6_076",
+      "title": "Uncovering Trajectory and Topological Signatures in Multimodal Pediatric Sleep Embeddings",
+      "authors": "Scott Ye; Harlin Lee",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2605.14156v1",
+      "file_name": "OA_KW6_076.pdf",
+      "md5_hash": "338367b5907903945ca9d7e1cd455dbe"
+    },
+    {
+      "paper_code": "OA_KW6_077",
+      "title": "Learning Fingerprints for Medical Time Series with Redundancy-Constrained Information Maximization",
+      "authors": "Huayu Li; ZhengXiao He; Xiwen Chen; Jingjing Wang",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2605.00130v1",
+      "file_name": "OA_KW6_077.pdf",
+      "md5_hash": "1c1d9bdc69ba19ac5a1f508a2056c937"
+    },
+    {
+      "paper_code": "OA_KW6_078",
+      "title": "Optimizing EEG Graph Structure for Seizure Detection: An Information Bottleneck and Self-Supervised Learning Approach",
+      "authors": "Lincan Li; Rikuto Kotoge; Xihao Piao; Zheng Chen",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2604.01595v1",
+      "file_name": "OA_KW6_078.pdf",
+      "md5_hash": "203432350d881f55819b0df6ac0701ef"
+    },
+    {
+      "paper_code": "OA_KW6_079",
+      "title": "PRISM: Exploring Heterogeneous Pretrained EEG Foundation Model Transfer to Clinical Differential Diagnosis",
+      "authors": "Jeet Bandhu Lahiri; Parshva Runwal; Arvasu Kulkarni; Mahir Jain",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2603.02268v1",
+      "file_name": "OA_KW6_079.pdf",
+      "md5_hash": "2a7b4e471a627b84c2b6d9eb2bb4d7e0"
+    },
+    {
+      "paper_code": "OA_KW6_080",
+      "title": "EEG-based Visual Retrieval and Reconstruction: From Neurally Visible Optimal Layer to Hierarchical Diffusion Generation",
+      "authors": "Minyi Wang; Zhenqin Wu; Rihui Li",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.02582v1",
+      "file_name": "OA_KW6_080.pdf",
+      "md5_hash": "075bd02797e80d74bbdf10bec00194c5"
+    },
+    {
+      "paper_code": "OA_KW6_081",
+      "title": "CoCoT-EEG: Contrastive-Pretrained Multiscale Convolutional Transformer for EEG Decoding",
+      "authors": "Gabriel Mahuas; Victoria Shevchenko; Ugo Tanielian; Yassir Bendou",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.09543v1",
+      "file_name": "OA_KW6_081.pdf",
+      "md5_hash": "425f95e7e0b1003399f3f29c9de3c1f5"
+    },
+    {
+      "paper_code": "OA_KW6_082",
+      "title": "CAMEL-CLIP: Channel-aware Multimodal Electroencephalography-text Alignment for Generalizable Brain Foundation Models",
+      "authors": "Hanseul Choi; Jinyeong Park; Seongwon Jin; Sungho Park",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2603.13272v1",
+      "file_name": "OA_KW6_082.pdf",
+      "md5_hash": "2d6b7a3209760f9c3aa5beee74b631aa"
+    },
+    {
+      "paper_code": "OA_KW6_083",
+      "title": "Device Passport: Enabling Spatio-Temporal Pretrained Models to Generalize Across Input Layouts",
+      "authors": "Geeling Chau; Ran Liu; Juri Minxha; Wenhui Cui",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.00249v1",
+      "file_name": "OA_KW6_083.pdf",
+      "md5_hash": "1526dd5b6465b725ca103b3d3f63d2fa"
+    },
+    {
+      "paper_code": "OA_KW6_084",
+      "title": "SignalMC-MED: A Multimodal Benchmark for Evaluating Biosignal Foundation Models on Single-Lead ECG and PPG",
+      "authors": "Fredrik K. Gustafsson; Xiao Gu; Mattia Carletti; Patitapaban Palo",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2603.09940v1",
+      "file_name": "OA_KW6_084.pdf",
+      "md5_hash": "e4f418db03c8003e0672226e10936968"
+    },
+    {
+      "paper_code": "OA_KW6_085",
+      "title": "DLink: Distilling Layer-wise and Dominant Knowledge from EEG Foundation Models",
+      "authors": "Jingyuan Wang; Zhihao Jia; Chenyu Liu; Xinliang Zhou",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2604.15016v2",
+      "file_name": "OA_KW6_085.pdf",
+      "md5_hash": "c4bb237d9a2cd285d61a272392ae3ec9"
+    },
+    {
+      "paper_code": "OA_KW6_086",
+      "title": "Brain4FMs: A Benchmark of Foundation Models for Electrical Brain Signal",
+      "authors": "Fanqi Shen; Enhong Yang; Jiahe Li; Junru Hong",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2602.11558v2",
+      "file_name": "OA_KW6_086.pdf",
+      "md5_hash": "b3fd9f0cb707b152c98bce86d7afe556"
+    },
+    {
+      "paper_code": "OA_KW6_087",
+      "title": "Brain-Aligned Multi-Stream Video Transformers with Sparse Self-Selection",
+      "authors": "Amir Hosein Fadaei; Mahyar Maleki; Mohammad-Reza A. Dehaqani",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.17625v1",
+      "file_name": "OA_KW6_087.pdf",
+      "md5_hash": "894444d2e01b414478e66e2346984bc8"
+    },
+    {
+      "paper_code": "OA_KW6_088",
+      "title": "STST-JEPA: Shallow-Target Spatio-Temporal Joint Embedding Prediction Architecture For EEG Self-Supervised Learning",
+      "authors": "Roy Segal; Yoni Svechinsky; Tomer Fekete",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2607.06629v2",
+      "file_name": "OA_KW6_088.pdf",
+      "md5_hash": "11644ac3eb2417e49dbe2c3aac4bf0e7"
+    },
+    {
+      "paper_code": "OA_KW6_089",
+      "title": "SPOTR: Spatio-temporal Pooling One-Token Reconstruction for Universal Physiological Signal Self-supervised Learning",
+      "authors": "Yiyu Gui; Mingzhi Chen; Yuesheng Zhu; Guibo Luo",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2606.21973v1",
+      "file_name": "OA_KW6_089.pdf",
+      "md5_hash": "07dca8957f9cd1ce4e3ac55dbe259066"
+    },
+    {
+      "paper_code": "OA_KW6_090",
+      "title": "B[FM]$^2$: Brain Foundation Model via Flow Matching with SplitUNet",
+      "authors": "Jaedong Hwang; Kathleen Zhang; Wei Dai; Konstantinos Kontras",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2606.20812v1",
+      "file_name": "OA_KW6_090.pdf",
+      "md5_hash": "ab5d34df6142a1044433a1870e6b3761"
+    },
+    {
+      "paper_code": "OA_KW6_091",
+      "title": "Next-Token Prediction Learns Generalisable Representations of Sleep Physiology",
+      "authors": "Jonathan F. Carter; Lionel Tarassenko",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2606.09605v1",
+      "file_name": "OA_KW6_091.pdf",
+      "md5_hash": "7e0b5f4999879810a65524881d7b0825"
+    },
+    {
+      "paper_code": "OA_KW6_092",
+      "title": "BandVQ: Band-Wise Vector-Quantized EEG Foundation Model",
+      "authors": "Jamiyan Sukhbaatar; Satoshi Imamura; Toshihisa Tanaka",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2605.24921v1",
+      "file_name": "OA_KW6_092.pdf",
+      "md5_hash": "a3451221ee54e4763e0f6d25e9a5c6a6"
+    },
+    {
+      "paper_code": "OA_KW6_093",
+      "title": "MedMamba: Recasting Mamba for Medical Time Series Classification",
+      "authors": "ZhengXiao He; Huayu Li; Xiwen Chen; Janet M Roveda",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2605.05214v1",
+      "file_name": "OA_KW6_093.pdf",
+      "md5_hash": "4a70d966f48bd22b61c4b58045f0b01d"
+    },
+    {
+      "paper_code": "OA_KW6_094",
+      "title": "Epileptic Seizure Prediction Using Patient-Adaptive Transformer Networks",
+      "authors": "Mohamed Mahdi; Asma Baghdadi",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2603.26821v1",
+      "file_name": "OA_KW6_094.pdf",
+      "md5_hash": "407243b0236b86475737a6e2b2e25f46"
+    },
+    {
+      "paper_code": "OA_KW6_095",
+      "title": "Autoregressive Visual Decoding from EEG Signals",
+      "authors": "Sicheng Dai; Hongwang Xiao; Shan Yu; Qiwei Ye",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2602.22555v2",
+      "file_name": "OA_KW6_095.pdf",
+      "md5_hash": "dd452ee7036267091892d5ef51c61f49"
+    },
+    {
+      "paper_code": "OA_KW6_096",
+      "title": "Learning from Brain Topography: A Hierarchical Local-Global Graph-Transformer Network for EEG Emotion Recognition",
+      "authors": "Yijin Zhou; Fu Li; Yi Niu; Boxun Fu",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2601.10525v1",
+      "file_name": "OA_KW6_096.pdf",
+      "md5_hash": "41244451320f633523988e3fc2739ce3"
+    },
+    {
+      "paper_code": "OA_KW6_097",
+      "title": "Benchmarking ERP Analysis: Manual Features, Deep Learning, and Foundation Models",
+      "authors": "Yihe Wang; Zhiqiao Kang; Bohan Chen; Yu Zhang",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.1109/tbme.2026.3686229",
+      "file_name": "OA_KW6_097.pdf",
+      "md5_hash": "9dda8b6c5c7a4b43f95ac08c700864ee"
+    },
+    {
+      "paper_code": "OA_KW6_098",
+      "title": "TRACE: Tractable Routing Autoencoder for Clinical ECG",
+      "authors": "Shunbo Jia; Runze Ma; Haonan Lyu; Haijin Zhang",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.23460v1",
+      "file_name": "OA_KW6_098.pdf",
+      "md5_hash": "bd58c38696da3c19f79facac57a7a69e"
+    },
+    {
+      "paper_code": "OA_KW6_099",
+      "title": "SOTER: A Generative Time-Series Foundation Model for Wearable Human Physiological Signals",
+      "authors": "Fangke Chen; Sirry Chen; Wei Chen; Zhongyu Wei",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.16804v1",
+      "file_name": "OA_KW6_099.pdf",
+      "md5_hash": "f8e92ec68506df0082e4db99ae0b672f"
+    },
+    {
+      "paper_code": "OA_KW6_100",
+      "title": "LatentVerse: A Framework for Understanding Shared and Modality-Specific Information in Multimodal Latent Representations",
+      "authors": "Majd Alafrange; Samuel Friedman; John Kitonyo; Sana Tonekaboni",
+      "year": 2026,
+      "journal": "arXiv Preprints (Foundation Models & SSL Biosignals)",
+      "doi": "10.48550/arXiv.2609.12364v1",
+      "file_name": "OA_KW6_100.pdf",
+      "md5_hash": "2006245a8cdeb5bfe8efbe10df6bbced"
     }
   ]
 }

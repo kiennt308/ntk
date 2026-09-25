@@ -1,17 +1,17 @@
-# NB07 - Graph Neural Networks & Brain Functional Connectivity for Emotion
-## Chủ đề Tiếng Việt: Mạng Nơ-ron Đồ thị & Liên kết Não bộ cho Nhận diện Cảm xúc
+# NB07 - Graph Neural Networks & Brain Connectivity in Affective Computing
+## Chủ đề Tiếng Việt: Mạng Nơ-ron Đồ Thị (GNN) & Kết Nối Chức Năng Não Bộ
 
-- **Ánh xạ Chương Luận Án**: **Chương 2, 4 & 5 (Các Mô hình Đối sánh SOTA Đồ thị)**
-- **Trọng tâm Nghiên cứu**: Dynamic Graph Convolutional Networks (DGCNN), Regularized Graph Neural Networks (RGNN), Phase Locking Value (PLV), and hemisphere asymmetry graph topologies.
-- **Tổng số bài báo khoa học chỉ mục**: **50 bài** (Giai đoạn 2023–2026)
-- **Số lượng file PDF toàn văn sẵn có**: **22 file PDF** (trong thư mục [`pdfs/`](pdfs/))
+- **Ánh xạ Chương Luận Án**: **Chương 2 & Chương 5 (Mô hình Không gian - Thời gian & Kết nối Não bộ MMB-EmotionNet)**
+- **Trọng tâm Nghiên cứu**: Dynamic Graph Convolution (DGCNN), Spatial-Temporal Graph Attention (ST-GAT), Functional Connectivity (PLV/PLI/Coherence), Hypergraphs, and Brain Topology.
+- **Tổng số bài báo khoa học chỉ mục**: **100 bài** (Giai đoạn 2023–2026)
+- **Số lượng file PDF toàn văn sẵn có**: **100 file PDF** (trong thư mục [`pdfs/`](pdfs/))
 
 ---
 
 ## 🎯 Các Câu Hỏi Nghiên Cứu Trọng Tâm
-1. Cách xây dựng ma trận kề động (Dynamic Adjacency Matrix) từ tín hiệu EEG đa kênh?
-2. Sự bất đối xứng bán cầu não (Frontal Alpha Asymmetry) được mô hình hóa qua đồ thị như thế nào?
-3. So sánh hiệu năng giữa GCN, GAT và Spatio-Temporal Graph Networks trên SEED/DEAP.
+1. Làm thế nào để xây dựng ma trận kề động (Dynamic Learnable Adjacency Matrix) biểu diễn sự tương tác thay đổi theo thời gian giữa các kênh điện cực não?
+2. Kỹ thuật tính toán kết nối chức năng nào (PLV, PLI, Pearson, Coherence) phản ánh trạng thái cảm xúc Valence/Arousal chính xác nhất?
+3. Mạng đồ thị không gian - thời gian (ST-GNN) kết hợp cơ chế chú ý giúp nhận diện cảm xúc liên đối tượng như thế nào?
 
 ---
 
@@ -28,5 +28,6 @@ Mở file [`00_NOTEBOOKLM_PROMPTS_AND_INDEX.md`](00_NOTEBOOKLM_PROMPTS_AND_INDEX
 
 ## 📂 Danh Mục Bài Báo Trong Notebook
 Chi tiết toàn văn và tóm tắt từng bài báo có thể xem tại:
-- [Tài liệu tóm tắt mở rộng](../../literature/open_access_repository/kw07_graph_neural_networks_eeg_connectivity/README.md)
-- [Bảng dữ liệu thô `papers_index.csv`](../../literature/open_access_repository/kw07_graph_neural_networks_eeg_connectivity/papers_index.csv)
+- [Bảng dữ liệu chỉ mục `papers_index.csv`](papers_index.csv)
+- [Thư mục tóm tắt chuyên sâu `paper_notes/`](paper_notes/)
+- [Thư mục chứa 100% PDF toàn văn `pdfs/`](pdfs/)

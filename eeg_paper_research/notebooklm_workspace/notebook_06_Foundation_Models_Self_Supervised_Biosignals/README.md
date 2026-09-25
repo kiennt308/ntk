@@ -1,17 +1,17 @@
-# NB06 - Foundation Models & Self-Supervised Learning for Biosignals
-## Chủ đề Tiếng Việt: Mô hình Nền tảng & Học Tự Giám sát cho Tín hiệu Não & Y sinh
+# NB06 - Foundation Models & Self-Supervised Biosignals
+## Chủ đề Tiếng Việt: Mô Hình Nền Tảng & Học Tự Giám Sát trong Tín Hiệu Y Sinh
 
-- **Ánh xạ Chương Luận Án**: **Chương 2 & Chương 7 (Xu hướng Công nghệ Mới 2023–2026 & Hướng Phát triển)**
-- **Trọng tâm Nghiên cứu**: Large-scale self-supervised pre-training (Masked Autoencoding, Contrastive Learning) on massive unlabeled EEG/Physiological corpora.
-- **Tổng số bài báo khoa học chỉ mục**: **50 bài** (Giai đoạn 2023–2026)
-- **Số lượng file PDF toàn văn sẵn có**: **29 file PDF** (trong thư mục [`pdfs/`](pdfs/))
+- **Ánh xạ Chương Luận Án**: **Chương 3 & Chương 5 (Kiến trúc Tiền huấn luyện & Mô hình Nền tảng MMB-EmotionNet)**
+- **Trọng tâm Nghiên cứu**: Masked Autoencoding (MAE), Contrastive Learning (InfoNCE, MoCo, SimCLR), Joint-Embedding Predictive Architecture (JEPA), and Cross-Dataset Pretraining for EEG/Biosignals.
+- **Tổng số bài báo khoa học chỉ mục**: **100 bài** (Giai đoạn 2023–2026)
+- **Số lượng file PDF toàn văn sẵn có**: **100 file PDF** (trong thư mục [`pdfs/`](pdfs/))
 
 ---
 
 ## 🎯 Các Câu Hỏi Nghiên Cứu Trọng Tâm
-1. Các Foundation Models cho EEG (như BIOT, BrainBERT, Neuro-GPT) có cấu trúc ra sao?
-2. Lợi ích của việc Pre-training tự giám sát trên tập dữ liệu lớn đối với downstream task cảm xúc?
-3. Fine-tuning chiến lược Parameter-Efficient (LoRA, Adapter) cho mô hình y sinh.
+1. Làm thế nào để áp dụng kỹ thuật Masked Autoencoder (MAE) hiệu quả trên miền thời gian - tần số của tín hiệu EEG?
+2. Chiến lược Tokenization nào (Patch-based, Microstate-based, Wavelet-based) phù hợp nhất cho mô hình nền tảng tín hiệu não?
+3. Tiền huấn luyện tự giám sát (Self-Supervised Pretraining) trên tập dữ liệu lớn không nhãn giúp cải thiện độ chính xác ở các tác vụ hạ nguồn (nhận diện cảm xúc) như thế nào?
 
 ---
 
@@ -28,5 +28,6 @@ Mở file [`00_NOTEBOOKLM_PROMPTS_AND_INDEX.md`](00_NOTEBOOKLM_PROMPTS_AND_INDEX
 
 ## 📂 Danh Mục Bài Báo Trong Notebook
 Chi tiết toàn văn và tóm tắt từng bài báo có thể xem tại:
-- [Tài liệu tóm tắt mở rộng](../../literature/open_access_repository/kw06_foundation_models_self_supervised_biosignals/README.md)
-- [Bảng dữ liệu thô `papers_index.csv`](../../literature/open_access_repository/kw06_foundation_models_self_supervised_biosignals/papers_index.csv)
+- [Bảng dữ liệu chỉ mục `papers_index.csv`](papers_index.csv)
+- [Thư mục tóm tắt chuyên sâu `paper_notes/`](paper_notes/)
+- [Thư mục chứa 100% PDF toàn văn `pdfs/`](pdfs/)

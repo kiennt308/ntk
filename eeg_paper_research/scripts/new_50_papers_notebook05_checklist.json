@@ -1,0 +1,952 @@
+[
+  {
+    "title": "Modality Disentangled Learning for Incomplete Multimodal Emotion Recognition: A Primitive Memory Distillation Perspective",
+    "norm_title": "modalitydisentangledlearningforincompletemultimodalemotionrecognitionaprimitivememorydistillationperspective",
+    "authors": "Jiaqi Zhang; Zheng Pang; Mengting Li; Yiqi Wang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2608.30563v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.30563v1.pdf",
+      "https://export.arxiv.org/pdf/2608.30563v1.pdf"
+    ],
+    "abstract": "Multimodal Emotion Recognition (MER) systems often suffer from missing modalities in real-world scenarios. Existing methods usually generate, align, or distill missing modalities as a whole, overlooking the heterogeneous nature of the information carried by each modality. Such holistic treatment mixes inferable shared semantics with uncertain modality-specific details, yielding unstable representations and degrading robustness. To address this issue, we propose the Primitive Memory Distillation (PriMD) framework. Unlike existing methods, PriMD takes an intra-modal perspective and focuses on how different types of information within a modality differ in recoverability within each modality. PriMD first disentangles cross-modal shared semantics from modality-specific representations, and then discretizes the latter into learnable semantic primitives to construct modality-specific memory banks. When modalities are missing, PriMD is a teacher-student framework that the student model uses the shared semantics of available modalities as queries to dynamically retrieve primitives. It compensates for missing modality-specific information within a constrained memory space and aligns with the teacher model. Extensive experiments on IEMOCAP, CMU-MOSI, and CMU-MOSEI demonstrate that PriMD achieves state-of-the-art performance and consistently stronger robustness across a wide range of missing-modality settings, while mitigating the instability caused by holistic feature inference. Our code and project website are available at https://github.com/JiaqiZhang-Sengoku/PriMD and https://jiaqizhang-sengoku.github.io/PriMD/, respectively.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_051",
+    "file_name": "OA_KW5_051.pdf",
+    "md5_hash": "9040da38b2b6759def4126b0feb67f7a",
+    "file_size_kb": 15993.3701171875
+  },
+  {
+    "title": "TTSD-FAR: Test-Time Self-Distillation with Fisher-Anchored Restoration for Missing-Modality Emotion Recognition in LVLMs",
+    "norm_title": "ttsdfartesttimeselfdistillationwithfisheranchoredrestorationformissingmodalityemotionrecognitioninlvlms",
+    "authors": "Muhammad Haseeb Aslam; Alessandro Koerich; Marco Pedersoli; Ali Etemad",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2608.18386v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.18386v1.pdf",
+      "https://export.arxiv.org/pdf/2608.18386v1.pdf"
+    ],
+    "abstract": "Large video-language models (LVLMs) have shown remarkable performance on multimodal tasks like multimodal emotion recognition (ER) in the wild. ER is inherently multimodal, requiring a joint understanding of facial expressions, vocalizations, language, biosignals, and gestures. However, real-world deployment remains challenging: modalities may be missing or noisy at test time. Partial observations can be viewed as a distribution shift relative to the complete-modality distribution. SOTA TTA methods based on entropy minimization or perplexity reduction do not transfer to autoregressive LVLMs, while retrieval augmented generation (RAG) degrades when the observed modality is weak. Because no ground-truth supervision exists to verify individual updates, adaptation across this stream risks accumulating drift and degrading once the model departs from a reliable solution. An effective solution must therefore adapt to arbitrary missing-modality patterns and remain effective during continual adaptation. We address both jointly with Test-Time Self-Distillation (TTSD), a parameter-efficient framework in which a frozen teacher, trained on complete modalities, guides an adaptive low-rank student via self-distillation, updating only a negligible number of parameters. Stability is built into this same loop through Fisher-Anchored Restoration (FAR), which monitors Fisher information stability to detect convergence versus drift and restores the student toward the teacher's anchor when distributional shifts are identified. Our experiments on MELD, DFEW, and BAH under 0%-50% missing modalities show that this unified adaptation-restoration design consistently outperforms entropy-based adaptation, RAG, and perplexity-based generation over long adaptation horizons, where baselines without restoration progressively degrade while TTSD-FAR remains consistent.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_052",
+    "file_name": "OA_KW5_052.pdf",
+    "md5_hash": "9e975b4c4dc1fc2f82c992cb9d081e3e",
+    "file_size_kb": 1462.3212890625
+  },
+  {
+    "title": "EmoEUS: Uncertainty Supervision for Multimodal Emotion Recognition in Conversation",
+    "norm_title": "emoeusuncertaintysupervisionformultimodalemotionrecognitioninconversation",
+    "authors": "Zilong Huang; Kong Aik Lee; Junjie Li; Zhe Li",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2607.18336v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2607.18336v1.pdf",
+      "https://export.arxiv.org/pdf/2607.18336v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition in conversation (MERC) can leverage multimodal and contextual cues to boost recognition performance. However, existing fusion approaches in MERC often ignore modality-specific uncertainty across utterances caused by conflicting cues, varying noise, and missing modality-specific signals. We propose EmoEUS, an explicit uncertainty supervision framework for MERC. EmoEUS performs uncertainty-aware multimodal fusion by dynamically weighting modalities using learned variance estimates. We also introduce an explicitly supervised loss that aligns each utterance's predicted variance with the distance between the utterance's distributional representation and its emotion- and modality-specific cluster center. Experiments on IEMOCAP and MELD show that EmoEUS consistently outperforms state-of-the-art methods.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_053",
+    "file_name": "OA_KW5_053.pdf",
+    "md5_hash": "6d9a734d7ced816f7f2551b1a5ae1ca0",
+    "file_size_kb": 707.9033203125
+  },
+  {
+    "title": "Pattern-Calibrated Multimodal Prediction under Blockwise Missingness",
+    "norm_title": "patterncalibratedmultimodalpredictionunderblockwisemissingness",
+    "authors": "Junhan Yu; Kejian Zhang; Doudou Zhou; Guojun Zhu",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2607.01821v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2607.01821v2.pdf",
+      "https://export.arxiv.org/pdf/2607.01821v2.pdf"
+    ],
+    "abstract": "Blockwise missingness in multimodal data is usually treated as an incomplete-input problem. We instead focus on prediction for a prespecified observed-modality pattern, where the observed modality set determines the information on which the prediction rule can condition. A procedure that imputes missing modalities, zero-fills unobserved modalities, or trains a single pooled predictor may borrow information across patterns, but it can also mix pattern-specific prediction rules. We propose Multimodal Overlap-aware Shared-specific Alignment and Inter-pattern Calibration (MOSAIC), a pattern-calibrated framework for borrowing across missingness patterns without collapsing their prediction rules. MOSAIC learns shared and modality-specific representations, uses the available representations that overlap with the target pattern to fit a first-stage predictor, and then estimates the calibration gap from target-pattern data. We establish non-asymptotic bounds that decompose the error into overlap effective sample size, calibration gap, and representation-learning error, clarifying when cross-pattern borrowing improves over local fitting and when the improvement is controlled by rule mismatch or representation-learning error. Simulations examine representation recovery and target-pattern correction, and applications to ICU mortality prediction, emotion recognition, and glaucoma classification show gains when target-pattern samples are limited or pattern-specific rules differ.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_054",
+    "file_name": "OA_KW5_054.pdf",
+    "md5_hash": "d9f3365621f2f8d335bd6d5949ed124d",
+    "file_size_kb": 2310.2138671875
+  },
+  {
+    "title": "Enhance-then-Balance Modality Collaboration for Robust Multimodal Sentiment Analysis",
+    "norm_title": "enhancethenbalancemodalitycollaborationforrobustmultimodalsentimentanalysis",
+    "authors": "Kang He; Yuzhe Ding; Xinrong Wang; Fei Li",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2604.12518v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.12518v2.pdf",
+      "https://export.arxiv.org/pdf/2604.12518v2.pdf"
+    ],
+    "abstract": "Multimodal sentiment analysis (MSA) integrates heterogeneous text, audio, and visual signals to infer human emotions. While recent approaches leverage cross-modal complementarity, they often struggle to fully utilize weaker modalities. In practice, dominant modalities tend to overshadow non-verbal ones, inducing modality competition and limiting overall contributions. This imbalance degrades fusion performance and robustness under noisy or missing modalities. To address this, we propose a novel model, Enhance-then-Balance Modality Collaboration framework (EBMC). EBMC improves representation quality via semantic disentanglement and cross-modal enhancement, strengthening weaker modalities. To prevent dominant modalities from overwhelming others, an Energy-guided Modality Coordination mechanism achieves implicit gradient rebalancing via a differentiable equilibrium objective. Furthermore, Instance-aware Modality Trust Distillation estimates sample-level reliability to adaptively modulate fusion weights, ensuring robustness. Extensive experiments demonstrate that EBMC achieves state-of-the-art or competitive results and maintains strong performance under missing-modality settings.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_055",
+    "file_name": "OA_KW5_055.pdf",
+    "md5_hash": "4acd00d8c7d25051fcd239f8d5fe5ec8",
+    "file_size_kb": 1171.8134765625
+  },
+  {
+    "title": "BALM: A Model-Agnostic Framework for Balanced Multimodal Learning under Imbalanced Missing Rates",
+    "norm_title": "balmamodelagnosticframeworkforbalancedmultimodallearningunderimbalancedmissingrates",
+    "authors": "Phuong-Anh Nguyen; Tien Anh Pham; Duc-Trong Le; Cam-Van Thi Nguyen",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2603.19718v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.19718v1.pdf",
+      "https://export.arxiv.org/pdf/2603.19718v1.pdf"
+    ],
+    "abstract": "Learning from multiple modalities often suffers from imbalance, where information-rich modalities dominate optimization while weaker or partially missing modalities contribute less. This imbalance becomes severe in realistic settings with imbalanced missing rates (IMR), where each modality is absent with different probabilities, distorting representation learning and gradient dynamics. We revisit this issue from a training-process perspective and propose BALM, a model-agnostic plug-in framework to achieve balanced multimodal learning under IMR. The framework comprises two complementary modules: the Feature Calibration Module (FCM), which recalibrates unimodal features using global context to establish a shared representation basis across heterogeneous missing patterns; the Gradient Rebalancing Module (GRM), which balances learning dynamics across modalities by modulating gradient magnitudes and directions from both distributional and spatial perspectives. BALM can be seamlessly integrated into diverse backbones, including multimodal emotion recognition (MER) models, without altering their architectures. Experimental results across multiple MER benchmarks confirm that BALM consistently enhances robustness and improves performance under diverse missing and imbalance settings. Code available at: https://github.com/np4s/BALM_CVPR2026.git",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_056",
+    "file_name": "OA_KW5_056.pdf",
+    "md5_hash": "28f96c7012447f9f1583dc3f38212640",
+    "file_size_kb": 2500.998046875
+  },
+  {
+    "title": "Memory Bear AI Memory Science Engine for Multimodal Affective Intelligence: A Technical Report",
+    "norm_title": "memorybearaimemoryscienceengineformultimodalaffectiveintelligenceatechnicalreport",
+    "authors": "Deliang Wen; Ke Sun; Yu Wang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2603.22306v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.22306v1.pdf",
+      "https://export.arxiv.org/pdf/2603.22306v1.pdf"
+    ],
+    "abstract": "Affective judgment in real interaction is rarely a purely local prediction problem. Emotional meaning often depends on prior trajectory, accumulated context, and multimodal evidence that may be weak, noisy, or incomplete at the current moment. Although multimodal emotion recognition (MER) has improved the integration of text, speech, and visual signals, many existing systems remain optimized for short-range inference and provide limited support for persistent affective memory, long-horizon dependency modeling, and robust interpretation under imperfect input.   This technical report presents the Memory Bear AI Memory Science Engine, a memory-centered framework for multimodal affective intelligence. Instead of treating emotion as a transient output label, the framework models affective information as a structured and evolving variable within a memory system. It organizes processing through structured memory formation, working-memory aggregation, long-term consolidation, memory-driven retrieval, dynamic fusion calibration, and continuous memory updating. At its core, multimodal signals are transformed into structured Emotion Memory Units (EMUs), enabling affective information to be preserved, reactivated, and revised across interaction horizons.   Experimental results show consistent gains over comparison systems across benchmark and business-grounded settings, with stronger accuracy and robustness, especially under noisy or missing-modality conditions. The framework offers a practical step from local emotion recognition toward more continuous, robust, and deployment-relevant affective intelligence.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_057",
+    "file_name": "OA_KW5_057.pdf",
+    "md5_hash": "5465bed22e6700bfbb80e7d936d80c9f",
+    "file_size_kb": 9277.25390625
+  },
+  {
+    "title": "MissBench: Benchmarking Multimodal Affective Analysis under Imbalanced Missing Modalities",
+    "norm_title": "missbenchbenchmarkingmultimodalaffectiveanalysisunderimbalancedmissingmodalities",
+    "authors": "Tien Anh Pham; Phuong-Anh Nguyen; Duc-Trong Le; Cam-Van Thi Nguyen",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2603.09874v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.09874v1.pdf",
+      "https://export.arxiv.org/pdf/2603.09874v1.pdf"
+    ],
+    "abstract": "Multimodal affective computing underpins key tasks such as sentiment analysis and emotion recognition. Standard evaluations, however, often assume that textual, acoustic, and visual modalities are equally available. In real applications, some modalities are systematically more fragile or expensive, creating imbalanced missing rates and training biases that task-level metrics alone do not reveal. We introduce MissBench, a benchmark and framework for multimodal affective tasks that standardizes both shared and imbalanced missing-rate protocols on four widely used sentiment and emotion datasets. MissBench also defines two diagnostic metrics. The Modality Equity Index (MEI) measures how fairly different modalities contribute across missing-modality configurations. The Modality Learning Index (MLI) quantifies optimization imbalance by comparing modality-specific gradient norms during training, aggregated across modality-related modules. Experiments on representative method families show that models that appear robust under shared missing rates can still exhibit marked modality inequity and optimization imbalance under imbalanced conditions. These findings position MissBench, together with MEI and MLI, as practical tools for stress-testing and analyzing multimodal affective models in realistic incomplete-modality settings.For reproducibility, we release our code at: https://anonymous.4open.science/r/MissBench-4098/",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_058",
+    "file_name": "OA_KW5_058.pdf",
+    "md5_hash": "74d7d2754eed4662f57d26d48ee4871b",
+    "file_size_kb": 1603.1201171875
+  },
+  {
+    "title": "Progressive Representation Learning for Multimodal Sentiment Analysis with Incomplete Modalities",
+    "norm_title": "progressiverepresentationlearningformultimodalsentimentanalysiswithincompletemodalities",
+    "authors": "Jindi Bao; Jianjun Qian; Mengkai Yan; Jian Yang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2603.09111v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2603.09111v1.pdf",
+      "https://export.arxiv.org/pdf/2603.09111v1.pdf"
+    ],
+    "abstract": "Multimodal Sentiment Analysis (MSA) seeks to infer human emotions by integrating textual, acoustic, and visual cues. However, existing approaches often rely on all modalities are completeness, whereas real-world applications frequently encounter noise, hardware failures, or privacy restrictions that result in missing modalities. There exists a significant feature misalignment between incomplete and complete modalities, and directly fusing them may even distort the well-learned representations of the intact modalities. To this end, we propose PRLF, a Progressive Representation Learning Framework designed for MSA under uncertain missing-modality conditions. PRLF introduces an Adaptive Modality Reliability Estimator (AMRE), which dynamically quantifies the reliability of each modality using recognition confidence and Fisher information to determine the dominant modality. In addition, the Progressive Interaction (ProgInteract) module iteratively aligns the other modalities with the dominant one, thereby enhancing cross-modal consistency while suppressing noise. Extensive experiments on CMU-MOSI, CMU-MOSEI, and SIMS verify that PRLF outperforms state-of-the-art methods across both inter- and intra-modality missing scenarios, demonstrating its robustness and generalization capability.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_059",
+    "file_name": "OA_KW5_059.pdf",
+    "md5_hash": "80dc337cb542cf1f57868282c5c5c81d",
+    "file_size_kb": 995.880859375
+  },
+  {
+    "title": "Omni-Sleep: A Sleep Foundation Model via Hierarchical Contrastive Learning of CNS-ANS Dynamics",
+    "norm_title": "omnisleepasleepfoundationmodelviahierarchicalcontrastivelearningofcnsansdynamics",
+    "authors": "Zhoujie Hou; Song Wang; Kexin Lou; Mo Wang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2607.07720v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2607.07720v2.pdf",
+      "https://export.arxiv.org/pdf/2607.07720v2.pdf"
+    ],
+    "abstract": "Sleep physiology arises from the coordinated dynamics of the central nervous system (CNS) and autonomic nervous system (ANS), as reflected by multimodal polysomnography signals including EEG, EOG, EMG, ECG, and respiration. However, existing sleep foundation models often fuse heterogeneous biosignals in a topology-agnostic manner, overlooking their physiological organization. We introduce Omni-Sleep, a sleep foundation model that uses the CNS/ANS partition as a physiological prior for topology-constrained representation learning. Omni-Sleep learns structured representations through three objectives: intra-system consistency, which captures shared subsystem-level factors within neural and cardio-respiratory signals; inter-system synchronization, which aligns subsystem trajectories to model brain--body dynamics; and latent-space masked temporal modeling, which captures long-horizon sleep dynamics. Pre-trained on over 100,000 hours of multi-center multimodal PSG data, Omni-Sleep is evaluated on sleep staging and multi-disease classification. Across datasets and modality-ablation settings, Omni-Sleep outperforms strong foundation-model baselines, showing improved label efficiency, cross-dataset generalization, and robustness to missing modalities. These results highlight the value of physiological hierarchy for generalizable sleep representation learning. Code is available at https://github.com/AutoBrain-sleep/OmniSleep.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_060",
+    "file_name": "OA_KW5_060.pdf",
+    "md5_hash": "cbf8b880fcc36d489592df2a65d30999",
+    "file_size_kb": 1574.361328125
+  },
+  {
+    "title": "PanLUNA: An Efficient and Robust Query-Unified Multimodal Model for Edge Biosignal Intelligence",
+    "norm_title": "panlunaanefficientandrobustqueryunifiedmultimodalmodelforedgebiosignalintelligence",
+    "authors": "Marija Zelic; Anna Tegon; Yawei Li; Thorir Mar Ingolfsson",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2604.04297v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.04297v1.pdf",
+      "https://export.arxiv.org/pdf/2604.04297v1.pdf"
+    ],
+    "abstract": "Physiological foundation models (FMs) have shown promise for biosignal representation learning, yet most remain confined to a single modality such as EEG, ECG, or PPG, largely because paired multimodal datasets are scarce. In this paper, we present PanLUNA, a compact 5.4M-parameter pan-modal FM that jointly processes EEG, ECG, and PPG within a single shared encoder. Extending LUNA's channel-unification module, PanLUNA treats multimodal channels as entries in a unified query set augmented with sensor-type embeddings, enabling efficient cross-modal early fusion while remaining inherently robust to missing modalities at inference time. Despite its small footprint, PanLUNA matches or exceeds models up to 57$\\times$ larger: 81.21% balanced accuracy on TUAB abnormal EEG detection and state-of-the-art 0.7416 balanced accuracy on HMC multimodal sleep staging. Quantization-aware training with INT8 weights recovers $\\geq$96% of full-precision performance, and deployment on the GAP9 ultra-low-power RISC-V microcontroller for wearables achieves 325.6 ms latency and 18.8 mJ per 10-second, 12-lead ECG inference, and 1.206 s latency at 68.65 mJ for multimodal 5-channel sleep staging over 30-second epochs.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_061",
+    "file_name": "OA_KW5_061.pdf",
+    "md5_hash": "2b8534d28b37f8dba868bf467193cd13",
+    "file_size_kb": 390.6435546875
+  },
+  {
+    "title": "TAMI: Temporally Aligned, Missingness-Aware, and Interpretable Multimodal Fusion for Mental Health Assessment in Older Adults with Mild Cognitive Impairment",
+    "norm_title": "tamitemporallyalignedmissingnessawareandinterpretablemultimodalfusionformentalhealthassessmentinolderadultswithmildcognitiveimpairment",
+    "authors": "Merna Bibars; Bolaji Omofojoye; Allan I. Levey; Rachel Hershenberg",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2608.30857v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2608.30857v1.pdf",
+      "https://export.arxiv.org/pdf/2608.30857v1.pdf"
+    ],
+    "abstract": "Depression and anxiety in older adults with Mild Cognitive Impairment (MCI) are frequently underdiagnosed due to limited access to care. Multimodal analysis of remote clinical interviews is a scalable screening approach, but existing methods have three limitations. First, they do not correct temporal misalignment across multimodal features extracted at different resolutions, inducing spurious cross-modal associations. Second, remote recordings exhibit uneven modality dropout, but missing values are often zero-filled, making them indistinguishable from valid near-zero measurements. Finally, they do not jointly attribute predictions to modalities, questions, and interview moments, limiting fine-grained clinical interpretation. We propose a Temporally-Aligned, Missingness-Aware, Interpretable (TAMI) multimodal fusion framework. TAMI aligns speech, language, facial, and physiological features within question-answer segments on a shared timeline, encodes modality-level missingness over time, and conditions fusion on question context. In interviews with 49 older adults with MCI, TAMI achieved area under the receiver operating characteristic curve (AUROC) scores of 0.68 (depression) and 0.69 (anxiety). Fine-grained temporal alignment of multimodal features produced the largest performance gain ($Δ{\\geq}0.1$). Multi-level interpretability analysis revealed that depression classification relied on eyegaze and open-ended questions, while anxiety classification depended on eyegaze and head pose, with attribution uniformly distributed across questions. Using only responses to the open-ended questions (5.1min), the depression model achieved an AUROC score of 0.67, which was not significantly different from using the full interview (19min) ($p&gt;0.05$). Our findings support designing interview protocols centered on open-ended questions for depression screening in older adults with MCI.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_062",
+    "file_name": "OA_KW5_062.pdf",
+    "md5_hash": "00b649aabd395abe58733b78b41ae88d",
+    "file_size_kb": 6605.5986328125
+  },
+  {
+    "title": "CF-Net: Conflict Fusion with Speaker Normalisation and Certainty Weighting for Ambivalence/Hesitancy Recognition",
+    "norm_title": "cfnetconflictfusionwithspeakernormalisationandcertaintyweightingforambivalencehesitancyrecognition",
+    "authors": "Tung Hung Bui; Hong Hai Nguyen; Van Thong Huynh",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2607.13976v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2607.13976v2.pdf",
+      "https://export.arxiv.org/pdf/2607.13976v2.pdf"
+    ],
+    "abstract": "Detecting ambivalence and hesitancy (AH) in unconstrained video is challenging because the target signal is inherently ambiguous and expressed through subtle cross-modal incongruence rather than prototypical affect. We present CF-Net, a deep multimodal network submitted to the 3rd Edition of the AH Video Recognition Challenge (ABAW 11th, ECCV 2026), targeting the BAH dataset. CF-Net encodes visual, audio, and transcript streams with frozen SigLIP2, HuBERT, and DistilBERT backbones, normalises backbone features per speaker to reduce identity leakage, and fuses them via a ConflictFusion module that explicitly computes pairwise cross-modal incongruence. Training combines certainty-weighted focal loss, manifold mixup, and modality dropout; an auxiliary certainty-regression head uses ambiguity annotations to stabilise learning on genuinely borderline samples. CF-Net achieves a Macro F1 of 0.7155 on the BAH validation set and 0.7364 (AP = 0.7439) on the private challenge test set.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_063",
+    "file_name": "OA_KW5_063.pdf",
+    "md5_hash": "650da6c1cf6d5fbb2834f4a735f7b9e2",
+    "file_size_kb": 314.0712890625
+  },
+  {
+    "title": "Two-Stage Multimodal Framework for Emotion Mimicry Intensity Prediction",
+    "norm_title": "twostagemultimodalframeworkforemotionmimicryintensityprediction",
+    "authors": "Dinithi Dissanayake; Shaveen Silva; Ovindu Atukorala; Prasanth Sasikumar",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2605.21869v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2605.21869v1.pdf",
+      "https://export.arxiv.org/pdf/2605.21869v1.pdf"
+    ],
+    "abstract": "We present our submission to the Hume-ABAW10 Emotional Mimicry Intensity (EMI) Challenge, which aims to predict six continuous emotion intensity dimensions: Admiration, Amusement, Determination, Empathic Pain, Excitement, and Joy, from in-the-wild multimodal video clips. We propose a staged multimodal framework that combines textual, acoustic, and visual representations, with an optional motion branch. Our approach first trains modality-specific encoders independently and then fuses their learned representations through a lightweight regressor with modality dropout and controlled encoder adaptation. Across our submitted systems, the best validation performance is obtained by the text--audio--vision--motion fusion model under the expanded 4:1 split, achieving an average Pearson correlation of 0.4722. Although the motion branch yields only very slight gains, its behavior can be interesting to study. Our team was placed third in the EMI challenge, achieving an average Pearson correlation of 0.57 for the test set. Overall, we provide a practical and reproducible baseline for EMI prediction.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_064",
+    "file_name": "OA_KW5_064.pdf",
+    "md5_hash": "f899ee70dd540f793981c49607be70fd",
+    "file_size_kb": 307.5595703125
+  },
+  {
+    "title": "MuteBench: Modality Unavailability Tolerance Evaluation for Incomplete Multimodal Fusion",
+    "norm_title": "mutebenchmodalityunavailabilitytoleranceevaluationforincompletemultimodalfusion",
+    "authors": "Wugeng Zheng; Ziwen Kan; Tianlong Chen; Chen Chen",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2605.15235v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2605.15235v1.pdf",
+      "https://export.arxiv.org/pdf/2605.15235v1.pdf"
+    ],
+    "abstract": "Multimodal physiological data powers clinical AI systems from intensive care units to wearable devices, but sensors routinely fail in practice. Two failure modes are common: modality missing, where an entire channel is absent, and within-modality missing, where a contiguous time segment is lost. No existing benchmark evaluates multiple fusion architectures under both failure modes at controlled severity levels across diverse clinical datasets. We present MuteBench, a benchmark covering 9 datasets from 7 clinical domains, 6 fusion architectures, and 2 missing-data modes over 125,000 samples. Through this benchmark, we find that architecture family is the strongest predictor of robustness, outweighing parameter count. Channel-independent models tolerate modality missing well but can be sensitive to within-modality missing, especially on short sequences. Curriculum modality dropout protects reliably only up to the maximum dropout rate used in training. We also find that channel count, sequence length, and modality alignment jointly determine which failure mode poses the greater threat. Finally, a PTB-XL case study suggests that diffusion-based imputation can improve downstream classification under within-modality missing, with the largest gains for models whose expert routing is most sensitive to corrupted inputs, though broader validation across datasets remains an open direction. MuteBench provides practitioners with concrete guidance for both selecting existing architectures and informing the design of future robust multimodal fusion methods.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_065",
+    "file_name": "OA_KW5_065.pdf",
+    "md5_hash": "0cb7bc55156a1a433f1810590b1579f9",
+    "file_size_kb": 688.1875
+  },
+  {
+    "title": "ECG-R1: Protocol-Guided and Modality-Agnostic MLLM for Reliable ECG Interpretation",
+    "norm_title": "ecgr1protocolguidedandmodalityagnosticmllmforreliableecginterpretation",
+    "authors": "Jiarui Jin; Haoyu Wang; Xingliang Wu; Xiaocheng Fang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2602.04279v3",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2602.04279v3.pdf",
+      "https://export.arxiv.org/pdf/2602.04279v3.pdf"
+    ],
+    "abstract": "Electrocardiography (ECG) serves as an indispensable diagnostic tool in clinical practice, yet existing multimodal large language models (MLLMs) remain unreliable for ECG interpretation, often producing plausible but clinically incorrect analyses. To address this, we propose ECG-R1, the first reasoning ECG MLLM designed for reliable ECG interpretation via three innovations. First, we construct the interpretation corpus using \\textit{Protocol-Guided Instruction Data Generation}, grounding interpretation in measurable ECG features and monograph-defined quantitative thresholds and diagnostic logic. Second, we present a modality-decoupled architecture with \\textit{Interleaved Modality Dropout} to improve robustness and cross-modal consistency when either the ECG signal or ECG image is missing. Third, we present \\textit{Reinforcement Learning with ECG Diagnostic Evidence Rewards} to strengthen evidence-grounded ECG interpretation. Additionally, we systematically evaluate the ECG interpretation capabilities of proprietary, open-source, and medical MLLMs, and provide the first quantitative evidence that severe hallucinations are widespread, suggesting that the public should not directly trust these outputs without independent verification. Code is available at \\href{https://github.com/PKUDigitalHealth/ECG-R1}{here}.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_066",
+    "file_name": "OA_KW5_066.pdf",
+    "md5_hash": "8f8130cc493cf93a403acf6e694f99aa",
+    "file_size_kb": 6538.640625
+  },
+  {
+    "title": "Occlusion-Robust Multimodal Emotion Recognition in VR via Fusion of Facial Images and EMG",
+    "norm_title": "occlusionrobustmultimodalemotionrecognitioninvrviafusionoffacialimagesandemg",
+    "authors": "Birgit Nierula; Karam Tomotaki-Dawoud; Mert Akguel; Mustafa Tevfik Lafci",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2609.03569v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2609.03569v1.pdf",
+      "https://export.arxiv.org/pdf/2609.03569v1.pdf"
+    ],
+    "abstract": "Head-mounted displays (HMDs) fundamentally limit emotion recognition in virtual reality (VR): by occluding the upper face, they render conventional image-based facial expression analysis incomplete, particularly for applications requiring real-time affective assessment. We address this challenge by fusing lower-face video with facial electromyography (EMG) from the occluded upper face to classify seven emotional categories (six basic emotions plus neutral). We introduce a synchronized multimodal dataset from 20 participants, pairing lower-face video with seven-channel upper-face EMG elicited by validated emotion stimuli. Under subject-independent test, our proposed late-fusion architecture merging convolutional visual embeddings with RBF-kernel EMG representations achieves 51% macro-F1, outperforming both image-only (41%) and EMG-only (43%) baselines. These results demonstrate that upper-face EMG provides robust complementary information under HMD-induced visual occlusion and establish a foundation for multimodal emotion recognition in naturalistic VR environments. This approach facilitates affect-adaptive applications, including communication training and therapeutic interventions. The dataset will be shared upon request under an ethical-use agreement.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_067",
+    "file_name": "OA_KW5_067.pdf",
+    "md5_hash": "2e2c863edde085ebd41430946d8c5d33",
+    "file_size_kb": 7332.923828125
+  },
+  {
+    "title": "SURE: Synergistic Uncertainty-aware Reasoning for Multimodal Emotion Recognition in Conversations",
+    "norm_title": "suresynergisticuncertaintyawarereasoningformultimodalemotionrecognitioninconversations",
+    "authors": "Yiqiang Cai; Chengyan Wu; Bolei Ma; Bo Chen",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2604.01916v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.01916v1.pdf",
+      "https://export.arxiv.org/pdf/2604.01916v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition in conversations (MERC) requires integrating multimodal signals while being robust to noise and modeling contextual reasoning. Existing approaches often emphasize fusion but overlook uncertainty in noisy features and fine-grained reasoning. We propose SURE (Synergistic Uncertainty-aware REasoning) for MERC, a framework that improves robustness and contextual modeling. SURE consists of three components: an Uncertainty-Aware Mixture-of-Experts module to handle modality-specific noise, an Iterative Reasoning module for multi-turn reasoning over context, and a Transformer Gate module to capture intra- and inter-modal interactions. Experiments on benchmark MERC datasets show that SURE consistently outperforms state-of-the-art methods, demonstrating its effectiveness in robust multimodal reasoning. These results highlight the importance of uncertainty modeling and iterative reasoning in advancing emotion recognition in conversational settings.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_068",
+    "file_name": "OA_KW5_068.pdf",
+    "md5_hash": "3aceaa99c5e5418362c473a24910d97f",
+    "file_size_kb": 396.927734375
+  },
+  {
+    "title": "A Dry-Contact Ear-EEG System With Continuous Electrode-Skin Impedance Mismatch Monitoring for Motion Artifact Cancellation Using DRL Stimulus",
+    "norm_title": "adrycontacteareegsystemwithcontinuouselectrodeskinimpedancemismatchmonitoringformotionartifactcancellationusingdrlstimulus",
+    "authors": "Lohan Atapattu; Sajitha Madugalle; Imasha Nethmal; Erandee Jayathilaka",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2609.02777v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2609.02777v1.pdf",
+      "https://export.arxiv.org/pdf/2609.02777v1.pdf"
+    ],
+    "abstract": "Dry-contact ear-electroencephalography (Ear-EEG) enables wearable neural monitoring. However, motion induced electrode-skin impedance (ESI) mismatches between electrodes can severely degrade signal quality. To the best of our knowledge, this paper presents the first proof-of-concept dry-contact EarEEG system that uses a driven-right-leg (DRL) stimulus for continuous ESI mismatch monitoring, enabling online adaptive motion artifact cancellation. A 1 kHz sinusoidal stimulus is injected through the DRL electrode. The resulting response to the injected carrier is separated from the EEG using bandpass filtering and demodulation, and then used to extract the ESI mismatch information as the reference input for a normalized least-mean-square adaptive filter followed by a Hampel filtering stage. To evaluate artifact suppression and preservation of neural activity, alpha-band EEG activity was analyzed involving four healthy participants performing head nodding, electrode tapping, and jaw clenching. The system achieved artifact power reductions of 6.5, 12.6, and 9.0 dB (77.6%, 92.8%, and 86.4%, respectively) while alpha-band modulation remained clearly observable after processing. This demonstrates the feasibility of DRL-stimulusbased ESI mismatch monitoring for motion artifact cancellation in wearable dry-contact Ear-EEG.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_069",
+    "file_name": "OA_KW5_069.pdf",
+    "md5_hash": "4232c0e7cfad837f39e770d86a4bc56d",
+    "file_size_kb": 4121.845703125
+  },
+  {
+    "title": "WearBCI Dataset: Understanding and Benchmarking Real-World Wearable Brain-Computer Interfaces Signals",
+    "norm_title": "wearbcidatasetunderstandingandbenchmarkingrealworldwearablebraincomputerinterfacessignals",
+    "authors": "Haoxian Liu; Hengle Jiang; Lanxuan Hong; Xiaomin Ouyang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.1145/3774906.3802782",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.09649v1.pdf",
+      "https://export.arxiv.org/pdf/2604.09649v1.pdf"
+    ],
+    "abstract": "Brain-computer interfaces (BCIs) have opened new platforms for human-computer interaction, medical diagnostics, and neurorehabilitation. Wearable BCI systems, which typically employ non-invasive electrodes for portable monitoring, hold great promise for real-world applications, but also face significant challenges of signal quality degradation caused by motion artifacts and environmental interferences. Most existing wearable BCI datasets are collected under stationary or controlled lab settings, limiting their utility for evaluating performance under body movement. To bridge this gap, we introduce WearBCI, the first dataset that comprehensively evaluates wearable BCI signals under different motion dynamics with synchronized multimodal recordings (EEG, IMU, and egocentric video), and systematic benchmark evaluations for studying impacts of motion artifact. Specifically, we collect data from 36 participants across different motion dynamics, including body movements, walking, and navigation. This dataset includes synchronized electroencephalography (EEG), inertial measurement unit (IMU) data, and egocentric video recordings. We analyze the collected wearable EEG signals to understand the impact of motion artifacts across different conditions, and benchmark representative EEG signal enhancement techniques on our dataset. Furthermore, we explore two new case studies: cross-modal EEG signal enhancement and multi-dimension human behavior understanding. These findings offer valuable insights into real-world wearable BCI deployment and new applications.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_070",
+    "file_name": "OA_KW5_070.pdf",
+    "md5_hash": "44fa76c53c7994bc2e0c16cb3735accf",
+    "file_size_kb": 14409.619140625
+  },
+  {
+    "title": "LI-DSN: A Layer-wise Interactive Dual-Stream Network for EEG Decoding",
+    "norm_title": "lidsnalayerwiseinteractivedualstreamnetworkforeegdecoding",
+    "authors": "Chenghao Yue; Zhiyuan Ma; Zhongye Xia; Xinche Zhang",
+    "year": 2026,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2604.01889v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2604.01889v1.pdf",
+      "https://export.arxiv.org/pdf/2604.01889v1.pdf"
+    ],
+    "abstract": "Electroencephalography (EEG) provides a non-invasive window into brain activity, offering high temporal resolution crucial for understanding and interacting with neural processes through brain-computer interfaces (BCIs). Current dual-stream neural networks for EEG often process temporal and spatial features independently through parallel branches, delaying their integration until a final, late-stage fusion. This design inherently leads to an \"information silo\" problem, precluding intermediate cross-stream refinement and hindering spatial-temporal decompositions essential for full feature utilization. We propose LI-DSN, a layer-wise interactive dual-stream network that facilitates progressive, cross-stream communication at each layer, thereby overcoming the limitations of late-fusion paradigms. LI-DSN introduces a novel Temporal-Spatial Integration Attention (TSIA) mechanism, which constructs a Spatial Affinity Correlation Matrix (SACM) to capture inter-electrode spatial structural relationships and a Temporal Channel Aggregation Matrix (TCAM) to integrate cosine-gated temporal dynamics under spatial guidance. Furthermore, we employ an adaptive fusion strategy with learnable channel weights to optimize the integration of dual-stream features. Extensive experiments across eight diverse EEG datasets, encompassing motor imagery (MI) classification, emotion recognition, and steady-state visual evoked potentials (SSVEP), consistently demonstrate that LI-DSN significantly outperforms 13 state-of-the-art (SOTA) baseline models, showcasing its superior robustness and decoding performance. The code will be publicized after acceptance.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_071",
+    "file_name": "OA_KW5_071.pdf",
+    "md5_hash": "53a47ffcb35e80af54c11b6222317570",
+    "file_size_kb": 5845.5947265625
+  },
+  {
+    "title": "Federated Dialogue-Semantic Diffusion for Emotion Recognition under Incomplete Modalities",
+    "norm_title": "federateddialoguesemanticdiffusionforemotionrecognitionunderincompletemodalities",
+    "authors": "Xihang Qiu; Jiarong Cheng; Yuhao Fang; Wanpeng Zhang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2511.00344v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2511.00344v1.pdf",
+      "https://export.arxiv.org/pdf/2511.00344v1.pdf"
+    ],
+    "abstract": "Multimodal Emotion Recognition in Conversations (MERC) enhances emotional understanding through the fusion of multimodal signals. However, unpredictable modality absence in real-world scenarios significantly degrades the performance of existing methods. Conventional missing-modality recovery approaches, which depend on training with complete multimodal data, often suffer from semantic distortion under extreme data distributions, such as fixed-modality absence. To address this, we propose the Federated Dialogue-guided and Semantic-Consistent Diffusion (FedDISC) framework, pioneering the integration of federated learning into missing-modality recovery. By federated aggregation of modality-specific diffusion models trained on clients and broadcasting them to clients missing corresponding modalities, FedDISC overcomes single-client reliance on modality completeness. Additionally, the DISC-Diffusion module ensures consistency in context, speaker identity, and semantics between recovered and available modalities, using a Dialogue Graph Network to capture conversational dependencies and a Semantic Conditioning Network to enforce semantic alignment. We further introduce a novel Alternating Frozen Aggregation strategy, which cyclically freezes recovery and classifier modules to facilitate collaborative optimization. Extensive experiments on the IEMOCAP, CMUMOSI, and CMUMOSEI datasets demonstrate that FedDISC achieves superior emotion classification performance across diverse missing modality patterns, outperforming existing approaches.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_072",
+    "file_name": "OA_KW5_072.pdf",
+    "md5_hash": "fdf86b4e2aa27d2a7b79cf09bb28e879",
+    "file_size_kb": 6950.283203125
+  },
+  {
+    "title": "Socially Aware Music Recommendation: A Multi-Modal Graph Neural Networks for Collaborative Music Consumption and Community-Based Engagement",
+    "norm_title": "sociallyawaremusicrecommendationamultimodalgraphneuralnetworksforcollaborativemusicconsumptionandcommunitybasedengagement",
+    "authors": "Kajwan Ziaoddini",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2511.05497v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2511.05497v1.pdf",
+      "https://export.arxiv.org/pdf/2511.05497v1.pdf"
+    ],
+    "abstract": "This study presents a novel Multi-Modal Graph Neural Network (MM-GNN) framework for socially aware music recommendation, designed to enhance personalization and foster community-based engagement. The proposed model introduces a fusion-free deep mutual learning strategy that aligns modality-specific representations from lyrics, audio, and visual data while maintaining robustness against missing modalities. A heterogeneous graph structure is constructed to capture both user-song interactions and user-user social relationships, enabling the integration of individual preferences with social influence. Furthermore, emotion-aware embeddings derived from acoustic and textual signals contribute to emotionally aligned recommendations. Experimental evaluations on benchmark datasets demonstrate that MM-GNN significantly outperforms existing state-of-the-art methods across various performance metrics. Ablation studies further validate the critical impact of each model component, confirming the effectiveness of the framework in delivering accurate and socially contextualized music recommendations.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_073",
+    "file_name": "OA_KW5_073.pdf",
+    "md5_hash": "36ed5b91fbed142c6803901c48576ec4",
+    "file_size_kb": 541.0732421875
+  },
+  {
+    "title": "Hardness-Aware Dynamic Curriculum Learning for Robust Multimodal Emotion Recognition with Missing Modalities",
+    "norm_title": "hardnessawaredynamiccurriculumlearningforrobustmultimodalemotionrecognitionwithmissingmodalities",
+    "authors": "Rui Liu; Haolin Zuo; Zheng Lian; Hongyu Yuan",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2508.06800v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.06800v2.pdf",
+      "https://export.arxiv.org/pdf/2508.06800v2.pdf"
+    ],
+    "abstract": "Missing modalities have recently emerged as a critical research direction in multimodal emotion recognition (MER). Conventional approaches typically address this issue through missing modality reconstruction. However, these methods fail to account for variations in reconstruction difficulty across different samples, consequently limiting the model's ability to handle hard samples effectively. To overcome this limitation, we propose a novel Hardness-Aware Dynamic Curriculum Learning framework, termed HARDY-MER. Our framework operates in two key stages: first, it estimates the hardness level of each sample, and second, it strategically emphasizes hard samples during training to enhance model performance on these challenging instances. Specifically, we first introduce a Multi-view Hardness Evaluation mechanism that quantifies reconstruction difficulty by considering both Direct Hardness (modality reconstruction errors) and Indirect Hardness (cross-modal mutual information). Meanwhile, we introduce a Retrieval-based Dynamic Curriculum Learning strategy that dynamically adjusts the training curriculum by retrieving samples with similar semantic information and balancing the learning focus between easy and hard instances. Extensive experiments on benchmark datasets demonstrate that HARDY-MER consistently outperforms existing methods in missing-modality scenarios. Our code will be made publicly available at https://github.com/HARDY-MER/HARDY-MER.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_074",
+    "file_name": "OA_KW5_074.pdf",
+    "md5_hash": "913a2b6db59dca5b4255f423d8bd8e90",
+    "file_size_kb": 4358.193359375
+  },
+  {
+    "title": "Hierarchical MoE: Continuous Multimodal Emotion Recognition with Incomplete and Asynchronous Inputs",
+    "norm_title": "hierarchicalmoecontinuousmultimodalemotionrecognitionwithincompleteandasynchronousinputs",
+    "authors": "Yitong Zhu; Lei Han; Guanxuan Jiang; PengYuan Zhou",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2508.02133v4",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.02133v4.pdf",
+      "https://export.arxiv.org/pdf/2508.02133v4.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition (MER) is crucial for human-computer interaction, yet real-world challenges like dynamic modality incompleteness and asynchrony severely limit its robustness. Existing methods often assume consistently complete data or lack dynamic adaptability. To address these limitations, we propose a novel Hi-MoE~(Hierarchical Mixture-of-Experts) framework for robust continuous emotion prediction. This framework employs a dual-layer expert structure. A Modality Expert Bank utilizes soft routing to dynamically handle missing modalities and achieve robust information fusion. A subsequent Emotion Expert Bank leverages differential-attention routing to flexibly attend to emotional prototypes, enabling fine-grained emotion representation. Additionally, a cross-modal alignment module explicitly addresses temporal shifts and semantic inconsistencies between modalities. Extensive experiments on benchmark datasets DEAP and DREAMER demonstrate our model's state-of-the-art performance in continuous emotion regression, showcasing exceptional robustness under challenging conditions such as dynamic modality absence and asynchronous sampling. This research significantly advances the development of intelligent emotion systems adaptable to complex real-world environments.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_075",
+    "file_name": "OA_KW5_075.pdf",
+    "md5_hash": "2f9a5564851983a554308b16f3de6cb5",
+    "file_size_kb": 4483.2744140625
+  },
+  {
+    "title": "ADMC: Attention-based Diffusion Model for Missing Modalities Feature Completion",
+    "norm_title": "admcattentionbaseddiffusionmodelformissingmodalitiesfeaturecompletion",
+    "authors": "Yuhan Li; Wei Zhang; Juan Chen; Jiangjia Yan",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2507.05624v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.05624v2.pdf",
+      "https://export.arxiv.org/pdf/2507.05624v2.pdf"
+    ],
+    "abstract": "Multimodal emotion and intent recognition is essential for automated human-computer interaction, It aims to analyze users' speech, text, and visual information to predict their emotions or intent. One of the significant challenges is that missing modalities due to sensor malfunctions or incomplete data. Traditional methods that attempt to reconstruct missing information often suffer from over-coupling and imprecise generation processes, leading to suboptimal outcomes. To address these issues, we introduce an Attention-based Diffusion model for Missing Modalities feature Completion (ADMC). Our framework independently trains feature extraction networks for each modality, preserving their unique characteristics and avoiding over-coupling. The Attention-based Diffusion Network (ADN) generates missing modality features that closely align with authentic multimodal distribution, enhancing performance across all missing-modality scenarios. Moreover, ADN's cross-modal generation offers improved recognition even in full-modality contexts. Our approach achieves state-of-the-art results on the IEMOCAP and MIntRec benchmarks, demonstrating its effectiveness in both missing and complete modality scenarios.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_076",
+    "file_name": "OA_KW5_076.pdf",
+    "md5_hash": "a81358b49343b9868ec79815b4d0629f",
+    "file_size_kb": 6174.708984375
+  },
+  {
+    "title": "GSDNet: Revisiting Incomplete Multimodal-Diffusion from Graph Spectrum Perspective for Conversation Emotion Recognition",
+    "norm_title": "gsdnetrevisitingincompletemultimodaldiffusionfromgraphspectrumperspectiveforconversationemotionrecognition",
+    "authors": "Yuntao Shou; Jun Yao; Tao Meng; Wei Ai",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2506.12325v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2506.12325v1.pdf",
+      "https://export.arxiv.org/pdf/2506.12325v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition in conversations (MERC) aims to infer the speaker's emotional state by analyzing utterance information from multiple sources (i.e., video, audio, and text). Compared with unimodality, a more robust utterance representation can be obtained by fusing complementary semantic information from different modalities. However, the modality missing problem severely limits the performance of MERC in practical scenarios. Recent work has achieved impressive performance on modality completion using graph neural networks and diffusion models, respectively. This inspires us to combine these two dimensions through the graph diffusion model to obtain more powerful modal recovery capabilities. Unfortunately, existing graph diffusion models may destroy the connectivity and local structure of the graph by directly adding Gaussian noise to the adjacency matrix, resulting in the generated graph data being unable to retain the semantic and topological information of the original graph. To this end, we propose a novel Graph Spectral Diffusion Network (GSDNet), which maps Gaussian noise to the graph spectral space of missing modalities and recovers the missing data according to its original distribution. Compared with previous graph diffusion methods, GSDNet only affects the eigenvalues of the adjacency matrix instead of destroying the adjacency matrix directly, which can maintain the global topological information and important spectral features during the diffusion process. Extensive experiments have demonstrated that GSDNet achieves state-of-the-art emotion recognition performance in various modality loss scenarios.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_077",
+    "file_name": "OA_KW5_077.pdf",
+    "md5_hash": "ab3bfcd6d384ea9b1fff7a634ef91951",
+    "file_size_kb": 2009.994140625
+  },
+  {
+    "title": "Towards Robust Multimodal Emotion Recognition under Missing Modalities and Distribution Shifts",
+    "norm_title": "towardsrobustmultimodalemotionrecognitionundermissingmodalitiesanddistributionshifts",
+    "authors": "Guowei Zhong; Ruohong Huan; Mingzhen Wu; Ronghua Liang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2506.10452v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2506.10452v1.pdf",
+      "https://export.arxiv.org/pdf/2506.10452v1.pdf"
+    ],
+    "abstract": "Recent advancements in Multimodal Emotion Recognition (MER) face challenges in addressing both modality missing and Out-Of-Distribution (OOD) data simultaneously. Existing methods often rely on specific models or introduce excessive parameters, which limits their practicality. To address these issues, we propose a novel robust MER framework, Causal Inference Distiller (CIDer), and introduce a new task, Random Modality Feature Missing (RMFM), to generalize the definition of modality missing. CIDer integrates two key components: a Model-Specific Self-Distillation (MSSD) module and a Model-Agnostic Causal Inference (MACI) module. MSSD enhances robustness under the RMFM task through a weight-sharing self-distillation approach applied across low-level features, attention maps, and high-level representations. Additionally, a Word-level Self-aligned Attention Module (WSAM) reduces computational complexity, while a Multimodal Composite Transformer (MCT) facilitates efficient multimodal fusion. To tackle OOD challenges, MACI employs a tailored causal graph to mitigate label and language biases using a Multimodal Causal Module (MCM) and fine-grained counterfactual texts. Notably, MACI can independently enhance OOD generalization with minimal additional parameters. Furthermore, we also introduce the new repartitioned MER OOD datasets. Experimental results demonstrate that CIDer achieves robust performance in both RMFM and OOD scenarios, with fewer parameters and faster training compared to state-of-the-art methods. The implementation of this work is publicly accessible at https://github.com/gw-zhong/CIDer.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_078",
+    "file_name": "OA_KW5_078.pdf",
+    "md5_hash": "4fe090733b190fe592d61a68596a1794",
+    "file_size_kb": 3856.80859375
+  },
+  {
+    "title": "EmotionTalk: An Interactive Chinese Multimodal Emotion Dataset With Rich Annotations",
+    "norm_title": "emotiontalkaninteractivechinesemultimodalemotiondatasetwithrichannotations",
+    "authors": "Haoqin Sun; Xuechen Wang; Jinghua Zhao; Shiwan Zhao",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2505.23018v3",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2505.23018v3.pdf",
+      "https://export.arxiv.org/pdf/2505.23018v3.pdf"
+    ],
+    "abstract": "In recent years, emotion recognition plays a critical role in applications such as human-computer interaction, mental health monitoring, and sentiment analysis. While datasets for emotion analysis in languages such as English have proliferated, there remains a pressing need for high-quality, comprehensive datasets tailored to the unique linguistic, cultural, and multimodal characteristics of Chinese. In this work, we propose \\textbf{EmotionTalk}, an interactive Chinese multimodal emotion dataset with rich annotations. This dataset provides multimodal information from 19 actors participating in dyadic conversational settings, incorporating acoustic, visual, and textual modalities. It includes 23.6 hours of speech (19,250 utterances), annotations for 7 utterance-level emotion categories (happy, surprise, sad, disgust, anger, fear, and neutral), 5-dimensional sentiment labels (negative, weakly negative, neutral, weakly positive, and positive) and 4-dimensional speech captions (speaker, speaking style, emotion and overall). The dataset is well-suited for research on unimodal and multimodal emotion recognition, missing modality challenges, and speech captioning tasks. To our knowledge, it represents the first high-quality and versatile Chinese dialogue multimodal emotion dataset, which is a valuable contribution to research on cross-cultural emotion analysis and recognition. Additionally, we conduct experiments on EmotionTalk to demonstrate the effectiveness and quality of the dataset. It will be open-source and freely available for all academic purposes. The dataset and codes will be made available at: https://github.com/NKU-HLT/EmotionTalk.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_079",
+    "file_name": "OA_KW5_079.pdf",
+    "md5_hash": "08643c163e05ea38531cb978247ee209",
+    "file_size_kb": 1252.6171875
+  },
+  {
+    "title": "RoHyDR: Robust Hybrid Diffusion Recovery for Incomplete Multimodal Emotion Recognition",
+    "norm_title": "rohydrrobusthybriddiffusionrecoveryforincompletemultimodalemotionrecognition",
+    "authors": "Yuehan Jin; Xiaoqing Liu; Yiyuan Yang; Zhiwen Yu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2505.17501v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2505.17501v1.pdf",
+      "https://export.arxiv.org/pdf/2505.17501v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition analyzes emotions by combining data from multiple sources. However, real-world noise or sensor failures often cause missing or corrupted data, creating the Incomplete Multimodal Emotion Recognition (IMER) challenge. In this paper, we propose Robust Hybrid Diffusion Recovery (RoHyDR), a novel framework that performs missing-modality recovery at unimodal, multimodal, feature, and semantic levels. For unimodal representation recovery of missing modalities, RoHyDR exploits a diffusion-based generator to generate distribution-consistent and semantically aligned representations from Gaussian noise, using available modalities as conditioning. For multimodal fusion recovery, we introduce adversarial learning to produce a realistic fused multimodal representation and recover missing semantic content. We further propose a multi-stage optimization strategy that enhances training stability and efficiency. In contrast to previous work, the hybrid diffusion and adversarial learning-based recovery mechanism in RoHyDR allows recovery of missing information in both unimodal representation and multimodal fusion, at both feature and semantic levels, effectively mitigating performance degradation caused by suboptimal optimization. Comprehensive experiments conducted on two widely used multimodal emotion recognition benchmarks demonstrate that our proposed method outperforms state-of-the-art IMER methods, achieving robust recognition performance under various missing-modality scenarios. Our code will be made publicly available upon acceptance.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_080",
+    "file_name": "OA_KW5_080.pdf",
+    "md5_hash": "f832b353d454ddd5b7b25f381104e00a",
+    "file_size_kb": 4770.7900390625
+  },
+  {
+    "title": "Towards Robust Multimodal Physiological Foundation Models: Handling Arbitrary Missing Modalities",
+    "norm_title": "towardsrobustmultimodalphysiologicalfoundationmodelshandlingarbitrarymissingmodalities",
+    "authors": "Wei-Bang Jiang; Xi Fu; Yi Ding; Cuntai Guan",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2504.19596v3",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2504.19596v3.pdf",
+      "https://export.arxiv.org/pdf/2504.19596v3.pdf"
+    ],
+    "abstract": "Multimodal physiological signals, such as EEG, ECG, EOG, and EMG, are crucial for healthcare and brain-computer interfaces. While existing methods rely on specialized architectures and dataset-specific fusion strategies, they struggle to learn universal representations that generalize across datasets and handle missing modalities at inference time. To address these issues, we propose PhysioOmni, a foundation model for multimodal physiological signal analysis that models both homogeneous and heterogeneous features to decouple multimodal signals and extract generic representations while maintaining compatibility with arbitrary missing modalities. PhysioOmni trains a decoupled multimodal tokenizer, enabling masked signal pre-training via modality-invariant and modality-specific objectives. To ensure adaptability to diverse and incomplete modality combinations, the pre-trained encoders undergo resilient fine-tuning with prototype alignment on downstream datasets. Extensive experiments on four downstream tasks, emotion recognition, sleep stage classification, motor prediction, and mental workload detection, demonstrate that PhysioOmni achieves state-of-the-art performance while maintaining strong robustness to missing modalities. Our code and model weights will be released.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_081",
+    "file_name": "OA_KW5_081.pdf",
+    "md5_hash": "4acf7dd588e2992dca0d0317723f5ba7",
+    "file_size_kb": 645.5859375
+  },
+  {
+    "title": "RAMer: Reconstruction-based Adversarial Model for Multi-party Multi-modal Multi-label Emotion Recognition",
+    "norm_title": "ramerreconstructionbasedadversarialmodelformultipartymultimodalmultilabelemotionrecognition",
+    "authors": "Xudong Yang; Yizhang Zhu; Hanfeng Liu; Zeyi Wen",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2502.10435v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2502.10435v2.pdf",
+      "https://export.arxiv.org/pdf/2502.10435v2.pdf"
+    ],
+    "abstract": "Conventional Multi-modal multi-label emotion recognition (MMER) assumes complete access to visual, textual, and acoustic modalities. However, real-world multi-party settings often violate this assumption, as non-speakers frequently lack acoustic and textual inputs, leading to a significant degradation in model performance. Existing approaches also tend to unify heterogeneous modalities into a single representation, overlooking each modality's unique characteristics. To address these challenges, we propose RAMer (Reconstruction-based Adversarial Model for Emotion Recognition), which refines multi-modal representations by not only exploring modality commonality and specificity but crucially by leveraging reconstructed features, enhanced by contrastive learning, to overcome data incompleteness and enrich feature quality. RAMer also introduces a personality auxiliary task to complement missing modalities using modality-level attention, improving emotion reasoning. To further strengthen the model's ability to capture label and modality interdependency, we propose a stack shuffle strategy to enrich correlations between labels and modality-specific features. Experiments on three benchmarks, i.e., MEmoR, CMU-MOSEI, and $M^3ED$, demonstrate that RAMer achieves state-of-the-art performance in dyadic and multi-party MMER scenarios.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_082",
+    "file_name": "OA_KW5_082.pdf",
+    "md5_hash": "08af3a7d6d92fdb85944f3f9c6e7ddd1",
+    "file_size_kb": 3950.2265625
+  },
+  {
+    "title": "Modality-Invariant Bidirectional Temporal Representation Distillation Network for Missing Multimodal Sentiment Analysis",
+    "norm_title": "modalityinvariantbidirectionaltemporalrepresentationdistillationnetworkformissingmultimodalsentimentanalysis",
+    "authors": "Xincheng Wang; Liejun Wang; Yinfeng Yu; Xinxin Jiao",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2501.05474v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2501.05474v1.pdf",
+      "https://export.arxiv.org/pdf/2501.05474v1.pdf"
+    ],
+    "abstract": "Multimodal Sentiment Analysis (MSA) integrates diverse modalities(text, audio, and video) to comprehensively analyze and understand individuals' emotional states. However, the real-world prevalence of incomplete data poses significant challenges to MSA, mainly due to the randomness of modality missing. Moreover, the heterogeneity issue in multimodal data has yet to be effectively addressed. To tackle these challenges, we introduce the Modality-Invariant Bidirectional Temporal Representation Distillation Network (MITR-DNet) for Missing Multimodal Sentiment Analysis. MITR-DNet employs a distillation approach, wherein a complete modality teacher model guides a missing modality student model, ensuring robustness in the presence of modality missing. Simultaneously, we developed the Modality-Invariant Bidirectional Temporal Representation Learning Module (MIB-TRL) to mitigate heterogeneity.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_083",
+    "file_name": "OA_KW5_083.pdf",
+    "md5_hash": "5f8406fd5581689de34fd7afb0d8423f",
+    "file_size_kb": 2165.2490234375
+  },
+  {
+    "title": "A Robust Incomplete Multimodal Low-Rank Adaptation Approach for Emotion Recognition",
+    "norm_title": "arobustincompletemultimodallowrankadaptationapproachforemotionrecognition",
+    "authors": "Xinkui Zhao; Jinsong Shu; Yangyang Wu; Guanjie Cheng",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2507.11202v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.11202v1.pdf",
+      "https://export.arxiv.org/pdf/2507.11202v1.pdf"
+    ],
+    "abstract": "Multimodal Emotion Recognition (MER) often encounters incomplete multimodality in practical applications due to sensor failures or privacy protection requirements. While existing methods attempt to address various incomplete multimodal scenarios by balancing the training of each modality combination through additional gradients, these approaches face a critical limitation: training gradients from different modality combinations conflict with each other, ultimately degrading the performance of the final prediction model. In this paper, we propose a unimodal decoupled dynamic low-rank adaptation method based on modality combinations, named MCULoRA, which is a novel framework for the parameter-efficient training of incomplete multimodal learning models. MCULoRA consists of two key modules, modality combination aware low-rank adaptation (MCLA) and dynamic parameter fine-tuning (DPFT). The MCLA module effectively decouples the shared information from the distinct characteristics of individual modality combinations. The DPFT module adjusts the training ratio of modality combinations based on the separability of each modality's representation space, optimizing the learning efficiency across different modality combinations. Our extensive experimental evaluation in multiple benchmark datasets demonstrates that MCULoRA substantially outperforms previous incomplete multimodal learning approaches in downstream task accuracy.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_084",
+    "file_name": "OA_KW5_084.pdf",
+    "md5_hash": "d40bef220ab80f9b2bdecbd90acaee84",
+    "file_size_kb": 5535.7421875
+  },
+  {
+    "title": "Contribution-Guided Asymmetric Learning for Robust Multimodal Fusion under Imbalance and Noise",
+    "norm_title": "contributionguidedasymmetriclearningforrobustmultimodalfusionunderimbalanceandnoise",
+    "authors": "Zijing Xu; Yunfeng Kou; Kunming Wu; Hong Liu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2510.26289v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2510.26289v2.pdf",
+      "https://export.arxiv.org/pdf/2510.26289v2.pdf"
+    ],
+    "abstract": "Multimodal learning faces two major challenges: modality imbalance and data noise, which significantly affect the robustness and generalization ability of models. Existing methods achieve modality balance by suppressing dominant modalities, but they neglect the inherent differences in the information value between modalities, potentially leading to convergence to suboptimal solutions. This paper proposes an innovative modality compression paradigm, Contribution-Guided Asymmetric Learning (CAL), which aims to enhance the contribution of high-contribution modalities while compressing weak modalities to increase their contribution, allowing both to improve the performance of multimodal information fusion. CAL is based on a modality contribution metric W^m combining the information quantity I(m) and confidence D(m), and it designs an asymmetric gradient acceleration mechanism and a contribution-aware Asymmetric Information Bottleneck (AIB) compression mechanism. The former accelerates the gradient update of modalities, while the latter dynamically compresses the noise of low-contribution modalities.   On five benchmark datasets, including emotion recognition, scene recognition, and event localization tasks, CAL has shown outstanding performance in imbalanced fusion tasks and noise robustness tests. On CREMA-D, KS, and AVE, CAL achieves 79.30%, 74.82%, and 74.21% accuracy, significantly outperforming the existing state-of-the-art model ARL. In high-noise robustness tests, CAL also achieved leading performance under various attack strategies on the MVSA-Single and NYUD2 datasets. These results validate the significant advantages of CAL in modality imbalance and noise interference. CAL, as a flexible and efficient framework, is easy to transfer to other tasks and has broad adaptability and potential application prospects.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_085",
+    "file_name": "OA_KW5_085.pdf",
+    "md5_hash": "09b844c3e2b11c4627752b23eda0930a",
+    "file_size_kb": 713.51953125
+  },
+  {
+    "title": "Enhancing Speech Emotion Recognition Leveraging Aligning Timestamps of ASR Transcripts and Speaker Diarization",
+    "norm_title": "enhancingspeechemotionrecognitionleveragingaligningtimestampsofasrtranscriptsandspeakerdiarization",
+    "authors": "Hsuan-Yu Wang; Pei-Ying Lee; Berlin Chen",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2507.19356v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2507.19356v1.pdf",
+      "https://export.arxiv.org/pdf/2507.19356v1.pdf"
+    ],
+    "abstract": "In this paper, we investigate the impact of incorporating timestamp-based alignment between Automatic Speech Recognition (ASR) transcripts and Speaker Diarization (SD) outputs on Speech Emotion Recognition (SER) accuracy. Misalignment between these two modalities often reduces the reliability of multimodal emotion recognition systems, particularly in conversational contexts. To address this issue, we introduce an alignment pipeline utilizing pre-trained ASR and speaker diarization models, systematically synchronizing timestamps to generate accurately labeled speaker segments. Our multimodal approach combines textual embeddings extracted via RoBERTa with audio embeddings from Wav2Vec, leveraging cross-attention fusion enhanced by a gating mechanism. Experimental evaluations on the IEMOCAP benchmark dataset demonstrate that precise timestamp alignment improves SER accuracy, outperforming baseline methods that lack synchronization. The results highlight the critical importance of temporal alignment, demonstrating its effectiveness in enhancing overall emotion recognition accuracy and providing a foundation for robust multimodal emotion analysis.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_086",
+    "file_name": "OA_KW5_086.pdf",
+    "md5_hash": "bee86ee898e6ca9446246319a6b6cc35",
+    "file_size_kb": 453.4208984375
+  },
+  {
+    "title": "Real-time Noise Detection and Classification in Single-Channel EEG: A Lightweight Machine Learning Approach for EMG, White Noise, and EOG Artifacts",
+    "norm_title": "realtimenoisedetectionandclassificationinsinglechanneleegalightweightmachinelearningapproachforemgwhitenoiseandeogartifacts",
+    "authors": "Hossein Enshaei; Pariya Jebreili; Sayed Mahmoud Sakhaei",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2509.26058v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.26058v2.pdf",
+      "https://export.arxiv.org/pdf/2509.26058v2.pdf"
+    ],
+    "abstract": "Electroencephalogram (EEG) artifact detection in real-world settings faces significant challenges such as computational inefficiency in multi-channel methods, poor robustness to simultaneous noise, and trade-offs between accuracy and complexity in deep learning models. We propose a hybrid spectral-temporal framework for real-time detection and classification of ocular (EOG), muscular (EMG), and white noise artifacts in single-channel EEG. This method, in contrast to other approaches, combines time-domain low-pass filtering (targeting low-frequency EOG) and frequency-domain power spectral density (PSD) analysis (capturing broad-spectrum EMG), followed by PCA-optimized feature fusion to minimize redundancy while preserving discriminative information. This feature engineering strategy allows a lightweight multi-layer perceptron (MLP) architecture to outperform advanced CNNs and RNNs by achieving 99% accuracy at low SNRs (SNR -7) dB and &gt;90% accuracy in moderate noise (SNR 4 dB). Additionally, this framework addresses the unexplored problem of simultaneous multi-source contamination(EMG+EOG+white noise), where it maintains 96% classification accuracy despite overlapping artifacts. With 30-second training times (97% faster than CNNs) and robust performance across SNR levels, this framework bridges the gap between clinical applicability and computational efficiency, which enables real-time use in wearable brain-computer interfaces. This work also challenges the ubiquitous dependence on model depth for EEG artifact detection by demonstrating that domain-informed feature fusion surpasses complex architecture in noisy scenarios.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_087",
+    "file_name": "OA_KW5_087.pdf",
+    "md5_hash": "72baaa43df48f74dae64d127051fa579",
+    "file_size_kb": 857.37109375
+  },
+  {
+    "title": "PhysioWave: A Multi-Scale Wavelet-Transformer for Physiological Signal Representation",
+    "norm_title": "physiowaveamultiscalewavelettransformerforphysiologicalsignalrepresentation",
+    "authors": "Yanlong Chen; Mattia Orlandi; Pierangelo Maria Rapa; Simone Benatti",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2506.10351v4",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2506.10351v4.pdf",
+      "https://export.arxiv.org/pdf/2506.10351v4.pdf"
+    ],
+    "abstract": "Physiological signals are often corrupted by motion artifacts, baseline drift, and other low-SNR disturbances, which pose significant challenges for analysis. Additionally, these signals exhibit strong non-stationarity, with sharp peaks and abrupt changes that evolve continuously, making them difficult to represent using traditional time-domain or filtering methods. To address these issues, a novel wavelet-based approach for physiological signal analysis is presented, aiming to capture multi-scale time-frequency features in various physiological signals. Leveraging this technique, two large-scale pretrained models specific to EMG and ECG are introduced for the first time, achieving superior performance and setting new baselines in downstream tasks. Additionally, a unified multi-modal framework is constructed by integrating pretrained EEG model, where each modality is guided through its dedicated branch and fused via learnable weighted fusion. This design effectively addresses challenges such as low signal-to-noise ratio, high inter-subject variability, and device mismatch, outperforming existing methods on multi-modal tasks. The proposed wavelet-based architecture lays a solid foundation for analysis of diverse physiological signals, while the multi-modal design points to next-generation physiological signal processing with potential impact on wearable health monitoring, clinical diagnostics, and broader biomedical applications. Code and data are available at: github.com/ForeverBlue816/PhysioWave",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_088",
+    "file_name": "OA_KW5_088.pdf",
+    "md5_hash": "1d6bf47708192ba5c669be63b1c0b35d",
+    "file_size_kb": 16805.9169921875
+  },
+  {
+    "title": "Multimodal Functional Maximum Correlation for Emotion Recognition",
+    "norm_title": "multimodalfunctionalmaximumcorrelationforemotionrecognition",
+    "authors": "Deyang Zheng; Tianyi Zhang; Wenming Zheng; Shujian Yu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.1109/taffc.2026.3695876",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2512.23076v2.pdf",
+      "https://export.arxiv.org/pdf/2512.23076v2.pdf"
+    ],
+    "abstract": "Emotional states manifest as coordinated yet heterogeneous physiological responses across central and autonomic systems, posing a fundamental challenge for multimodal representation learning in affective computing. Learning such joint dynamics is further complicated by the scarcity and subjectivity of affective annotations, which motivates the use of self-supervised learning (SSL). However, most existing SSL approaches rely on pairwise alignment objectives, which are insufficient to characterize dependencies among more than two modalities and fail to capture higher-order interactions arising from coordinated brain and autonomic responses.   To address this limitation, we propose Multimodal Functional Maximum Correlation (MFMC), a principled SSL framework that maximizes higher-order multimodal dependence through a Dual Total Correlation (DTC) objective. By deriving a tight sandwich bound and optimizing it using a functional maximum correlation analysis (FMCA) based trace surrogate, MFMC captures joint multimodal interactions directly, without relying on pairwise contrastive losses.   Experiments on three public affective computing benchmarks demonstrate that MFMC consistently achieves state-of-the-art or competitive performance under both subject-dependent and subject-independent evaluation protocols, highlighting its robustness to inter-subject variability. In particular, MFMC improves subject-dependent accuracy on CEAP-360VR from 78.9% to 86.8%, and subject-independent accuracy from 27.5% to 33.1% using the EDA signal alone. Moreover, MFMC remains within 0.8 percentage points of the best-performing method on the most challenging EEG subject-independent split of MAHNOB-HCI. Our code is available at https://github.com/DY9910/MFMC.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_089",
+    "file_name": "OA_KW5_089.pdf",
+    "md5_hash": "a6639dbab3133514d52976c7cef84aff",
+    "file_size_kb": 5638.3798828125
+  },
+  {
+    "title": "LEAF: Language-EEG Aligned Foundation Model for Brain-Computer Interfaces",
+    "norm_title": "leaflanguageeegalignedfoundationmodelforbraincomputerinterfaces",
+    "authors": "Muyun Jiang; Shuailei Zhang; Zhenjie Yang; Mengjun Wu",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2509.24302v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2509.24302v2.pdf",
+      "https://export.arxiv.org/pdf/2509.24302v2.pdf"
+    ],
+    "abstract": "Recent advances in electroencephalography (EEG) foundation models, which capture transferable EEG representations, have greatly accelerated the development of brain-computer interfaces (BCIs). However, existing approaches still struggle to incorporate language instructions as prior constraints for EEG representation learning, limiting their ability to leverage the semantic knowledge inherent in language to unify different labels and tasks. To address this challenge, we present LEAF, a foundation model for EEG--Language Alignment with Semantic Task Instruction and Querying. LEAF integrates task-aware semantic guidance to produce structured and linguistically aligned EEG embeddings, thereby enhancing decoding robustness and transferability. In the pretraining stage, we introduce a joint Spectral--Temporal Reconstruction (STR) framework that captures the coupled spectral rhythms and temporal dynamics of EEG signals. STR applies randomized spectral perturbation to enhance frequency robustness and uses two complementary temporal objectives to learn both contextual and sequential structure. In the EEG-Language alignment stage, we propose the Instruction-conditioned Q-Former (IQF). This query-based cross-attention transformer injects instruction embeddings into EEG tokens and achieves semantic alignment with textual label embeddings through learnable queries. We evaluate LEAF on 16 downstream datasets spanning motor imagery, emotion recognition, steady-state visual evoked potentials, covert speech, and healthcare tasks. LEAF achieves state-of-the-art performance on 12 of the 16 datasets and obtains the best average results across all five task categories. Importantly, our analyses reveal for the first time that explicit task instructions serve as semantic priors guiding EEG embeddings into coherent and linguistically grounded spaces. The code and pre-trained weights will be released.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_090",
+    "file_name": "OA_KW5_090.pdf",
+    "md5_hash": "ac0386efb9eacd2d0cb956a1b2504ce0",
+    "file_size_kb": 2713.4716796875
+  },
+  {
+    "title": "REFS: Robust EEG feature selection with missing multi-dimensional annotation for emotion recognition",
+    "norm_title": "refsrobusteegfeatureselectionwithmissingmultidimensionalannotationforemotionrecognition",
+    "authors": "Xueyuan Xu; Wenjia Dong; Fulin Wei; Li Zhuo",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2508.05933v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.05933v1.pdf",
+      "https://export.arxiv.org/pdf/2508.05933v1.pdf"
+    ],
+    "abstract": "The affective brain-computer interface is a crucial technology for affective interaction and emotional intelligence, emerging as a significant area of research in the human-computer interaction. Compared to single-type features, multi-type EEG features provide a multi-level representation for analyzing multi-dimensional emotions. However, the high dimensionality of multi-type EEG features, combined with the relatively small number of high-quality EEG samples, poses challenges such as classifier overfitting and suboptimal real-time performance in multi-dimensional emotion recognition. Moreover, practical applications of affective brain-computer interface frequently encounters partial absence of multi-dimensional emotional labels due to the open nature of the acquisition environment, and ambiguity and variability in individual emotion perception. To address these challenges, this study proposes a novel EEG feature selection method for missing multi-dimensional emotion recognition. The method leverages adaptive orthogonal non-negative matrix factorization to reconstruct the multi-dimensional emotional label space through second-order and higher-order correlations, which could reduce the negative impact of missing values and outliers on label reconstruction. Simultaneously, it employs least squares regression with graph-based manifold learning regularization and global feature redundancy minimization regularization to enable EEG feature subset selection despite missing information, ultimately achieving robust EEG-based multi-dimensional emotion recognition. Simulation experiments on three widely used multi-dimensional emotional datasets, DREAMER, DEAP and HDED, reveal that the proposed method outperforms thirteen advanced feature selection methods in terms of robustness for EEG emotional feature selection.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_091",
+    "file_name": "OA_KW5_091.pdf",
+    "md5_hash": "f6469744df318f9dceac19a81dfd2b78",
+    "file_size_kb": 1454.1005859375
+  },
+  {
+    "title": "FDC-Net: Rethinking the association between EEG artifact removal and multi-dimensional affective computing",
+    "norm_title": "fdcnetrethinkingtheassociationbetweeneegartifactremovalandmultidimensionalaffectivecomputing",
+    "authors": "Wenjia Dong; Xueyuan Xu; Tianze Yu; Junming Zhang",
+    "year": 2025,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2508.05231v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2508.05231v2.pdf",
+      "https://export.arxiv.org/pdf/2508.05231v2.pdf"
+    ],
+    "abstract": "Electroencephalogram (EEG)-based emotion recognition holds significant value in affective computing and brain-computer interfaces. However, in practical applications, EEG recordings are susceptible to the effects of various physiological artifacts. Current approaches typically treat denoising and emotion recognition as independent tasks using cascaded architectures, which not only leads to error accumulation, but also fails to exploit potential synergies between these tasks. Moreover, conventional EEG-based emotion recognition models often rely on the idealized assumption of \"perfectly denoised data\", lacking a systematic design for noise robustness. To address these challenges, a novel framework that deeply couples denoising and emotion recognition tasks is proposed for end-to-end noise-robust emotion recognition, termed as Feedback-Driven Collaborative Network for Denoising-Classification Nexus (FDC-Net). Our primary innovation lies in establishing a dynamic collaborative mechanism between artifact removal and emotion recognition through: (1) bidirectional gradient propagation with joint optimization strategies; (2) a gated attention mechanism integrated with frequency-adaptive Transformer using learnable band-position encoding. Two most popular EEG-based emotion datasets (DEAP and DREAMER) with multi-dimensional emotional labels were employed to compare the artifact removal and emotion recognition performance between FDC-Net and nine state-of-the-art methods. In terms of the denoising task, FDC-Net obtains a maximum correlation coefficient (CC) value of 96.30% on DEAP and a maximum CC value of 90.31% on DREAMER. In terms of the emotion recognition task under physiological artifact interference, FDC-Net achieves emotion recognition accuracies of 82.3+7.1% on DEAP and 88.1+0.8% on DREAMER.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_092",
+    "file_name": "OA_KW5_092.pdf",
+    "md5_hash": "d562ef486d3a37d0e387f11acd42990b",
+    "file_size_kb": 4238.939453125
+  },
+  {
+    "title": "Leveraging Retrieval Augment Approach for Multimodal Emotion Recognition Under Missing Modalities",
+    "norm_title": "leveragingretrievalaugmentapproachformultimodalemotionrecognitionundermissingmodalities",
+    "authors": "Qi Fan; Hongyu Yuan; Haolin Zuo; Rui Liu",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2410.02804v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2410.02804v1.pdf",
+      "https://export.arxiv.org/pdf/2410.02804v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition utilizes complete multimodal information and robust multimodal joint representation to gain high performance. However, the ideal condition of full modality integrity is often not applicable in reality and there always appears the situation that some modalities are missing. For example, video, audio, or text data is missing due to sensor failure or network bandwidth problems, which presents a great challenge to MER research. Traditional methods extract useful information from the complete modalities and reconstruct the missing modalities to learn robust multimodal joint representation. These methods have laid a solid foundation for research in this field, and to a certain extent, alleviated the difficulty of multimodal emotion recognition under missing modalities. However, relying solely on internal reconstruction and multimodal joint learning has its limitations, especially when the missing information is critical for emotion recognition. To address this challenge, we propose a novel framework of Retrieval Augment for Missing Modality Multimodal Emotion Recognition (RAMER), which introduces similar multimodal emotion data to enhance the performance of emotion recognition under missing modalities. By leveraging databases, that contain related multimodal emotion data, we can retrieve similar multimodal emotion information to fill in the gaps left by missing modalities. Various experimental results demonstrate that our framework is superior to existing state-of-the-art approaches in missing modality MER tasks. Our whole project is publicly available on https://github.com/WooyoohL/Retrieval_Augment_MER.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_093",
+    "file_name": "OA_KW5_093.pdf",
+    "md5_hash": "7196b12ee63c97a3aa98dc5c976dd374",
+    "file_size_kb": 532.63671875
+  },
+  {
+    "title": "Robust Facial Reactions Generation: An Emotion-Aware Framework with Modality Compensation",
+    "norm_title": "robustfacialreactionsgenerationanemotionawareframeworkwithmodalitycompensation",
+    "authors": "Guanyu Hu; Jie Wei; Siyang Song; Dimitrios Kollias",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2407.15798v2",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2407.15798v2.pdf",
+      "https://export.arxiv.org/pdf/2407.15798v2.pdf"
+    ],
+    "abstract": "The objective of the Multiple Appropriate Facial Reaction Generation (MAFRG) task is to produce contextually appropriate and diverse listener facial behavioural responses based on the multimodal behavioural data of the conversational partner (i.e., the speaker). Current methodologies typically assume continuous availability of speech and facial modality data, neglecting real-world scenarios where these data may be intermittently unavailable, which often results in model failures. Furthermore, despite utilising advanced deep learning models to extract information from the speaker's multimodal inputs, these models fail to adequately leverage the speaker's emotional context, which is vital for eliciting appropriate facial reactions from human listeners. To address these limitations, we propose an Emotion-aware Modality Compensatory (EMC) framework. This versatile solution can be seamlessly integrated into existing models, thereby preserving their advantages while significantly enhancing performance and robustness in scenarios with missing modalities. Our framework ensures resilience when faced with missing modality data through the Compensatory Modality Alignment (CMA) module. It also generates more appropriate emotion-aware reactions via the Emotion-aware Attention (EA) module, which incorporates the speaker's emotional information throughout the entire encoding and decoding process. Experimental results demonstrate that our framework improves the appropriateness metric FRCorr by an average of 57.2\\% compared to the original model structure. In scenarios where speech modality data is missing, the performance of appropriate generation shows an improvement, and when facial data is missing, it only exhibits minimal degradation.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_094",
+    "file_name": "OA_KW5_094.pdf",
+    "md5_hash": "b5584bb5b8bb9f51b4c7dff4f0d1bbfa",
+    "file_size_kb": 861.03515625
+  },
+  {
+    "title": "Enhancing Emotion Recognition in Incomplete Data: A Novel Cross-Modal Alignment, Reconstruction, and Refinement Framework",
+    "norm_title": "enhancingemotionrecognitioninincompletedataanovelcrossmodalalignmentreconstructionandrefinementframework",
+    "authors": "Haoqin Sun; Shiwan Zhao; Shaokai Li; Xiangyu Kong",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2407.09029v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2407.09029v1.pdf",
+      "https://export.arxiv.org/pdf/2407.09029v1.pdf"
+    ],
+    "abstract": "Multimodal emotion recognition systems rely heavily on the full availability of modalities, suffering significant performance declines when modal data is incomplete. To tackle this issue, we present the Cross-Modal Alignment, Reconstruction, and Refinement (CM-ARR) framework, an innovative approach that sequentially engages in cross-modal alignment, reconstruction, and refinement phases to handle missing modalities and enhance emotion recognition. This framework utilizes unsupervised distribution-based contrastive learning to align heterogeneous modal distributions, reducing discrepancies and modeling semantic uncertainty effectively. The reconstruction phase applies normalizing flow models to transform these aligned distributions and recover missing modalities. The refinement phase employs supervised point-based contrastive learning to disrupt semantic correlations and accentuate emotional traits, thereby enriching the affective content of the reconstructed representations. Extensive experiments on the IEMOCAP and MSP-IMPROV datasets confirm the superior performance of CM-ARR under conditions of both missing and complete modalities. Notably, averaged across six scenarios of missing modalities, CM-ARR achieves absolute improvements of 2.11% in WAR and 2.12% in UAR on the IEMOCAP dataset, and 1.71% and 1.96% in WAR and UAR, respectively, on the MSP-IMPROV dataset.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_095",
+    "file_name": "OA_KW5_095.pdf",
+    "md5_hash": "ce1b1c8499c9457fd96eea7afe58b30f",
+    "file_size_kb": 826.892578125
+  },
+  {
+    "title": "Multimodal Prompt Learning with Missing Modalities for Sentiment Analysis and Emotion Recognition",
+    "norm_title": "multimodalpromptlearningwithmissingmodalitiesforsentimentanalysisandemotionrecognition",
+    "authors": "Zirun Guo; Tao Jin; Zhou Zhao",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2407.05374v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2407.05374v1.pdf",
+      "https://export.arxiv.org/pdf/2407.05374v1.pdf"
+    ],
+    "abstract": "The development of multimodal models has significantly advanced multimodal sentiment analysis and emotion recognition. However, in real-world applications, the presence of various missing modality cases often leads to a degradation in the model's performance. In this work, we propose a novel multimodal Transformer framework using prompt learning to address the issue of missing modalities. Our method introduces three types of prompts: generative prompts, missing-signal prompts, and missing-type prompts. These prompts enable the generation of missing modality features and facilitate the learning of intra- and inter-modality information. Through prompt learning, we achieve a substantial reduction in the number of trainable parameters. Our proposed method outperforms other methods significantly across all evaluation metrics. Extensive experiments and ablation studies are conducted to demonstrate the effectiveness and robustness of our method, showcasing its ability to effectively handle missing modalities.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_096",
+    "file_name": "OA_KW5_096.pdf",
+    "md5_hash": "e88a00e6069751f2cc7aa27860beb0e6",
+    "file_size_kb": 594.62890625
+  },
+  {
+    "title": "Dynamic Modality and View Selection for Multimodal Emotion Recognition with Missing Modalities",
+    "norm_title": "dynamicmodalityandviewselectionformultimodalemotionrecognitionwithmissingmodalities",
+    "authors": "Luciana Trinkaus Menon; Luiz Carlos Ribeiro Neduziak; Jean Paul Barddal; Alessandro Lameiras Koerich",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2404.12251v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2404.12251v1.pdf",
+      "https://export.arxiv.org/pdf/2404.12251v1.pdf"
+    ],
+    "abstract": "The study of human emotions, traditionally a cornerstone in fields like psychology and neuroscience, has been profoundly impacted by the advent of artificial intelligence (AI). Multiple channels, such as speech (voice) and facial expressions (image), are crucial in understanding human emotions. However, AI's journey in multimodal emotion recognition (MER) is marked by substantial technical challenges. One significant hurdle is how AI models manage the absence of a particular modality - a frequent occurrence in real-world situations. This study's central focus is assessing the performance and resilience of two strategies when confronted with the lack of one modality: a novel multimodal dynamic modality and view selection and a cross-attention mechanism. Results on the RECOLA dataset show that dynamic selection-based methods are a promising approach for MER. In the missing modalities scenarios, all dynamic selection-based methods outperformed the baseline. The study concludes by emphasizing the intricate interplay between audio and video modalities in emotion prediction, showcasing the adaptability of dynamic selection methods in handling missing modalities.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_097",
+    "file_name": "OA_KW5_097.pdf",
+    "md5_hash": "75d8b0052d106f76ebf7875108e5974a",
+    "file_size_kb": 672.337890625
+  },
+  {
+    "title": "AM^2-EmoJE: Adaptive Missing-Modality Emotion Recognition in Conversation via Joint Embedding Learning",
+    "norm_title": "am2emojeadaptivemissingmodalityemotionrecognitioninconversationviajointembeddinglearning",
+    "authors": "Naresh Kumar Devulapally; Sidharth Anand; Sreyasee Das Bhattacharjee; Junsong Yuan",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2402.10921v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2402.10921v1.pdf",
+      "https://export.arxiv.org/pdf/2402.10921v1.pdf"
+    ],
+    "abstract": "Human emotion can be presented in different modes i.e., audio, video, and text. However, the contribution of each mode in exhibiting each emotion is not uniform. Furthermore, the availability of complete mode-specific details may not always be guaranteed in the test time. In this work, we propose AM^2-EmoJE, a model for Adaptive Missing-Modality Emotion Recognition in Conversation via Joint Embedding Learning model that is grounded on two-fold contributions: First, a query adaptive fusion that can automatically learn the relative importance of its mode-specific representations in a query-specific manner. By this the model aims to prioritize the mode-invariant spatial query details of the emotion patterns, while also retaining its mode-exclusive aspects within the learned multimodal query descriptor. Second the multimodal joint embedding learning module that explicitly addresses various missing modality scenarios in test-time. By this, the model learns to emphasize on the correlated patterns across modalities, which may help align the cross-attended mode-specific descriptors pairwise within a joint-embedding space and thereby compensate for missing modalities during inference. By leveraging the spatio-temporal details at the dialogue level, the proposed AM^2-EmoJE not only demonstrates superior performance compared to the best-performing state-of-the-art multimodal methods, by effectively leveraging body language in place of face expression, it also exhibits an enhanced privacy feature. By reporting around 2-5% improvement in the weighted-F1 score, the proposed multimodal joint embedding module facilitates an impressive performance gain in a variety of missing-modality query scenarios during test time.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_098",
+    "file_name": "OA_KW5_098.pdf",
+    "md5_hash": "2c07aaf97acb4a907ec78ce79db3b83d",
+    "file_size_kb": 1062.01953125
+  },
+  {
+    "title": "SDR-GNN: Spectral Domain Reconstruction Graph Neural Network for Incomplete Multimodal Learning in Conversational Emotion Recognition",
+    "norm_title": "sdrgnnspectraldomainreconstructiongraphneuralnetworkforincompletemultimodallearninginconversationalemotionrecognition",
+    "authors": "Fangze Fu; Wei Ai; Fan Yang; Yuntao Shou",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2411.19822v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2411.19822v1.pdf",
+      "https://export.arxiv.org/pdf/2411.19822v1.pdf"
+    ],
+    "abstract": "Multimodal Emotion Recognition in Conversations (MERC) aims to classify utterance emotions using textual, auditory, and visual modal features. Most existing MERC methods assume each utterance has complete modalities, overlooking the common issue of incomplete modalities in real-world scenarios. Recently, graph neural networks (GNNs) have achieved notable results in Incomplete Multimodal Emotion Recognition in Conversations (IMERC). However, traditional GNNs focus on binary relationships between nodes, limiting their ability to capture more complex, higher-order information. Moreover, repeated message passing can cause over-smoothing, reducing their capacity to preserve essential high-frequency details. To address these issues, we propose a Spectral Domain Reconstruction Graph Neural Network (SDR-GNN) for incomplete multimodal learning in conversational emotion recognition. SDR-GNN constructs an utterance semantic interaction graph using a sliding window based on both speaker and context relationships to model emotional dependencies. To capture higher-order and high-frequency information, SDR-GNN utilizes weighted relationship aggregation, ensuring consistent semantic feature extraction across utterances. Additionally, it performs multi-frequency aggregation in the spectral domain, enabling efficient recovery of incomplete modalities by extracting both high- and low-frequency information. Finally, multi-head attention is applied to fuse and optimize features for emotion recognition. Extensive experiments on various real-world datasets demonstrate that our approach is effective in incomplete multimodal learning and outperforms current state-of-the-art methods.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_099",
+    "file_name": "OA_KW5_099.pdf",
+    "md5_hash": "ffae35c88d62cb426c65be17aa9c5977",
+    "file_size_kb": 2129.75
+  },
+  {
+    "title": "Promoting cross-modal representations to improve multimodal foundation models for physiological signals",
+    "norm_title": "promotingcrossmodalrepresentationstoimprovemultimodalfoundationmodelsforphysiologicalsignals",
+    "authors": "Ching Fang; Christopher Sandino; Behrooz Mahasseni; Juri Minxha",
+    "year": 2024,
+    "journal": "arXiv Preprints (Missing Modality & Wearable Robustness)",
+    "doi": "10.48550/arXiv.2410.16424v1",
+    "citations": 12,
+    "pdf_urls": [
+      "https://arxiv.org/pdf/2410.16424v1.pdf",
+      "https://export.arxiv.org/pdf/2410.16424v1.pdf"
+    ],
+    "abstract": "Many healthcare applications are inherently multimodal, involving several physiological signals. As sensors for these signals become more common, improving machine learning methods for multimodal healthcare data is crucial. Pretraining foundation models is a promising avenue for success. However, methods for developing foundation models in healthcare are still in early exploration and it is unclear which pretraining strategies are most effective given the diversity of physiological signals. This is partly due to challenges in multimodal health data: obtaining data across many patients is difficult and costly, there is a lot of inter-subject variability, and modalities are often heterogeneously informative across downstream tasks. Here, we explore these challenges in the PhysioNet 2018 dataset. We use a masked autoencoding objective to pretrain a multimodal model. We show that the model learns representations that can be linearly probed for a diverse set of downstream tasks. We hypothesize that cross-modal reconstruction objectives are important for successful multimodal training, as they encourage the model to integrate information across modalities. We demonstrate that modality dropout in the input space improves performance across downstream tasks. We also find that late-fusion models pretrained with contrastive learning objectives are less effective across multiple tasks. Finally, we analyze the model's representations, showing that attention weights become more cross-modal and temporally aligned with our pretraining strategy. The learned embeddings also become more distributed in terms of the modalities encoded by each unit. Overall, our work demonstrates the utility of multimodal foundation models with health data, even across diverse physiological data sources. We further argue that explicit methods for inducing cross-modality may enhance multimodal pretraining strategies.",
+    "source": "arXiv",
+    "paper_code": "OA_KW5_100",
+    "file_name": "OA_KW5_100.pdf",
+    "md5_hash": "7bef4f55ae8f75a43cbc13aa46a7015f",
+    "file_size_kb": 2610.623046875
+  }
+]

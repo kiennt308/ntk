@@ -3,8 +3,8 @@
 
 - **Ánh xạ Chương Luận Án**: **Chương 2 & Chương 4 (Tổng quan Sinh học Thần kinh & Giao thức Dữ liệu)**
 - **Trọng tâm Nghiên cứu**: Cortical cognitive appraisal vs. Autonomic physiological arousal, DEAP/DREAMER benchmarks, signal filtering, CAR, and HRV/CDA feature extraction.
-- **Tổng số bài báo khoa học chỉ mục**: **50 bài** (Giai đoạn 2023–2026)
-- **Số lượng file PDF toàn văn sẵn có**: **50 file PDF** (trong thư mục [`pdfs/`](pdfs/))
+- **Tổng số bài báo khoa học chỉ mục**: **100 bài** (Giai đoạn 2023–2026)
+- **Số lượng file PDF toàn văn sẵn có**: **100 file PDF** (trong thư mục [`pdfs/`](pdfs/))
 
 ---
 
@@ -28,5 +28,6 @@ Mở file [`00_NOTEBOOKLM_PROMPTS_AND_INDEX.md`](00_NOTEBOOKLM_PROMPTS_AND_INDEX
 
 ## 📂 Danh Mục Bài Báo Trong Notebook
 Chi tiết toàn văn và tóm tắt từng bài báo có thể xem tại:
-- [Tài liệu tóm tắt mở rộng](../../literature/open_access_repository/kw01_multimodal_eeg_biosignals/README.md)
-- [Bảng dữ liệu thô `papers_index.csv`](../../literature/open_access_repository/kw01_multimodal_eeg_biosignals/papers_index.csv)
+- [Bảng dữ liệu chỉ mục `papers_index.csv`](papers_index.csv)
+- [Thư mục tóm tắt chuyên sâu `paper_notes/`](paper_notes/)
+- [Thư mục chứa 100% PDF toàn văn `pdfs/`](pdfs/)
